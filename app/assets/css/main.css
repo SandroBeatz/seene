@@ -1,0 +1,131 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+/*
+ * Seene — Nuxt UI v3 theme
+ * Использует только официальные --ui-* переменные.
+ *
+ * app.config.ts должен содержать:
+ *   ui: { colors: { primary: 'gold', neutral: 'warm' } }
+ *
+ * Nuxt UI автоматически создаёт алиасы:
+ *   --ui-color-primary-{n}  →  --color-gold-{n}
+ *   --ui-color-neutral-{n}  →  --color-warm-{n}
+ */
+
+/* ─────────────────────────────────────────────
+   1. Цветовые шкалы (@theme → доступны как
+      Tailwind-классы bg-gold-500, text-warm-200…)
+───────────────────────────────────────────── */
+
+@theme static {
+  /* Primary — Gold */
+  --color-gold-50:  #fdf8ef;
+  --color-gold-100: #f9efda;
+  --color-gold-200: #f2ddb5;
+  --color-gold-300: #e8c98a;
+  --color-gold-400: #dfc070;
+  --color-gold-500: #d6b97a;
+  --color-gold-600: #c4963c;
+  --color-gold-700: #a67a2e;
+  --color-gold-800: #876028;
+  --color-gold-900: #5c4019;
+  --color-gold-950: #30200a;
+
+  /* Accent — Olive (можно использовать как color="olive" на компонентах) */
+  --color-olive-50:  #f7f8e7;
+  --color-olive-100: #eef1ce;
+  --color-olive-200: #dce39d;
+  --color-olive-300: #cad46e;
+  --color-olive-400: #bcc64e;
+  --color-olive-500: #abad34;
+  --color-olive-600: #8c8f27;
+  --color-olive-700: #6d701c;
+  --color-olive-800: #4e5014;
+  --color-olive-900: #2f300c;
+  --color-olive-950: #181904;
+
+  /*
+   * Neutral — Warm cream
+   * Шкала построена так, чтобы семантические переменные
+   * --ui-text / --ui-bg / --ui-border совпали с референсом:
+   *   900 = #1b0909  (основной текст в светлой теме)
+   *   100 = #fbf4f4  (фон в светлой теме)
+   *   950 = #0b0404  (фон в тёмной теме)
+   *   200 = #f3e9e9  (≈ #f6e4e4, текст в тёмной теме)
+   */
+  --color-warm-50:  #fdf9f9;
+  --color-warm-100: #fbf4f4;
+  --color-warm-200: #f3e9e9;
+  --color-warm-300: #e5d5d5;
+  --color-warm-400: #cdb8b8;
+  --color-warm-500: #b09090;
+  --color-warm-600: #8e6e6e;
+  --color-warm-700: #6b5252;
+  --color-warm-800: #4a3838;
+  --color-warm-900: #1b0909;
+  --color-warm-950: #0b0404;
+}
+
+/* ─────────────────────────────────────────────
+   2. Semantic overrides — светлая тема
+───────────────────────────────────────────── */
+
+:root {
+  /* Цвет акцента в компонентах (кнопки, ссылки, focus-ring) */
+  --ui-primary: var(--ui-color-primary-500);   /* gold-500 = #d6b97a */
+
+  /* Текст */
+  --ui-text-dimmed:      var(--ui-color-neutral-500);   /* #b09090 — подсказки */
+  --ui-text-muted:       var(--ui-color-neutral-600);   /* #8e6e6e — вторичный */
+  --ui-text-toned:       var(--ui-color-neutral-700);   /* #6b5252 — приглушённый */
+  --ui-text:             var(--ui-color-neutral-900);   /* #1b0909 — основной */
+  --ui-text-highlighted: var(--ui-color-neutral-900);   /* #1b0909 — заголовки */
+  --ui-text-inverted:    white;
+
+  /* Фон */
+  --ui-bg:           var(--ui-color-neutral-100);   /* #fbf4f4 — страница */
+  --ui-bg-muted:     var(--ui-color-neutral-50);    /* #fdf9f9 — sidebar, input bg */
+  --ui-bg-elevated:  var(--ui-color-neutral-50);    /* #fdf9f9 — карточки */
+  --ui-bg-accented:  var(--ui-color-neutral-200);   /* #f3e9e9 — hover, теги */
+  --ui-bg-inverted:  var(--ui-color-neutral-900);   /* #1b0909 — инвертированные блоки */
+
+  /* Рамки */
+  --ui-border:          var(--ui-color-neutral-300);   /* #e5d5d5 */
+  --ui-border-muted:    var(--ui-color-neutral-200);   /* #f3e9e9 */
+  --ui-border-accented: var(--ui-color-neutral-300);   /* #e5d5d5 */
+  --ui-border-inverted: var(--ui-color-neutral-900);   /* #1b0909 */
+
+  /* Радиус — чуть мягче дефолта (beauty-бренд) */
+  --ui-radius: 0.375rem;
+}
+
+/* ─────────────────────────────────────────────
+   3. Semantic overrides — тёмная тема
+───────────────────────────────────────────── */
+
+.dark {
+  /* Акцент чуть светлее для читаемости на тёмном фоне */
+  --ui-primary: var(--ui-color-primary-400);   /* gold-400 = #dfc070 */
+
+  /* Текст */
+  --ui-text-dimmed:      var(--ui-color-neutral-600);   /* #8e6e6e */
+  --ui-text-muted:       var(--ui-color-neutral-500);   /* #b09090 */
+  --ui-text-toned:       var(--ui-color-neutral-400);   /* #cdb8b8 */
+  --ui-text:             var(--ui-color-neutral-200);   /* #f3e9e9 ≈ #f6e4e4 */
+  --ui-text-highlighted: white;
+  --ui-text-inverted:    var(--ui-color-neutral-900);   /* #1b0909 */
+
+  /* Фон */
+  --ui-bg:           var(--ui-color-neutral-950);   /* #0b0404 — страница */
+  --ui-bg-muted:     var(--ui-color-neutral-900);   /* #1b0909 */
+  --ui-bg-elevated:  var(--ui-color-neutral-800);   /* #4a3838 — карточки */
+  --ui-bg-accented:  var(--ui-color-neutral-700);   /* #6b5252 — hover */
+  --ui-bg-inverted:  white;
+
+  /* Рамки */
+  --ui-border:          var(--ui-color-neutral-800);   /* #4a3838 */
+  --ui-border-muted:    var(--ui-color-neutral-900);   /* #1b0909 */
+  --ui-border-accented: var(--ui-color-neutral-700);   /* #6b5252 */
+  --ui-border-inverted: white;
+}
