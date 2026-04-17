@@ -1,34 +1,61 @@
 <script setup lang="ts">
-const cards = ref([
+const { $t, $localePath } = useI18n()
+
+const cards = computed(() => [
   {
-    title: 'Nail-мастера',
-    description: 'Онлайн-запись для nail-мастеров',
+    title: $t('features.cards.nails'),
+    description: $t('features.cards.nailsDesc'),
     icon: 'i-lucide-hand',
-    to: '/for/nail-masters'
+    to: $localePath('/for/nail-masters')
   },
   {
-    title: 'Бровисты',
-    description: 'Онлайн-запись для бровистов',
+    title: $t('features.cards.brows'),
+    description: $t('features.cards.browsDesc'),
     icon: 'i-lucide-eye',
-    to: '/for/brow-artists'
+    to: $localePath('/for/brow-artists')
   },
   {
-    title: 'Лэшмейкеры',
-    description: 'Онлайн-запись для лэшмейкеров',
+    title: $t('features.cards.lashes'),
+    description: $t('features.cards.lashesDesc'),
     icon: 'i-lucide-eye',
-    to: '/for/lash-makers'
+    to: $localePath('/for/lash-makers')
   },
   {
-    title: 'Визажисты',
-    description: 'Онлайн-запись для визажистов',
+    title: $t('features.cards.makeup'),
+    description: $t('features.cards.makeupDesc'),
     icon: 'i-lucide-sparkles',
-    to: '/for/makeup-artists'
+    to: $localePath('/for/makeup-artists')
   },
   {
-    title: 'PMU-мастера',
-    description: 'Онлайн-запись для PMU-мастеров',
+    title: $t('features.cards.pmu'),
+    description: $t('features.cards.pmuDesc'),
     icon: 'i-lucide-pen-line',
-    to: '/for/pmu-masters'
+    to: $localePath('/for/pmu-masters')
+  }
+])
+
+const steps = computed(() => [
+  { icon: 'i-lucide-rocket', title: $t('steps.register') },
+  { icon: 'i-lucide-rocket', title: $t('steps.setup') },
+  { icon: 'i-lucide-rocket', title: $t('steps.share') }
+])
+
+const heroLinks = computed(() => [
+  {
+    label: $t('hero.cta'),
+    to: $localePath('/signup'),
+    color: 'primary' as const,
+    size: 'xl' as const
+  }
+])
+
+const ctaLinks = computed(() => [
+  {
+    label: $t('cta.start'),
+    to: $localePath('/signup'),
+    trailingIcon: 'i-lucide-arrow-right',
+    color: 'primary' as const,
+    size: 'xl' as const
   }
 ])
 </script>
@@ -36,28 +63,21 @@ const cards = ref([
 <template>
   <div>
     <UPageHero
-      title="Больше клиентов — меньше переписки"
-      description="Создай личную страницу, добавь в Instagram и принимай записи автоматически"
+      :title="$t('hero.title')"
+      :description="$t('hero.description')"
       orientation="horizontal"
-      :links="[
-        {
-          label: 'Начать бесплатно',
-          to: '/signup',
-          color: 'primary',
-          size: 'xl'
-        }
-      ]"
+      :links="heroLinks"
     >
       <img
         src="~/assets/img/hero.png"
-        alt="Дашборд Seene — онлайн-запись для beauty-мастеров"
+        :alt="$t('hero.imageAlt')"
         class="w-full max-w-lg rounded-2xl shadow-xl"
       />
     </UPageHero>
 
     <UPageSection
       id="features"
-      title="Для мастеров beauty-индустрии"
+      :title="$t('features.title')"
     >
       <UPageGrid>
         <UPageCard v-for="(card, index) in cards" :key="index" v-bind="card" />
@@ -66,37 +86,16 @@ const cards = ref([
 
     <UPageSection
       id="steps"
-      title="3 шага до первого клиента"
-      :features="[
-        {
-          icon: 'i-lucide-rocket',
-          title: 'Регистрируешься'
-        },
-        {
-          icon: 'i-lucide-rocket',
-          title: 'Настраиваешь страницу'
-        },
-        {
-          icon: 'i-lucide-rocket',
-          title: 'Добавляешь ссылку в Instagram'
-        }
-      ]"
+      :title="$t('steps.title')"
+      :features="steps"
     />
 
     <UPageSection>
       <UPageCTA
-        title="Начать бесплатно сегодня"
-        description="Присоединяйся к мастерам, которые уже принимают записи через Seene — без переписки и пропущенных клиентов."
+        :title="$t('cta.title')"
+        :description="$t('cta.description')"
         variant="subtle"
-        :links="[
-          {
-            label: 'Начать бесплатно',
-            to: '/signup',
-            trailingIcon: 'i-lucide-arrow-right',
-            color: 'primary',
-            size: 'xl'
-          }
-        ]"
+        :links="ctaLinks"
       />
     </UPageSection>
   </div>

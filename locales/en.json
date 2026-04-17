@@ -1,6 +1,10 @@
 {
   "nav": {
-    "cta": "Try for Free"
+    "cta": "Start for Free",
+    "home": "Home",
+    "about": "About",
+    "privacy": "Privacy",
+    "terms": "Terms"
   },
   "footer": {
     "copyright": "© Seene"

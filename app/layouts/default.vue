@@ -1,29 +1,31 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
 
-const navItems: NavigationMenuItem[] = [
-  { label: 'О нас', to: '/about' },
-  { label: 'Конфиденциальность', to: '/privacy' },
-  { label: 'Условия', to: '/terms' }
-]
+const { $t, $localePath } = useI18n()
+
+const navItems = computed<NavigationMenuItem[]>(() => [
+  { label: $t('nav.about'), to: $localePath('/about') },
+  { label: $t('nav.privacy'), to: $localePath('/privacy') },
+  { label: $t('nav.terms'), to: $localePath('/terms') }
+])
 </script>
 
 <template>
   <UApp>
     <UHeader>
       <template #left>
-        <NuxtLink to="/">
+        <NuxtLink :to="$localePath('/')">
           <AppLogo class="w-auto h-8 shrink-0" />
         </NuxtLink>
       </template>
 
       <template #right>
         <UButton
-          to="/signup"
-          aria-label="Начать бесплатно"
+          :to="$localePath('/signup')"
+          :aria-label="$t('nav.cta')"
           color="primary"
           trailing-icon="i-lucide-arrow-right"
-          label="Начать бесплатно"
+          :label="$t('nav.cta')"
         />
       </template>
     </UHeader>
@@ -36,7 +38,7 @@ const navItems: NavigationMenuItem[] = [
 
     <UFooter>
       <template #left>
-        <NuxtLink to="/">
+        <NuxtLink :to="$localePath('/')">
           <AppLogo class="w-auto h-7 shrink-0" />
         </NuxtLink>
       </template>
@@ -44,6 +46,7 @@ const navItems: NavigationMenuItem[] = [
       <UNavigationMenu :items="navItems" variant="link" />
 
       <template #right>
+        <LocaleSwitcher />
         <UColorModeButton />
         <UButton
           to="https://instagram.com"

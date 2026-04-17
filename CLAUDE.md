@@ -47,7 +47,10 @@ The header is styled floating/rounded via `app.config.ts` slot overrides — do 
 
 ## Skills
 
-Project-local skills live in `.claude/skills/`. The `nuxt-ui` skill **must** be invoked before any UI/markup/component work — it enforces Nuxt UI component lookup via context7 MCP before writing any template code.
+Project-local skills live in `.claude/skills/`. Two skills are mandatory for UI/markup work and must both be invoked:
+
+- **`nuxt-ui`** — enforces Nuxt UI component lookup via context7 MCP before writing any template code
+- **`i18n`** — enforces i18n rules: all visible text must be wrapped in `$t()`, keys managed across `locales/en.json`, `locales/fr.json`, `locales/ru.json`. Invoke with `--check` to audit hardcoded strings across the project.
 
 ## Project Context
 

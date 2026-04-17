@@ -1,16 +1,23 @@
 {
   "hero": {
-    "title": "Your online booking in 5 minutes",
+    "title": "More clients — less messaging",
     "description": "Create your personal page, add it to Instagram and accept bookings automatically",
-    "cta": "Start for free"
+    "cta": "Start for Free",
+    "imageAlt": "Seene dashboard — online booking for beauty professionals"
   },
   "features": {
     "title": "For beauty industry professionals",
     "cards": {
       "nails": "Nail technicians",
+      "nailsDesc": "Online booking for nail technicians",
       "brows": "Brow artists",
+      "browsDesc": "Online booking for brow artists",
       "lashes": "Lash makers",
-      "makeup": "Makeup artists"
+      "lashesDesc": "Online booking for lash makers",
+      "makeup": "Makeup artists",
+      "makeupDesc": "Online booking for makeup artists",
+      "pmu": "PMU masters",
+      "pmuDesc": "Online booking for PMU masters"
     }
   },
   "steps": {
@@ -20,9 +27,8 @@
     "share": "Add the link to Instagram"
   },
   "cta": {
-    "title": "Ready to start accepting bookings?",
-    "description": "Thousands of beauty professionals already use Seene. Get your page and start accepting clients today.",
-    "start": "Start for free",
-    "github": "View on GitHub"
+    "title": "Start for Free Today",
+    "description": "Join the beauty professionals already accepting bookings through Seene — no back-and-forth, no missed clients.",
+    "start": "Start for Free"
   }
 }

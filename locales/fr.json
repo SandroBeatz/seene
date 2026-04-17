@@ -1,6 +1,10 @@
 {
   "nav": {
-    "cta": "Essayer gratuitement"
+    "cta": "Commencer gratuitement",
+    "home": "Accueil",
+    "about": "À propos",
+    "privacy": "Confidentialité",
+    "terms": "Conditions"
   },
   "footer": {
     "copyright": "© Seene"

@@ -7,9 +7,9 @@ useHead({
   }
 })
 
-const title = 'Nuxt Starter Template'
+const title = 'Seene — онлайн-запись для beauty-мастеров'
 const description =
-  'A production-ready starter template powered by Nuxt UI. Build beautiful, accessible, and performant applications in minutes, not hours.'
+  'Создай личную страницу, добавь в Instagram и принимай записи автоматически. Для nail-мастеров, бровистов, лэшмейкеров и визажистов.'
 
 useSeoMeta({
   title,
