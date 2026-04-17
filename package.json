@@ -8,6 +8,9 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "typecheck": "nuxt typecheck"
   },
   "dependencies": {
@@ -15,11 +18,14 @@
     "@iconify-json/simple-icons": "^1.2.78",
     "@nuxt/ui": "^4.6.1",
     "nuxt": "^4.4.2",
+    "nuxt-i18n-micro": "^3.17.0",
     "tailwindcss": "^4.2.2"
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.15.2",
     "eslint": "^10.2.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.8.3",
     "typescript": "^6.0.2",
     "vue-tsc": "^3.2.6"
   },

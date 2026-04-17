@@ -1,0 +1,28 @@
+{
+  "hero": {
+    "title": "Votre réservation en ligne en 5 minutes",
+    "description": "Créez votre page personnelle, ajoutez-la à Instagram et acceptez des réservations automatiquement",
+    "cta": "Commencer gratuitement"
+  },
+  "features": {
+    "title": "Pour les professionnels de la beauté",
+    "cards": {
+      "nails": "Prothésistes ongulaires",
+      "brows": "Artistes sourcils",
+      "lashes": "Poseurs de cils",
+      "makeup": "Maquilleurs"
+    }
+  },
+  "steps": {
+    "title": "3 étapes vers votre premier client",
+    "register": "Inscrivez-vous",
+    "setup": "Configurez votre page",
+    "share": "Ajoutez le lien à Instagram"
+  },
+  "cta": {
+    "title": "Prêt à accepter des réservations ?",
+    "description": "Des milliers de professionnels de la beauté utilisent déjà Seene. Obtenez votre page et commencez à accepter des clients dès aujourd'hui.",
+    "start": "Commencer gratuitement",
+    "github": "Voir sur GitHub"
+  }
+}

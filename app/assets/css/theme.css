@@ -4,13 +4,13 @@
  * Generated from realtimecolors.com references
  */
 
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* ─── Custom color scales ─── */
 
 @theme {
   /* Primary — Gold */
-  --color-gold-50:  #fdf8ef;
+  --color-gold-50: #fdf8ef;
   --color-gold-100: #f9efda;
   --color-gold-200: #f2ddb5;
   --color-gold-300: #e8c98a;
@@ -23,7 +23,7 @@
   --color-gold-950: #30200a;
 
   /* Accent — Olive */
-  --color-olive-50:  #f7f8e7;
+  --color-olive-50: #f7f8e7;
   --color-olive-100: #eef1ce;
   --color-olive-200: #dce39d;
   --color-olive-300: #cad46e;
@@ -36,7 +36,7 @@
   --color-olive-950: #181904;
 
   /* Neutral — Warm cream */
-  --color-warm-50:  #fdf9f9;
+  --color-warm-50: #fdf9f9;
   --color-warm-100: #fbf4f4;
   --color-warm-200: #f3e9e9;
   --color-warm-300: #e5d5d5;
@@ -52,45 +52,45 @@
 /* ─── Semantic CSS variables (light) ─── */
 
 :root {
-  --seene-bg:           #fbf4f4;
-  --seene-bg-elevated:  #fdf9f9;
-  --seene-bg-muted:     #f3e9e9;
+  --seene-bg: #fbf4f4;
+  --seene-bg-elevated: #fdf9f9;
+  --seene-bg-muted: #f3e9e9;
 
-  --seene-text:         #1b0909;
-  --seene-text-muted:   #6b5252;
-  --seene-text-subtle:  #8e6e6e;
+  --seene-text: #1b0909;
+  --seene-text-muted: #6b5252;
+  --seene-text-subtle: #8e6e6e;
 
-  --seene-primary:      #d6b97a;
-  --seene-primary-hover:#c4963c;
-  --seene-primary-fg:   #30200a;
+  --seene-primary: #d6b97a;
+  --seene-primary-hover: #c4963c;
+  --seene-primary-fg: #30200a;
 
-  --seene-accent:       #abad34;
+  --seene-accent: #abad34;
   --seene-accent-hover: #8c8f27;
-  --seene-accent-fg:    #181904;
+  --seene-accent-fg: #181904;
 
-  --seene-border:       #e5d5d5;
+  --seene-border: #e5d5d5;
   --seene-border-muted: #f3e9e9;
 }
 
 /* ─── Semantic CSS variables (dark) ─── */
 
 .dark {
-  --seene-bg:           #0b0404;
-  --seene-bg-elevated:  #180d0d;
-  --seene-bg-muted:     #2c2020;
+  --seene-bg: #0b0404;
+  --seene-bg-elevated: #180d0d;
+  --seene-bg-muted: #2c2020;
 
-  --seene-text:         #f6e4e4;
-  --seene-text-muted:   #cdb8b8;
-  --seene-text-subtle:  #b09090;
+  --seene-text: #f6e4e4;
+  --seene-text-muted: #cdb8b8;
+  --seene-text-subtle: #b09090;
 
-  --seene-primary:      #d6b97a;
-  --seene-primary-hover:#dfc070;
-  --seene-primary-fg:   #30200a;
+  --seene-primary: #d6b97a;
+  --seene-primary-hover: #dfc070;
+  --seene-primary-fg: #30200a;
 
-  --seene-accent:       #c9cb52;
+  --seene-accent: #c9cb52;
   --seene-accent-hover: #bcc64e;
-  --seene-accent-fg:    #181904;
+  --seene-accent-fg: #181904;
 
-  --seene-border:       #2c2020;
+  --seene-border: #2c2020;
   --seene-border-muted: #1a0d0d;
 }

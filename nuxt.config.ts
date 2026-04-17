@@ -1,9 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: [
-    '@nuxt/eslint',
-    '@nuxt/ui'
-  ],
+  modules: ['@nuxt/eslint', '@nuxt/ui', 'nuxt-i18n-micro'],
 
   devtools: {
     enabled: true
@@ -35,4 +32,15 @@ export default defineNuxtConfig({
       }
     }
   },
+
+  i18n: {
+    locales: [
+      { code: 'en', iso: 'en-US', dir: 'ltr' },
+      { code: 'fr', iso: 'fr-FR', dir: 'ltr' },
+      { code: 'ru', iso: 'ru-RU', dir: 'ltr' }
+    ],
+    defaultLocale: 'en',
+    translationDir: 'locales',
+    meta: true
+  }
 })
