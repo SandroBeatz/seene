@@ -1,4 +1,12 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import type { NavigationMenuItem } from '@nuxt/ui'
+
+const navItems: NavigationMenuItem[] = [
+  { label: 'О нас', to: '/about' },
+  { label: 'Конфиденциальность', to: '/privacy' },
+  { label: 'Условия', to: '/terms' }
+]
+</script>
 
 <template>
   <UApp>
@@ -11,13 +19,11 @@
 
       <template #right>
         <UButton
-          to="https://github.com/nuxt-ui-templates/starter"
-          target="_blank"
-          aria-label="GitHub"
-          color="neutral"
-          variant="outline"
+          to="/signup"
+          aria-label="Начать бесплатно"
+          color="primary"
           trailing-icon="i-lucide-arrow-right"
-          label="Try for Free"
+          label="Начать бесплатно"
         />
       </template>
     </UHeader>
@@ -30,16 +36,35 @@
 
     <UFooter>
       <template #left>
-        <p class="text-sm text-muted">© Seene {{ new Date().getFullYear() }}</p>
+        <NuxtLink to="/">
+          <AppLogo class="w-auto h-7 shrink-0" />
+        </NuxtLink>
       </template>
+
+      <UNavigationMenu :items="navItems" variant="link" />
 
       <template #right>
         <UColorModeButton />
         <UButton
-          to="https://github.com/nuxt-ui-templates/starter"
+          to="https://instagram.com"
           target="_blank"
-          icon="i-simple-icons-github"
-          aria-label="GitHub"
+          icon="i-simple-icons-instagram"
+          aria-label="Instagram"
+          color="neutral"
+          variant="ghost"
+        />
+        <UButton
+          to="https://tiktok.com"
+          target="_blank"
+          icon="i-simple-icons-tiktok"
+          aria-label="TikTok"
+          color="neutral"
+          variant="ghost"
+        />
+        <UButton
+          to="mailto:help@seene.app"
+          icon="i-lucide-mail"
+          aria-label="help@seene.app"
           color="neutral"
           variant="ghost"
         />

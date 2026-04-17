@@ -14,7 +14,7 @@ export default defineAppConfig({
     /* ─── Global token overrides ─── */
     header: {
       slots: {
-        root: 'h-(--ui-header-height) border-none sticky top-4 z-50 max-w-7xl mx-auto shadow-md rounded-2xl',
+        root: 'h-(--ui-header-height) border-none fixed left-0 right-0 top-2 md:top-4 z-50 max-w-7xl mx-auto shadow-md rounded-2xl',
         container: 'flex items-center justify-between gap-3 h-full',
         left: 'lg:flex-1 flex items-center gap-1.5',
         center: 'hidden lg:flex',

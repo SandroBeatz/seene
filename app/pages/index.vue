@@ -2,23 +2,33 @@
 const cards = ref([
   {
     title: 'Nail-мастера',
-    icon: 'i-lucide-smile',
-    to: '/docs/getting-started/integrations/icons'
+    description: 'Онлайн-запись для nail-мастеров',
+    icon: 'i-lucide-hand',
+    to: '/for/nail-masters'
   },
   {
     title: 'Бровисты',
-    icon: 'i-lucide-a-large-small',
-    to: '/docs/getting-started/integrations/fonts'
+    description: 'Онлайн-запись для бровистов',
+    icon: 'i-lucide-eye',
+    to: '/for/brow-artists'
   },
   {
     title: 'Лэшмейкеры',
-    icon: 'i-lucide-sun-moon',
-    to: '/docs/getting-started/integrations/color-mode'
+    description: 'Онлайн-запись для лэшмейкеров',
+    icon: 'i-lucide-eye',
+    to: '/for/lash-makers'
   },
   {
     title: 'Визажисты',
-    icon: 'i-lucide-sun-moon',
-    to: '/docs/getting-started/integrations/color-mode'
+    description: 'Онлайн-запись для визажистов',
+    icon: 'i-lucide-sparkles',
+    to: '/for/makeup-artists'
+  },
+  {
+    title: 'PMU-мастера',
+    description: 'Онлайн-запись для PMU-мастеров',
+    icon: 'i-lucide-pen-line',
+    to: '/for/pmu-masters'
   }
 ])
 </script>
@@ -26,34 +36,29 @@ const cards = ref([
 <template>
   <div>
     <UPageHero
-      :ui="{ root: 'bg-primary/20' }"
-      title="«Твоя онлайн-запись за 5 минут» или «Больше клиентов — меньше переписки»"
+      title="Больше клиентов — меньше переписки"
       description="Создай личную страницу, добавь в Instagram и принимай записи автоматически"
+      orientation="horizontal"
       :links="[
         {
           label: 'Начать бесплатно',
-          to: 'https://ui.nuxt.com/docs/getting-started/installation/nuxt',
-          target: '_blank',
-          trailingIcon: 'i-lucide-arrow-right',
+          to: '/signup',
+          color: 'primary',
           size: 'xl'
         }
       ]"
-    />
+    >
+      <img
+        src="~/assets/img/hero.png"
+        alt="Дашборд Seene — онлайн-запись для beauty-мастеров"
+        class="w-full max-w-lg rounded-2xl shadow-xl"
+      />
+    </UPageHero>
 
     <UPageSection
       id="features"
       title="Для мастеров beauty-индустрии"
-      orientation="horizontal"
-      reverse
     >
-      <img
-        src="https://picsum.photos/704/1294"
-        width="352"
-        height="647"
-        alt="Illustration"
-        class="w-full rounded-lg"
-        loading="lazy"
-      />
       <UPageGrid>
         <UPageCard v-for="(card, index) in cards" :key="index" v-bind="card" />
       </UPageGrid>
@@ -80,24 +85,16 @@ const cards = ref([
 
     <UPageSection>
       <UPageCTA
-        title="Ready to build your next Nuxt app?"
-        description="Join thousands of developers building with Nuxt and Nuxt UI. Get this template and start shipping today."
+        title="Начать бесплатно сегодня"
+        description="Присоединяйся к мастерам, которые уже принимают записи через Seene — без переписки и пропущенных клиентов."
         variant="subtle"
         :links="[
           {
-            label: 'Start building',
-            to: 'https://ui.nuxt.com/docs/getting-started/installation/nuxt',
-            target: '_blank',
+            label: 'Начать бесплатно',
+            to: '/signup',
             trailingIcon: 'i-lucide-arrow-right',
-            color: 'neutral'
-          },
-          {
-            label: 'View on GitHub',
-            to: 'https://github.com/nuxt-ui-templates/starter',
-            target: '_blank',
-            icon: 'i-simple-icons-github',
-            color: 'neutral',
-            variant: 'outline'
+            color: 'primary',
+            size: 'xl'
           }
         ]"
       />
