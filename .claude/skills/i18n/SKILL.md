@@ -37,9 +37,7 @@ description: >
 <script setup lang="ts">
 const { $t } = useI18n()
 
-const navItems = [
-  { label: $t('layout.nav.about'), to: '/about' }
-]
+const navItems = [{ label: $t('layout.nav.about'), to: '/about' }]
 </script>
 ```
 
@@ -88,15 +86,16 @@ duplicate common phrases.
 
 If no matching common key exists, create a new one. Use dot-notation scoped to the section/component:
 
-| Context | Key pattern | Example |
-|---|---|---|
-| Global layout / header | `nav.{name}` | `nav.cta`, `nav.about` |
-| Global layout / footer | `footer.{name}` | `footer.copyright`, `footer.privacy` |
-| Page section | `{section}.{name}` | `hero.title`, `features.subtitle` |
-| Nested data | `{section}.{group}.{name}` | `features.cards.nails` |
-| Component-specific | `{componentName}.{name}` | `bookingForm.placeholder` |
+| Context                | Key pattern                | Example                              |
+| ---------------------- | -------------------------- | ------------------------------------ |
+| Global layout / header | `nav.{name}`               | `nav.cta`, `nav.about`               |
+| Global layout / footer | `footer.{name}`            | `footer.copyright`, `footer.privacy` |
+| Page section           | `{section}.{name}`         | `hero.title`, `features.subtitle`    |
+| Nested data            | `{section}.{group}.{name}` | `features.cards.nails`               |
+| Component-specific     | `{componentName}.{name}`   | `bookingForm.placeholder`            |
 
 **Rules:**
+
 - Keys are camelCase, no hyphens
 - Be descriptive: `hero.ctaButton` not `hero.btn1`
 - Group related keys under a shared parent: `steps.title`, `steps.register`, `steps.setup`
@@ -104,10 +103,10 @@ If no matching common key exists, create a new one. Use dot-notation scoped to t
 
 ### Step 3 — Decide where to put the key
 
-| Text belongs to... | File location |
-|---|---|
-| App-wide reusable phrase | `locales/{lang}.json` |
-| A specific page (e.g. `/`) | `locales/pages/index/{lang}.json` |
+| Text belongs to...                  | File location                     |
+| ----------------------------------- | --------------------------------- |
+| App-wide reusable phrase            | `locales/{lang}.json`             |
+| A specific page (e.g. `/`)          | `locales/pages/index/{lang}.json` |
 | A specific sub-page (e.g. `/about`) | `locales/pages/about/{lang}.json` |
 
 For layout-level text (header, footer nav items), use `locales/{lang}.json` — it's global.
@@ -156,6 +155,7 @@ These are human-readable and must also be translated:
 ## Internal links and routing
 
 This project uses nuxt-i18n-micro with `prefix_except_default` strategy:
+
 - English (default): `/about`, `/signup`, `/`
 - Russian: `/ru/about`, `/ru/signup`, `/ru/`
 - French: `/fr/about`, `/fr/signup`, `/fr/`
@@ -170,9 +170,7 @@ In `<script setup>` — add `$localePath` to the destructuring:
 <script setup lang="ts">
 const { $t, $localePath } = useI18n()
 
-const navItems = computed(() => [
-  { label: $t('nav.about'), to: $localePath('/about') }
-])
+const navItems = computed(() => [{ label: $t('nav.about'), to: $localePath('/about') }])
 </script>
 ```
 

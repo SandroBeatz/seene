@@ -10,7 +10,7 @@ const localeNames: Record<string, string> = {
 const currentLocale = computed(() => getLocale())
 
 const items = computed(() =>
-  getLocales().map(locale => ({
+  getLocales().map((locale) => ({
     label: localeNames[locale.code] ?? locale.code,
     onSelect() {
       switchLocale(locale.code)
@@ -20,11 +20,7 @@ const items = computed(() =>
 </script>
 
 <template>
-  <UDropdownMenu
-    :items="items"
-    :content="{ align: 'end' }"
-    :modal="false"
-  >
+  <UDropdownMenu :items="items" :content="{ align: 'end' }" :modal="false">
     <UButton
       :label="currentLocale"
       color="neutral"

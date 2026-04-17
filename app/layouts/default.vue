@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
 
-const { $t, $localePath } = useI18n()
+const { $ts, $localePath } = useI18n()
 
 const navItems = computed<NavigationMenuItem[]>(() => [
-  { label: $t('nav.about'), to: $localePath('/about') },
-  { label: $t('nav.privacy'), to: $localePath('/privacy') },
-  { label: $t('nav.terms'), to: $localePath('/terms') }
+  { label: $ts('nav.about'), to: $localePath('/about') },
+  { label: $ts('nav.privacy'), to: $localePath('/privacy') },
+  { label: $ts('nav.terms'), to: $localePath('/terms') }
 ])
 </script>
 
@@ -22,10 +22,10 @@ const navItems = computed<NavigationMenuItem[]>(() => [
       <template #right>
         <UButton
           :to="$localePath('/signup')"
-          :aria-label="$t('nav.cta')"
+          :aria-label="$ts('nav.cta')"
           color="primary"
           trailing-icon="i-lucide-arrow-right"
-          :label="$t('nav.cta')"
+          :label="$ts('nav.cta')"
         />
       </template>
     </UHeader>
