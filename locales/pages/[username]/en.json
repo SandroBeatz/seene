@@ -1,0 +1,34 @@
+{
+  "master": {
+    "tabs": {
+      "home": "Home",
+      "services": "Services",
+      "portfolio": "Portfolio",
+      "about": "About"
+    },
+    "home": {
+      "book": "Book Online",
+      "whatsapp": "WhatsApp",
+      "telegram": "Telegram"
+    },
+    "services": {
+      "title": "Services",
+      "duration": "min",
+      "currency_rub": "₽",
+      "empty": "No services listed yet."
+    },
+    "portfolio": {
+      "title": "Portfolio",
+      "empty": "No photos yet.",
+      "close": "Close photo"
+    },
+    "about": {
+      "title": "About Me",
+      "experience": "Experience",
+      "location": "Location",
+      "socials": "Social Media",
+      "instagramAria": "Instagram",
+      "tiktokAria": "TikTok"
+    }
+  }
+}

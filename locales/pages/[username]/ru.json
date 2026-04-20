@@ -1,0 +1,34 @@
+{
+  "master": {
+    "tabs": {
+      "home": "Главная",
+      "services": "Услуги",
+      "portfolio": "Портфолио",
+      "about": "Обо мне"
+    },
+    "home": {
+      "book": "Онлайн запись",
+      "whatsapp": "WhatsApp",
+      "telegram": "Telegram"
+    },
+    "services": {
+      "title": "Услуги",
+      "duration": "мин",
+      "currency_rub": "₽",
+      "empty": "Услуги пока не добавлены."
+    },
+    "portfolio": {
+      "title": "Портфолио",
+      "empty": "Фото пока нет.",
+      "close": "Закрыть фото"
+    },
+    "about": {
+      "title": "Обо мне",
+      "experience": "Опыт",
+      "location": "Город",
+      "socials": "Соцсети",
+      "instagramAria": "Instagram",
+      "tiktokAria": "TikTok"
+    }
+  }
+}
