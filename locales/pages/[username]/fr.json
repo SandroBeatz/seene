@@ -1,0 +1,34 @@
+{
+  "master": {
+    "tabs": {
+      "home": "Accueil",
+      "services": "Services",
+      "portfolio": "Portfolio",
+      "about": "À propos"
+    },
+    "home": {
+      "book": "Réserver en ligne",
+      "whatsapp": "WhatsApp",
+      "telegram": "Telegram"
+    },
+    "services": {
+      "title": "Services",
+      "duration": "min",
+      "currency_rub": "₽",
+      "empty": "Aucun service ajouté pour l'instant."
+    },
+    "portfolio": {
+      "title": "Portfolio",
+      "empty": "Pas encore de photos.",
+      "close": "Fermer la photo"
+    },
+    "about": {
+      "title": "À propos de moi",
+      "experience": "Expérience",
+      "location": "Ville",
+      "socials": "Réseaux sociaux",
+      "instagramAria": "Instagram",
+      "tiktokAria": "TikTok"
+    }
+  }
+}

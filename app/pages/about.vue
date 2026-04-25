@@ -12,7 +12,7 @@ const breadcrumbs = computed(() => [
     <UPageHero :title="$ts('title')" orientation="vertical" />
     <UPageSection>
       <UBreadcrumb :items="breadcrumbs" class="mb-6" />
-      <p class="text-(--ui-text-muted)">
+      <p class="text-muted">
         {{ $ts('placeholder') }}
       </p>
     </UPageSection>
