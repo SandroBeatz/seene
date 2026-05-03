@@ -1,0 +1,4 @@
+interface:
+  display_name: "i18n"
+  short_description: "Keep visible UI text translated across en, fr, and ru"
+  default_prompt: "Use $i18n before adding or editing visible UI text."

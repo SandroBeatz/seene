@@ -1,0 +1,4 @@
+interface:
+  display_name: "Nuxt UI"
+  short_description: "Use Nuxt UI components correctly in this Vue project"
+  default_prompt: "Use $nuxt-ui before changing Vue templates or UI components."

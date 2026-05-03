@@ -2,8 +2,8 @@ export default defineAppConfig({
   ui: {
     /*
      * Seene theme — Nuxt UI v3
-     * primary  → gold scale
-     * neutral  → warm scale (replaces default gray)
+     * primary  → gold scale (Amber 500 = #f59e0b)
+     * neutral  → warm scale (Zinc)
      */
     colors: {
       primary: 'gold',
@@ -11,7 +11,7 @@ export default defineAppConfig({
       olive: 'olive'
     },
 
-    /* ─── Global token overrides ─── */
+    /* ─── Header ─── */
     header: {
       slots: {
         root: 'h-(--ui-header-height) border-none fixed left-0 right-0 top-2 md:top-4 z-50 max-w-7xl mx-auto shadow-md rounded-2xl',
@@ -36,6 +36,35 @@ export default defineAppConfig({
             toggle: '-me-1.5'
           }
         }
+      }
+    },
+
+    /* ─── Buttons: 24px radius ─── */
+    button: {
+      slots: {
+        base: 'rounded-3xl'
+      }
+    },
+
+    /* ─── Inputs: 24px radius + amber focus ─── */
+    input: {
+      slots: {
+        root: 'rounded-3xl',
+        base: 'rounded-3xl'
+      }
+    },
+
+    /* ─── Cards: 24px radius ─── */
+    card: {
+      slots: {
+        root: 'rounded-3xl shadow-lg'
+      }
+    },
+
+    /* ─── Page card: 24px radius ─── */
+    pageCard: {
+      slots: {
+        root: 'rounded-3xl shadow-lg'
       }
     }
   }
