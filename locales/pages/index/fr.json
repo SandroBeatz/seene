@@ -31,7 +31,12 @@
   },
   "pain": {
     "title": "Arrêtez de perdre des réservations dans vos DMs",
-    "description": "Les professionnels perdent des heures chaque jour à messagerie les clients — confirmer les horaires, envoyer des rappels, attendre les réponses. Seene s'en charge pour vous."
+    "description": "Les professionnels perdent des heures chaque jour à envoyer des messages aux clients — confirmer les horaires, envoyer des rappels, attendre les réponses. Seene s'en charge pour vous.",
+    "bubbles": {
+      "time": "Ainura : à quelle heure demain ?",
+      "direct": "Nouveau message dans Direct",
+      "reminder": "N'oubliez pas votre rendez-vous à 14:00"
+    }
   },
   "steps": {
     "title": "Les clients réservent eux-mêmes — vous voyez tout dans votre tableau de bord",
@@ -87,6 +92,15 @@
       "services": "Liste des services avec prix",
       "booking": "Réservation en ligne pour des créneaux précis",
       "contacts": "Coordonnées et liens sociaux"
+    },
+    "mockup": {
+      "name": "Alina",
+      "role": "prothésiste ongulaire",
+      "services": {
+        "manicure": { "name": "Manucure", "price": "30 €", "duration": "60 min" },
+        "gel": { "name": "Pose de vernis gel", "price": "40 €", "duration": "90 min" },
+        "pedicure": { "name": "Pédicure", "price": "45 €", "duration": "75 min" }
+      }
     },
     "mockupCta": "Réserver"
   },

@@ -4,7 +4,15 @@
     "home": "Главная",
     "about": "О нас",
     "privacy": "Конфиденциальность",
-    "terms": "Условия"
+    "terms": "Условия",
+    "sections": {
+      "home": "Главная",
+      "audience": "Для кого",
+      "steps": "Как работает",
+      "features": "Функции",
+      "pricing": "Тарифы",
+      "faq": "FAQ"
+    }
   },
   "footer": {
     "copyright": "© Seene"

@@ -31,7 +31,12 @@
   },
   "pain": {
     "title": "Stop losing bookings in DMs and messengers",
-    "description": "Professionals waste hours every day messaging clients — confirming times, sending reminders, chasing replies. Seene handles all of that for you."
+    "description": "Professionals waste hours every day messaging clients — confirming times, sending reminders, chasing replies. Seene handles all of that for you.",
+    "bubbles": {
+      "time": "Ainura: what time tomorrow?",
+      "direct": "New message in Direct",
+      "reminder": "Don't forget your 2:00 PM appointment"
+    }
   },
   "steps": {
     "title": "Clients book themselves — you see everything in your dashboard",
@@ -87,6 +92,15 @@
       "services": "Service list with prices",
       "booking": "Online booking for specific times",
       "contacts": "Contact details and social links"
+    },
+    "mockup": {
+      "name": "Alina",
+      "role": "nail technician",
+      "services": {
+        "manicure": { "name": "Manicure", "price": "$30", "duration": "60 min" },
+        "gel": { "name": "Gel polish", "price": "$40", "duration": "90 min" },
+        "pedicure": { "name": "Pedicure", "price": "$45", "duration": "75 min" }
+      }
     },
     "mockupCta": "Book now"
   },
