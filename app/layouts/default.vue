@@ -73,10 +73,6 @@ if (import.meta.client) {
       />
 
       <template #right>
-        <div class="hidden sm:flex items-center gap-1.5">
-          <LocaleSwitcher />
-          <UColorModeButton />
-        </div>
         <UButton
           :to="$localePath('/signup')"
           :aria-label="$ts('nav.cta')"
