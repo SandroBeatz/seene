@@ -1,34 +1,158 @@
 {
   "hero": {
-    "title": "Plus de clients — moins de messages",
-    "description": "Créez votre page personnelle, ajoutez-la à Instagram et acceptez des réservations automatiquement",
+    "title": "Réservation en ligne et gestion des clients pour les professionnels de la beauté",
+    "description": "Seene donne aux professionnels une page de réservation personnelle, un calendrier pratique et une base clients. Les clients prennent rendez-vous via votre lien Instagram — sans appels ni messages.",
     "cta": "Commencer gratuitement",
+    "ctaSecondary": "Voir un exemple de page",
+    "microtext": "Sans paiement en ligne. Sans configuration complexe. Juste ce dont vous avez besoin chaque jour.",
+    "badge": "Pour les professionnels de la beauté",
     "imageAlt": "Tableau de bord Seene — réservation en ligne pour professionnels de la beauté"
   },
-  "features": {
-    "title": "Pour les professionnels de la beauté",
+  "audience": {
+    "title": "Conçu pour les professionnels de la beauté indépendants",
     "cards": {
-      "nails": "Prothésistes ongulaires",
-      "nailsDesc": "Réservation en ligne pour prothésistes ongulaires",
-      "brows": "Artistes sourcils",
-      "browsDesc": "Réservation en ligne pour artistes sourcils",
-      "lashes": "Poseurs de cils",
-      "lashesDesc": "Réservation en ligne pour poseurs de cils",
-      "makeup": "Maquilleurs",
-      "makeupDesc": "Réservation en ligne pour maquilleurs",
-      "pmu": "Maîtres PMU",
-      "pmuDesc": "Réservation en ligne pour maîtres PMU"
+      "nails": {
+        "title": "Prothésistes ongulaires",
+        "description": "Réservation en ligne et planning pour prothésistes ongulaires"
+      },
+      "brows": {
+        "title": "Artistes sourcils & poseurs de cils",
+        "description": "Gestion facile des rendez-vous pour les professionnels de la beauté"
+      },
+      "makeup": {
+        "title": "Maquilleurs",
+        "description": "Gérez les réservations sans applications de messagerie"
+      },
+      "pmu": {
+        "title": "Maîtres PMU & spécialistes du soin",
+        "description": "Votre page personnelle et réservation en ligne en un clic"
+      }
     }
   },
-  "steps": {
-    "title": "3 étapes vers votre premier client",
-    "register": "Inscrivez-vous",
-    "setup": "Configurez votre page",
-    "share": "Ajoutez le lien à Instagram"
+  "pain": {
+    "title": "Arrêtez de perdre des réservations dans vos DMs",
+    "description": "Les professionnels perdent des heures chaque jour à messagerie les clients — confirmer les horaires, envoyer des rappels, attendre les réponses. Seene s'en charge pour vous."
   },
-  "cta": {
-    "title": "Commencer gratuitement aujourd'hui",
-    "description": "Rejoignez les professionnels de la beauté qui acceptent déjà des réservations via Seene — sans allers-retours, sans clients manqués.",
-    "start": "Commencer gratuitement"
+  "steps": {
+    "title": "Les clients réservent eux-mêmes — vous voyez tout dans votre tableau de bord",
+    "step1": {
+      "title": "Créez votre profil Seene",
+      "description": "Ajoutez votre photo, vos services et votre planning en quelques minutes"
+    },
+    "step2": {
+      "title": "Ajoutez le lien à votre Instagram",
+      "description": "Un seul lien dans votre bio — les clients peuvent réserver eux-mêmes"
+    },
+    "step3": {
+      "title": "Le client ouvre votre page et choisit un créneau",
+      "description": "Il choisit un service, sélectionne un horaire et confirme — sans appels"
+    },
+    "step4": {
+      "title": "La réservation apparaît dans votre calendrier",
+      "description": "Tous vos rendez-vous en un seul endroit, sans messageries"
+    }
+  },
+  "features": {
+    "title": "Tout ce dont un professionnel a besoin",
+    "booking": {
+      "title": "Réservation en ligne",
+      "description": "Les clients réservent eux-mêmes via votre lien Instagram"
+    },
+    "calendar": {
+      "title": "Calendrier",
+      "description": "Tous vos rendez-vous dans un planning clair et simple"
+    },
+    "services": {
+      "title": "Services",
+      "description": "Listez vos services avec prix et durées pour vos clients"
+    },
+    "clients": {
+      "title": "Base clients",
+      "description": "Historique des réservations et coordonnées de tous vos clients"
+    },
+    "reminders": {
+      "title": "Rappels",
+      "description": "Rappels automatiques envoyés aux clients avant leur visite"
+    },
+    "stats": {
+      "title": "Statistiques",
+      "description": "Suivez vos revenus et le taux d'occupation de votre planning"
+    }
+  },
+  "personalPage": {
+    "title": "Une belle page pour vos réservations clients",
+    "description": "Une page professionnelle avec votre nom, portfolio et réservation en ligne. Partagez le lien — les clients réservent eux-mêmes.",
+    "features": {
+      "avatar": "Photo de profil et nom",
+      "services": "Liste des services avec prix",
+      "booking": "Réservation en ligne pour des créneaux précis",
+      "contacts": "Coordonnées et liens sociaux"
+    },
+    "mockupCta": "Réserver"
+  },
+  "comparison": {
+    "title": "Pas un CRM surchargé — un outil simple pour les professionnels",
+    "crmHeader": "CRM classiques",
+    "rows": {
+      "setup": { "crm": "Configuration complexe", "seene": "Prêt en 5 minutes" },
+      "payment": { "crm": "Payer pour chaque fonctionnalité", "seene": "Tout inclus" },
+      "manager": { "crm": "Nécessite un gestionnaire", "seene": "Vous gérez vous-même" },
+      "interface": { "crm": "Interface surchargée", "seene": "Seulement l'essentiel" },
+      "price": { "crm": "Trop cher pour un indépendant", "seene": "Démarrage gratuit" }
+    }
+  },
+  "pricing": {
+    "title": "Tarifs simples et transparents",
+    "free": {
+      "name": "Gratuit",
+      "price": "0 €",
+      "cta": "Commencer gratuitement",
+      "feature1": "Page de réservation personnelle",
+      "feature2": "Réservations en ligne des clients",
+      "feature3": "Calendrier des rendez-vous",
+      "feature4": "Jusqu'à 50 clients en base"
+    },
+    "pro": {
+      "name": "Pro",
+      "badge": "Populaire",
+      "price": "9 €",
+      "period": "/mois",
+      "cta": "Démarrer avec Pro",
+      "feature1": "Tout du plan gratuit",
+      "feature2": "Base clients illimitée",
+      "feature3": "Rappels automatiques",
+      "feature4": "Statistiques et analytique",
+      "feature5": "Support prioritaire",
+      "feature6": "Domaine personnalisé"
+    },
+    "notice": "Seene ne prend jamais de commission sur vos paiements"
+  },
+  "faq": {
+    "title": "Questions fréquentes",
+    "q1": {
+      "question": "Comment les clients pourront-ils réserver avec moi ?",
+      "answer": "Vous recevez un lien personnel (ex. seene.app/votre-nom). Ajoutez-le à votre bio Instagram — les clients peuvent choisir un créneau et réserver eux-mêmes."
+    },
+    "q2": {
+      "question": "Les clients doivent-ils installer une application ?",
+      "answer": "Non. Seene fonctionne dans le navigateur — pour vous et vos clients. Rien à installer."
+    },
+    "q3": {
+      "question": "Puis-je l'utiliser gratuitement ?",
+      "answer": "Oui, le plan gratuit inclut tout l'essentiel : votre page de réservation, la prise de rendez-vous en ligne et un calendrier. Le plan Pro ajoute des fonctionnalités avancées."
+    },
+    "q4": {
+      "question": "Comment configurer mon planning ?",
+      "answer": "Dans votre tableau de bord Seene, vous définissez vos jours et heures de travail ainsi que vos pauses. Les clients ne voient que les créneaux disponibles."
+    },
+    "q5": {
+      "question": "Que se passe-t-il avec mes données si je supprime mon compte ?",
+      "answer": "Vous pouvez exporter toutes vos données (clients, historique) avant de supprimer votre compte. Après suppression, toutes les données sont définitivement effacées de nos serveurs."
+    }
+  },
+  "finalCta": {
+    "title": "Créez votre page et commencez à accepter des réservations dès aujourd'hui",
+    "button": "Créer ma page professionnelle",
+    "microtext": "Gratuit. Sans carte. Votre page est prête en 5 minutes."
   }
 }

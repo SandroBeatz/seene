@@ -73,6 +73,13 @@
   --color-muted:    #71717a;
   --color-border:   rgba(60, 60, 60, 0.12);
 
+  /* Section backgrounds */
+  --section-bg-warm:  #f4f1ec;   /* hero, steps, pricing, personal-page */
+  --section-bg-white: #ffffff;   /* audience, features */
+  --section-bg-off:   #faf9f7;   /* soft white alternative */
+  --section-bg-dark:  #181818;   /* pain, crm-comparison, footer */
+  --color-heading:    #2c3e50;   /* section headings on light backgrounds */
+
   --radius-sm: 0.5rem;   /* 8px  — icon containers */
   --radius-md: 1rem;     /* 16px — cards */
   --radius-lg: 1.5rem;   /* 24px — buttons, inputs */

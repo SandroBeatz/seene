@@ -8,11 +8,20 @@ const navItems = computed<NavigationMenuItem[]>(() => [
   { label: $ts('nav.privacy'), to: $localePath('/privacy') },
   { label: $ts('nav.terms'), to: $localePath('/terms') }
 ])
+
+const scrollY = ref(0)
+const isScrolled = computed(() => scrollY.value > 40)
+
+if (import.meta.client) {
+  const onScroll = () => { scrollY.value = window.scrollY }
+  window.addEventListener('scroll', onScroll, { passive: true })
+  onUnmounted(() => window.removeEventListener('scroll', onScroll))
+}
 </script>
 
 <template>
   <UApp>
-    <UHeader>
+    <UHeader :class="isScrolled ? 'backdrop-blur-md !border-b !border-warm-200/50' : ''">
       <template #left>
         <NuxtLink :to="$localePath('/')">
           <AppLogo class="w-auto h-8 shrink-0" />

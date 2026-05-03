@@ -1,34 +1,158 @@
 {
   "hero": {
-    "title": "More clients — less messaging",
-    "description": "Create your personal page, add it to Instagram and accept bookings automatically",
+    "title": "Online booking and client management for beauty professionals",
+    "description": "Seene gives beauty professionals a personal booking page, a convenient calendar and a client database. Clients book via your Instagram link — no calls, no back-and-forth.",
     "cta": "Start for Free",
+    "ctaSecondary": "See a profile example",
+    "microtext": "No online payments. No extra setup. Just what you need every day.",
+    "badge": "For beauty professionals",
     "imageAlt": "Seene dashboard — online booking for beauty professionals"
   },
-  "features": {
-    "title": "For beauty industry professionals",
+  "audience": {
+    "title": "Built for independent beauty professionals",
     "cards": {
-      "nails": "Nail technicians",
-      "nailsDesc": "Online booking for nail technicians",
-      "brows": "Brow artists",
-      "browsDesc": "Online booking for brow artists",
-      "lashes": "Lash makers",
-      "lashesDesc": "Online booking for lash makers",
-      "makeup": "Makeup artists",
-      "makeupDesc": "Online booking for makeup artists",
-      "pmu": "PMU masters",
-      "pmuDesc": "Online booking for PMU masters"
+      "nails": {
+        "title": "Nail technicians",
+        "description": "Online booking and scheduling for nail techs and nail salons"
+      },
+      "brows": {
+        "title": "Brow artists & lash makers",
+        "description": "Easy appointment management for beauty professionals"
+      },
+      "makeup": {
+        "title": "Makeup artists",
+        "description": "Manage client bookings without messaging apps or calls"
+      },
+      "pmu": {
+        "title": "PMU masters & care specialists",
+        "description": "Your personal page and online booking in one click"
+      }
     }
   },
-  "steps": {
-    "title": "3 steps to your first client",
-    "register": "Sign up",
-    "setup": "Set up your page",
-    "share": "Add the link to Instagram"
+  "pain": {
+    "title": "Stop losing bookings in DMs and messengers",
+    "description": "Professionals waste hours every day messaging clients — confirming times, sending reminders, chasing replies. Seene handles all of that for you."
   },
-  "cta": {
-    "title": "Start for Free Today",
-    "description": "Join the beauty professionals already accepting bookings through Seene — no back-and-forth, no missed clients.",
-    "start": "Start for Free"
+  "steps": {
+    "title": "Clients book themselves — you see everything in your dashboard",
+    "step1": {
+      "title": "Create your Seene profile",
+      "description": "Add your photo, services and schedule in just a few minutes"
+    },
+    "step2": {
+      "title": "Add the link to your Instagram",
+      "description": "One link in your bio — clients can book themselves"
+    },
+    "step3": {
+      "title": "Client opens your page and picks a time",
+      "description": "They choose a service, pick a slot and confirm — no calls needed"
+    },
+    "step4": {
+      "title": "Booking appears in your calendar",
+      "description": "See all your appointments in one place, without messaging apps"
+    }
+  },
+  "features": {
+    "title": "Everything a professional needs to run their business",
+    "booking": {
+      "title": "Online booking",
+      "description": "Clients book themselves via your Instagram link"
+    },
+    "calendar": {
+      "title": "Calendar",
+      "description": "All your appointments in one clean schedule view"
+    },
+    "services": {
+      "title": "Services",
+      "description": "List your services with prices and durations for clients"
+    },
+    "clients": {
+      "title": "Client database",
+      "description": "Booking history and contact info for all your clients"
+    },
+    "reminders": {
+      "title": "Reminders",
+      "description": "Automatic reminders sent to clients before their visit"
+    },
+    "stats": {
+      "title": "Statistics",
+      "description": "Track your revenue and schedule occupancy"
+    }
+  },
+  "personalPage": {
+    "title": "A beautiful page for client bookings",
+    "description": "A professional page with your name, portfolio and online booking. Share the link — clients book themselves.",
+    "features": {
+      "avatar": "Profile photo and name",
+      "services": "Service list with prices",
+      "booking": "Online booking for specific times",
+      "contacts": "Contact details and social links"
+    },
+    "mockupCta": "Book now"
+  },
+  "comparison": {
+    "title": "Not a bloated CRM — a simple tool built for professionals",
+    "crmHeader": "Typical CRMs",
+    "rows": {
+      "setup": { "crm": "Complex setup", "seene": "Ready in 5 minutes" },
+      "payment": { "crm": "Pay for every feature", "seene": "Everything included" },
+      "manager": { "crm": "Requires a manager", "seene": "You're in control" },
+      "interface": { "crm": "Overwhelming interface", "seene": "Only what you need" },
+      "price": { "crm": "Too expensive for one person", "seene": "Free to start" }
+    }
+  },
+  "pricing": {
+    "title": "Simple, transparent pricing",
+    "free": {
+      "name": "Free",
+      "price": "$0",
+      "cta": "Start for Free",
+      "feature1": "Personal booking page",
+      "feature2": "Online booking from clients",
+      "feature3": "Appointment calendar",
+      "feature4": "Up to 50 clients in database"
+    },
+    "pro": {
+      "name": "Pro",
+      "badge": "Popular",
+      "price": "$9",
+      "period": "/month",
+      "cta": "Start with Pro",
+      "feature1": "Everything in Free",
+      "feature2": "Unlimited client database",
+      "feature3": "Automatic reminders",
+      "feature4": "Statistics & analytics",
+      "feature5": "Priority support",
+      "feature6": "Custom domain"
+    },
+    "notice": "Seene never takes a cut from your payments"
+  },
+  "faq": {
+    "title": "Frequently asked questions",
+    "q1": {
+      "question": "How will clients book with me?",
+      "answer": "You get a personal link (e.g. seene.app/your-name). Add it to your Instagram bio — clients can pick a time and book themselves."
+    },
+    "q2": {
+      "question": "Do clients need to install an app?",
+      "answer": "No. Seene works in the browser — for you and your clients. Nothing to install."
+    },
+    "q3": {
+      "question": "Can I use it for free?",
+      "answer": "Yes, the free plan includes all the essentials: your booking page, online scheduling and a calendar. The Pro plan adds advanced features."
+    },
+    "q4": {
+      "question": "How do I set up my schedule?",
+      "answer": "In your Seene dashboard you set your working days, hours and breaks. Clients only see the slots that are available."
+    },
+    "q5": {
+      "question": "What happens to my data if I delete my account?",
+      "answer": "You can export all your data (clients, booking history) before deleting your account. After deletion, all data is permanently removed from our servers."
+    }
+  },
+  "finalCta": {
+    "title": "Create your page and start accepting bookings today",
+    "button": "Create your professional page",
+    "microtext": "Free. No card required. Your page is ready in 5 minutes."
   }
 }
