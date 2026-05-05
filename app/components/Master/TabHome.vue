@@ -4,12 +4,14 @@ defineProps<{
   whatsapp?: string
   telegram?: string
 }>()
+
+const { $ts, $localePath } = useI18n()
 </script>
 
 <template>
   <div class="flex flex-col gap-3 py-2">
     <UButton
-      :to="`/${username}/book`"
+      :to="$localePath(`/${username}/book`)"
       icon="i-lucide-calendar"
       :label="$ts('master.home.book')"
       color="primary"
