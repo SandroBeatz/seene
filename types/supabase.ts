@@ -284,6 +284,7 @@ export type Database = {
       }
       otp_codes: {
         Row: {
+          attempts: number
           code: string
           created_at: string
           expires_at: string
@@ -292,6 +293,7 @@ export type Database = {
           used: boolean
         }
         Insert: {
+          attempts?: number
           code: string
           created_at?: string
           expires_at: string
@@ -300,6 +302,7 @@ export type Database = {
           used?: boolean
         }
         Update: {
+          attempts?: number
           code?: string
           created_at?: string
           expires_at?: string
