@@ -89,7 +89,7 @@ function goNext() {
       :services="data?.services ?? []"
       :loading="status === 'pending'"
     />
-    <BookingStep2Slots v-else-if="step === 2" />
+    <BookingStep2Slots v-else-if="step === 2" :username="username" />
     <BookingStep3Confirm v-else-if="step === 3" />
     <BookingStep4Success v-else />
   </BookingShell>

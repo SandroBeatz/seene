@@ -16,7 +16,11 @@
       },
       "slots": {
         "title": "Choose date and time",
-        "description": "Available slots will appear here."
+        "description": "Pick an available day and time for your visit.",
+        "noSlots": "No available times",
+        "nextAvailable": "Nearest available date: {date}",
+        "noUpcomingSlots": "There are no available times in the next 30 days.",
+        "goToNextAvailable": "Go to date"
       },
       "confirm": {
         "title": "Confirm booking",

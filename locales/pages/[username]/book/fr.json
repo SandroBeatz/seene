@@ -16,7 +16,11 @@
       },
       "slots": {
         "title": "Choisir la date et l'heure",
-        "description": "Les créneaux disponibles apparaîtront ici."
+        "description": "Choisissez un jour et une heure disponibles pour votre visite.",
+        "noSlots": "Aucun créneau disponible",
+        "nextAvailable": "Date disponible la plus proche : {date}",
+        "noUpcomingSlots": "Aucun créneau disponible dans les 30 prochains jours.",
+        "goToNextAvailable": "Aller à la date"
       },
       "confirm": {
         "title": "Confirmer la réservation",
