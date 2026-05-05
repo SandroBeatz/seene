@@ -49,14 +49,17 @@ const { data, status, error } = useQuery({
   query: () => $fetch<MasterPageData>(`/api/master/${username.value}`)
 })
 
-watch(error, (err) => {
-  if (err && (err as { statusCode?: number }).statusCode === 404) {
-    throw createError({ statusCode: 404, fatal: true })
-  }
-}, { immediate: true })
+watch(
+  error,
+  (err) => {
+    if (err && (err as { statusCode?: number }).statusCode === 404) {
+      throw createError({ statusCode: 404, fatal: true })
+    }
+  },
+  { immediate: true }
+)
 
 setTheme({ radius: '0.75rem' })
-
 
 const tabs = computed<TabsItem[]>(() => [
   { label: $ts('master.tabs.home'), slot: 'home', value: 'home' },
@@ -102,10 +105,7 @@ const tabs = computed<TabsItem[]>(() => [
         </template>
 
         <template #services>
-          <MasterTabServices
-            :categories="data.categories"
-            :services="data.services"
-          />
+          <MasterTabServices :categories="data.categories" :services="data.services" />
         </template>
 
         <template #portfolio>

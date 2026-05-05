@@ -183,21 +183,23 @@ async function getSlotsForDate({
   const dayStart = zonedTimeToUtc(date, '00:00:00', timezone)
   const dayEnd = zonedTimeToUtc(addDays(date, 1), '00:00:00', timezone)
 
-  const [{ data: availability, error: availabilityError }, { data: bookings, error: bookingsError }] =
-    await Promise.all([
-      supabase
-        .from('availability')
-        .select('start_time, end_time, slot_duration')
-        .eq('master_id', masterId)
-        .or(`specific_date.eq.${date},day_of_week.eq.${dayOfWeek}`),
-      supabase
-        .from('bookings')
-        .select('starts_at, ends_at')
-        .eq('master_id', masterId)
-        .neq('status', 'cancelled')
-        .lt('starts_at', dayEnd.toISOString())
-        .gt('ends_at', dayStart.toISOString())
-    ])
+  const [
+    { data: availability, error: availabilityError },
+    { data: bookings, error: bookingsError }
+  ] = await Promise.all([
+    supabase
+      .from('availability')
+      .select('start_time, end_time, slot_duration')
+      .eq('master_id', masterId)
+      .or(`specific_date.eq.${date},day_of_week.eq.${dayOfWeek}`),
+    supabase
+      .from('bookings')
+      .select('starts_at, ends_at')
+      .eq('master_id', masterId)
+      .neq('status', 'cancelled')
+      .lt('starts_at', dayEnd.toISOString())
+      .gt('ends_at', dayStart.toISOString())
+  ])
 
   if (availabilityError) {
     throw createError({ statusCode: 500, message: 'Failed to load availability' })

@@ -1,0 +1,28 @@
+{
+  "booking": {
+    "header": {
+      "back": "Retour",
+      "next": "Suivant",
+      "confirm": "Confirmer",
+      "progressLabel": "Étape {step} sur {total}"
+    },
+    "steps": {
+      "services": {
+        "title": "Choisir les services",
+        "description": "La sélection des services apparaîtra ici."
+      },
+      "slots": {
+        "title": "Choisir la date et l'heure",
+        "description": "Les créneaux disponibles apparaîtront ici."
+      },
+      "confirm": {
+        "title": "Confirmer la réservation",
+        "description": "Les coordonnées et la vérification SMS apparaîtront ici."
+      },
+      "success": {
+        "title": "Réservation confirmée",
+        "description": "L'écran de confirmation finale apparaîtra ici."
+      }
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "booking": {
+    "header": {
+      "back": "Back",
+      "next": "Next",
+      "confirm": "Confirm",
+      "progressLabel": "Step {step} of {total}"
+    },
+    "steps": {
+      "services": {
+        "title": "Choose services",
+        "description": "Service selection will appear here."
+      },
+      "slots": {
+        "title": "Choose date and time",
+        "description": "Available slots will appear here."
+      },
+      "confirm": {
+        "title": "Confirm booking",
+        "description": "Contact details and SMS verification will appear here."
+      },
+      "success": {
+        "title": "Booking confirmed",
+        "description": "The final confirmation screen will appear here."
+      }
+    }
+  }
+}

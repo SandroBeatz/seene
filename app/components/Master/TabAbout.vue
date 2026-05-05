@@ -41,11 +41,15 @@ defineProps<{
         <span class="text-xs text-(--ui-text-muted)">{{ $ts('master.about.workFormat') }}</span>
         <div v-if="worksAtPlace" class="flex items-center gap-3">
           <UIcon name="i-lucide-home" class="size-5 text-(--ui-text-muted) shrink-0" />
-          <span class="text-sm text-(--ui-text-highlighted)">{{ $ts('master.about.worksAtPlace') }}</span>
+          <span class="text-sm text-(--ui-text-highlighted)">{{
+            $ts('master.about.worksAtPlace')
+          }}</span>
         </div>
         <div v-if="canTravel" class="flex items-center gap-3">
           <UIcon name="i-lucide-car" class="size-5 text-(--ui-text-muted) shrink-0" />
-          <span class="text-sm text-(--ui-text-highlighted)">{{ $ts('master.about.canTravel') }}</span>
+          <span class="text-sm text-(--ui-text-highlighted)">{{
+            $ts('master.about.canTravel')
+          }}</span>
         </div>
       </div>
     </template>

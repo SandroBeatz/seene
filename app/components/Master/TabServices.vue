@@ -36,12 +36,14 @@ const groups = computed<ServiceGroup[]>(() => {
     return [{ category: null, items }]
   }
 
-  const grouped: ServiceGroup[] = cats.map(cat => ({
-    category: cat,
-    items: items.filter(s => s.category_id === cat.id)
-  })).filter(g => g.items.length > 0)
+  const grouped: ServiceGroup[] = cats
+    .map((cat) => ({
+      category: cat,
+      items: items.filter((s) => s.category_id === cat.id)
+    }))
+    .filter((g) => g.items.length > 0)
 
-  const uncategorised = items.filter(s => s.category_id === null)
+  const uncategorised = items.filter((s) => s.category_id === null)
   if (uncategorised.length > 0) {
     grouped.push({ category: null, items: uncategorised })
   }
@@ -68,8 +70,12 @@ const groups = computed<ServiceGroup[]>(() => {
         <div class="flex items-start justify-between gap-4 py-4">
           <div class="flex flex-col gap-1 min-w-0">
             <span class="font-medium text-(--ui-text-highlighted)">{{ service.name }}</span>
-            <span v-if="service.description" class="text-sm text-(--ui-text-muted)">{{ service.description }}</span>
-            <span class="text-xs text-(--ui-text-subtle)">{{ service.duration }} {{ $ts('master.services.duration') }}</span>
+            <span v-if="service.description" class="text-sm text-(--ui-text-muted)">{{
+              service.description
+            }}</span>
+            <span class="text-xs text-(--ui-text-subtle)"
+              >{{ service.duration }} {{ $ts('master.services.duration') }}</span
+            >
           </div>
           <span class="font-bold text-lg text-primary shrink-0 whitespace-nowrap">
             {{ service.price }} {{ $ts('master.services.currency_rub') }}
