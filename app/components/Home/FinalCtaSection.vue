@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const { $ts, $localePath } = useI18n()
+const config = useRuntimeConfig()
+const { $ts } = useI18n()
 
 const ctaSection = ref<HTMLElement>()
 const { isVisible: ctaVisible } = useScrollReveal(ctaSection)
@@ -15,7 +16,7 @@ const { isVisible: ctaVisible } = useScrollReveal(ctaSection)
         {{ $ts('finalCta.title') }}
       </h2>
       <UButton
-        :to="$localePath('/signup')"
+        :to="config.public.dashboardUrl"
         :label="$ts('finalCta.button')"
         size="xl"
         class="rounded-3xl mb-4"

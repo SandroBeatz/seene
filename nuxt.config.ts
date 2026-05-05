@@ -18,6 +18,12 @@ export default defineNuxtConfig({
     }
   },
 
+  runtimeConfig: {
+    public: {
+      dashboardUrl: import.meta.env.NUXT_PUBLIC_DASHBOARD_URL || 'https://master-seene.vercel.app'
+    }
+  },
+
   routeRules: {
     '/': { prerender: true }
   },
@@ -42,5 +48,5 @@ export default defineNuxtConfig({
     defaultLocale: 'en',
     translationDir: 'locales',
     meta: true
-  }
+  },
 })

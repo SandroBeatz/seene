@@ -1,3 +1,7 @@
+<script setup lang="ts">
+const config = useRuntimeConfig()
+</script>
+
 <template>
   <UDropdownMenu
     v-slot="{ open }"
@@ -24,7 +28,7 @@
       },
       {
         label: 'Dashboard',
-        to: 'https://dashboard-template.nuxt.dev/'
+        to: config.public.dashboardUrl
       },
       {
         label: 'Chat',

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const config = useRuntimeConfig()
 const { $ts, $localePath } = useI18n()
 </script>
 
@@ -56,7 +57,7 @@ const { $ts, $localePath } = useI18n()
 
         <div class="flex flex-wrap gap-3 mb-4">
           <UButton
-            :to="$localePath('/signup')"
+            :to="config.public.dashboardUrl"
             :label="$ts('hero.cta')"
             color="primary"
             size="xl"

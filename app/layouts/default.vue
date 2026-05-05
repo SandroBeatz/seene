@@ -2,6 +2,7 @@
 import type { NavigationMenuItem } from '@nuxt/ui'
 
 const route = useRoute()
+const config = useRuntimeConfig()
 const { $ts, $localePath, getLocales } = useI18n()
 
 const localeCodes = computed(() => getLocales().map((locale) => locale.code))
@@ -74,7 +75,7 @@ if (import.meta.client) {
 
       <template #right>
         <UButton
-          :to="$localePath('/signup')"
+          :to="config.public.dashboardUrl"
           :aria-label="$ts('nav.cta')"
           color="primary"
           trailing-icon="i-lucide-arrow-right"
@@ -98,7 +99,7 @@ if (import.meta.client) {
             <UColorModeButton />
           </div>
           <UButton
-            :to="$localePath('/signup')"
+            :to="config.public.dashboardUrl"
             :aria-label="$ts('nav.cta')"
             color="primary"
             trailing-icon="i-lucide-arrow-right"

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const { $ts, $localePath } = useI18n()
+const config = useRuntimeConfig()
+const { $ts } = useI18n()
 
 const pricingSection = ref<HTMLElement>()
 const { isVisible: pricingVisible } = useScrollReveal(pricingSection)
@@ -49,7 +50,7 @@ const proFeatures = computed(() => [
             </li>
           </ul>
           <UButton
-            :to="$localePath('/signup')"
+            :to="config.public.dashboardUrl"
             :label="$ts('pricing.free.cta')"
             color="neutral"
             variant="outline"
@@ -83,7 +84,7 @@ const proFeatures = computed(() => [
             </li>
           </ul>
           <UButton
-            :to="$localePath('/signup')"
+            :to="config.public.dashboardUrl"
             :label="$ts('pricing.pro.cta')"
             color="primary"
             block
