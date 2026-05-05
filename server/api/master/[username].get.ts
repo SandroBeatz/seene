@@ -2,6 +2,10 @@ export default defineEventHandler(async (event) => {
   const username = getRouterParam(event, 'username')
   const supabase = useSupabase()
 
+  if (!username) {
+    throw createError({ statusCode: 400, message: 'Username is required' })
+  }
+
   const { data: profile, error: profileError } = await supabase
     .from('master_profile')
     .select('id, user_id, first_name, last_name, username, specializations, city, works_at_place, can_travel')

@@ -21,6 +21,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     supabaseUrl: '',
     supabasePublishableKey: '',
+    supabaseServiceRoleKey: '',
     public: {
       dashboardUrl: import.meta.env.NUXT_PUBLIC_DASHBOARD_URL || 'https://master-seene.vercel.app'
     }
