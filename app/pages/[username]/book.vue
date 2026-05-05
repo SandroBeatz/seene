@@ -1,4 +1,31 @@
 <script setup lang="ts">
+interface MasterProfile {
+  username: string
+}
+
+interface ServiceCategory {
+  id: string
+  name: string
+  sort_order: number
+}
+
+interface MasterService {
+  id: string
+  category_id: string | null
+  name: string
+  description: string | null
+  duration: number
+  price: string
+  color: string
+  sort_order: number
+}
+
+interface MasterPageData {
+  profile: MasterProfile
+  categories: ServiceCategory[]
+  services: MasterService[]
+}
+
 definePageMeta({ layout: 'booking' })
 
 const route = useRoute()
@@ -6,6 +33,21 @@ const { $localePath } = useI18n()
 
 const username = computed(() => route.params.username as string)
 const bookingState = useBookingState(username.value)
+
+const { data, status, error } = useQuery({
+  key: () => ['master', username.value],
+  query: () => $fetch<MasterPageData>(`/api/master/${username.value}`)
+})
+
+watch(
+  error,
+  (err) => {
+    if (err && (err as { statusCode?: number }).statusCode === 404) {
+      throw createError({ statusCode: 404, fatal: true })
+    }
+  },
+  { immediate: true }
+)
 
 const step = computed(() => bookingState.value.step)
 const canProceed = computed(() => {
@@ -40,7 +82,13 @@ function goNext() {
 
 <template>
   <BookingShell :step="step" :can-proceed="canProceed" @back="goBack" @next="goNext">
-    <BookingStep1Services v-if="step === 1" />
+    <BookingStep1Services
+      v-if="step === 1"
+      :username="username"
+      :categories="data?.categories ?? []"
+      :services="data?.services ?? []"
+      :loading="status === 'pending'"
+    />
     <BookingStep2Slots v-else-if="step === 2" />
     <BookingStep3Confirm v-else-if="step === 3" />
     <BookingStep4Success v-else />

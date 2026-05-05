@@ -9,7 +9,10 @@
     "steps": {
       "services": {
         "title": "Choisir les services",
-        "description": "La sélection des services apparaîtra ici."
+        "description": "Sélectionnez un ou plusieurs services pour votre visite.",
+        "empty": "Aucun service n'est encore disponible à la réservation.",
+        "otherCategory": "Autres services",
+        "toggleService": "Sélectionner {service}"
       },
       "slots": {
         "title": "Choisir la date et l'heure",
@@ -23,6 +26,10 @@
         "title": "Réservation confirmée",
         "description": "L'écran de confirmation finale apparaîtra ici."
       }
+    },
+    "service": {
+      "duration": "{duration} min",
+      "price": "{price} ₽"
     }
   }
 }
