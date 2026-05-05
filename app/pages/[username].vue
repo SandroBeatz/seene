@@ -1,31 +1,62 @@
 <script setup lang="ts">
 import type { TabsItem } from '@nuxt/ui'
 
+interface MasterProfile {
+  id: string
+  user_id: string
+  first_name: string
+  last_name: string
+  username: string
+  specializations: string[]
+  city: string | null
+  works_at_place: boolean
+  can_travel: boolean
+}
+
+interface ServiceCategory {
+  id: string
+  name: string
+  sort_order: number
+}
+
+interface MasterService {
+  id: string
+  category_id: string | null
+  name: string
+  description: string | null
+  duration: number
+  price: string
+  color: string
+  sort_order: number
+}
+
+interface MasterPageData {
+  profile: MasterProfile
+  categories: ServiceCategory[]
+  services: MasterService[]
+}
+
 definePageMeta({ layout: 'master' })
 
 const { $ts } = useI18n()
 const { setTheme } = useMasterTheme()
+const route = useRoute()
 
-// Mock master data — will come from API based on route params in the future
-const master = {
-  username: 'anna_nails',
-  name: 'Анна Соколова',
-  specialty: 'Мастер ногтевого сервиса',
-  avatar: 'https://i.pravatar.cc/200?img=47',
-  bio: 'Профессиональный мастер маникюра и педикюра с 7-летним опытом. Работаю в Москве, делаю красивые и долговечные ногти. Использую только проверенные материалы от ведущих брендов.',
-  location: 'Москва, м. Арбатская',
-  experience: '7 лет',
-  whatsapp: '79991234567',
-  telegram: 'anna_nails',
-  instagram: 'anna_nails',
-  theme: {
-    primary: 'pink',
-    neutral: 'slate',
-    radius: '0.75rem'
+const username = computed(() => route.params.username as string)
+
+const { data, status, error } = useQuery({
+  key: () => ['master', username.value],
+  query: () => $fetch<MasterPageData>(`/api/master/${username.value}`)
+})
+
+watch(error, (err) => {
+  if (err && (err as { statusCode?: number }).statusCode === 404) {
+    throw createError({ statusCode: 404, fatal: true })
   }
-}
+}, { immediate: true })
 
-setTheme(master.theme)
+setTheme({ radius: '0.75rem' })
+
 
 const tabs = computed<TabsItem[]>(() => [
   { label: $ts('master.tabs.home'), slot: 'home', value: 'home' },
@@ -37,44 +68,59 @@ const tabs = computed<TabsItem[]>(() => [
 
 <template>
   <div class="max-w-lg mx-auto min-h-screen">
-    <MasterProfileHeader
-      :name="master.name"
-      :specialty="master.specialty"
-      :avatar="master.avatar"
-    />
+    <template v-if="status === 'pending'">
+      <div class="flex flex-col items-center gap-3 py-6 px-4">
+        <USkeleton class="size-24 rounded-full" />
+        <div class="flex flex-col items-center gap-2">
+          <USkeleton class="h-6 w-40" />
+          <USkeleton class="h-4 w-28" />
+        </div>
+      </div>
+      <div class="px-4 flex flex-col gap-3 pt-4">
+        <USkeleton class="h-12 w-full rounded-lg" />
+        <USkeleton class="h-12 w-full rounded-lg" />
+      </div>
+    </template>
 
-    <UTabs
-      :items="tabs"
-      default-value="home"
-      variant="link"
-      color="primary"
-      class="w-full"
-      :ui="{ list: 'border-b border-(--ui-border)', content: 'pt-4 px-4 pb-8' }"
-    >
-      <template #home>
-        <MasterTabHome
-          :username="master.username"
-          :whatsapp="master.whatsapp"
-          :telegram="master.telegram"
-        />
-      </template>
+    <template v-else-if="data">
+      <MasterProfileHeader
+        :first-name="data.profile.first_name"
+        :last-name="data.profile.last_name"
+        :specializations="data.profile.specializations"
+      />
 
-      <template #services>
-        <MasterTabServices />
-      </template>
+      <UTabs
+        :items="tabs"
+        default-value="home"
+        variant="link"
+        color="primary"
+        class="w-full"
+        :ui="{ list: 'border-b border-(--ui-border)', content: 'pt-4 px-4 pb-8' }"
+      >
+        <template #home>
+          <MasterTabHome :username="data.profile.username" />
+        </template>
 
-      <template #portfolio>
-        <MasterTabPortfolio />
-      </template>
+        <template #services>
+          <MasterTabServices
+            :categories="data.categories"
+            :services="data.services"
+          />
+        </template>
 
-      <template #about>
-        <MasterTabAbout
-          :bio="master.bio"
-          :experience="master.experience"
-          :location="master.location"
-          :instagram="master.instagram"
-        />
-      </template>
-    </UTabs>
+        <template #portfolio>
+          <MasterTabPortfolio />
+        </template>
+
+        <template #about>
+          <MasterTabAbout
+            :specializations="data.profile.specializations"
+            :location="data.profile.city ?? undefined"
+            :works-at-place="data.profile.works_at_place"
+            :can-travel="data.profile.can_travel"
+          />
+        </template>
+      </UTabs>
+    </template>
   </div>
 </template>

@@ -24,8 +24,7 @@ In templates, use `$t` directly:
 In `<script setup>`, destructure from `useI18n()`:
 
 ```vue
-const { $t } = useI18n()
-const navItems = computed(() => [{ label: $t('layout.nav.about') }])
+const { $t } = useI18n() const navItems = computed(() => [{ label: $t('layout.nav.about') }])
 ```
 
 Use `computed()` for arrays, objects, labels, and props that should update when the locale changes.
@@ -73,8 +72,8 @@ Use `$localePath()` for every internal route:
 In script setup:
 
 ```vue
-const { $t, $localePath } = useI18n()
-const navItems = computed(() => [{ label: $t('nav.about'), to: $localePath('/about') }])
+const { $t, $localePath } = useI18n() const navItems = computed(() => [{ label: $t('nav.about'), to:
+$localePath('/about') }])
 ```
 
 External URLs, `mailto:`, and `tel:` links do not use `$localePath()`.

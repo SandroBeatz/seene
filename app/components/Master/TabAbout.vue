@@ -1,30 +1,32 @@
 <script setup lang="ts">
 defineProps<{
-  bio: string
-  experience: string
-  location: string
+  bio?: string
+  experience?: string
+  location?: string
   instagram?: string
   tiktok?: string
+  specializations?: string[]
+  worksAtPlace?: boolean
+  canTravel?: boolean
 }>()
 </script>
 
 <template>
   <div class="flex flex-col gap-6 py-2">
-    <!-- Bio -->
-    <p class="text-(--ui-text) leading-relaxed">{{ bio }}</p>
+    <p v-if="bio" class="text-(--ui-text) leading-relaxed">{{ bio }}</p>
 
-    <USeparator />
+    <USeparator v-if="bio" />
 
-    <!-- Experience & Location -->
     <div class="flex flex-col gap-3">
-      <div class="flex items-center gap-3">
+      <div v-if="experience" class="flex items-center gap-3">
         <UIcon name="i-lucide-briefcase" class="size-5 text-(--ui-text-muted) shrink-0" />
         <div class="flex flex-col">
           <span class="text-xs text-(--ui-text-muted)">{{ $ts('master.about.experience') }}</span>
           <span class="text-sm font-medium text-(--ui-text-highlighted)">{{ experience }}</span>
         </div>
       </div>
-      <div class="flex items-center gap-3">
+
+      <div v-if="location" class="flex items-center gap-3">
         <UIcon name="i-lucide-map-pin" class="size-5 text-(--ui-text-muted) shrink-0" />
         <div class="flex flex-col">
           <span class="text-xs text-(--ui-text-muted)">{{ $ts('master.about.location') }}</span>
@@ -33,7 +35,21 @@ defineProps<{
       </div>
     </div>
 
-    <!-- Socials -->
+    <template v-if="worksAtPlace || canTravel">
+      <USeparator />
+      <div class="flex flex-col gap-3">
+        <span class="text-xs text-(--ui-text-muted)">{{ $ts('master.about.workFormat') }}</span>
+        <div v-if="worksAtPlace" class="flex items-center gap-3">
+          <UIcon name="i-lucide-home" class="size-5 text-(--ui-text-muted) shrink-0" />
+          <span class="text-sm text-(--ui-text-highlighted)">{{ $ts('master.about.worksAtPlace') }}</span>
+        </div>
+        <div v-if="canTravel" class="flex items-center gap-3">
+          <UIcon name="i-lucide-car" class="size-5 text-(--ui-text-muted) shrink-0" />
+          <span class="text-sm text-(--ui-text-highlighted)">{{ $ts('master.about.canTravel') }}</span>
+        </div>
+      </div>
+    </template>
+
     <template v-if="instagram || tiktok">
       <USeparator />
       <div class="flex flex-col gap-2">

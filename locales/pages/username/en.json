@@ -28,7 +28,21 @@
       "location": "Location",
       "socials": "Social Media",
       "instagramAria": "Instagram",
-      "tiktokAria": "TikTok"
+      "tiktokAria": "TikTok",
+      "workFormat": "Work format",
+      "worksAtPlace": "Accepts clients at own location",
+      "canTravel": "Travels to client"
     }
+  },
+  "specializations": {
+    "makeup": "Make-up",
+    "hair": "Hair",
+    "nails": "Nails",
+    "barber": "Barber",
+    "massage": "Massage",
+    "tattoo_piercing": "Tattoo and piercing",
+    "depilation": "Depilation",
+    "cosmetology": "Cosmetology",
+    "brows_lashes": "Brows and eyelashes"
   }
 }

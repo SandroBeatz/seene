@@ -28,7 +28,21 @@
       "location": "Ville",
       "socials": "Réseaux sociaux",
       "instagramAria": "Instagram",
-      "tiktokAria": "TikTok"
+      "tiktokAria": "TikTok",
+      "workFormat": "Format de travail",
+      "worksAtPlace": "Reçoit les clients à son adresse",
+      "canTravel": "Se déplace chez le client"
     }
+  },
+  "specializations": {
+    "makeup": "Maquillage",
+    "hair": "Coiffure",
+    "nails": "Ongles",
+    "barber": "Barbier",
+    "massage": "Massage",
+    "tattoo_piercing": "Tatouage & Piercing",
+    "depilation": "Dépilation",
+    "cosmetology": "Cosmétologie",
+    "brows_lashes": "Sourcils & Cils"
   }
 }

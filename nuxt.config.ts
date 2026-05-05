@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ['@nuxt/eslint', '@nuxt/ui', 'nuxt-i18n-micro'],
+  modules: ['@nuxt/eslint', '@nuxt/ui', 'nuxt-i18n-micro', '@pinia/nuxt', '@pinia/colada-nuxt'],
 
   devtools: {
     enabled: true
@@ -19,6 +19,8 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+    supabaseUrl: '',
+    supabasePublishableKey: '',
     public: {
       dashboardUrl: import.meta.env.NUXT_PUBLIC_DASHBOARD_URL || 'https://master-seene.vercel.app'
     }
@@ -48,5 +50,5 @@ export default defineNuxtConfig({
     defaultLocale: 'en',
     translationDir: 'locales',
     meta: true
-  },
+  }
 })

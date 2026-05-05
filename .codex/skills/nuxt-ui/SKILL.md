@@ -18,25 +18,25 @@ Look for the component name, props, slots, variants, and `ui` override slots.
 
 ## Component Map
 
-| Need | Prefer |
-| --- | --- |
-| Button or CTA | `UButton` |
-| Text input | `UInput` |
-| Textarea | `UTextarea` |
-| Select or dropdown | `USelect`, `USelectMenu` |
-| Checkbox or radio | `UCheckbox`, `URadioGroup` |
-| Form and fields | `UForm`, `UFormField` |
-| Modal or drawer | `UModal`, `UDrawer` |
-| Toast | `useToast()` and Nuxt UI toast components |
-| Tabs | `UTabs` |
-| Badge | `UBadge` |
-| Avatar | `UAvatar`, `UAvatarGroup` |
-| Table | `UTable` |
-| Pagination | `UPagination` |
-| Accordion | `UAccordion` |
-| Tooltip or popover | `UTooltip`, `UPopover` |
-| Separator | `USeparator` |
-| App root | `UApp` |
+| Need               | Prefer                                    |
+| ------------------ | ----------------------------------------- |
+| Button or CTA      | `UButton`                                 |
+| Text input         | `UInput`                                  |
+| Textarea           | `UTextarea`                               |
+| Select or dropdown | `USelect`, `USelectMenu`                  |
+| Checkbox or radio  | `UCheckbox`, `URadioGroup`                |
+| Form and fields    | `UForm`, `UFormField`                     |
+| Modal or drawer    | `UModal`, `UDrawer`                       |
+| Toast              | `useToast()` and Nuxt UI toast components |
+| Tabs               | `UTabs`                                   |
+| Badge              | `UBadge`                                  |
+| Avatar             | `UAvatar`, `UAvatarGroup`                 |
+| Table              | `UTable`                                  |
+| Pagination         | `UPagination`                             |
+| Accordion          | `UAccordion`                              |
+| Tooltip or popover | `UTooltip`, `UPopover`                    |
+| Separator          | `USeparator`                              |
+| App root           | `UApp`                                    |
 
 Use custom markup only when Nuxt UI does not provide the needed behavior or the existing project
 pattern is clearly custom.

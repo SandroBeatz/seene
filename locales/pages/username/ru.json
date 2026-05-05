@@ -28,7 +28,21 @@
       "location": "Город",
       "socials": "Соцсети",
       "instagramAria": "Instagram",
-      "tiktokAria": "TikTok"
+      "tiktokAria": "TikTok",
+      "workFormat": "Формат работы",
+      "worksAtPlace": "Принимает клиентов у себя",
+      "canTravel": "Выезжает к клиенту"
     }
+  },
+  "specializations": {
+    "makeup": "Макияж",
+    "hair": "Волосы",
+    "nails": "Ногти",
+    "barber": "Барбер",
+    "massage": "Массаж",
+    "tattoo_piercing": "Тату и пирсинг",
+    "depilation": "Депиляция",
+    "cosmetology": "Косметология",
+    "brows_lashes": "Брови и ресницы"
   }
 }

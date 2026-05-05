@@ -1,8 +1,8 @@
 <script setup lang="ts">
 defineProps<{
   username: string
-  whatsapp: string
-  telegram: string
+  whatsapp?: string
+  telegram?: string
 }>()
 </script>
 
@@ -17,6 +17,7 @@ defineProps<{
       block
     />
     <UButton
+      v-if="whatsapp"
       :to="`https://wa.me/${whatsapp}`"
       target="_blank"
       rel="noopener noreferrer"
@@ -28,6 +29,7 @@ defineProps<{
       block
     />
     <UButton
+      v-if="telegram"
       :to="`https://t.me/${telegram}`"
       target="_blank"
       rel="noopener noreferrer"
