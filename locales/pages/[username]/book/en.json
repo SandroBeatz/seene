@@ -24,7 +24,18 @@
       },
       "confirm": {
         "title": "Confirm booking",
-        "description": "Contact details and SMS verification will appear here."
+        "description": "Review your booking and enter your phone number.",
+        "total": "Total",
+        "addNote": "Add a note",
+        "editNote": "Edit note",
+        "noteModalTitle": "Add a note",
+        "notePlaceholder": "E.g.: gel allergy, prefer natural style...",
+        "saveNote": "Save",
+        "cancel": "Cancel",
+        "phone": "Phone number",
+        "phonePlaceholder": "+7 (___) ___-__-__",
+        "welcome": "Welcome back, {name}! 👋",
+        "creatingBooking": "Creating your booking..."
       },
       "success": {
         "title": "Booking confirmed",
@@ -34,6 +45,20 @@
     "service": {
       "duration": "{duration} min",
       "price": "{price} ₽"
+    },
+    "sms": {
+      "title": "Enter SMS code",
+      "codeSentTo": "Code sent to {phone}",
+      "resendIn": "Resend in {countdown}",
+      "resend": "Resend code",
+      "invalidCode": "Invalid code, please try again",
+      "expiredCode": "Code has expired, please request a new one",
+      "tooManyAttempts": "Too many attempts, please request a new code",
+      "sendFailed": "Failed to send SMS, please try again"
+    },
+    "errors": {
+      "bookingFailed": "Failed to create booking, please try again",
+      "slotUnavailable": "This time slot is no longer available, please choose another"
     }
   }
 }

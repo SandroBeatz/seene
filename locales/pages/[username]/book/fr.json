@@ -24,7 +24,18 @@
       },
       "confirm": {
         "title": "Confirmer la réservation",
-        "description": "Les coordonnées et la vérification SMS apparaîtront ici."
+        "description": "Vérifiez les détails et entrez votre numéro de téléphone.",
+        "total": "Total",
+        "addNote": "Ajouter une note",
+        "editNote": "Modifier la note",
+        "noteModalTitle": "Ajouter une note",
+        "notePlaceholder": "Ex. : allergie au gel, préfère le style naturel...",
+        "saveNote": "Enregistrer",
+        "cancel": "Annuler",
+        "phone": "Numéro de téléphone",
+        "phonePlaceholder": "+7 (___) ___-__-__",
+        "welcome": "Bon retour, {name} ! 👋",
+        "creatingBooking": "Création de votre réservation..."
       },
       "success": {
         "title": "Réservation confirmée",
@@ -34,6 +45,20 @@
     "service": {
       "duration": "{duration} min",
       "price": "{price} ₽"
+    },
+    "sms": {
+      "title": "Entrez le code SMS",
+      "codeSentTo": "Code envoyé au {phone}",
+      "resendIn": "Renvoyer dans {countdown}",
+      "resend": "Renvoyer le code",
+      "invalidCode": "Code invalide, veuillez réessayer",
+      "expiredCode": "Le code a expiré, veuillez en demander un nouveau",
+      "tooManyAttempts": "Trop de tentatives, veuillez demander un nouveau code",
+      "sendFailed": "Échec de l'envoi du SMS, veuillez réessayer"
+    },
+    "errors": {
+      "bookingFailed": "Impossible de créer la réservation, veuillez réessayer",
+      "slotUnavailable": "Ce créneau n'est plus disponible, veuillez en choisir un autre"
     }
   }
 }

@@ -34,6 +34,8 @@ const { $localePath } = useI18n()
 const username = computed(() => route.params.username as string)
 const bookingState = useBookingState(username.value)
 
+const step3Ref = ref<{ triggerConfirm: () => void } | null>(null)
+
 const { data, status, error } = useQuery({
   key: () => ['master', username.value],
   query: () => $fetch<MasterPageData>(`/api/master/${username.value}`)
@@ -57,7 +59,7 @@ const canProceed = computed(() => {
     case 2:
       return Boolean(bookingState.value.selectedDate && bookingState.value.selectedSlot)
     case 3:
-      return Boolean(bookingState.value.phone && bookingState.value.otpToken)
+      return bookingState.value.phone.replace(/\D/g, '').length >= 10
     default:
       return false
   }
@@ -76,6 +78,11 @@ function goNext() {
     return
   }
 
+  if (bookingState.value.step === 3) {
+    step3Ref.value?.triggerConfirm()
+    return
+  }
+
   bookingState.value.step = (bookingState.value.step + 1) as 1 | 2 | 3 | 4
 }
 </script>
@@ -90,7 +97,12 @@ function goNext() {
       :loading="status === 'pending'"
     />
     <BookingStep2Slots v-else-if="step === 2" :username="username" />
-    <BookingStep3Confirm v-else-if="step === 3" />
+    <BookingStep3Confirm
+      v-else-if="step === 3"
+      ref="step3Ref"
+      :username="username"
+      :services="data?.services ?? []"
+    />
     <BookingStep4Success v-else />
   </BookingShell>
 </template>
