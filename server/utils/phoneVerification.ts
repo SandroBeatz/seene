@@ -1,4 +1,4 @@
-import { createHmac, randomBytes } from 'node:crypto'
+import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto'
 
 const PHONE_RE = /^\d{10,15}$/
 const TOKEN_TTL_SECONDS = 15 * 60
@@ -35,8 +35,55 @@ export function createPhoneVerificationToken(phone: string) {
   return `${encodedPayload}.${signature}`
 }
 
+export function verifyPhoneVerificationToken(token: unknown, phone: string) {
+  if (typeof token !== 'string') {
+    return false
+  }
+
+  const [encodedPayload, signature] = token.split('.')
+
+  if (!encodedPayload || !signature || !isValidSignature(encodedPayload, signature)) {
+    return false
+  }
+
+  const payload = parsePayload(encodedPayload)
+
+  return Boolean(payload && payload.phone === phone && payload.exp > Math.floor(Date.now() / 1000))
+}
+
 function sign(value: string) {
   return createHmac('sha256', getTokenSecret()).update(value).digest('base64url')
+}
+
+function isValidSignature(value: string, signature: string) {
+  const expected = sign(value)
+  const expectedBuffer = Buffer.from(expected)
+  const signatureBuffer = Buffer.from(signature)
+
+  return (
+    expectedBuffer.length === signatureBuffer.length &&
+    timingSafeEqual(expectedBuffer, signatureBuffer)
+  )
+}
+
+function parsePayload(value: string): PhoneVerificationPayload | null {
+  try {
+    const payload = JSON.parse(Buffer.from(value, 'base64url').toString('utf8')) as Partial<
+      PhoneVerificationPayload
+    >
+
+    if (
+      typeof payload.phone === 'string' &&
+      typeof payload.exp === 'number' &&
+      typeof payload.nonce === 'string'
+    ) {
+      return payload as PhoneVerificationPayload
+    }
+  } catch {
+    return null
+  }
+
+  return null
 }
 
 function getTokenSecret() {

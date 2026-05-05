@@ -425,6 +425,16 @@ export type Database = {
         Args: { p_username: string }
         Returns: boolean
       }
+      create_booking: {
+        Args: {
+          p_note?: string
+          p_phone: string
+          p_service_ids: string[]
+          p_starts_at: string
+          p_username: string
+        }
+        Returns: Json
+      }
       find_client_name_by_phone: {
         Args: { master_user_id: string; phone: string }
         Returns: string
