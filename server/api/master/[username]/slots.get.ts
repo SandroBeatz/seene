@@ -174,9 +174,7 @@ async function getSlotsForDate({
 
   const bookingRows: AppointmentRow[] = (bookings ?? []).map((b) => ({
     start_at: b.starts_at,
-    duration: Math.round(
-      (new Date(b.ends_at).getTime() - new Date(b.starts_at).getTime()) / 60000
-    )
+    duration: Math.round((new Date(b.ends_at).getTime() - new Date(b.starts_at).getTime()) / 60000)
   }))
 
   return buildFreeSlots({
@@ -235,9 +233,7 @@ async function findNextAvailableDate({
 
   const bookingRows: AppointmentRow[] = (bookings ?? []).map((b) => ({
     start_at: b.starts_at,
-    duration: Math.round(
-      (new Date(b.ends_at).getTime() - new Date(b.starts_at).getTime()) / 60000
-    )
+    duration: Math.round((new Date(b.ends_at).getTime() - new Date(b.starts_at).getTime()) / 60000)
   }))
 
   for (const date of dates) {
@@ -278,4 +274,3 @@ async function findNextAvailableDate({
 
   return null
 }
-

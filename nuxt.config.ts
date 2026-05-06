@@ -58,5 +58,5 @@ export default defineNuxtConfig({
     defaultLocale: 'en',
     translationDir: 'locales',
     meta: true
-  },
+  }
 })

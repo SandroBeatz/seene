@@ -75,22 +75,24 @@ export default defineEventHandler(async (event) => {
   const rangeStart = zonedTimeToUtc(from, '00:00:00', timezone)
   const rangeEnd = zonedTimeToUtc(addDays(to, 1), '00:00:00', timezone)
 
-  const [{ data: appointments, error: appointmentsError }, { data: timeBlocks, error: timeBlocksError }] =
-    await Promise.all([
-      supabase
-        .from('appointments')
-        .select('start_at, duration')
-        .eq('user_id', profile.user_id)
-        .neq('status', 'cancelled')
-        .lt('start_at', rangeEnd.toISOString())
-        .gte('start_at', rangeStart.toISOString()),
-      supabase
-        .from('time_block')
-        .select('start_at, end_at, all_day')
-        .eq('user_id', profile.user_id)
-        .lt('start_at', rangeEnd.toISOString())
-        .gt('end_at', rangeStart.toISOString())
-    ])
+  const [
+    { data: appointments, error: appointmentsError },
+    { data: timeBlocks, error: timeBlocksError }
+  ] = await Promise.all([
+    supabase
+      .from('appointments')
+      .select('start_at, duration')
+      .eq('user_id', profile.user_id)
+      .neq('status', 'cancelled')
+      .lt('start_at', rangeEnd.toISOString())
+      .gte('start_at', rangeStart.toISOString()),
+    supabase
+      .from('time_block')
+      .select('start_at, end_at, all_day')
+      .eq('user_id', profile.user_id)
+      .lt('start_at', rangeEnd.toISOString())
+      .gt('end_at', rangeStart.toISOString())
+  ])
 
   if (appointmentsError) {
     throw createError({ statusCode: 500, message: 'Failed to load appointments' })
@@ -150,4 +152,3 @@ function buildDateRange(from: string, to: string): string[] {
 
   return dates
 }
-

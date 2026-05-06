@@ -68,9 +68,9 @@ function isValidSignature(value: string, signature: string) {
 
 function parsePayload(value: string): PhoneVerificationPayload | null {
   try {
-    const payload = JSON.parse(Buffer.from(value, 'base64url').toString('utf8')) as Partial<
-      PhoneVerificationPayload
-    >
+    const payload = JSON.parse(
+      Buffer.from(value, 'base64url').toString('utf8')
+    ) as Partial<PhoneVerificationPayload>
 
     if (
       typeof payload.phone === 'string' &&

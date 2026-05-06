@@ -53,7 +53,10 @@ export default defineEventHandler(async (event) => {
   const note = parseNote(body.note)
 
   if (!verifyPhoneVerificationToken(body.otp_token, phone)) {
-    throw createError({ statusCode: 401, message: 'Phone verification token is invalid or expired' })
+    throw createError({
+      statusCode: 401,
+      message: 'Phone verification token is invalid or expired'
+    })
   }
 
   const supabase = useServiceSupabase()
