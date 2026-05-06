@@ -32,6 +32,12 @@ export default defineNuxtConfig({
     '/': { prerender: true }
   },
 
+  nitro: {
+    prerender: {
+      ignore: [/^\/(fr|ru)\/(en|fr|ru)(\/|$)/]
+    }
+  },
+
   compatibilityDate: '2025-01-15',
 
   eslint: {
