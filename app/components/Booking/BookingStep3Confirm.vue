@@ -6,6 +6,16 @@ interface ServiceItem {
   price: string
 }
 
+interface BookingResponse {
+  booking: {
+    id: string
+    starts_at: string
+    ends_at: string
+    services: BookingService[]
+    master: BookingMaster
+  }
+}
+
 const props = defineProps<{
   username: string
   services: ServiceItem[]
@@ -22,9 +32,7 @@ const selectedServices = computed(() =>
   props.services.filter((s) => bookingState.value.selectedServiceIds.includes(s.id))
 )
 
-const totalDuration = computed(() =>
-  selectedServices.value.reduce((sum, s) => sum + s.duration, 0)
-)
+const totalDuration = computed(() => selectedServices.value.reduce((sum, s) => sum + s.duration, 0))
 
 const totalPrice = computed(() =>
   selectedServices.value.reduce((sum, s) => sum + parseFloat(s.price), 0)
@@ -60,11 +68,17 @@ function saveNote() {
 
 const phoneInput = ref(bookingState.value.phone)
 const clientFirstName = ref<string | null>(null)
+const isNewClient = ref(false)
+const firstNameInput = ref('')
+const lastNameInput = ref('')
 let checkPhoneDebounce: ReturnType<typeof setTimeout> | null = null
 
 watch(phoneInput, (val) => {
   bookingState.value.phone = val
   clientFirstName.value = null
+  isNewClient.value = false
+  firstNameInput.value = ''
+  lastNameInput.value = ''
 
   if (checkPhoneDebounce) clearTimeout(checkPhoneDebounce)
 
@@ -78,11 +92,10 @@ async function checkPhone(phone: string) {
   try {
     const result = await $fetch<{ clientExists: boolean; firstName?: string }>(
       '/api/auth/phone/check',
-      { query: { phone } }
+      { query: { phone, username: props.username } }
     )
-    if (result.clientExists && result.firstName) {
-      clientFirstName.value = result.firstName
-    }
+    isNewClient.value = !result.clientExists
+    clientFirstName.value = result.clientExists ? (result.firstName ?? null) : null
   } catch {
     // greeting is optional — silent fail
   }
@@ -109,6 +122,11 @@ async function triggerConfirm() {
   otpError.value = ''
   otpValue.value = []
   bookingError.value = ''
+
+  if (isNewClient.value && !firstNameInput.value.trim()) {
+    bookingError.value = 'nameRequired'
+    return
+  }
 
   try {
     await $fetch('/api/auth/phone/send', {
@@ -187,28 +205,40 @@ async function createBooking() {
   bookingError.value = ''
 
   try {
-    const result = await $fetch<{ booking: { id: string; starts_at: string } }>(
-      `/api/master/${props.username}/bookings`,
-      {
-        method: 'POST',
-        body: {
-          service_ids: bookingState.value.selectedServiceIds,
-          starts_at: bookingState.value.selectedSlot,
-          phone: bookingState.value.phone,
-          ...(bookingState.value.note ? { note: bookingState.value.note } : {}),
-          otp_token: bookingState.value.otpToken
-        }
+    const result = await $fetch<BookingResponse>(`/api/master/${props.username}/appointments`, {
+      method: 'POST',
+      body: {
+        service_ids: bookingState.value.selectedServiceIds,
+        starts_at: bookingState.value.selectedSlot,
+        phone: bookingState.value.phone,
+        ...(isNewClient.value
+          ? {
+              first_name: firstNameInput.value.trim(),
+              last_name: lastNameInput.value.trim() || undefined
+            }
+          : {}),
+        ...(bookingState.value.note ? { note: bookingState.value.note } : {}),
+        otp_token: bookingState.value.otpToken
       }
-    )
+    })
 
     bookingState.value.booking = {
       id: result.booking.id,
-      startsAt: result.booking.starts_at
+      startsAt: result.booking.starts_at,
+      endsAt: result.booking.ends_at,
+      services: result.booking.services,
+      master: result.booking.master
     }
     bookingState.value.step = 4
   } catch (e: unknown) {
     const statusCode = (e as { statusCode?: number }).statusCode
-    bookingError.value = statusCode === 409 ? 'slotUnavailable' : 'bookingFailed'
+    if (statusCode === 409) {
+      bookingError.value = 'slotUnavailable'
+    } else if (statusCode === 400) {
+      bookingError.value = 'nameRequired'
+    } else {
+      bookingError.value = 'bookingFailed'
+    }
   } finally {
     bookingLoading.value = false
   }
@@ -216,10 +246,14 @@ async function createBooking() {
 
 function otpErrorMessage(code: string) {
   switch (code) {
-    case 'invalid_code': return $ts('booking.sms.invalidCode')
-    case 'expired_code': return $ts('booking.sms.expiredCode')
-    case 'too_many_attempts': return $ts('booking.sms.tooManyAttempts')
-    default: return $ts('booking.sms.sendFailed')
+    case 'invalid_code':
+      return $ts('booking.sms.invalidCode')
+    case 'expired_code':
+      return $ts('booking.sms.expiredCode')
+    case 'too_many_attempts':
+      return $ts('booking.sms.tooManyAttempts')
+    default:
+      return $ts('booking.sms.sendFailed')
   }
 }
 
@@ -319,10 +353,7 @@ onUnmounted(() => {
       </label>
 
       <Transition name="fade">
-        <p
-          v-if="clientFirstName"
-          class="text-sm font-medium text-primary"
-        >
+        <p v-if="clientFirstName" class="text-sm font-medium text-primary">
           {{ $ts('booking.steps.confirm.welcome', { name: clientFirstName }) }}
         </p>
       </Transition>
@@ -335,6 +366,28 @@ onUnmounted(() => {
         icon="i-lucide-phone"
         autocomplete="tel"
       />
+
+      <Transition name="fade">
+        <div v-if="isNewClient" class="flex flex-col gap-3">
+          <p class="text-sm text-(--ui-text-muted)">
+            {{ $ts('booking.steps.confirm.newClientHint') }}
+          </p>
+          <UInput
+            v-model="firstNameInput"
+            :placeholder="$ts('booking.steps.confirm.firstName')"
+            size="lg"
+            icon="i-lucide-user"
+            autocomplete="given-name"
+          />
+          <UInput
+            v-model="lastNameInput"
+            :placeholder="$ts('booking.steps.confirm.lastName')"
+            size="lg"
+            icon="i-lucide-user"
+            autocomplete="family-name"
+          />
+        </div>
+      </Transition>
     </div>
 
     <!-- Booking error -->
@@ -346,7 +399,9 @@ onUnmounted(() => {
       :title="
         bookingError === 'slotUnavailable'
           ? $ts('booking.errors.slotUnavailable')
-          : $ts('booking.errors.bookingFailed')
+          : bookingError === 'nameRequired'
+            ? $ts('booking.errors.nameRequired')
+            : $ts('booking.errors.bookingFailed')
       "
     />
 
@@ -360,10 +415,7 @@ onUnmounted(() => {
     </div>
 
     <!-- Note modal -->
-    <UModal
-      v-model:open="showNoteModal"
-      :title="$ts('booking.steps.confirm.noteModalTitle')"
-    >
+    <UModal v-model:open="showNoteModal" :title="$ts('booking.steps.confirm.noteModalTitle')">
       <template #body>
         <div class="flex flex-col gap-4">
           <UTextarea

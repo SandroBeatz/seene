@@ -1,6 +1,14 @@
 <script setup lang="ts">
 interface MasterProfile {
   username: string
+  first_name: string
+  last_name: string
+  city: string | null
+  address: string | null
+  house_number: string | null
+  zip_code: string | null
+  country: string
+  works_at_place: boolean
 }
 
 interface ServiceCategory {
@@ -50,6 +58,21 @@ watch(
   },
   { immediate: true }
 )
+
+onMounted(() => {
+  if (bookingState.value.step === 4) {
+    bookingState.value = {
+      step: 1,
+      selectedServiceIds: [],
+      selectedDate: null,
+      selectedSlot: null,
+      note: '',
+      phone: '',
+      otpToken: '',
+      booking: null
+    }
+  }
+})
 
 const step = computed(() => bookingState.value.step)
 const canProceed = computed(() => {
@@ -103,6 +126,6 @@ function goNext() {
       :username="username"
       :services="data?.services ?? []"
     />
-    <BookingStep4Success v-else />
+    <BookingStep4Success v-else :username="username" :profile="data?.profile" />
   </BookingShell>
 </template>

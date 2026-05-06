@@ -1,4 +1,9 @@
 <script setup lang="ts">
+interface AvailabilityItem {
+  date: string
+  available: boolean
+}
+
 interface SlotsResponse {
   slots: string[]
   nextAvailableDate: string | null
@@ -21,90 +26,93 @@ const bookingState = useBookingState(props.username)
 const selectedServiceKey = computed(() => bookingState.value.selectedServiceIds.join(','))
 const dayOptions = computed(() => buildDayOptions(getLocale()))
 
-const { data, status } = useAsyncData(
-  () => `booking-slots:${props.username}:${selectedServiceKey.value}`,
+// --- Availability: one request for the 30-day calendar ---
+
+const { data: availabilityData, status: availabilityStatus } = useAsyncData(
+  () => `booking-availability:${props.username}:${selectedServiceKey.value}`,
   async () => {
-    if (!selectedServiceKey.value) {
-      return {} as Record<string, SlotsResponse>
-    }
-
-    const entries = await Promise.all(
-      dayOptions.value.map(async (day) => {
-        const slots = await $fetch<SlotsResponse>(`/api/master/${props.username}/slots`, {
-          query: {
-            date: day.date,
-            service_ids: selectedServiceKey.value
-          }
-        })
-
-        return [day.date, slots] as const
-      })
-    )
-
-    return Object.fromEntries(entries)
+    if (!selectedServiceKey.value) return [] as AvailabilityItem[]
+    const today = formatLocalDate(new Date())
+    const to = addLocalDays(today, 29)
+    return $fetch<AvailabilityItem[]>(`/api/master/${props.username}/availability`, {
+      query: { from: today, to, service_ids: selectedServiceKey.value }
+    })
   },
-  {
-    watch: [selectedServiceKey]
-  }
+  { watch: [selectedServiceKey] }
 )
 
-const slotsByDate = computed(() => data.value ?? {})
-const selectedDateData = computed(() =>
-  bookingState.value.selectedDate ? slotsByDate.value[bookingState.value.selectedDate] : null
+const availabilityMap = computed<Record<string, boolean>>(() =>
+  Object.fromEntries((availabilityData.value ?? []).map(({ date, available }) => [date, available]))
 )
-const selectedSlots = computed(() => selectedDateData.value?.slots ?? [])
-const isLoading = computed(() => status.value === 'pending')
+const isAvailabilityLoading = computed(() => availabilityStatus.value === 'pending')
+
+// --- Slots: one request per selected date ---
+
+const selectedDateSlots = ref<SlotsResponse | null>(null)
+const slotsLoading = ref(false)
+
+async function loadSlotsForDate(date: string) {
+  if (!selectedServiceKey.value) return
+  slotsLoading.value = true
+  selectedDateSlots.value = null
+  try {
+    selectedDateSlots.value = await $fetch<SlotsResponse>(`/api/master/${props.username}/slots`, {
+      query: { from: date, to: date, service_ids: selectedServiceKey.value }
+    })
+  } finally {
+    slotsLoading.value = false
+  }
+}
+
+// --- Derived state ---
+
+const selectedSlots = computed(() => selectedDateSlots.value?.slots ?? [])
 
 const nextAvailableDate = computed(() => {
-  if (selectedDateData.value?.nextAvailableDate) {
-    return selectedDateData.value.nextAvailableDate
+  if (selectedDateSlots.value?.nextAvailableDate) {
+    return selectedDateSlots.value.nextAvailableDate
   }
-
-  const apiNextAvailableDate = Object.values(slotsByDate.value).find(
-    (dayData) => dayData.nextAvailableDate
-  )?.nextAvailableDate
-  if (apiNextAvailableDate) {
-    return apiNextAvailableDate
-  }
-
-  return dayOptions.value.find((day) => hasSlots(day.date))?.date ?? null
+  return dayOptions.value.find((day) => availabilityMap.value[day.date] === true)?.date ?? null
 })
+
+// --- Watchers ---
 
 watch(selectedServiceKey, () => {
   bookingState.value.selectedDate = null
   bookingState.value.selectedSlot = null
+  selectedDateSlots.value = null
 })
 
 watch(
-  slotsByDate,
+  availabilityMap,
   () => {
-    if (isLoading.value) {
-      return
-    }
+    if (isAvailabilityLoading.value) return
 
     const selectedDate = bookingState.value.selectedDate
-    if (selectedDate && hasSlots(selectedDate)) {
-      return
-    }
+    if (selectedDate && hasSlots(selectedDate)) return
 
-    const firstAvailableDate = dayOptions.value.find((day) => hasSlots(day.date))?.date ?? null
-    bookingState.value.selectedDate = firstAvailableDate
+    const firstAvailable = dayOptions.value.find((day) => hasSlots(day.date))?.date ?? null
+    bookingState.value.selectedDate = firstAvailable
     bookingState.value.selectedSlot = null
+
+    if (firstAvailable) {
+      loadSlotsForDate(firstAvailable)
+    }
   },
   { immediate: true }
 )
 
+// --- Actions ---
+
 function hasSlots(date: string) {
-  return (slotsByDate.value[date]?.slots.length ?? 0) > 0
+  return availabilityMap.value[date] === true
 }
 
 function selectDate(date: string) {
-  if (!hasSlots(date)) {
-    return
-  }
-
+  if (!hasSlots(date)) return
   bookingState.value.selectedDate = date
   bookingState.value.selectedSlot = null
+  loadSlotsForDate(date)
 }
 
 function selectSlot(slot: string) {
@@ -112,9 +120,11 @@ function selectSlot(slot: string) {
 }
 
 function goToNextAvailableDate() {
-  if (nextAvailableDate.value) {
-    selectDate(nextAvailableDate.value)
-  }
+  if (!nextAvailableDate.value) return
+  const date = nextAvailableDate.value
+  bookingState.value.selectedDate = date
+  bookingState.value.selectedSlot = null
+  loadSlotsForDate(date)
 }
 
 function formatSlotTime(slot: string) {
@@ -166,6 +176,12 @@ function formatLocalDate(date: Date) {
   return `${year}-${month}-${day}`
 }
 
+function addLocalDays(date: string, days: number) {
+  const parsed = new Date(`${date}T00:00:00.000Z`)
+  parsed.setUTCDate(parsed.getUTCDate() + days)
+  return parsed.toISOString().slice(0, 10)
+}
+
 function parseLocalDate(date: string) {
   const [year = 0, month = 1, day = 1] = date.split('-').map(Number)
 
@@ -195,11 +211,11 @@ function parseLocalDate(date: string) {
             bookingState.selectedDate === day.date
               ? 'border-primary bg-primary text-white'
               : 'bg-(--ui-bg) text-(--ui-text-highlighted)',
-            !isLoading && !hasSlots(day.date)
+            !isAvailabilityLoading && !hasSlots(day.date)
               ? 'cursor-not-allowed opacity-40'
               : 'hover:border-primary/60'
           ]"
-          :disabled="!isLoading && !hasSlots(day.date)"
+          :disabled="!isAvailabilityLoading && !hasSlots(day.date)"
           @click="selectDate(day.date)"
         >
           <span class="text-xs font-medium uppercase">{{ day.dayLabel }}</span>
@@ -209,7 +225,7 @@ function parseLocalDate(date: string) {
       </div>
     </div>
 
-    <div v-if="isLoading" class="grid grid-cols-3 gap-2" aria-hidden="true">
+    <div v-if="slotsLoading" class="grid grid-cols-3 gap-2" aria-hidden="true">
       <USkeleton v-for="index in 9" :key="index" class="h-10 rounded-md" />
     </div>
 

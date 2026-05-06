@@ -35,13 +35,25 @@
         "phone": "Numéro de téléphone",
         "phonePlaceholder": "+7 (___) ___-__-__",
         "welcome": "Bon retour, {name} ! 👋",
+        "newClientHint": "C'est votre première fois ? Présentez-vous, s'il vous plaît.",
+        "firstName": "Prénom",
+        "lastName": "Nom",
         "creatingBooking": "Création de votre réservation..."
       },
       "success": {
-        "title": "Réservation confirmée",
-        "description": "L'écran de confirmation finale apparaîtra ici."
+        "title": "Réservation confirmée !",
+        "description": "Votre rendez-vous a été créé.",
+        "master": "Spécialiste",
+        "services": "Services",
+        "dateTime": "Date et heure",
+        "address": "Adresse",
+        "returnToProfile": "Retourner au profil",
+        "closeAria": "Fermer la réservation et retourner au profil",
+        "masterAvatarAlt": "Avatar de {master}",
+        "calendarTitle": "Rendez-vous avec {master}"
       }
     },
+    "addToCalendar": "Ajouter au calendrier",
     "service": {
       "duration": "{duration} min",
       "price": "{price} ₽"
@@ -58,7 +70,8 @@
     },
     "errors": {
       "bookingFailed": "Impossible de créer la réservation, veuillez réessayer",
-      "slotUnavailable": "Ce créneau n'est plus disponible, veuillez en choisir un autre"
+      "slotUnavailable": "Ce créneau n'est plus disponible, veuillez en choisir un autre",
+      "nameRequired": "Le prénom est requis"
     }
   }
 }

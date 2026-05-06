@@ -1,23 +1,26 @@
-const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
-const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
-const MINUTE_MS = 60 * 1000
+import {
+  DATE_RE,
+  type AppointmentRow,
+  type Schedule,
+  type TimeBlockRow,
+  addDays,
+  buildFreeSlots,
+  getProfileSchedule,
+  getProfileTimezone,
+  hasAnyFreeSlot,
+  isValidDate,
+  parseServiceIdsQuery,
+  getScheduleDay,
+  zonedTimeToUtc
+} from '../../../utils/slots'
+
 const NEXT_AVAILABLE_DAYS = 30
-
-type AvailabilityRow = {
-  start_time: string
-  end_time: string
-  slot_duration: number
-}
-
-type BookingRow = {
-  starts_at: string
-  ends_at: string
-}
+const MAX_RANGE_DAYS = 7
 
 export default defineEventHandler(async (event) => {
   const username = getRouterParam(event, 'username')
   const query = getQuery(event)
-  const date = parseDateQuery(query.date)
+  const { from, to } = parseFromToQuery(query.from, query.to)
   const serviceIds = parseServiceIdsQuery(query.service_ids)
   const supabase = useServiceSupabase()
 
@@ -51,12 +54,19 @@ export default defineEventHandler(async (event) => {
   }
 
   const serviceDuration = services.reduce((total, service) => total + service.duration, 0)
+  const schedule = getProfileSchedule(profile.schedule)
   const timezone = getProfileTimezone(profile.schedule)
+
+  if (!schedule) {
+    return { slots: [], nextAvailableDate: null }
+  }
 
   const slots = await getSlotsForDate({
     supabase,
     masterId: profile.id,
-    date,
+    userId: profile.user_id,
+    date: from,
+    schedule,
     serviceDuration,
     timezone
   })
@@ -67,131 +77,84 @@ export default defineEventHandler(async (event) => {
       : await findNextAvailableDate({
           supabase,
           masterId: profile.id,
-          date,
+          userId: profile.user_id,
+          fromDate: from,
+          schedule,
           serviceDuration,
           timezone
         })
 
-  return {
-    slots,
-    nextAvailableDate
-  }
+  return { slots, nextAvailableDate }
 })
 
-function parseDateQuery(value: unknown) {
+function parseDateParam(value: unknown, name: string): string {
   if (typeof value !== 'string' || !DATE_RE.test(value) || !isValidDate(value)) {
-    throw createError({ statusCode: 400, message: 'Query param date must be YYYY-MM-DD' })
+    throw createError({ statusCode: 400, message: `Query param ${name} must be YYYY-MM-DD` })
   }
 
   return value
 }
 
-function parseServiceIdsQuery(value: unknown) {
-  if (typeof value !== 'string') {
-    throw createError({ statusCode: 400, message: 'Query param service_ids is required' })
+function parseFromToQuery(fromValue: unknown, toValue: unknown) {
+  const from = parseDateParam(fromValue, 'from')
+  const to = parseDateParam(toValue, 'to')
+
+  if (from > to) {
+    throw createError({ statusCode: 400, message: 'from must be <= to' })
   }
 
-  const serviceIds = value
-    .split(',')
-    .map((id) => id.trim())
-    .filter(Boolean)
+  const dayDiff =
+    (new Date(`${to}T00:00:00.000Z`).getTime() - new Date(`${from}T00:00:00.000Z`).getTime()) /
+    (24 * 60 * 60 * 1000)
 
-  if (!serviceIds.length || serviceIds.some((id) => !UUID_RE.test(id))) {
-    throw createError({
-      statusCode: 400,
-      message: 'Query param service_ids must be comma-separated UUIDs'
-    })
+  if (dayDiff >= MAX_RANGE_DAYS) {
+    throw createError({ statusCode: 400, message: `Range must not exceed ${MAX_RANGE_DAYS} days` })
   }
 
-  return [...new Set(serviceIds)]
-}
-
-function isValidDate(date: string) {
-  const parsed = new Date(`${date}T00:00:00.000Z`)
-
-  return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === date
-}
-
-function getProfileTimezone(schedule: unknown) {
-  if (
-    schedule &&
-    typeof schedule === 'object' &&
-    'timezone' in schedule &&
-    typeof schedule.timezone === 'string' &&
-    isSupportedTimezone(schedule.timezone)
-  ) {
-    return schedule.timezone
-  }
-
-  return 'UTC'
-}
-
-function isSupportedTimezone(timezone: string) {
-  try {
-    Intl.DateTimeFormat(undefined, { timeZone: timezone })
-    return true
-  } catch {
-    return false
-  }
-}
-
-async function findNextAvailableDate({
-  supabase,
-  masterId,
-  date,
-  serviceDuration,
-  timezone
-}: {
-  supabase: ReturnType<typeof useServiceSupabase>
-  masterId: string
-  date: string
-  serviceDuration: number
-  timezone: string
-}) {
-  for (let offset = 1; offset <= NEXT_AVAILABLE_DAYS; offset += 1) {
-    const nextDate = addDays(date, offset)
-    const slots = await getSlotsForDate({
-      supabase,
-      masterId,
-      date: nextDate,
-      serviceDuration,
-      timezone
-    })
-
-    if (slots.length > 0) {
-      return nextDate
-    }
-  }
-
-  return null
+  return { from, to }
 }
 
 async function getSlotsForDate({
   supabase,
   masterId,
+  userId,
   date,
+  schedule,
   serviceDuration,
   timezone
 }: {
   supabase: ReturnType<typeof useServiceSupabase>
   masterId: string
+  userId: string
   date: string
+  schedule: Schedule
   serviceDuration: number
   timezone: string
 }) {
-  const dayOfWeek = getDayOfWeek(date)
+  const scheduleDay = getScheduleDay(schedule, date)
+  if (!scheduleDay?.enabled) return []
+
   const dayStart = zonedTimeToUtc(date, '00:00:00', timezone)
   const dayEnd = zonedTimeToUtc(addDays(date, 1), '00:00:00', timezone)
 
   const [
-    { data: availability, error: availabilityError },
-    { data: bookings, error: bookingsError }
+    { data: appointments, error: appointmentsError },
+    { data: timeBlocks, error: timeBlocksError },
+    { data: bookings }
   ] = await Promise.all([
     supabase
-      .from('availability')
-      .select('start_time, end_time, slot_duration')
-      .eq('master_id', masterId)
-      .or(`specific_date.eq.${date},day_of_week.eq.${dayOfWeek}`),
+      .from('appointments')
+      .select('start_at, duration')
+      .eq('user_id', userId)
+      .neq('status', 'cancelled')
+      .lt('start_at', dayEnd.toISOString())
+      .gte('start_at', dayStart.toISOString()),
+    supabase
+      .from('time_block')
+      .select('start_at, end_at, all_day')
+      .eq('user_id', userId)
+      .lt('start_at', dayEnd.toISOString())
+      .gt('end_at', dayStart.toISOString()),
     supabase
       .from('bookings')
       .select('starts_at, ends_at')
@@ -201,106 +164,118 @@ async function getSlotsForDate({
       .gt('ends_at', dayStart.toISOString())
   ])
 
-  if (availabilityError) {
-    throw createError({ statusCode: 500, message: 'Failed to load availability' })
+  if (appointmentsError) {
+    throw createError({ statusCode: 500, message: 'Failed to load appointments' })
   }
 
-  if (bookingsError) {
-    throw createError({ statusCode: 500, message: 'Failed to load bookings' })
+  if (timeBlocksError) {
+    throw createError({ statusCode: 500, message: 'Failed to load time blocks' })
   }
+
+  const bookingRows: AppointmentRow[] = (bookings ?? []).map((b) => ({
+    start_at: b.starts_at,
+    duration: Math.round(
+      (new Date(b.ends_at).getTime() - new Date(b.starts_at).getTime()) / 60000
+    )
+  }))
 
   return buildFreeSlots({
     date,
-    availability: availability ?? [],
-    bookings: bookings ?? [],
+    scheduleDay,
+    appointments: [...(appointments ?? []), ...bookingRows] as AppointmentRow[],
+    timeBlocks: (timeBlocks ?? []) as TimeBlockRow[],
     serviceDuration,
     timezone
   })
 }
 
-function buildFreeSlots({
-  date,
-  availability,
-  bookings,
+async function findNextAvailableDate({
+  supabase,
+  masterId,
+  userId,
+  fromDate,
+  schedule,
   serviceDuration,
   timezone
 }: {
-  date: string
-  availability: AvailabilityRow[]
-  bookings: BookingRow[]
+  supabase: ReturnType<typeof useServiceSupabase>
+  masterId: string
+  userId: string
+  fromDate: string
+  schedule: Schedule
   serviceDuration: number
   timezone: string
 }) {
-  const busyIntervals = bookings.map((booking) => ({
-    start: new Date(booking.starts_at).getTime(),
-    end: new Date(booking.ends_at).getTime()
+  const dates = Array.from({ length: NEXT_AVAILABLE_DAYS }, (_, i) => addDays(fromDate, i + 1))
+  const rangeStart = zonedTimeToUtc(dates[0]!, '00:00:00', timezone)
+  const rangeEnd = zonedTimeToUtc(addDays(dates[dates.length - 1]!, 1), '00:00:00', timezone)
+
+  const [{ data: appointments }, { data: timeBlocks }, { data: bookings }] = await Promise.all([
+    supabase
+      .from('appointments')
+      .select('start_at, duration')
+      .eq('user_id', userId)
+      .neq('status', 'cancelled')
+      .lt('start_at', rangeEnd.toISOString())
+      .gte('start_at', rangeStart.toISOString()),
+    supabase
+      .from('time_block')
+      .select('start_at, end_at, all_day')
+      .eq('user_id', userId)
+      .lt('start_at', rangeEnd.toISOString())
+      .gt('end_at', rangeStart.toISOString()),
+    supabase
+      .from('bookings')
+      .select('starts_at, ends_at')
+      .eq('master_id', masterId)
+      .neq('status', 'cancelled')
+      .lt('starts_at', rangeEnd.toISOString())
+      .gt('ends_at', rangeStart.toISOString())
+  ])
+
+  const bookingRows: AppointmentRow[] = (bookings ?? []).map((b) => ({
+    start_at: b.starts_at,
+    duration: Math.round(
+      (new Date(b.ends_at).getTime() - new Date(b.starts_at).getTime()) / 60000
+    )
   }))
-  const slots = new Set<string>()
 
-  for (const row of availability) {
-    const startsAt = zonedTimeToUtc(date, row.start_time, timezone)
-    const endsAt = zonedTimeToUtc(date, row.end_time, timezone)
-    const step = row.slot_duration * MINUTE_MS
-    const duration = serviceDuration * MINUTE_MS
+  for (const date of dates) {
+    const scheduleDay = getScheduleDay(schedule, date)
+    if (!scheduleDay?.enabled) continue
 
-    for (
-      let slotStart = startsAt.getTime();
-      slotStart + duration <= endsAt.getTime();
-      slotStart += step
-    ) {
-      const slotEnd = slotStart + duration
-      const overlapsBooking = busyIntervals.some(
-        (booking) => slotStart < booking.end && slotEnd > booking.start
-      )
+    const dayStart = zonedTimeToUtc(date, '00:00:00', timezone)
+    const dayEnd = zonedTimeToUtc(addDays(date, 1), '00:00:00', timezone)
 
-      if (!overlapsBooking) {
-        slots.add(new Date(slotStart).toISOString())
-      }
-    }
+    const dayAppointments = [
+      ...(appointments ?? []).filter((a) => {
+        const t = new Date(a.start_at).getTime()
+        return t >= dayStart.getTime() && t < dayEnd.getTime()
+      }),
+      ...bookingRows.filter((b) => {
+        const t = new Date(b.start_at).getTime()
+        return t >= dayStart.getTime() && t < dayEnd.getTime()
+      })
+    ]
+
+    const dayBlocks = (timeBlocks ?? []).filter(
+      (b) =>
+        new Date(b.start_at).getTime() < dayEnd.getTime() &&
+        new Date(b.end_at).getTime() > dayStart.getTime()
+    )
+
+    const available = hasAnyFreeSlot({
+      date,
+      scheduleDay,
+      appointments: dayAppointments as AppointmentRow[],
+      timeBlocks: dayBlocks as TimeBlockRow[],
+      serviceDuration,
+      timezone
+    })
+
+    if (available) return date
   }
 
-  return [...slots].sort()
+  return null
 }
 
-function addDays(date: string, days: number) {
-  const parsed = new Date(`${date}T00:00:00.000Z`)
-  parsed.setUTCDate(parsed.getUTCDate() + days)
-
-  return parsed.toISOString().slice(0, 10)
-}
-
-function getDayOfWeek(date: string) {
-  return new Date(`${date}T00:00:00.000Z`).getUTCDay()
-}
-
-function zonedTimeToUtc(date: string, time: string, timezone: string) {
-  const year = Number(date.slice(0, 4))
-  const month = Number(date.slice(5, 7))
-  const day = Number(date.slice(8, 10))
-  const [hour = 0, minute = 0, second = 0] = time.split(':').map(Number)
-  const utcGuess = Date.UTC(year, month - 1, day, hour, minute, second)
-  const formatter = new Intl.DateTimeFormat('en-US', {
-    timeZone: timezone,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hourCycle: 'h23'
-  })
-  const parts = Object.fromEntries(
-    formatter.formatToParts(new Date(utcGuess)).map((part) => [part.type, part.value])
-  )
-  const timezoneTimeAsUtc = Date.UTC(
-    Number(parts.year),
-    Number(parts.month) - 1,
-    Number(parts.day),
-    Number(parts.hour),
-    Number(parts.minute),
-    Number(parts.second)
-  )
-  const offset = timezoneTimeAsUtc - utcGuess
-
-  return new Date(utcGuess - offset)
-}

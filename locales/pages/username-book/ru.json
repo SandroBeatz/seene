@@ -35,13 +35,25 @@
         "phone": "Номер телефона",
         "phonePlaceholder": "+7 (___) ___-__-__",
         "welcome": "С возвращением, {name}! 👋",
+        "newClientHint": "Вы у нас впервые. Представьтесь, пожалуйста.",
+        "firstName": "Имя",
+        "lastName": "Фамилия",
         "creatingBooking": "Создаём вашу запись..."
       },
       "success": {
-        "title": "Запись подтверждена",
-        "description": "Здесь появится финальный экран подтверждения."
+        "title": "Запись подтверждена!",
+        "description": "Ваша запись успешно создана.",
+        "master": "Мастер",
+        "services": "Услуги",
+        "dateTime": "Дата и время",
+        "address": "Адрес",
+        "returnToProfile": "Вернуться к профилю мастера",
+        "closeAria": "Закрыть запись и вернуться к профилю",
+        "masterAvatarAlt": "Аватар {master}",
+        "calendarTitle": "Запись к {master}"
       }
     },
+    "addToCalendar": "Добавить в календарь",
     "service": {
       "duration": "{duration} мин",
       "price": "{price} ₽"
@@ -58,7 +70,8 @@
     },
     "errors": {
       "bookingFailed": "Не удалось создать запись, попробуйте ещё раз",
-      "slotUnavailable": "Это время уже занято, выберите другое"
+      "slotUnavailable": "Это время уже занято, выберите другое",
+      "nameRequired": "Введите имя"
     }
   }
 }

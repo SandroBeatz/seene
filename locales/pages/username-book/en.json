@@ -35,13 +35,25 @@
         "phone": "Phone number",
         "phonePlaceholder": "+7 (___) ___-__-__",
         "welcome": "Welcome back, {name}! 👋",
+        "newClientHint": "First time here? Please introduce yourself.",
+        "firstName": "First name",
+        "lastName": "Last name",
         "creatingBooking": "Creating your booking..."
       },
       "success": {
-        "title": "Booking confirmed",
-        "description": "The final confirmation screen will appear here."
+        "title": "Booking confirmed!",
+        "description": "Your appointment has been created.",
+        "master": "Master",
+        "services": "Services",
+        "dateTime": "Date and time",
+        "address": "Address",
+        "returnToProfile": "Return to master's profile",
+        "closeAria": "Close booking and return to profile",
+        "masterAvatarAlt": "{master} avatar",
+        "calendarTitle": "Appointment with {master}"
       }
     },
+    "addToCalendar": "Add to calendar",
     "service": {
       "duration": "{duration} min",
       "price": "{price} ₽"
@@ -58,7 +70,8 @@
     },
     "errors": {
       "bookingFailed": "Failed to create booking, please try again",
-      "slotUnavailable": "This time slot is no longer available, please choose another"
+      "slotUnavailable": "This time slot is no longer available, please choose another",
+      "nameRequired": "First name is required"
     }
   }
 }

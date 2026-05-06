@@ -1,6 +1,25 @@
+export interface BookingService {
+  id: string
+  category_id: string | null
+  name: string
+  description: string | null
+  duration: number
+  price: string | number
+  color: string
+  sort_order: number
+}
+
+export interface BookingMaster {
+  first_name: string
+  last_name: string
+}
+
 export interface BookingResult {
   id: string
   startsAt: string
+  endsAt: string
+  services: BookingService[]
+  master: BookingMaster
 }
 
 export interface BookingState {
