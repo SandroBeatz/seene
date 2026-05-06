@@ -4,7 +4,8 @@
       "home": "Accueil",
       "services": "Services",
       "portfolio": "Portfolio",
-      "about": "À propos"
+      "about": "À propos",
+      "navigationAria": "Sections du profil"
     },
     "home": {
       "book": "Réserver en ligne",

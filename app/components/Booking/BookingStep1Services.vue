@@ -1,32 +1,12 @@
 <script setup lang="ts">
+import type { MasterService, MasterServiceGroup, ServiceCategory } from '#shared/types/master'
+
 const { $ts } = useI18n()
-
-interface ServiceCategory {
-  id: string
-  name: string
-  sort_order: number
-}
-
-interface ServiceItem {
-  id: string
-  category_id: string | null
-  name: string
-  description: string | null
-  duration: number
-  price: string
-  color: string
-  sort_order: number
-}
-
-interface ServiceGroup {
-  category: ServiceCategory | null
-  items: ServiceItem[]
-}
 
 const props = defineProps<{
   username: string
   categories?: ServiceCategory[]
-  services?: ServiceItem[]
+  services?: MasterService[]
   loading?: boolean
 }>()
 
@@ -34,7 +14,7 @@ const bookingState = useBookingState(props.username)
 
 const showCategoryHeaders = computed(() => (props.categories?.length ?? 0) > 1)
 
-const serviceGroups = computed<ServiceGroup[]>(() => {
+const serviceGroups = computed<MasterServiceGroup[]>(() => {
   const services = props.services ?? []
   const categories = props.categories ?? []
 
@@ -42,7 +22,7 @@ const serviceGroups = computed<ServiceGroup[]>(() => {
     return [{ category: null, items: services }]
   }
 
-  const groups: ServiceGroup[] = categories
+  const groups: MasterServiceGroup[] = categories
     .map((category) => ({
       category,
       items: services.filter((service) => service.category_id === category.id)

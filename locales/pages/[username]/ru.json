@@ -4,7 +4,8 @@
       "home": "Главная",
       "services": "Услуги",
       "portfolio": "Портфолио",
-      "about": "Обо мне"
+      "about": "Обо мне",
+      "navigationAria": "Разделы профиля"
     },
     "home": {
       "book": "Онлайн запись",

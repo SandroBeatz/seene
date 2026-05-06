@@ -1,38 +1,5 @@
 <script setup lang="ts">
-interface MasterProfile {
-  username: string
-  first_name: string
-  last_name: string
-  city: string | null
-  address: string | null
-  house_number: string | null
-  zip_code: string | null
-  country: string
-  works_at_place: boolean
-}
-
-interface ServiceCategory {
-  id: string
-  name: string
-  sort_order: number
-}
-
-interface MasterService {
-  id: string
-  category_id: string | null
-  name: string
-  description: string | null
-  duration: number
-  price: string
-  color: string
-  sort_order: number
-}
-
-interface MasterPageData {
-  profile: MasterProfile
-  categories: ServiceCategory[]
-  services: MasterService[]
-}
+import type { MasterPageData } from '#shared/types/master'
 
 definePageMeta({ layout: 'booking' })
 
@@ -95,7 +62,6 @@ function goBack() {
 
   bookingState.value.step = (bookingState.value.step - 1) as 1 | 2 | 3 | 4
 }
-
 function goNext() {
   if (!canProceed.value || bookingState.value.step === 4) {
     return

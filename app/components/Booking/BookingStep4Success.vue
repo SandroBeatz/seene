@@ -1,14 +1,5 @@
 <script setup lang="ts">
-interface MasterProfile {
-  first_name: string
-  last_name: string
-  city: string | null
-  address: string | null
-  house_number: string | null
-  zip_code: string | null
-  country: string
-  works_at_place: boolean
-}
+import type { MasterProfile } from '#shared/types/master'
 
 const props = defineProps<{
   username: string
@@ -202,7 +193,9 @@ function escapeIcsText(value: string) {
         <div class="flex items-center gap-3">
           <UIcon name="i-lucide-calendar-clock" class="size-5 shrink-0 text-(--ui-text-muted)" />
           <div class="min-w-0">
-            <p class="text-xs text-(--ui-text-muted)">{{ $ts('booking.steps.success.dateTime') }}</p>
+            <p class="text-xs text-(--ui-text-muted)">
+              {{ $ts('booking.steps.success.dateTime') }}
+            </p>
             <p class="text-sm font-medium capitalize text-(--ui-text-highlighted)">
               {{ formattedDateTime }}
             </p>
@@ -214,7 +207,9 @@ function escapeIcsText(value: string) {
           <div class="flex items-center gap-3">
             <UIcon name="i-lucide-map-pin" class="size-5 shrink-0 text-(--ui-text-muted)" />
             <div class="min-w-0">
-              <p class="text-xs text-(--ui-text-muted)">{{ $ts('booking.steps.success.address') }}</p>
+              <p class="text-xs text-(--ui-text-muted)">
+                {{ $ts('booking.steps.success.address') }}
+              </p>
               <p class="text-sm font-medium text-(--ui-text-highlighted)">
                 {{ address }}
               </p>

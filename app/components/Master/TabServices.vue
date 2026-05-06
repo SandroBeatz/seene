@@ -1,34 +1,14 @@
 <script setup lang="ts">
-interface ServiceCategory {
-  id: string
-  name: string
-  sort_order: number
-}
-
-interface ServiceItem {
-  id: string
-  category_id: string | null
-  name: string
-  description: string | null
-  duration: number
-  price: string
-  color: string
-  sort_order: number
-}
+import type { MasterService, MasterServiceGroup, ServiceCategory } from '#shared/types/master'
 
 const props = defineProps<{
   categories?: ServiceCategory[]
-  services?: ServiceItem[]
+  services?: MasterService[]
 }>()
 
 const showCategoryHeaders = computed(() => (props.categories?.length ?? 0) > 1)
 
-interface ServiceGroup {
-  category: ServiceCategory | null
-  items: ServiceItem[]
-}
-
-const groups = computed<ServiceGroup[]>(() => {
+const groups = computed<MasterServiceGroup[]>(() => {
   const items = props.services ?? []
   const cats = props.categories ?? []
 
@@ -36,7 +16,7 @@ const groups = computed<ServiceGroup[]>(() => {
     return [{ category: null, items }]
   }
 
-  const grouped: ServiceGroup[] = cats
+  const grouped: MasterServiceGroup[] = cats
     .map((cat) => ({
       category: cat,
       items: items.filter((s) => s.category_id === cat.id)

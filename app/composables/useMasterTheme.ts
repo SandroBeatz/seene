@@ -24,7 +24,20 @@ export function useMasterTheme() {
   })
 
   // UTheme `ui` prop — component-level slot class overrides (extend as needed)
-  const themeUi = computed(() => ({}))
+  const themeUi = computed(() => ({
+    main: {
+      base: 'bg-white'
+    },
+    avatar: {
+      root: 'size-28 bg-zinc-900',
+      fallback: 'text-2xl text-white'
+    },
+    tabs: {
+      list: 'p-0 bg-transparent gap-2',
+      trigger: 'cursor-pointer border border-zinc-900 data-[state=inactive]:text-zinc-900',
+      indicator: 'h-full top-0 bg-zinc-900 transition-[translate,width] duration-300 ease-out'
+    }
+  }))
 
   function setTheme(next: MasterThemeConfig) {
     config.value = next

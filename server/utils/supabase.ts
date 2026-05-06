@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
-import type { Database } from '../../types/supabase'
+import type { Database } from '#shared/types/supabase'
 
 export function useSupabase() {
   const config = useRuntimeConfig()

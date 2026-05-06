@@ -1,46 +1,14 @@
 <script setup lang="ts">
 import type { TabsItem } from '@nuxt/ui'
-
-interface MasterProfile {
-  id: string
-  user_id: string
-  first_name: string
-  last_name: string
-  username: string
-  specializations: string[]
-  city: string | null
-  works_at_place: boolean
-  can_travel: boolean
-}
-
-interface ServiceCategory {
-  id: string
-  name: string
-  sort_order: number
-}
-
-interface MasterService {
-  id: string
-  category_id: string | null
-  name: string
-  description: string | null
-  duration: number
-  price: string
-  color: string
-  sort_order: number
-}
-
-interface MasterPageData {
-  profile: MasterProfile
-  categories: ServiceCategory[]
-  services: MasterService[]
-}
+import type { MasterPageData } from '#shared/types/master'
 
 definePageMeta({ layout: 'master' })
 
-const { $ts } = useI18n()
 const { setTheme } = useMasterTheme()
 const route = useRoute()
+const { $ts } = useI18n()
+
+const tabState = ref('home')
 
 const username = computed(() => route.params.username as string)
 
@@ -62,15 +30,30 @@ watch(
 setTheme({ radius: '0.75rem' })
 
 const tabs = computed<TabsItem[]>(() => [
-  { label: $ts('master.tabs.home'), slot: 'home', value: 'home' },
-  { label: $ts('master.tabs.services'), slot: 'services', value: 'services' },
-  { label: $ts('master.tabs.portfolio'), slot: 'portfolio', value: 'portfolio' },
-  { label: $ts('master.tabs.about'), slot: 'about', value: 'about' }
+  { label: $ts('master.tabs.home'), icon: 'i-lucide-home', slot: 'home', value: 'home' },
+  {
+    label: $ts('master.tabs.services'),
+    icon: 'i-lucide-scissors',
+    slot: 'services',
+    value: 'services'
+  },
+  {
+    label: $ts('master.tabs.portfolio'),
+    icon: 'i-lucide-images',
+    slot: 'portfolio',
+    value: 'portfolio'
+  },
+  {
+    label: $ts('master.tabs.about'),
+    icon: 'i-lucide-user-round',
+    slot: 'about',
+    value: 'about'
+  }
 ])
 </script>
 
 <template>
-  <div class="max-w-lg mx-auto min-h-screen">
+  <div class="max-w-lg mx-auto min-h-screen flex flex-col">
     <template v-if="status === 'pending'">
       <div class="flex flex-col items-center gap-3 py-6 px-4">
         <USkeleton class="size-24 rounded-full" />
@@ -93,12 +76,9 @@ const tabs = computed<TabsItem[]>(() => [
       />
 
       <UTabs
+        v-model="tabState"
         :items="tabs"
-        default-value="home"
-        variant="link"
-        color="primary"
-        class="w-full"
-        :ui="{ list: 'border-b border-(--ui-border)', content: 'pt-4 px-4 pb-8' }"
+        :ui="{ root: 'w-full flex-1', list: 'hidden', content: 'pt-4 px-4 pb-8' }"
       >
         <template #home>
           <MasterTabHome :username="data.profile.username" />
@@ -121,6 +101,24 @@ const tabs = computed<TabsItem[]>(() => [
           />
         </template>
       </UTabs>
+
+      <nav :aria-label="$ts('master.tabs.navigationAria')" class="mt-auto p-2 sticky bottom-0 z-50">
+        <UTabs
+          v-model="tabState"
+          :items="tabs"
+          :content="false"
+          size="sm"
+          class="w-full"
+          :ui="{
+            list: 'p-2 rounded-xl backdrop-blur bg-white/65 shadow-xl',
+            indicator: 'rounded-xl bg-zinc-900',
+            trigger:
+              'cursor-pointer min-h-14 flex-col gap-1 rounded-xl !border-transparent px-1.5 py-3 text-[11px] font-medium leading-none',
+            leadingIcon: 'size-5',
+            label: 'max-w-full truncate'
+          }"
+        />
+      </nav>
     </template>
   </div>
 </template>

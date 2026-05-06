@@ -32,13 +32,13 @@ export default defineNuxtConfig({
     '/': { prerender: true }
   },
 
+  compatibilityDate: '2025-01-15',
+
   nitro: {
     prerender: {
       ignore: [/^\/(fr|ru)\/(en|fr|ru)(\/|$)/]
     }
   },
-
-  compatibilityDate: '2025-01-15',
 
   eslint: {
     config: {
@@ -58,5 +58,5 @@ export default defineNuxtConfig({
     defaultLocale: 'en',
     translationDir: 'locales',
     meta: true
-  }
+  },
 })

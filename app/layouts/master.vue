@@ -4,7 +4,7 @@ const { cssVars, themeUi } = useMasterTheme()
 
 <template>
   <UApp>
-    <div :style="cssVars">
+    <div class="min-h-screen bg-white" :style="cssVars">
       <UTheme :ui="themeUi">
         <UMain>
           <slot />

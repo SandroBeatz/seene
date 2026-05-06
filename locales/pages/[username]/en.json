@@ -4,7 +4,8 @@
       "home": "Home",
       "services": "Services",
       "portfolio": "Portfolio",
-      "about": "About"
+      "about": "About",
+      "navigationAria": "Profile sections"
     },
     "home": {
       "book": "Book Online",

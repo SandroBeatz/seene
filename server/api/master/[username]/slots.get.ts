@@ -20,7 +20,7 @@ const MAX_RANGE_DAYS = 7
 export default defineEventHandler(async (event) => {
   const username = getRouterParam(event, 'username')
   const query = getQuery(event)
-  const { from, to } = parseFromToQuery(query.from, query.to)
+  const { from } = parseFromToQuery(query.from, query.to)
   const serviceIds = parseServiceIdsQuery(query.service_ids)
   const supabase = useServiceSupabase()
 

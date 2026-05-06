@@ -1,10 +1,5 @@
 <script setup lang="ts">
-interface ServiceItem {
-  id: string
-  name: string
-  duration: number
-  price: string
-}
+import type { MasterService } from '#shared/types/master'
 
 interface BookingResponse {
   booking: {
@@ -18,7 +13,7 @@ interface BookingResponse {
 
 const props = defineProps<{
   username: string
-  services: ServiceItem[]
+  services: Pick<MasterService, 'id' | 'name' | 'duration' | 'price'>[]
 }>()
 
 defineExpose({ triggerConfirm })

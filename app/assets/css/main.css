@@ -171,15 +171,6 @@ body {
     color 0.5s ease;
 }
 
-/* Smooth theme transitions for common properties */
-*,
-*::before,
-*::after {
-  transition-property: background-color, border-color;
-  transition-duration: 0.5s;
-  transition-timing-function: ease;
-}
-
 /* Fast hover transitions */
 a,
 button,
