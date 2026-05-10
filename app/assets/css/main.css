@@ -2,158 +2,30 @@
 @import 'tailwindcss';
 @import '@nuxt/ui';
 
-/*
- * Seene — Nuxt UI v3 theme
- * Primary: Amber 500 (#f59e0b)
- * Neutral: Zinc
- *
- * app.config.ts:
- *   ui: { colors: { primary: 'gold', neutral: 'warm' } }
- */
-
-/* ─────────────────────────────────────────────
-   1. Fonts
-───────────────────────────────────────────── */
-
-/* ─────────────────────────────────────────────
-   2. Color scales
-───────────────────────────────────────────── */
-
-@theme static {
-  /* Primary — Amber */
-  --color-gold-50: #fffbeb;
-  --color-gold-100: #fef3c7;
-  --color-gold-200: #fde68a;
-  --color-gold-300: #fcd34d;
-  --color-gold-400: #fbbf24;
-  --color-gold-500: #f59e0b;
-  --color-gold-600: #d97706;
-  --color-gold-700: #b45309;
-  --color-gold-800: #92400e;
-  --color-gold-900: #78350f;
-  --color-gold-950: #451a03;
-
-  /* Accent — Olive */
-  --color-olive-50: #f7f8e7;
-  --color-olive-100: #eef1ce;
-  --color-olive-200: #dce39d;
-  --color-olive-300: #cad46e;
-  --color-olive-400: #bcc64e;
-  --color-olive-500: #abad34;
-  --color-olive-600: #8c8f27;
-  --color-olive-700: #6d701c;
-  --color-olive-800: #4e5014;
-  --color-olive-900: #2f300c;
-  --color-olive-950: #181904;
-
-  /* Neutral — Zinc */
-  --color-warm-50: #fafafa;
-  --color-warm-100: #f4f4f5;
-  --color-warm-200: #e4e4e7;
-  --color-warm-300: #d4d4d8;
-  --color-warm-400: #a1a1aa;
-  --color-warm-500: #71717a;
-  --color-warm-600: #52525b;
-  --color-warm-700: #3f3f46;
-  --color-warm-800: #27272a;
-  --color-warm-900: #18181b;
-  --color-warm-950: #09090b;
-}
-
-/* ─────────────────────────────────────────────
-   3. Design tokens & semantic overrides — light
-───────────────────────────────────────────── */
-
 :root {
-  /* Design system tokens */
-  --color-primary: #f59e0b;
-  --color-bg: #f4f1ec;
-  --color-text: #2c3e50;
-  --color-muted: #71717a;
-  --color-border: rgba(60, 60, 60, 0.12);
-
-  /* Section backgrounds */
-  --section-bg-warm: #f4f1ec; /* hero, steps, pricing, personal-page */
-  --section-bg-white: #ffffff; /* audience, features */
-  --section-bg-off: #faf9f7; /* soft white alternative */
-  --section-bg-dark: #181818; /* pain, crm-comparison, footer */
-  --color-heading: #2c3e50; /* section headings on light backgrounds */
-
-  --radius-sm: 0.5rem; /* 8px  — icon containers */
-  --radius-md: 1rem; /* 16px — cards */
-  --radius-lg: 1.5rem; /* 24px — buttons, inputs */
-  --radius-xl: 2rem; /* 32px — sidebar, large panels */
-
-  /* Service accent palette */
-  --accent-red: #f87171;
-  --accent-orange: #fb923c;
-  --accent-yellow: #facc15;
-  --accent-green: #4ade80;
-  --accent-teal: #34d399;
-  --accent-blue: #60a5fa;
-  --accent-indigo: #818cf8;
-  --accent-violet: #a78bfa;
-  --accent-pink: #f472b6;
-  --accent-slate: #94a3b8;
-
-  /* Nuxt UI semantic overrides */
-  --ui-primary: var(--ui-color-primary-500);
+  --ui-primary: var(--ui-color-primary-950);
+  --ui-secondary: var(--ui-color-secondary-500);
   --ui-radius: 0.5rem;
+  --ui-header-height: 4rem;
 
   --ui-text-dimmed: var(--ui-color-neutral-400);
   --ui-text-muted: var(--ui-color-neutral-500);
-  --ui-text-toned: var(--ui-color-neutral-600);
-  --ui-text: #2c3e50;
-  --ui-text-highlighted: #2c3e50;
+  --ui-text-toned: var(--ui-color-neutral-700);
+  --ui-text: var(--ui-color-neutral-800);
+  --ui-text-highlighted: var(--ui-color-neutral-950);
   --ui-text-inverted: white;
 
-  --ui-bg: #f4f1ec;
+  --ui-bg: white;
   --ui-bg-muted: var(--ui-color-neutral-50);
-  --ui-bg-elevated: #ffffff;
+  --ui-bg-elevated: white;
   --ui-bg-accented: var(--ui-color-neutral-100);
-  --ui-bg-inverted: #2c3e50;
+  --ui-bg-inverted: var(--ui-color-neutral-950);
 
-  --ui-border: rgba(60, 60, 60, 0.12);
-  --ui-border-muted: rgba(60, 60, 60, 0.07);
-  --ui-border-accented: rgba(60, 60, 60, 0.18);
-  --ui-border-inverted: #2c3e50;
+  --ui-border: var(--ui-color-neutral-200);
+  --ui-border-muted: var(--ui-color-neutral-100);
+  --ui-border-accented: var(--ui-color-neutral-300);
+  --ui-border-inverted: var(--ui-color-neutral-950);
 }
-
-/* ─────────────────────────────────────────────
-   4. Semantic overrides — dark
-───────────────────────────────────────────── */
-
-.dark {
-  --ui-primary: var(--ui-color-primary-400);
-
-  --section-bg-warm: #181818;
-  --section-bg-white: #121212;
-  --section-bg-off: #1e1e1e;
-  --section-bg-dark: #09090b;
-  --color-heading: rgba(235, 235, 235, 0.87);
-
-  --ui-text-dimmed: var(--ui-color-neutral-600);
-  --ui-text-muted: var(--ui-color-neutral-500);
-  --ui-text-toned: var(--ui-color-neutral-400);
-  --ui-text: rgba(235, 235, 235, 0.64);
-  --ui-text-highlighted: rgba(235, 235, 235, 0.87);
-  --ui-text-inverted: #181818;
-
-  --ui-bg: #181818;
-  --ui-bg-muted: #1e1e1e;
-  --ui-bg-elevated: #242424;
-  --ui-bg-accented: var(--ui-color-neutral-700);
-  --ui-bg-inverted: rgba(235, 235, 235, 0.87);
-
-  --ui-border: rgba(255, 255, 255, 0.08);
-  --ui-border-muted: rgba(255, 255, 255, 0.05);
-  --ui-border-accented: rgba(255, 255, 255, 0.12);
-  --ui-border-inverted: rgba(235, 235, 235, 0.87);
-}
-
-/* ─────────────────────────────────────────────
-   5. Base styles
-───────────────────────────────────────────── */
 
 body {
   font-family:
@@ -164,8 +36,7 @@ body {
     sans-serif;
   font-size: 16px;
   line-height: 1.6;
-  background-color: var(--ui-bg);
-  color: var(--ui-text);
+  @apply bg-default text-default antialiased scheme-light;
   transition:
     background-color 0.5s ease,
     color 0.5s ease;

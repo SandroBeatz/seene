@@ -39,8 +39,8 @@ const isScrolled = computed(() => scrollY.value > 40)
 const hasHeaderSurface = computed(() => !isLandingPage.value || isScrolled.value)
 const headerClass = computed(() =>
   hasHeaderSurface.value
-    ? 'bg-[var(--ui-bg-elevated)]/90 text-[var(--ui-text-highlighted)] backdrop-blur-md !border !border-[var(--ui-border-muted)] shadow-lg shadow-black/5 dark:shadow-black/30'
-    : 'bg-transparent text-white shadow-none'
+    ? 'bg-[var(--ui-bg-elevated)]/90 text-[var(--ui-text-highlighted)] backdrop-blur-md'
+    : 'bg-[var(--ui-bg-elevated)]/90 text-[var(--ui-text-highlighted)] backdrop-blur-md'
 )
 
 if (import.meta.client) {
@@ -70,7 +70,6 @@ if (import.meta.client) {
         :items="sectionNavItems"
         variant="link"
         class="w-full justify-center"
-        :ui="{ link: hasHeaderSurface ? '' : 'text-white/80 hover:text-white' }"
       />
 
       <template #right>
@@ -96,7 +95,6 @@ if (import.meta.client) {
         >
           <div class="flex items-center gap-1.5">
             <LocaleSwitcher />
-            <UColorModeButton />
           </div>
           <UButton
             :to="config.public.dashboardUrl"
@@ -126,7 +124,6 @@ if (import.meta.client) {
 
       <template #right>
         <LocaleSwitcher />
-        <UColorModeButton />
         <UButton
           to="https://instagram.com"
           target="_blank"

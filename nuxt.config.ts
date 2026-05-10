@@ -9,12 +9,15 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
 
   colorMode: {
+    preference: 'light',
+    fallback: 'light',
+    storageKey: 'seene-color-mode',
     classSuffix: ''
   },
 
   ui: {
     theme: {
-      colors: ['primary', 'secondary', 'success', 'info', 'warning', 'error', 'olive']
+      colors: ['primary', 'secondary', 'success', 'info', 'warning', 'error']
     }
   },
 

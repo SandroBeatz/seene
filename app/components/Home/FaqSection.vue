@@ -14,10 +14,10 @@ const faqItems = computed(() => [
 </script>
 
 <template>
-  <section id="faq" ref="faqSection" class="py-20 px-4 bg-[var(--section-bg-white)]">
+  <section id="faq" ref="faqSection" class="py-20 px-4 bg-default">
     <div class="max-w-2xl mx-auto">
       <h2
-        class="text-2xl font-bold text-center text-[var(--color-heading)] mb-10 transition-all duration-700"
+        class="text-2xl font-bold text-center text-highlighted mb-10 transition-all duration-700"
         :class="faqVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'"
       >
         {{ $ts('faq.title') }}

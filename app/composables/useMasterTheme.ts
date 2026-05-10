@@ -29,8 +29,11 @@ export function useMasterTheme() {
       base: 'bg-white'
     },
     avatar: {
-      root: 'size-28 bg-zinc-900',
-      fallback: 'text-2xl text-white'
+      root: 'size-24 bg-zinc-900',
+      fallback: 'text-3xl text-white'
+    },
+    button: {
+      base: 'rounded-sm'
     },
     tabs: {
       list: 'p-0 bg-transparent gap-2',

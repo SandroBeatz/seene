@@ -53,7 +53,7 @@ const tabs = computed<TabsItem[]>(() => [
 </script>
 
 <template>
-  <div class="max-w-lg mx-auto min-h-screen flex flex-col">
+  <div class="max-w-lg mx-auto min-h-screen bg-zinc-200 flex flex-col">
     <template v-if="status === 'pending'">
       <div class="flex flex-col items-center gap-3 py-6 px-4">
         <USkeleton class="size-24 rounded-full" />
@@ -102,7 +102,10 @@ const tabs = computed<TabsItem[]>(() => [
         </template>
       </UTabs>
 
-      <nav :aria-label="$ts('master.tabs.navigationAria')" class="mt-auto p-2 sticky bottom-0 z-50">
+      <nav
+        :aria-label="$ts('master.tabs.navigationAria')"
+        class="mt-auto backdrop-blur bg-white/65 py-2 px-4 sticky bottom-0 z-50"
+      >
         <UTabs
           v-model="tabState"
           :items="tabs"
@@ -110,7 +113,6 @@ const tabs = computed<TabsItem[]>(() => [
           size="sm"
           class="w-full"
           :ui="{
-            list: 'p-2 rounded-xl backdrop-blur bg-white/65 shadow-xl',
             indicator: 'rounded-xl bg-zinc-900',
             trigger:
               'cursor-pointer min-h-14 flex-col gap-1 rounded-xl !border-transparent px-1.5 py-3 text-[11px] font-medium leading-none',

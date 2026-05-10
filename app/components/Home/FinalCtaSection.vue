@@ -7,7 +7,7 @@ const { isVisible: ctaVisible } = useScrollReveal(ctaSection)
 </script>
 
 <template>
-  <section id="start" ref="ctaSection" class="py-24 px-4 bg-amber-500">
+  <section id="start" ref="ctaSection" class="py-24 px-4 bg-primary">
     <div
       class="max-w-3xl mx-auto text-center transition-all duration-700"
       :class="ctaVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'"

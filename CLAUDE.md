@@ -29,19 +29,18 @@ All source lives in `app/`:
 - `app/pages/` — file-based routing
 - `app/components/` — auto-imported Vue components
 - `app/assets/css/main.css` — global styles entry point (imported by `nuxt.config.ts`)
-- `app/assets/css/theme.css` — standalone color reference (not imported; `main.css` is the source of truth)
 
 ## Design System
 
-Custom color palette defined in `app/assets/css/main.css` via `@theme static {}`:
+Theme colors are configured through Nuxt UI semantic tokens:
 
-| Token     | Scale name | Use                                       |
-| --------- | ---------- | ----------------------------------------- |
-| `primary` | `gold`     | Brand accent (buttons, links, focus ring) |
-| `neutral` | `warm`     | Text, backgrounds, borders                |
-| `olive`   | `olive`    | Secondary accent                          |
+| Token       | Scale name | Use                                |
+| ----------- | ---------- | ---------------------------------- |
+| `primary`   | `zinc`     | Main actions and inverted surfaces |
+| `secondary` | `sky`      | Instagram-like action accent       |
+| `neutral`   | `zinc`     | Text, backgrounds, borders         |
 
-Nuxt UI maps `--ui-color-primary-{n}` → `--color-gold-{n}` automatically. Use `color="primary"` on components; use `color="olive"` for secondary accents. Light/dark semantic `--ui-*` variables are overridden in `:root` and `.dark` blocks in `main.css`.
+Use Nuxt UI semantic classes such as `text-muted`, `bg-elevated`, `bg-inverted`, and component props like `color="primary"` or `color="secondary"`. The app intentionally supports light mode only; semantic `--ui-*` variables are overridden in the `:root` block in `main.css`.
 
 The header is styled floating/rounded via `app.config.ts` slot overrides — do not add a `border` or sticky class directly on `UHeader` or it will conflict.
 
