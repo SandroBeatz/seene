@@ -22,7 +22,7 @@ withDefaults(
 </script>
 
 <template>
-  <div class="flex flex-col gap-6 py-2">
+  <div class="flex flex-col gap-6 py-2 ">
     <div>
       <h4 class="text-lg font-bold text-text mb-2">Обо мне</h4>
       <p v-if="bio" class="text-text leading-relaxed">{{ bio }}</p>

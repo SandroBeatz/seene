@@ -31,6 +31,12 @@ export default defineAppConfig({
       }
     },
 
+    drawer: {
+      slots: {
+        overlay: 'bg-neutral-800/50 backdrop-blur-sm'
+      }
+    },
+
     empty: {
       slots: {
         avatar: 'bg-neutral-100 text-primary'
