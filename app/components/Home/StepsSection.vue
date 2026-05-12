@@ -11,9 +11,7 @@ const howSteps = computed(() => [
 
 <template>
   <UPageSection id="steps" :ui="{ root: 'bg-muted', container: 'py-16!' }">
-    <h2
-      class="text-2xl font-bold text-center text-highlighted mb-14"
-    >
+    <h2 class="text-2xl font-bold text-center text-highlighted mb-14">
       {{ $ts('steps.title') }}
     </h2>
     <div class="grid grid-cols-4 gap-8">
