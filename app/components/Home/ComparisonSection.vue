@@ -12,7 +12,7 @@ const comparisonRows = computed(() => [
 
 <template>
   <UPageSection id="comparison" :ui="{ root: 'bg-inverted' }">
-    <h2 class="text-2xl font-bold text-center text-white mb-12">
+    <h2 class="text-2xl font-bold text-center text-white mb-10">
       {{ $ts('comparison.title') }}
     </h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -40,7 +40,7 @@ const comparisonRows = computed(() => [
       </UCard>
       <UCard
         :ui="{
-          root: 'bg-rose-800/10 ring-rose-800/60 divide-rose-800/60',
+          root: 'bg-violet-800/10 ring-violet-800/60 divide-violet-800/60',
           body: 'p-0!'
         }"
       >

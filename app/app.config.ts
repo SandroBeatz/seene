@@ -8,8 +8,8 @@ export default defineAppConfig({
 
     header: {
       slots: {
-        root: 'h-(--ui-header-height)',
-      },
+        root: 'h-(--ui-header-height)'
+      }
     },
 
     button: {
@@ -34,6 +34,11 @@ export default defineAppConfig({
     pageCard: {
       slots: {
         root: 'rounded-xl shadow-lg'
+      }
+    },
+    pageSection: {
+      slots: {
+        container: 'py-12 sm:py-18 lg:py-24'
       }
     }
   }
