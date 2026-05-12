@@ -26,7 +26,7 @@ export interface MasterService {
   name: string
   description: string | null
   duration: number
-  price: string
+  price: string | number
   color: string
   sort_order: number
 }

@@ -30,8 +30,16 @@ const selectedServices = computed(() =>
 const totalDuration = computed(() => selectedServices.value.reduce((sum, s) => sum + s.duration, 0))
 
 const totalPrice = computed(() =>
-  selectedServices.value.reduce((sum, s) => sum + parseFloat(s.price), 0)
+  selectedServices.value.reduce((sum, s) => sum + servicePriceAsNumber(s.price), 0)
 )
+
+function servicePriceAsNumber(price: MasterService['price']) {
+  if (typeof price === 'number') return price
+
+  const parsed = Number.parseFloat(price.replace(/[^\d,.-]/g, '').replace(',', '.'))
+
+  return Number.isFinite(parsed) ? parsed : 0
+}
 
 function formatDateTime(slot: string | null) {
   if (!slot) return ''

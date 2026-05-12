@@ -6,9 +6,10 @@ definePageMeta({ layout: 'master' })
 
 const { setTheme } = useMasterTheme()
 const route = useRoute()
-const { $ts } = useI18n()
+const { $ts, $localePath, getLocale } = useI18n()
 
 const tabState = ref('home')
+const selectedServiceIds = ref<string[]>([])
 
 const username = computed(() => route.params.username as string)
 
@@ -50,6 +51,59 @@ const tabs = computed<TabsItem[]>(() => [
     value: 'about'
   }
 ])
+
+const selectedServices = computed(() =>
+  (data.value?.services ?? []).filter((service) => selectedServiceIds.value.includes(service.id))
+)
+
+const selectedServicesCount = computed(() => selectedServices.value.length)
+
+const totalDuration = computed(() =>
+  selectedServices.value.reduce((total, service) => total + service.duration, 0)
+)
+
+const totalPrice = computed(() =>
+  selectedServices.value.reduce((total, service) => total + servicePriceAsNumber(service.price), 0)
+)
+
+const formattedTotalPrice = computed(() =>
+  new Intl.NumberFormat(getLocale(), {
+    maximumFractionDigits: 2
+  }).format(totalPrice.value)
+)
+
+const scrollToPageTop = () => {
+  if (import.meta.server) return
+
+  requestAnimationFrame(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  })
+}
+
+function servicePriceAsNumber(price: MasterPageData['services'][number]['price']) {
+  if (typeof price === 'number') return price
+
+  const parsed = Number.parseFloat(price.replace(/[^\d,.-]/g, '').replace(',', '.'))
+
+  return Number.isFinite(parsed) ? parsed : 0
+}
+
+function bookSelectedServices() {
+  const bookingState = useBookingState(username.value)
+
+  bookingState.value = {
+    step: 2,
+    selectedServiceIds: [...selectedServiceIds.value],
+    selectedDate: null,
+    selectedSlot: null,
+    note: '',
+    phone: '',
+    otpToken: '',
+    booking: null
+  }
+
+  return navigateTo($localePath(`/${username.value}/book`))
+}
 </script>
 
 <template>
@@ -85,7 +139,11 @@ const tabs = computed<TabsItem[]>(() => [
         </template>
 
         <template #services>
-          <MasterTabServices :categories="data.categories" :services="data.services" />
+          <MasterTabServices
+            v-model="selectedServiceIds"
+            :categories="data.categories"
+            :services="data.services"
+          />
         </template>
 
         <template #portfolio>
@@ -104,8 +162,18 @@ const tabs = computed<TabsItem[]>(() => [
 
       <nav
         :aria-label="$ts('master.tabs.navigationAria')"
-        class="mt-auto backdrop-blur bg-white/65 py-2 px-4 sticky bottom-0 z-50"
+        class="mt-auto backdrop-blur bg-white/65 py-2 px-4 sticky bottom-0 rounded-t-lg z-50"
+        @click.capture="scrollToPageTop"
       >
+        <MasterServicesSummary
+          v-if="selectedServicesCount > 0 && tabState === 'services'"
+          :selected-count="selectedServicesCount"
+          :total-price="formattedTotalPrice"
+          :total-duration="totalDuration"
+          @book="bookSelectedServices"
+          class="py-2 mb-2"
+        />
+
         <UTabs
           v-model="tabState"
           :items="tabs"

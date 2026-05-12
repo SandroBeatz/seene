@@ -17,6 +17,11 @@
       "currency_rub": "₽",
       "empty": "Aucun service ajouté pour l'instant.",
       "select": "Choisir",
+      "selected": "Choisi",
+      "summary": {
+        "selectedCount": "{count} choisi(s)",
+        "book": "Choisir une date"
+      },
       "details": {
         "open": "Détails",
         "descriptionFallback": "Un service soigné avec préparation, travail à un rythme confortable et conseils de finition après le rendez-vous.",

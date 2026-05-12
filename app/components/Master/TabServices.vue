@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import type { MasterService, MasterServiceGroup, ServiceCategory } from '#shared/types/master'
 
+const { $ts } = useI18n()
+
 const props = defineProps<{
   categories?: ServiceCategory[]
   services?: MasterService[]
 }>()
+
+const selectedServiceIds = defineModel<string[]>({ default: () => [] })
 
 const galleryPhotos = [
   {
@@ -64,8 +68,28 @@ const groups = computed<MasterServiceGroup[]>(() => {
   return grouped
 })
 
+watch(
+  () => props.services?.map((service) => service.id) ?? [],
+  (serviceIds) => {
+    selectedServiceIds.value = selectedServiceIds.value.filter((id) => serviceIds.includes(id))
+  }
+)
+
 function serviceDescription(service: MasterService) {
   return service.description?.trim() || null
+}
+
+function isServiceSelected(serviceId: string) {
+  return selectedServiceIds.value.includes(serviceId)
+}
+
+function toggleService(serviceId: string) {
+  if (isServiceSelected(serviceId)) {
+    selectedServiceIds.value = selectedServiceIds.value.filter((id) => id !== serviceId)
+    return
+  }
+
+  selectedServiceIds.value = [...selectedServiceIds.value, serviceId]
 }
 </script>
 
@@ -86,9 +110,9 @@ function serviceDescription(service: MasterService) {
       </p>
       <template v-for="service in group.items" :key="service.id">
         <UCard :ui="{ root: 'shadow-none!' }">
-          <div class="flex justify-between">
-            <div class="flex flex-col gap-2">
-              <h3 class="text-lg font-medium text-highlighted">{{ service.name }}</h3>
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex min-w-0 flex-col gap-2">
+              <h3 class="text-base font-medium text-highlighted">{{ service.name }}</h3>
 
               <div class="flex gap-2 text-xs">
                 <span class="text-subtle"
@@ -175,8 +199,13 @@ function serviceDescription(service: MasterService) {
                 </UDrawer>
               </div>
             </div>
-            <div>
-              <UButton>{{ $ts('master.services.select') }}</UButton>
+            <div class="shrink-0">
+              <UButton
+                :variant="isServiceSelected(service.id) ? 'solid' : 'outline'"
+                :color="isServiceSelected(service.id) ? 'primary' : 'neutral'"
+                :icon="isServiceSelected(service.id) ? 'i-lucide-check' : 'i-lucide-plus'"
+                @click="toggleService(service.id)"
+              />
             </div>
           </div>
         </UCard>
