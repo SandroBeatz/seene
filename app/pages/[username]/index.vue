@@ -53,7 +53,7 @@ const tabs = computed<TabsItem[]>(() => [
 </script>
 
 <template>
-  <div class="max-w-lg mx-auto min-h-screen bg-zinc-200 flex flex-col">
+  <div class="max-w-lg mx-auto min-h-screen flex flex-col">
     <template v-if="status === 'pending'">
       <div class="flex flex-col items-center gap-3 py-6 px-4">
         <USkeleton class="size-24 rounded-full" />
@@ -78,7 +78,7 @@ const tabs = computed<TabsItem[]>(() => [
       <UTabs
         v-model="tabState"
         :items="tabs"
-        :ui="{ root: 'w-full flex-1', list: 'hidden', content: 'pt-4 px-4 pb-8' }"
+        :ui="{ root: 'w-full flex-1', list: 'hidden', content: 'pt-8 px-4 pb-8' }"
       >
         <template #home>
           <MasterTabHome :username="data.profile.username" />

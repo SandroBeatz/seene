@@ -16,7 +16,18 @@
       "title": "Services",
       "duration": "min",
       "currency_rub": "₽",
-      "empty": "No services listed yet."
+      "empty": "No services listed yet.",
+      "select": "Choose",
+      "details": {
+        "open": "Details",
+        "descriptionFallback": "A careful service with preparation, work at a comfortable pace, and finishing recommendations after the visit.",
+        "galleryTitle": "Work gallery",
+        "galleryAlt1": "Finished nail work with a soft glossy manicure",
+        "galleryAlt2": "Close-up of detailed nail care",
+        "galleryAlt3": "Minimal manicure result in a natural tone",
+        "galleryAlt4": "Beauty studio work process",
+        "galleryAlt5": "Polished nail design detail"
+      }
     },
     "portfolio": {
       "title": "Portfolio",

@@ -16,7 +16,18 @@
       "title": "Services",
       "duration": "min",
       "currency_rub": "₽",
-      "empty": "Aucun service ajouté pour l'instant."
+      "empty": "Aucun service ajouté pour l'instant.",
+      "select": "Choisir",
+      "details": {
+        "open": "Détails",
+        "descriptionFallback": "Un service soigné avec préparation, travail à un rythme confortable et conseils de finition après le rendez-vous.",
+        "galleryTitle": "Galerie de travaux",
+        "galleryAlt1": "Manucure brillante terminée dans un style doux",
+        "galleryAlt2": "Gros plan sur un soin détaillé des ongles",
+        "galleryAlt3": "Résultat de manucure minimaliste dans un ton naturel",
+        "galleryAlt4": "Processus de travail en studio beauté",
+        "galleryAlt5": "Détail d'un design d'ongles poli"
+      }
     },
     "portfolio": {
       "title": "Portfolio",

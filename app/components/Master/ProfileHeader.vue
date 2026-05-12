@@ -17,7 +17,7 @@ const specialtyLabel = computed(() =>
 </script>
 
 <template>
-  <div class="flex flex-col items-center gap-3 py-6 px-4 text-center bg-white rounded-b-lg">
+  <div class="flex flex-col items-center gap-3 py-6 px-4 text-center bg-neutral-100 rounded-b-3xl">
     <UAvatar :alt="initials" size="3xl" />
     <div class="flex flex-col gap-1">
       <h1 class="text-3xl font-bold text-(--ui-text-highlighted)">

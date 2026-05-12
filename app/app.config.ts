@@ -31,6 +31,12 @@ export default defineAppConfig({
       }
     },
 
+    empty: {
+      slots: {
+        avatar: 'bg-neutral-100 text-primary'
+      }
+    },
+
     pageCard: {
       slots: {
         root: 'rounded-xl shadow-lg'

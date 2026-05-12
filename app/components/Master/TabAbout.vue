@@ -1,19 +1,32 @@
 <script setup lang="ts">
-defineProps<{
-  bio?: string
-  experience?: string
-  location?: string
-  instagram?: string
-  tiktok?: string
-  specializations?: string[]
-  worksAtPlace?: boolean
-  canTravel?: boolean
-}>()
+withDefaults(
+  defineProps<{
+    bio?: string
+    experience?: string
+    location?: string
+    instagram?: string
+    tiktok?: string
+    specializations?: string[]
+    worksAtPlace?: boolean
+    canTravel?: boolean
+  }>(),
+  {
+    bio: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium aliquid animi culpa delectus dolor doloremque, esse explicabo id incidunt necessitatibus nobis, nulla obcaecati quaerat sapiente sint vero vitae voluptates. Nihil!',
+    experience: 'My experiants',
+    location: '',
+    instagram: 'seene',
+    tiktok: 'seene',
+    specializations: () => []
+  }
+)
 </script>
 
 <template>
   <div class="flex flex-col gap-6 py-2">
-    <p v-if="bio" class="text-(--ui-text) leading-relaxed">{{ bio }}</p>
+    <div>
+      <h4 class="text-lg font-bold text-text mb-2">Обо мне</h4>
+      <p v-if="bio" class="text-text leading-relaxed">{{ bio }}</p>
+    </div>
 
     <USeparator v-if="bio" />
 
