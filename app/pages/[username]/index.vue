@@ -167,11 +167,11 @@ function bookSelectedServices() {
       >
         <MasterServicesSummary
           v-if="selectedServicesCount > 0 && tabState === 'services'"
+          class="py-2 mb-2"
           :selected-count="selectedServicesCount"
           :total-price="formattedTotalPrice"
           :total-duration="totalDuration"
           @book="bookSelectedServices"
-          class="py-2 mb-2"
         />
 
         <UTabs

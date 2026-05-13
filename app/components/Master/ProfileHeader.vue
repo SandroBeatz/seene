@@ -5,7 +5,7 @@ const props = defineProps<{
   specializations: string[]
 }>()
 
-const { $t } = useI18n()
+const { $t, $ts } = useI18n()
 
 const initials = computed(() =>
   `${props.firstName[0] ?? ''}${props.lastName[0] ?? ''}`.toUpperCase()
@@ -17,19 +17,19 @@ const specialtyLabel = computed(() =>
 </script>
 
 <template>
-  <div class="flex flex-col items-center gap-3 py-6 px-4 text-center bg-neutral-100 rounded-b-3xl">
+  <div class="flex flex-col items-center gap-3 py-6 px-4 text-center bg-neutral-100 rounded-b-xl">
     <UAvatar :alt="initials" size="3xl" />
     <div class="flex flex-col gap-1">
-      <h1 class="text-3xl font-bold text-(--ui-text-highlighted)">
+      <h1 class="text-3xl font-bold text-highlighted">
         {{ firstName }} {{ lastName }}
       </h1>
-      <p class="text-sm text-(--ui-text-muted)">
+      <p class="text-sm text-muted">
         {{ specialtyLabel }}
       </p>
 
       <div class="flex justify-center">
         <UBadge icon="i-lucide-badge-check" size="md" color="primary" variant="solid">
-          Certified Expert
+          {{ $ts('master.profile.certifiedExpert') }}
         </UBadge>
       </div>
     </div>

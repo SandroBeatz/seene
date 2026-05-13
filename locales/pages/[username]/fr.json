@@ -7,6 +7,9 @@
       "about": "À propos",
       "navigationAria": "Sections du profil"
     },
+    "profile": {
+      "certifiedExpert": "Expert certifié"
+    },
     "home": {
       "book": "Réserver en ligne",
       "whatsapp": "WhatsApp",

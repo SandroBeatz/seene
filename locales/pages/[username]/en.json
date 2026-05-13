@@ -7,6 +7,9 @@
       "about": "About",
       "navigationAria": "Profile sections"
     },
+    "profile": {
+      "certifiedExpert": "Certified Expert"
+    },
     "home": {
       "book": "Book Online",
       "whatsapp": "WhatsApp",
