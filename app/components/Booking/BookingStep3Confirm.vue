@@ -110,6 +110,8 @@ const showOtpModal = ref(false)
 const otpValue = ref<number[]>([])
 const otpError = ref('')
 const otpLoading = ref(false)
+// DEV ONLY: OTP code returned by the API, shown in the modal for easier testing
+const devOtpCode = ref('')
 const resendCountdown = ref(0)
 let countdownInterval: ReturnType<typeof setInterval> | null = null
 
@@ -132,10 +134,11 @@ async function triggerConfirm() {
   }
 
   try {
-    await $fetch('/api/auth/phone/send', {
+    const result = await $fetch<{ code?: string }>('/api/auth/phone/send', {
       method: 'POST',
       body: { phone: bookingState.value.phone }
     })
+    devOtpCode.value = result.code ?? ''
     showOtpModal.value = true
     startCountdown()
   } catch {
@@ -161,10 +164,11 @@ async function resendCode() {
   otpError.value = ''
 
   try {
-    await $fetch('/api/auth/phone/send', {
+    const result = await $fetch<{ code?: string }>('/api/auth/phone/send', {
       method: 'POST',
       body: { phone: bookingState.value.phone }
     })
+    devOtpCode.value = result.code ?? ''
     startCountdown()
   } catch {
     otpError.value = 'sendFailed'
@@ -469,6 +473,15 @@ onUnmounted(() => {
             variant="subtle"
             icon="i-lucide-circle-alert"
             :title="otpErrorMessage(otpError)"
+          />
+
+          <!-- DEV ONLY: show the OTP code so it can be entered during testing -->
+          <UAlert
+            v-if="devOtpCode"
+            color="warning"
+            variant="subtle"
+            icon="i-lucide-flask-conical"
+            :title="$ts('booking.sms.devCode', { code: devOtpCode })"
           />
 
           <div class="text-sm text-(--ui-text-muted)">

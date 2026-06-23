@@ -63,6 +63,7 @@
       "codeSentTo": "Code sent to {phone}",
       "resendIn": "Resend in {countdown}",
       "resend": "Resend code",
+      "devCode": "Test code: {code}",
       "invalidCode": "Invalid code, please try again",
       "expiredCode": "Code has expired, please request a new one",
       "tooManyAttempts": "Too many attempts, please request a new code",
