@@ -60,6 +60,14 @@ export default defineNuxtConfig({
     ],
     defaultLocale: 'en',
     translationDir: 'locales',
-    meta: true
+    meta: true,
+    // Locale is owned explicitly: the master's configured language on
+    // `/[username]` pages (see `app/middleware/master-locale.ts`) and the URL
+    // prefix everywhere else. The module's browser-`Accept-Language` detection
+    // and automatic redirects fight that authority and produced an infinite
+    // redirect loop on devices whose browser language differed from the
+    // master's (ERR_TOO_MANY_REDIRECTS, reproducible on mobile). Keep both off.
+    autoDetectLanguage: false,
+    redirects: false
   }
 })

@@ -1,7 +1,5 @@
 import type { MasterPageData } from '#shared/types/master'
-
-const VALID_LOCALES = ['en', 'fr', 'ru']
-const LOCALE_PREFIX = /^\/(en|fr|ru)(?=\/|$)/
+import { localeOfPath, resolveLocaleRedirect } from '#shared/utils/masterLocale'
 
 /**
  * Hard locale override for a master's public pages (`/[username]` and
@@ -15,6 +13,15 @@ const LOCALE_PREFIX = /^\/(en|fr|ru)(?=\/|$)/
  * locale-prefixed equivalent of the requested route. Doing this in a route
  * middleware keeps it SSR-safe: the 302 happens before the page renders, so
  * there is no wrong-language flash.
+ *
+ * The locale of the *target* route is parsed from `to.path` (see
+ * `localeOfPath`) — NOT read from `$getLocale()`, which ignores its argument
+ * and returns the global active locale. During the redirect round-trip that
+ * active locale lags `to`, so comparing against it never satisfied the
+ * "already correct" guard and the middleware looped forever
+ * (ERR_TOO_MANY_REDIRECTS). Parsing the path is deterministic and self-
+ * consistent with `$localePath`, so the redirect target reads back as the
+ * desired locale and the loop terminates after one hop.
  *
  * NOTE: for now we use `master_settings.language`, which is really the
  * dashboard UI language. Once a dedicated B2C language field exists, prefer
@@ -41,14 +48,15 @@ export default defineNuxtRouteMiddleware(async (to) => {
     }
   }
 
-  const lang = langState.value
-  if (!lang || !VALID_LOCALES.includes(lang)) return
+  const redirect = resolveLocaleRedirect(to.path, username, langState.value)
+  if (!redirect) return
 
-  // Already on the master's locale — nothing to do (also breaks the redirect loop).
-  if (nuxtApp.$getLocale(to) === lang) return
+  const target = nuxtApp.$localePath(redirect.barePath, redirect.locale)
 
-  const isBook = to.path.replace(LOCALE_PREFIX, '').endsWith('/book')
-  const barePath = isBook ? `/${username}/book` : `/${username}`
+  // Final guard: never redirect a path onto itself / onto another path that
+  // still resolves to the same locale. Protects against any `$localePath`
+  // edge case re-introducing a loop.
+  if (localeOfPath(target) === localeOfPath(to.path)) return
 
-  return navigateTo(nuxtApp.$localePath(barePath, lang), { redirectCode: 302 })
+  return navigateTo(target, { redirectCode: 302 })
 })
