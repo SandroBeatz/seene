@@ -4,7 +4,11 @@
       "home": "Главная",
       "services": "Услуги",
       "portfolio": "Портфолио",
-      "about": "Обо мне"
+      "about": "Обо мне",
+      "navigationAria": "Разделы профиля"
+    },
+    "profile": {
+      "certifiedExpert": "Сертифицированный эксперт"
     },
     "home": {
       "book": "Онлайн запись",
@@ -43,8 +47,11 @@
       "experience": "Опыт",
       "location": "Город",
       "socials": "Соцсети",
+      "whatsappAria": "WhatsApp",
+      "telegramAria": "Telegram",
       "instagramAria": "Instagram",
       "tiktokAria": "TikTok",
+      "emailAria": "Email",
       "workFormat": "Формат работы",
       "worksAtPlace": "Принимает клиентов у себя",
       "canTravel": "Выезжает к клиенту"

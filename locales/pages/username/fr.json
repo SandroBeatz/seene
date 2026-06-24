@@ -4,7 +4,11 @@
       "home": "Accueil",
       "services": "Services",
       "portfolio": "Portfolio",
-      "about": "À propos"
+      "about": "À propos",
+      "navigationAria": "Sections du profil"
+    },
+    "profile": {
+      "certifiedExpert": "Expert certifié"
     },
     "home": {
       "book": "Réserver en ligne",
@@ -43,8 +47,11 @@
       "experience": "Expérience",
       "location": "Ville",
       "socials": "Réseaux sociaux",
+      "whatsappAria": "WhatsApp",
+      "telegramAria": "Telegram",
       "instagramAria": "Instagram",
       "tiktokAria": "TikTok",
+      "emailAria": "E-mail",
       "workFormat": "Format de travail",
       "worksAtPlace": "Reçoit les clients à son adresse",
       "canTravel": "Se déplace chez le client"

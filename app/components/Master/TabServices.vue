@@ -7,6 +7,7 @@ const props = defineProps<{
   categories?: ServiceCategory[]
   services?: MasterService[]
   currency?: string
+  bookingEnabled?: boolean
 }>()
 
 const { formatPrice } = useMasterFormat(() => ({ currency: props.currency }))
@@ -202,7 +203,7 @@ function toggleService(serviceId: string) {
                 </UDrawer>
               </div>
             </div>
-            <div class="shrink-0">
+            <div v-if="bookingEnabled !== false" class="shrink-0">
               <UButton
                 :variant="isServiceSelected(service.id) ? 'solid' : 'outline'"
                 :color="isServiceSelected(service.id) ? 'primary' : 'neutral'"

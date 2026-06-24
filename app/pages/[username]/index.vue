@@ -135,6 +135,7 @@ function bookSelectedServices() {
             :categories="data.categories"
             :services="data.services"
             :currency="data.settings.currency"
+            :booking-enabled="data.settings.online_booking_enabled"
           />
         </template>
 

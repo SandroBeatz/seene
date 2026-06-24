@@ -5,7 +5,14 @@ type FormatSettings = Partial<Pick<MasterSettings, 'currency' | 'time_format' | 
 
 // Mirror the API's safe defaults so formatting stays sensible while the master
 // data is still loading (settings undefined) or a field is missing.
-const FALLBACK = { currency: 'USD', time_format: 24 as 12 | 24, date_format: 'DD.MM.YYYY' }
+const FALLBACK = {
+  currency: DEFAULT_CURRENCY_CODE,
+  time_format: 24 as 12 | 24,
+  date_format: 'DD.MM.YYYY'
+}
+
+// Non-breaking space keeps the amount and symbol on the same line.
+const NBSP = ' '
 
 /** Parse a price that may arrive as a number or a localized string. */
 export function priceToNumber(price: number | string): number {
@@ -51,16 +58,24 @@ export function useMasterFormat(settings: MaybeRefOrGetter<FormatSettings | unde
 
   function formatPrice(price: number | string): string {
     const value = priceToNumber(price)
-    try {
-      return new Intl.NumberFormat(getLocale(), {
-        style: 'currency',
-        currency: resolved.value.currency,
-        maximumFractionDigits: 2
-      }).format(value)
-    } catch {
-      // Invalid/unknown currency code — fall back to a plain number.
-      return new Intl.NumberFormat(getLocale(), { maximumFractionDigits: 2 }).format(value)
-    }
+
+    // Symbol/position/decimals come from the currency catalogue (locale-independent),
+    // not from Intl currency formatting. The locale only drives digit grouping.
+    const currency = getCurrency(resolved.value.currency) ?? getCurrency(DEFAULT_CURRENCY_CODE)
+    const decimals = currency?.decimals ?? 2
+
+    const amount = new Intl.NumberFormat(getLocale(), {
+      style: 'decimal',
+      useGrouping: true,
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals
+    }).format(value)
+
+    if (!currency) return amount
+
+    return currency.position === 'prefix'
+      ? `${currency.symbol}${NBSP}${amount}`
+      : `${amount}${NBSP}${currency.symbol}`
   }
 
   function formatTime(value: Date | string): string {

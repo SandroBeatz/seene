@@ -4,7 +4,11 @@
       "home": "Home",
       "services": "Services",
       "portfolio": "Portfolio",
-      "about": "About"
+      "about": "About",
+      "navigationAria": "Profile sections"
+    },
+    "profile": {
+      "certifiedExpert": "Certified Expert"
     },
     "home": {
       "book": "Book Online",
@@ -43,8 +47,11 @@
       "experience": "Experience",
       "location": "Location",
       "socials": "Social Media",
+      "whatsappAria": "WhatsApp",
+      "telegramAria": "Telegram",
       "instagramAria": "Instagram",
       "tiktokAria": "TikTok",
+      "emailAria": "Email",
       "workFormat": "Work format",
       "worksAtPlace": "Accepts clients at own location",
       "canTravel": "Travels to client"
