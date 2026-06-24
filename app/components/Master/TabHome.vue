@@ -1,6 +1,7 @@
 <script setup lang="ts">
 defineProps<{
   username: string
+  bookingEnabled?: boolean
   whatsapp?: string
   telegram?: string
 }>()
@@ -11,6 +12,7 @@ const { $ts, $localePath } = useI18n()
 <template>
   <div class="flex flex-col gap-3">
     <UButton
+      v-if="bookingEnabled !== false"
       :to="$localePath(`/${username}/book`)"
       icon="i-lucide-calendar"
       :label="$ts('master.home.book')"

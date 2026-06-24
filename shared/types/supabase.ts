@@ -191,58 +191,79 @@ export type Database = {
       master_profile: {
         Row: {
           address: string | null
+          avatar_url: string | null
+          bio: string | null
           can_travel: boolean
           city: string | null
+          contact_email: string | null
           country: string
           created_at: string
           first_name: string
           house_number: string | null
           id: string
+          instagram: string | null
           last_name: string
           phone: string
           place_id: string | null
           schedule: Json
           specializations: string[]
+          telegram: string | null
+          tiktok: string | null
           user_id: string
           username: string
+          whatsapp: string | null
           works_at_place: boolean
           zip_code: string | null
         }
         Insert: {
           address?: string | null
+          avatar_url?: string | null
+          bio?: string | null
           can_travel?: boolean
           city?: string | null
+          contact_email?: string | null
           country?: string
           created_at?: string
           first_name: string
           house_number?: string | null
           id?: string
+          instagram?: string | null
           last_name: string
           phone: string
           place_id?: string | null
           schedule: Json
           specializations: string[]
+          telegram?: string | null
+          tiktok?: string | null
           user_id: string
           username: string
+          whatsapp?: string | null
           works_at_place?: boolean
           zip_code?: string | null
         }
         Update: {
           address?: string | null
+          avatar_url?: string | null
+          bio?: string | null
           can_travel?: boolean
           city?: string | null
+          contact_email?: string | null
           country?: string
           created_at?: string
           first_name?: string
           house_number?: string | null
           id?: string
+          instagram?: string | null
           last_name?: string
           phone?: string
           place_id?: string | null
           schedule?: Json
           specializations?: string[]
+          telegram?: string | null
+          tiktok?: string | null
           user_id?: string
           username?: string
+          whatsapp?: string | null
           works_at_place?: boolean
           zip_code?: string | null
         }
@@ -250,31 +271,55 @@ export type Database = {
       }
       master_settings: {
         Row: {
+          booking_buffer_minutes: number
+          booking_default_status: string
+          booking_min_notice_minutes: number
           calendar_first_day: number
           calendar_slot_step_minutes: number
           created_at: string
+          currency: string
+          date_format: string
           default_calendar_view: string
           id: string
+          language: string
+          online_booking_enabled: boolean
+          theme: string
           time_format: number
           updated_at: string
           user_id: string
         }
         Insert: {
+          booking_buffer_minutes?: number
+          booking_default_status?: string
+          booking_min_notice_minutes?: number
           calendar_first_day?: number
           calendar_slot_step_minutes?: number
           created_at?: string
+          currency?: string
+          date_format?: string
           default_calendar_view?: string
           id?: string
+          language?: string
+          online_booking_enabled?: boolean
+          theme?: string
           time_format?: number
           updated_at?: string
           user_id: string
         }
         Update: {
+          booking_buffer_minutes?: number
+          booking_default_status?: string
+          booking_min_notice_minutes?: number
           calendar_first_day?: number
           calendar_slot_step_minutes?: number
           created_at?: string
+          currency?: string
+          date_format?: string
           default_calendar_view?: string
           id?: string
+          language?: string
+          online_booking_enabled?: boolean
+          theme?: string
           time_format?: number
           updated_at?: string
           user_id?: string

@@ -77,7 +77,23 @@ function goNext() {
 </script>
 
 <template>
-  <BookingShell :step="step" :can-proceed="canProceed" @back="goBack" @next="goNext">
+  <div
+    v-if="data && !data.settings.online_booking_enabled"
+    class="mx-auto flex min-h-dvh max-w-lg flex-col items-center justify-center gap-4 bg-[var(--ui-bg)] px-4 text-center"
+  >
+    <UIcon name="i-lucide-calendar-x" class="size-16 text-muted" />
+    <div class="flex flex-col gap-2">
+      <p class="text-lg font-semibold">{{ $ts('booking.disabled.title') }}</p>
+      <p class="text-muted">{{ $ts('booking.disabled.description') }}</p>
+    </div>
+    <UButton
+      :to="$localePath(`/${username}`)"
+      :label="$ts('booking.disabled.backToProfile')"
+      variant="outline"
+    />
+  </div>
+
+  <BookingShell v-else :step="step" :can-proceed="canProceed" @back="goBack" @next="goNext">
     <BookingStep1Services
       v-if="step === 1"
       :username="username"

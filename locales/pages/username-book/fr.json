@@ -73,6 +73,11 @@
       "bookingFailed": "Impossible de créer la réservation, veuillez réessayer",
       "slotUnavailable": "Ce créneau n'est plus disponible, veuillez en choisir un autre",
       "nameRequired": "Le prénom est requis"
+    },
+    "disabled": {
+      "title": "Réservation en ligne indisponible",
+      "description": "Ce spécialiste n'accepte pas les réservations en ligne pour le moment.",
+      "backToProfile": "Retour au profil"
     }
   }
 }

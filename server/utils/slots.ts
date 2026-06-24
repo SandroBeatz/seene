@@ -1,7 +1,6 @@
 export const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
 export const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 export const MINUTE_MS = 60 * 1000
-export const SLOT_STEP_MINUTES = 30
 
 const DAY_NAMES = [
   'sunday',
@@ -177,12 +176,16 @@ function subtractIntervals(interval: Interval, subtracts: Interval[]): Interval[
   return segments
 }
 
-function getBusyIntervals(appointments: AppointmentRow[], timeBlocks: TimeBlockRow[]): Interval[] {
+function getBusyIntervals(
+  appointments: AppointmentRow[],
+  timeBlocks: TimeBlockRow[],
+  bufferMinutes: number
+): Interval[] {
   const busy: Interval[] = []
 
   for (const apt of appointments) {
     const start = new Date(apt.start_at).getTime()
-    busy.push({ start, end: start + apt.duration * MINUTE_MS })
+    busy.push({ start, end: start + (apt.duration + bufferMinutes) * MINUTE_MS })
   }
 
   for (const block of timeBlocks) {
@@ -201,7 +204,11 @@ export function buildFreeSlots({
   appointments,
   timeBlocks,
   serviceDuration,
-  timezone
+  timezone,
+  slotStepMinutes = 15,
+  bufferMinutes = 0,
+  minNoticeMinutes = 0,
+  nowMs = Date.now()
 }: {
   date: string
   scheduleDay: ScheduleDay
@@ -209,17 +216,23 @@ export function buildFreeSlots({
   timeBlocks: TimeBlockRow[]
   serviceDuration: number
   timezone: string
+  slotStepMinutes?: number
+  bufferMinutes?: number
+  minNoticeMinutes?: number
+  nowMs?: number
 }): string[] {
   const workingIntervals = getWorkingIntervals(date, scheduleDay, timezone)
   if (!workingIntervals.length) return []
 
-  const busyIntervals = getBusyIntervals(appointments, timeBlocks)
+  const busyIntervals = getBusyIntervals(appointments, timeBlocks, bufferMinutes)
   const duration = serviceDuration * MINUTE_MS
-  const step = SLOT_STEP_MINUTES * MINUTE_MS
+  const step = slotStepMinutes * MINUTE_MS
+  const minStartMs = nowMs + minNoticeMinutes * MINUTE_MS
   const slots = new Set<string>()
 
   for (const interval of workingIntervals) {
     for (let t = interval.start; t + duration <= interval.end; t += step) {
+      if (t < minStartMs) continue
       const end = t + duration
       const overlaps = busyIntervals.some((b) => t < b.end && end > b.start)
       if (!overlaps) slots.add(new Date(t).toISOString())
@@ -235,7 +248,11 @@ export function hasAnyFreeSlot({
   appointments,
   timeBlocks,
   serviceDuration,
-  timezone
+  timezone,
+  slotStepMinutes = 15,
+  bufferMinutes = 0,
+  minNoticeMinutes = 0,
+  nowMs = Date.now()
 }: {
   date: string
   scheduleDay: ScheduleDay
@@ -243,16 +260,22 @@ export function hasAnyFreeSlot({
   timeBlocks: TimeBlockRow[]
   serviceDuration: number
   timezone: string
+  slotStepMinutes?: number
+  bufferMinutes?: number
+  minNoticeMinutes?: number
+  nowMs?: number
 }): boolean {
   const workingIntervals = getWorkingIntervals(date, scheduleDay, timezone)
   if (!workingIntervals.length) return false
 
-  const busyIntervals = getBusyIntervals(appointments, timeBlocks)
+  const busyIntervals = getBusyIntervals(appointments, timeBlocks, bufferMinutes)
   const duration = serviceDuration * MINUTE_MS
-  const step = SLOT_STEP_MINUTES * MINUTE_MS
+  const step = slotStepMinutes * MINUTE_MS
+  const minStartMs = nowMs + minNoticeMinutes * MINUTE_MS
 
   for (const interval of workingIntervals) {
     for (let t = interval.start; t + duration <= interval.end; t += step) {
+      if (t < minStartMs) continue
       const end = t + duration
       const overlaps = busyIntervals.some((b) => t < b.end && end > b.start)
       if (!overlaps) return true

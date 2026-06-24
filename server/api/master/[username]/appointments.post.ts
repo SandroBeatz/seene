@@ -60,6 +60,25 @@ export default defineEventHandler(async (event) => {
   }
 
   const supabase = useServiceSupabase()
+
+  const { data: profileRow } = await supabase
+    .from('master_profile')
+    .select('user_id')
+    .eq('username', username)
+    .maybeSingle()
+
+  if (profileRow) {
+    const { data: settingsRow } = await supabase
+      .from('master_settings')
+      .select('online_booking_enabled')
+      .eq('user_id', profileRow.user_id)
+      .maybeSingle()
+
+    if (!settingsRow || !settingsRow.online_booking_enabled) {
+      throw createError({ statusCode: 403, message: 'Online booking is disabled' })
+    }
+  }
+
   const { data, error } = await supabase.rpc('create_appointment_from_booking', {
     p_username: username,
     p_service_ids: serviceIds,

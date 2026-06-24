@@ -49,12 +49,19 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, message: 'Master not found' })
   }
 
-  const { data: services, error: servicesError } = await supabase
-    .from('service')
-    .select('id, duration')
-    .eq('user_id', profile.user_id)
-    .eq('is_active', true)
-    .in('id', serviceIds)
+  const [{ data: services, error: servicesError }, { data: settingsRow }] = await Promise.all([
+    supabase
+      .from('service')
+      .select('id, duration')
+      .eq('user_id', profile.user_id)
+      .eq('is_active', true)
+      .in('id', serviceIds),
+    supabase
+      .from('master_settings')
+      .select('calendar_slot_step_minutes, booking_buffer_minutes, booking_min_notice_minutes')
+      .eq('user_id', profile.user_id)
+      .maybeSingle()
+  ])
 
   if (servicesError) {
     throw createError({ statusCode: 500, message: 'Failed to load services' })
@@ -63,6 +70,10 @@ export default defineEventHandler(async (event) => {
   if (!services || services.length !== serviceIds.length) {
     throw createError({ statusCode: 400, message: 'One or more services are unavailable' })
   }
+
+  const slotStepMinutes = settingsRow?.calendar_slot_step_minutes ?? 15
+  const bufferMinutes = settingsRow?.booking_buffer_minutes ?? 0
+  const minNoticeMinutes = settingsRow?.booking_min_notice_minutes ?? 0
 
   const serviceDuration = services.reduce((total, service) => total + service.duration, 0)
   const schedule = getProfileSchedule(profile.schedule)
@@ -126,7 +137,10 @@ export default defineEventHandler(async (event) => {
       appointments: dayAppointments as AppointmentRow[],
       timeBlocks: dayBlocks as TimeBlockRow[],
       serviceDuration,
-      timezone
+      timezone,
+      slotStepMinutes,
+      bufferMinutes,
+      minNoticeMinutes
     })
 
     return { date, available }

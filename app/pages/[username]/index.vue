@@ -135,7 +135,12 @@ function bookSelectedServices() {
         :ui="{ root: 'w-full flex-1', list: 'hidden', content: 'pt-8 px-4 pb-8' }"
       >
         <template #home>
-          <MasterTabHome :username="data.profile.username" />
+          <MasterTabHome
+            :username="data.profile.username"
+            :booking-enabled="data.settings.online_booking_enabled"
+            :whatsapp="data.profile.whatsapp ?? undefined"
+            :telegram="data.profile.telegram ?? undefined"
+          />
         </template>
 
         <template #services>
@@ -166,7 +171,7 @@ function bookSelectedServices() {
         @click.capture="scrollToPageTop"
       >
         <MasterServicesSummary
-          v-if="selectedServicesCount > 0 && tabState === 'services'"
+          v-if="selectedServicesCount > 0 && tabState === 'services' && data?.settings.online_booking_enabled"
           class="py-2 mb-2"
           :selected-count="selectedServicesCount"
           :total-price="formattedTotalPrice"

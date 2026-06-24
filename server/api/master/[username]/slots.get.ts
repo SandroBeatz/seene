@@ -38,12 +38,25 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, message: 'Master not found' })
   }
 
-  const { data: services, error: servicesError } = await supabase
-    .from('service')
-    .select('id, duration')
-    .eq('user_id', profile.user_id)
-    .eq('is_active', true)
-    .in('id', serviceIds)
+  const [{ data: services, error: servicesError }, { data: settingsRow }] = await Promise.all([
+    supabase
+      .from('service')
+      .select('id, duration')
+      .eq('user_id', profile.user_id)
+      .eq('is_active', true)
+      .in('id', serviceIds),
+    supabase
+      .from('master_settings')
+      .select(
+        'online_booking_enabled, calendar_slot_step_minutes, booking_buffer_minutes, booking_min_notice_minutes'
+      )
+      .eq('user_id', profile.user_id)
+      .maybeSingle()
+  ])
+
+  if (!settingsRow || !settingsRow.online_booking_enabled) {
+    throw createError({ statusCode: 403, message: 'Online booking is disabled' })
+  }
 
   if (servicesError) {
     throw createError({ statusCode: 500, message: 'Failed to load services' })
@@ -53,6 +66,10 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, message: 'One or more services are unavailable' })
   }
 
+  const slotStepMinutes = settingsRow.calendar_slot_step_minutes ?? 15
+  const bufferMinutes = settingsRow.booking_buffer_minutes ?? 0
+  const minNoticeMinutes = settingsRow.booking_min_notice_minutes ?? 0
+
   const serviceDuration = services.reduce((total, service) => total + service.duration, 0)
   const schedule = getProfileSchedule(profile.schedule)
   const timezone = getProfileTimezone(profile.schedule)
@@ -61,6 +78,8 @@ export default defineEventHandler(async (event) => {
     return { slots: [], nextAvailableDate: null }
   }
 
+  const slotParams = { slotStepMinutes, bufferMinutes, minNoticeMinutes }
+
   const slots = await getSlotsForDate({
     supabase,
     masterId: profile.id,
@@ -68,7 +87,8 @@ export default defineEventHandler(async (event) => {
     date: from,
     schedule,
     serviceDuration,
-    timezone
+    timezone,
+    ...slotParams
   })
 
   const nextAvailableDate =
@@ -81,7 +101,8 @@ export default defineEventHandler(async (event) => {
           fromDate: from,
           schedule,
           serviceDuration,
-          timezone
+          timezone,
+          ...slotParams
         })
 
   return { slots, nextAvailableDate }
@@ -121,7 +142,10 @@ async function getSlotsForDate({
   date,
   schedule,
   serviceDuration,
-  timezone
+  timezone,
+  slotStepMinutes,
+  bufferMinutes,
+  minNoticeMinutes
 }: {
   supabase: ReturnType<typeof useServiceSupabase>
   masterId: string
@@ -130,6 +154,9 @@ async function getSlotsForDate({
   schedule: Schedule
   serviceDuration: number
   timezone: string
+  slotStepMinutes: number
+  bufferMinutes: number
+  minNoticeMinutes: number
 }) {
   const scheduleDay = getScheduleDay(schedule, date)
   if (!scheduleDay?.enabled) return []
@@ -183,7 +210,10 @@ async function getSlotsForDate({
     appointments: [...(appointments ?? []), ...bookingRows] as AppointmentRow[],
     timeBlocks: (timeBlocks ?? []) as TimeBlockRow[],
     serviceDuration,
-    timezone
+    timezone,
+    slotStepMinutes,
+    bufferMinutes,
+    minNoticeMinutes
   })
 }
 
@@ -194,7 +224,10 @@ async function findNextAvailableDate({
   fromDate,
   schedule,
   serviceDuration,
-  timezone
+  timezone,
+  slotStepMinutes,
+  bufferMinutes,
+  minNoticeMinutes
 }: {
   supabase: ReturnType<typeof useServiceSupabase>
   masterId: string
@@ -203,6 +236,9 @@ async function findNextAvailableDate({
   schedule: Schedule
   serviceDuration: number
   timezone: string
+  slotStepMinutes: number
+  bufferMinutes: number
+  minNoticeMinutes: number
 }) {
   const dates = Array.from({ length: NEXT_AVAILABLE_DAYS }, (_, i) => addDays(fromDate, i + 1))
   const rangeStart = zonedTimeToUtc(dates[0]!, '00:00:00', timezone)
@@ -266,7 +302,10 @@ async function findNextAvailableDate({
       appointments: dayAppointments as AppointmentRow[],
       timeBlocks: dayBlocks as TimeBlockRow[],
       serviceDuration,
-      timezone
+      timezone,
+      slotStepMinutes,
+      bufferMinutes,
+      minNoticeMinutes
     })
 
     if (available) return date

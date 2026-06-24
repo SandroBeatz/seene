@@ -73,6 +73,11 @@
       "bookingFailed": "Failed to create booking, please try again",
       "slotUnavailable": "This time slot is no longer available, please choose another",
       "nameRequired": "First name is required"
+    },
+    "disabled": {
+      "title": "Online booking unavailable",
+      "description": "This master is not currently accepting online bookings.",
+      "backToProfile": "Back to profile"
     }
   }
 }
