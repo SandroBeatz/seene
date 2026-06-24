@@ -2,7 +2,7 @@
 import type { TabsItem } from '@nuxt/ui'
 import type { MasterPageData } from '#shared/types/master'
 
-definePageMeta({ layout: 'master' })
+definePageMeta({ layout: 'master', middleware: 'master-locale' })
 
 const { setTheme } = useMasterTheme()
 const route = useRoute()
@@ -127,6 +127,7 @@ function bookSelectedServices() {
         :first-name="data.profile.first_name"
         :last-name="data.profile.last_name"
         :specializations="data.profile.specializations"
+        :avatar="data.profile.avatar_url ?? undefined"
       />
 
       <UTabs
@@ -157,10 +158,16 @@ function bookSelectedServices() {
 
         <template #about>
           <MasterTabAbout
+            :bio="data.profile.bio ?? undefined"
             :specializations="data.profile.specializations"
             :location="data.profile.city ?? undefined"
             :works-at-place="data.profile.works_at_place"
             :can-travel="data.profile.can_travel"
+            :whatsapp="data.profile.whatsapp ?? undefined"
+            :telegram="data.profile.telegram ?? undefined"
+            :instagram="data.profile.instagram ?? undefined"
+            :tiktok="data.profile.tiktok ?? undefined"
+            :contact-email="data.profile.contact_email ?? undefined"
           />
         </template>
       </UTabs>

@@ -47,8 +47,11 @@
       "experience": "Опыт",
       "location": "Город",
       "socials": "Соцсети",
+      "whatsappAria": "WhatsApp",
+      "telegramAria": "Telegram",
       "instagramAria": "Instagram",
       "tiktokAria": "TikTok",
+      "emailAria": "Email",
       "workFormat": "Формат работы",
       "worksAtPlace": "Принимает клиентов у себя",
       "canTravel": "Выезжает к клиенту"

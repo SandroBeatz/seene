@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { MasterPageData } from '#shared/types/master'
 
-definePageMeta({ layout: 'booking' })
+definePageMeta({ layout: 'booking', middleware: 'master-locale' })
 
 const route = useRoute()
 const { $localePath } = useI18n()

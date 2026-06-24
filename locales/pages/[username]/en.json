@@ -47,8 +47,11 @@
       "experience": "Experience",
       "location": "Location",
       "socials": "Social Media",
+      "whatsappAria": "WhatsApp",
+      "telegramAria": "Telegram",
       "instagramAria": "Instagram",
       "tiktokAria": "TikTok",
+      "emailAria": "Email",
       "workFormat": "Work format",
       "worksAtPlace": "Accepts clients at own location",
       "canTravel": "Travels to client"

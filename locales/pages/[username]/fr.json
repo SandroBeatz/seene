@@ -47,8 +47,11 @@
       "experience": "Expérience",
       "location": "Ville",
       "socials": "Réseaux sociaux",
+      "whatsappAria": "WhatsApp",
+      "telegramAria": "Telegram",
       "instagramAria": "Instagram",
       "tiktokAria": "TikTok",
+      "emailAria": "E-mail",
       "workFormat": "Format de travail",
       "worksAtPlace": "Reçoit les clients à son adresse",
       "canTravel": "Se déplace chez le client"

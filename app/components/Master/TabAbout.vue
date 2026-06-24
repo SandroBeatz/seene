@@ -1,30 +1,36 @@
 <script setup lang="ts">
-withDefaults(
+const props = withDefaults(
   defineProps<{
     bio?: string
     experience?: string
     location?: string
+    whatsapp?: string
+    telegram?: string
     instagram?: string
     tiktok?: string
+    contactEmail?: string
     specializations?: string[]
     worksAtPlace?: boolean
     canTravel?: boolean
   }>(),
   {
-    bio: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium aliquid animi culpa delectus dolor doloremque, esse explicabo id incidunt necessitatibus nobis, nulla obcaecati quaerat sapiente sint vero vitae voluptates. Nihil!',
-    experience: 'My experiants',
-    location: '',
-    instagram: 'seene',
-    tiktok: 'seene',
     specializations: () => []
   }
+)
+
+const { $ts } = useI18n()
+
+const hasContacts = computed(() =>
+  Boolean(
+    props.whatsapp || props.telegram || props.instagram || props.tiktok || props.contactEmail
+  )
 )
 </script>
 
 <template>
   <div class="flex flex-col gap-6 py-2 ">
     <div>
-      <h4 class="text-lg font-bold text-text mb-2">Обо мне</h4>
+      <h4 class="text-lg font-bold text-text mb-2">{{ $ts('master.about.title') }}</h4>
       <p v-if="bio" class="text-text leading-relaxed">{{ bio }}</p>
     </div>
 
@@ -67,11 +73,33 @@ withDefaults(
       </div>
     </template>
 
-    <template v-if="instagram || tiktok">
+    <template v-if="hasContacts">
       <USeparator />
       <div class="flex flex-col gap-2">
         <span class="text-xs text-(--ui-text-muted)">{{ $ts('master.about.socials') }}</span>
-        <div class="flex gap-2">
+        <div class="flex flex-wrap gap-2">
+          <UButton
+            v-if="whatsapp"
+            :to="`https://wa.me/${whatsapp}`"
+            target="_blank"
+            rel="noopener noreferrer"
+            icon="i-simple-icons-whatsapp"
+            :aria-label="$ts('master.about.whatsappAria')"
+            color="neutral"
+            variant="outline"
+            size="sm"
+          />
+          <UButton
+            v-if="telegram"
+            :to="`https://t.me/${telegram}`"
+            target="_blank"
+            rel="noopener noreferrer"
+            icon="i-simple-icons-telegram"
+            :aria-label="$ts('master.about.telegramAria')"
+            color="neutral"
+            variant="outline"
+            size="sm"
+          />
           <UButton
             v-if="instagram"
             :to="`https://instagram.com/${instagram}`"
@@ -90,6 +118,15 @@ withDefaults(
             rel="noopener noreferrer"
             icon="i-simple-icons-tiktok"
             :aria-label="$ts('master.about.tiktokAria')"
+            color="neutral"
+            variant="outline"
+            size="sm"
+          />
+          <UButton
+            v-if="contactEmail"
+            :to="`mailto:${contactEmail}`"
+            icon="i-lucide-mail"
+            :aria-label="$ts('master.about.emailAria')"
             color="neutral"
             variant="outline"
             size="sm"
