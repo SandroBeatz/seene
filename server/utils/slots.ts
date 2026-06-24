@@ -88,6 +88,15 @@ export function zonedTimeToUtc(date: string, time: string, timezone: string) {
   return new Date(utcGuess - offset)
 }
 
+export function utcMsToLocalDate(utcMs: number, timezone: string): string {
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: timezone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).format(utcMs)
+}
+
 // --- Schedule utils ---
 
 export function getProfileTimezone(schedule: unknown) {

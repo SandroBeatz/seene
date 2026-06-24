@@ -1,4 +1,15 @@
 import type { Json } from '#shared/types/supabase'
+import {
+  type AppointmentRow,
+  type TimeBlockRow,
+  addDays,
+  buildFreeSlots,
+  getProfileSchedule,
+  getProfileTimezone,
+  getScheduleDay,
+  utcMsToLocalDate,
+  zonedTimeToUtc
+} from '../../../utils/slots'
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 const ISO_DATETIME_WITH_ZONE_RE = /^\d{4}-\d{2}-\d{2}T.+(?:Z|[+-]\d{2}:\d{2})$/
@@ -61,21 +72,112 @@ export default defineEventHandler(async (event) => {
 
   const supabase = useServiceSupabase()
 
-  const { data: profileRow } = await supabase
+  // Step 1: load master profile (schedule needed for slot validation)
+  const { data: profile } = await supabase
     .from('master_profile')
-    .select('user_id')
+    .select('id, user_id, schedule')
     .eq('username', username)
     .maybeSingle()
 
-  if (profileRow) {
-    const { data: settingsRow } = await supabase
-      .from('master_settings')
-      .select('online_booking_enabled')
-      .eq('user_id', profileRow.user_id)
-      .maybeSingle()
+  // If master not found, let the RPC return master_not_found
+  if (profile) {
+    const startsAtMs = new Date(startsAt).getTime()
+    const nowMs = Date.now()
+    const timezone = getProfileTimezone(profile.schedule)
+    const localDate = utcMsToLocalDate(startsAtMs, timezone)
+    const dayStart = zonedTimeToUtc(localDate, '00:00:00', timezone)
+    const dayEnd = zonedTimeToUtc(addDays(localDate, 1), '00:00:00', timezone)
 
+    // Step 2: load settings + services + day's busy intervals in parallel
+    const [
+      { data: settingsRow },
+      { data: services },
+      { data: appointments },
+      { data: timeBlocks },
+      { data: bookings }
+    ] = await Promise.all([
+      supabase
+        .from('master_settings')
+        .select(
+          'online_booking_enabled, booking_min_notice_minutes, booking_buffer_minutes, calendar_slot_step_minutes'
+        )
+        .eq('user_id', profile.user_id)
+        .maybeSingle(),
+      supabase
+        .from('service')
+        .select('id, duration')
+        .eq('user_id', profile.user_id)
+        .eq('is_active', true)
+        .in('id', serviceIds),
+      supabase
+        .from('appointments')
+        .select('start_at, duration')
+        .eq('user_id', profile.user_id)
+        .neq('status', 'cancelled')
+        .lt('start_at', dayEnd.toISOString())
+        .gte('start_at', dayStart.toISOString()),
+      supabase
+        .from('time_block')
+        .select('start_at, end_at, all_day')
+        .eq('user_id', profile.user_id)
+        .lt('start_at', dayEnd.toISOString())
+        .gt('end_at', dayStart.toISOString()),
+      supabase
+        .from('bookings')
+        .select('starts_at, ends_at')
+        .eq('master_id', profile.id)
+        .neq('status', 'cancelled')
+        .lt('starts_at', dayEnd.toISOString())
+        .gt('ends_at', dayStart.toISOString())
+    ])
+
+    // Gate: online_booking_enabled
     if (!settingsRow || !settingsRow.online_booking_enabled) {
       throw createError({ statusCode: 403, message: 'Online booking is disabled' })
+    }
+
+    const minNoticeMinutes = settingsRow.booking_min_notice_minutes ?? 0
+    const bufferMinutes = settingsRow.booking_buffer_minutes ?? 0
+    const slotStepMinutes = settingsRow.calendar_slot_step_minutes ?? 15
+
+    // Gate: min_notice — slot must start at least minNotice minutes from now
+    if (startsAtMs < nowMs + minNoticeMinutes * 60_000) {
+      throw createError({ statusCode: 409, message: 'Slot is unavailable' })
+    }
+
+    // Gate: slot availability — reuse buildFreeSlots as single source of truth
+    const schedule = getProfileSchedule(profile.schedule)
+    if (schedule && services && services.length === serviceIds.length) {
+      const scheduleDay = getScheduleDay(schedule, localDate)
+
+      if (!scheduleDay?.enabled) {
+        throw createError({ statusCode: 409, message: 'Slot is unavailable' })
+      }
+
+      const serviceDuration = services.reduce((total, s) => total + s.duration, 0)
+      const bookingRows: AppointmentRow[] = (bookings ?? []).map((b) => ({
+        start_at: b.starts_at,
+        duration: Math.round(
+          (new Date(b.ends_at).getTime() - new Date(b.starts_at).getTime()) / 60_000
+        )
+      }))
+
+      const freeSlots = buildFreeSlots({
+        date: localDate,
+        scheduleDay,
+        appointments: [...(appointments ?? []), ...bookingRows] as AppointmentRow[],
+        timeBlocks: (timeBlocks ?? []) as TimeBlockRow[],
+        serviceDuration,
+        timezone,
+        slotStepMinutes,
+        bufferMinutes,
+        minNoticeMinutes,
+        nowMs
+      })
+
+      if (!freeSlots.includes(startsAt)) {
+        throw createError({ statusCode: 409, message: 'Slot is unavailable' })
+      }
     }
   }
 
