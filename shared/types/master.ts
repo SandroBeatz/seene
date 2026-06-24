@@ -59,11 +59,26 @@ export interface MasterService {
   sort_order: number
 }
 
+export type PaymentTypeKind = 'cash' | 'card' | 'custom'
+
+/**
+ * A payment method the master accepts, configured in the dashboard
+ * (`payment_type` table). System methods (cash/card) are labeled via i18n on
+ * the client; custom methods display their own `name`.
+ */
+export interface MasterPaymentType {
+  id: string
+  kind: PaymentTypeKind
+  name: string
+  color: string
+}
+
 export interface MasterPageData {
   profile: MasterProfile
   settings: MasterSettings
   categories: ServiceCategory[]
   services: MasterService[]
+  payment_types: MasterPaymentType[]
 }
 
 export interface MasterServiceGroup {

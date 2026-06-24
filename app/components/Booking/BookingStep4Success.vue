@@ -6,8 +6,11 @@ const props = defineProps<{
   profile?: MasterProfile
 }>()
 
-const { $ts, $localePath, getLocale } = useI18n()
+const { $ts, $localePath } = useI18n()
 const bookingState = useBookingState(props.username)
+
+const { data: masterData } = useMasterData(() => props.username)
+const { formatDateTime } = useMasterFormat(() => masterData.value?.settings)
 
 const booking = computed(() => bookingState.value.booking)
 
@@ -38,13 +41,7 @@ const serviceNames = computed(() => booking.value?.services.map((service) => ser
 const formattedDateTime = computed(() => {
   if (!booking.value?.startsAt) return ''
 
-  return new Intl.DateTimeFormat(getLocale(), {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    hour: '2-digit',
-    minute: '2-digit'
-  }).format(new Date(booking.value.startsAt))
+  return formatDateTime(booking.value.startsAt)
 })
 
 const address = computed(() => {

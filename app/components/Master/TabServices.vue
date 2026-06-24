@@ -6,7 +6,10 @@ const { $ts } = useI18n()
 const props = defineProps<{
   categories?: ServiceCategory[]
   services?: MasterService[]
+  currency?: string
 }>()
+
+const { formatPrice } = useMasterFormat(() => ({ currency: props.currency }))
 
 const selectedServiceIds = defineModel<string[]>({ default: () => [] })
 
@@ -121,7 +124,7 @@ function toggleService(serviceId: string) {
                 >
                 <span>|</span>
                 <span class="font-bold text-primary shrink-0 whitespace-nowrap">
-                  {{ service.price }} {{ $ts('master.services.currency_rub') }}
+                  {{ formatPrice(service.price) }}
                 </span>
               </div>
 
@@ -152,7 +155,7 @@ function toggleService(serviceId: string) {
                         </span>
                         <span class="text-muted">/</span>
                         <span class="font-semibold text-primary">
-                          {{ service.price }} {{ $ts('master.services.currency_rub') }}
+                          {{ formatPrice(service.price) }}
                         </span>
                       </div>
 

@@ -26,6 +26,7 @@
         "title": "Confirm booking",
         "description": "Review your booking and enter your phone number.",
         "total": "Total",
+        "paymentTitle": "Accepted payment",
         "addNote": "Add a note",
         "editNote": "Edit note",
         "noteModalTitle": "Add a note",
@@ -57,6 +58,10 @@
     "service": {
       "duration": "{duration} min",
       "price": "{price} ₽"
+    },
+    "payment": {
+      "cash": "Cash",
+      "card": "Card"
     },
     "sms": {
       "title": "Enter SMS code",

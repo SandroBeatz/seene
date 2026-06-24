@@ -9,25 +9,25 @@ This directory holds two kinds of content:
 
 ## Layout
 
-| Path | What lives here |
-|---|---|
+| Path            | What lives here                                      |
+| --------------- | ---------------------------------------------------- |
 | `architecture/` | Project structure, module boundaries, routing, state |
-| `design/` | Themes, CSS variables, design tokens, visual system |
-| `ui/` | Component usage, template patterns, layout |
-| `code/` | Composables, stores, utilities, API clients |
-| `business/` | Domain logic, entities, rules, workflows |
-| `deploy/` | Build, CI/CD, hosting, environments |
-| `integrations/` | External APIs, SDKs, MCP servers |
-| `practices/` | Conventions, linting, testing, git workflow |
-| `skills/` | Skill specifications (blueprints for AI skills) |
+| `design/`       | Themes, CSS variables, design tokens, visual system  |
+| `ui/`           | Component usage, template patterns, layout           |
+| `code/`         | Composables, stores, utilities, API clients          |
+| `business/`     | Domain logic, entities, rules, workflows             |
+| `deploy/`       | Build, CI/CD, hosting, environments                  |
+| `integrations/` | External APIs, SDKs, MCP servers                     |
+| `practices/`    | Conventions, linting, testing, git workflow          |
+| `skills/`       | Skill specifications (blueprints for AI skills)      |
 
 ## Reference docs
 
-| Doc | Category | What it covers |
-|---|---|---|
+| Doc                                                      | Category     | What it covers                                                                                                                              |
+| -------------------------------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | [Projects Overview](./architecture/projects-overview.md) | architecture | How `seene` (B2C) and `master.seene` (B2B dashboard) split responsibility over one shared Supabase DB, and the settings integration backlog |
-| [Data Model](./business/data-model.md) | business | This repo's view of the shared Supabase schema |
-| [Theme Variables](./theme-variables.md) | design | CSS design tokens for the public site |
+| [Data Model](./business/data-model.md)                   | business     | This repo's view of the shared Supabase schema                                                                                              |
+| [Theme Variables](./theme-variables.md)                  | design       | CSS design tokens for the public site                                                                                                       |
 
 ## Skill specifications
 
@@ -36,9 +36,10 @@ Each file in `skills/` (except this index) is a **spec**: a versioned, host-neut
 ### Current specs
 
 <!-- AUTO: regenerate this table from docs/skills/*.md on every /docs run -->
-| Spec | Version | Status | Built for |
-|---|---|---|---|
-| _No skill specs yet._ | — | — | — |
+
+| Spec                  | Version | Status | Built for |
+| --------------------- | ------- | ------ | --------- |
+| _No skill specs yet._ | —       | —      | —         |
 
 ## For AI: materializing a skill from a spec
 

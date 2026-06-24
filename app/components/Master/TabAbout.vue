@@ -21,14 +21,12 @@ const props = withDefaults(
 const { $ts } = useI18n()
 
 const hasContacts = computed(() =>
-  Boolean(
-    props.whatsapp || props.telegram || props.instagram || props.tiktok || props.contactEmail
-  )
+  Boolean(props.whatsapp || props.telegram || props.instagram || props.tiktok || props.contactEmail)
 )
 </script>
 
 <template>
-  <div class="flex flex-col gap-6 py-2 ">
+  <div class="flex flex-col gap-6 py-2">
     <div>
       <h4 class="text-lg font-bold text-text mb-2">{{ $ts('master.about.title') }}</h4>
       <p v-if="bio" class="text-text leading-relaxed">{{ bio }}</p>

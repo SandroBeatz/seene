@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { MasterPageData } from '#shared/types/master'
-
 definePageMeta({ layout: 'booking', middleware: 'master-locale' })
 
 const route = useRoute()
@@ -11,10 +9,7 @@ const bookingState = useBookingState(username.value)
 
 const step3Ref = ref<{ triggerConfirm: () => void } | null>(null)
 
-const { data, status, error } = useQuery({
-  key: () => ['master', username.value],
-  query: () => $fetch<MasterPageData>(`/api/master/${username.value}`)
-})
+const { data, status, error } = useMasterData(username)
 
 watch(
   error,

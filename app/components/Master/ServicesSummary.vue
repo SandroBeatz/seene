@@ -21,7 +21,7 @@ const { $ts } = useI18n()
       <div class="flex gap-1 text-sm font-semibold text-muted">
         <span> {{ totalDuration }} {{ $ts('master.services.duration') }} </span>
         <span>|</span>
-        <span> {{ totalPrice }} {{ $ts('master.services.currency_rub') }} </span>
+        <span> {{ totalPrice }} </span>
       </div>
     </div>
 

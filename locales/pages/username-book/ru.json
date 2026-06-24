@@ -26,6 +26,7 @@
         "title": "Подтвердите запись",
         "description": "Проверьте детали и введите номер телефона.",
         "total": "Итого",
+        "paymentTitle": "Способы оплаты",
         "addNote": "Добавить заметку",
         "editNote": "Изменить заметку",
         "noteModalTitle": "Добавить заметку",
@@ -57,6 +58,10 @@
     "service": {
       "duration": "{duration} мин",
       "price": "{price} ₽"
+    },
+    "payment": {
+      "cash": "Наличные",
+      "card": "Карта"
     },
     "sms": {
       "title": "Введите код из SMS",

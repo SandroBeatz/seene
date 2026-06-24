@@ -12,6 +12,9 @@ const props = defineProps<{
 
 const bookingState = useBookingState(props.username)
 
+const { data: masterData } = useMasterData(() => props.username)
+const { formatPrice } = useMasterFormat(() => masterData.value?.settings)
+
 const showCategoryHeaders = computed(() => (props.categories?.length ?? 0) > 1)
 
 const serviceGroups = computed<MasterServiceGroup[]>(() => {
@@ -130,7 +133,7 @@ function toggleService(serviceId: string) {
 
               <div class="flex shrink-0 items-center gap-3">
                 <span class="font-semibold text-primary whitespace-nowrap">
-                  {{ $ts('booking.service.price', { price: service.price }) }}
+                  {{ formatPrice(service.price) }}
                 </span>
                 <UCheckbox
                   color="primary"

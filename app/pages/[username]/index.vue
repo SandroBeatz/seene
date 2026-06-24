@@ -1,22 +1,19 @@
 <script setup lang="ts">
 import type { TabsItem } from '@nuxt/ui'
-import type { MasterPageData } from '#shared/types/master'
 
 definePageMeta({ layout: 'master', middleware: 'master-locale' })
 
 const { setTheme } = useMasterTheme()
 const route = useRoute()
-const { $ts, $localePath, getLocale } = useI18n()
+const { $ts, $localePath } = useI18n()
 
 const tabState = ref('home')
 const selectedServiceIds = ref<string[]>([])
 
 const username = computed(() => route.params.username as string)
 
-const { data, status, error } = useQuery({
-  key: () => ['master', username.value],
-  query: () => $fetch<MasterPageData>(`/api/master/${username.value}`)
-})
+const { data, status, error } = useMasterData(username)
+const { formatPrice } = useMasterFormat(() => data.value?.settings)
 
 watch(
   error,
@@ -63,14 +60,10 @@ const totalDuration = computed(() =>
 )
 
 const totalPrice = computed(() =>
-  selectedServices.value.reduce((total, service) => total + servicePriceAsNumber(service.price), 0)
+  selectedServices.value.reduce((total, service) => total + priceToNumber(service.price), 0)
 )
 
-const formattedTotalPrice = computed(() =>
-  new Intl.NumberFormat(getLocale(), {
-    maximumFractionDigits: 2
-  }).format(totalPrice.value)
-)
+const formattedTotalPrice = computed(() => formatPrice(totalPrice.value))
 
 const scrollToPageTop = () => {
   if (import.meta.server) return
@@ -78,14 +71,6 @@ const scrollToPageTop = () => {
   requestAnimationFrame(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   })
-}
-
-function servicePriceAsNumber(price: MasterPageData['services'][number]['price']) {
-  if (typeof price === 'number') return price
-
-  const parsed = Number.parseFloat(price.replace(/[^\d,.-]/g, '').replace(',', '.'))
-
-  return Number.isFinite(parsed) ? parsed : 0
 }
 
 function bookSelectedServices() {
@@ -149,6 +134,7 @@ function bookSelectedServices() {
             v-model="selectedServiceIds"
             :categories="data.categories"
             :services="data.services"
+            :currency="data.settings.currency"
           />
         </template>
 
@@ -178,7 +164,11 @@ function bookSelectedServices() {
         @click.capture="scrollToPageTop"
       >
         <MasterServicesSummary
-          v-if="selectedServicesCount > 0 && tabState === 'services' && data?.settings.online_booking_enabled"
+          v-if="
+            selectedServicesCount > 0 &&
+            tabState === 'services' &&
+            data?.settings.online_booking_enabled
+          "
           class="py-2 mb-2"
           :selected-count="selectedServicesCount"
           :total-price="formattedTotalPrice"

@@ -23,6 +23,9 @@ const props = defineProps<{
 const { $ts, getLocale } = useI18n()
 const bookingState = useBookingState(props.username)
 
+const { data: masterData } = useMasterData(() => props.username)
+const { formatTime, formatWeekdayDate } = useMasterFormat(() => masterData.value?.settings)
+
 const selectedServiceKey = computed(() => bookingState.value.selectedServiceIds.join(','))
 const dayOptions = computed(() => buildDayOptions(getLocale()))
 
@@ -128,18 +131,11 @@ function goToNextAvailableDate() {
 }
 
 function formatSlotTime(slot: string) {
-  return new Intl.DateTimeFormat(getLocale(), {
-    hour: '2-digit',
-    minute: '2-digit'
-  }).format(new Date(slot))
+  return formatTime(slot)
 }
 
 function formatFullDate(date: string) {
-  return new Intl.DateTimeFormat(getLocale(), {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long'
-  }).format(parseLocalDate(date))
+  return formatWeekdayDate(parseLocalDate(date))
 }
 
 function buildDayOptions(locale: string): DayOption[] {

@@ -26,6 +26,7 @@
         "title": "Confirmer la réservation",
         "description": "Vérifiez les détails et entrez votre numéro de téléphone.",
         "total": "Total",
+        "paymentTitle": "Moyens de paiement acceptés",
         "addNote": "Ajouter une note",
         "editNote": "Modifier la note",
         "noteModalTitle": "Ajouter une note",
@@ -57,6 +58,10 @@
     "service": {
       "duration": "{duration} min",
       "price": "{price} ₽"
+    },
+    "payment": {
+      "cash": "Espèces",
+      "card": "Carte"
     },
     "sms": {
       "title": "Entrez le code SMS",

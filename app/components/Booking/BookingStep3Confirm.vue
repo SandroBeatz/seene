@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { MasterService } from '#shared/types/master'
+import type { MasterPaymentType, MasterService } from '#shared/types/master'
 
 interface BookingResponse {
   booking: {
@@ -18,8 +18,13 @@ const props = defineProps<{
 
 defineExpose({ triggerConfirm })
 
-const { $ts, getLocale } = useI18n()
+const { $ts } = useI18n()
 const bookingState = useBookingState(props.username)
+
+const { data: masterData } = useMasterData(() => props.username)
+const { formatPrice, formatDateTime: formatSlotDateTime } = useMasterFormat(
+  () => masterData.value?.settings
+)
 
 // --- Overview ---
 
@@ -30,26 +35,22 @@ const selectedServices = computed(() =>
 const totalDuration = computed(() => selectedServices.value.reduce((sum, s) => sum + s.duration, 0))
 
 const totalPrice = computed(() =>
-  selectedServices.value.reduce((sum, s) => sum + servicePriceAsNumber(s.price), 0)
+  selectedServices.value.reduce((sum, s) => sum + priceToNumber(s.price), 0)
 )
-
-function servicePriceAsNumber(price: MasterService['price']) {
-  if (typeof price === 'number') return price
-
-  const parsed = Number.parseFloat(price.replace(/[^\d,.-]/g, '').replace(',', '.'))
-
-  return Number.isFinite(parsed) ? parsed : 0
-}
 
 function formatDateTime(slot: string | null) {
   if (!slot) return ''
-  return new Intl.DateTimeFormat(getLocale(), {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    hour: '2-digit',
-    minute: '2-digit'
-  }).format(new Date(slot))
+  return formatSlotDateTime(slot)
+}
+
+// --- Payment methods ---
+
+const paymentTypes = computed(() => masterData.value?.payment_types ?? [])
+
+function paymentLabel(payment: MasterPaymentType) {
+  if (payment.kind === 'cash') return $ts('booking.payment.cash')
+  if (payment.kind === 'card') return $ts('booking.payment.card')
+  return payment.name
 }
 
 // --- Note ---
@@ -318,9 +319,29 @@ onUnmounted(() => {
             {{ $ts('booking.steps.confirm.total') }}
           </span>
           <span class="font-semibold text-primary">
-            {{ $ts('booking.service.price', { price: totalPrice }) }}
+            {{ formatPrice(totalPrice) }}
           </span>
         </div>
+
+        <template v-if="paymentTypes.length > 0">
+          <USeparator />
+
+          <div class="flex flex-col gap-2">
+            <span class="text-xs text-(--ui-text-muted)">
+              {{ $ts('booking.steps.confirm.paymentTitle') }}
+            </span>
+            <div class="flex flex-wrap gap-2">
+              <span
+                v-for="payment in paymentTypes"
+                :key="payment.id"
+                class="inline-flex items-center gap-1.5 rounded-full border border-(--ui-border-muted) px-2.5 py-1 text-xs text-(--ui-text-highlighted)"
+              >
+                <span class="size-2 rounded-full" :style="{ backgroundColor: payment.color }" />
+                {{ paymentLabel(payment) }}
+              </span>
+            </div>
+          </div>
+        </template>
       </div>
     </UCard>
 
