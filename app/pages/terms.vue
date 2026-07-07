@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { $ts, $localePath } = useI18n()
+const { data: doc, placeholderData } = useLegalDoc('terms')
 
 const breadcrumbs = computed(() => [
   { label: $ts('nav.home'), to: $localePath('/') },
@@ -12,9 +13,7 @@ const breadcrumbs = computed(() => [
     <UPageHero :title="$ts('title')" orientation="vertical" />
     <UPageSection>
       <UBreadcrumb :items="breadcrumbs" class="mb-6" />
-      <p class="text-muted">
-        {{ $ts('placeholder') }}
-      </p>
+      <ContentRenderer v-if="doc" :value="doc" :data="placeholderData" class="max-w-3xl mx-auto" />
     </UPageSection>
   </UPage>
 </template>

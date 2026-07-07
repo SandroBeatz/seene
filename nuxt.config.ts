@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ['@nuxt/eslint', '@nuxt/ui', 'nuxt-i18n-micro', '@pinia/nuxt', '@pinia/colada-nuxt'],
+  modules: ['@nuxt/eslint', '@nuxt/ui', 'nuxt-i18n-micro', '@pinia/nuxt', '@pinia/colada-nuxt', '@nuxt/content'],
 
   devtools: {
     enabled: true
