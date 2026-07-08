@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { $ts, $localePath } = useI18n()
-const { data: doc, placeholderData } = useLegalDoc('terms')
+const { data: doc, placeholderData } = await useLegalDoc('terms')
 
 const breadcrumbs = computed(() => [
   { label: $ts('nav.home'), to: $localePath('/') },

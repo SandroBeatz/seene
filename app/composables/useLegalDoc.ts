@@ -26,7 +26,7 @@ const LEGAL_PLACEHOLDER_DATA: Record<string, string> = Object.fromEntries(
  * Legal docs only exist in ru/en (`content/legal/<doc>.<locale>.md`); fr
  * falls back to en since no French legal version exists yet.
  */
-export function useLegalDoc(doc: LegalDocSlug) {
+export async function useLegalDoc(doc: LegalDocSlug) {
   const { getLocale } = useI18n()
 
   const contentLocale = computed(() => {
@@ -34,10 +34,9 @@ export function useLegalDoc(doc: LegalDocSlug) {
     return locale === 'en' || locale === 'ru' ? locale : 'en'
   })
 
-  const { data } = useAsyncData(
-    `legal-${doc}-${contentLocale.value}`,
-    () => queryCollection('legal').path(`/legal/${doc}.${contentLocale.value}`).first(),
-    { watch: [contentLocale] }
+  const key = computed(() => `legal-${doc}-${contentLocale.value}`)
+  const { data } = await useAsyncData(key, () =>
+    queryCollection('legal').path(`/legal/${doc}.${contentLocale.value}`).first()
   )
 
   return { data, placeholderData: LEGAL_PLACEHOLDER_DATA }
