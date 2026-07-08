@@ -9,11 +9,10 @@ const breadcrumbs = computed(() => [
 </script>
 
 <template>
-  <UPage>
-    <UPageHero :title="$ts('title')" orientation="vertical" />
-    <UPageSection>
+  <UPage :ui="{root: 'py-6'}">
+    <UContainer>
       <UBreadcrumb :items="breadcrumbs" class="mb-6" />
       <ContentRenderer v-if="doc" :value="doc" :data="placeholderData" class="max-w-3xl mx-auto" />
-    </UPageSection>
+    </UContainer>
   </UPage>
 </template>

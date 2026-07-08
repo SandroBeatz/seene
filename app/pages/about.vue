@@ -8,13 +8,13 @@ const breadcrumbs = computed(() => [
 </script>
 
 <template>
-  <UPage>
-    <UPageHero :title="$ts('title')" orientation="vertical" />
-    <UPageSection>
+  <UPage :ui="{ root: 'py-6' }">
+    <UContainer>
       <UBreadcrumb :items="breadcrumbs" class="mb-6" />
+      <UPageHeader :title="$ts('title')" />
       <p class="text-muted">
         {{ $ts('placeholder') }}
       </p>
-    </UPageSection>
+    </UContainer>
   </UPage>
 </template>
