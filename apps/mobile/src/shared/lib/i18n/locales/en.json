@@ -1,0 +1,32 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "confirm": "Confirm",
+    "retry": "Retry",
+    "loading": "Loading…",
+    "search": "Search"
+  },
+  "tabs": {
+    "home": "Home",
+    "calendar": "Calendar",
+    "clients": "Clients",
+    "analytics": "Analytics",
+    "settings": "Settings"
+  },
+  "states": {
+    "empty": "Nothing here yet",
+    "errorTitle": "Something went wrong"
+  },
+  "errors": {
+    "duplicate_phone": "A client with this phone number already exists.",
+    "already_completed": "This appointment is already completed.",
+    "appointment_not_found": "Appointment not found.",
+    "username_taken": "That username is taken.",
+    "network": "No connection. Check your internet and try again.",
+    "unauthorized": "Your session expired. Please sign in again.",
+    "unknown": "Something went wrong. Please try again."
+  }
+}

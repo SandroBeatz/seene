@@ -1,0 +1,32 @@
+{
+  "common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "confirm": "Confirmer",
+    "retry": "Réessayer",
+    "loading": "Chargement…",
+    "search": "Rechercher"
+  },
+  "tabs": {
+    "home": "Accueil",
+    "calendar": "Agenda",
+    "clients": "Clients",
+    "analytics": "Statistiques",
+    "settings": "Réglages"
+  },
+  "states": {
+    "empty": "Rien pour l'instant",
+    "errorTitle": "Une erreur est survenue"
+  },
+  "errors": {
+    "duplicate_phone": "Un client avec ce numéro de téléphone existe déjà.",
+    "already_completed": "Ce rendez-vous est déjà terminé.",
+    "appointment_not_found": "Rendez-vous introuvable.",
+    "username_taken": "Ce nom d'utilisateur est déjà pris.",
+    "network": "Pas de connexion. Vérifiez votre réseau et réessayez.",
+    "unauthorized": "Votre session a expiré. Veuillez vous reconnecter.",
+    "unknown": "Une erreur est survenue. Veuillez réessayer."
+  }
+}

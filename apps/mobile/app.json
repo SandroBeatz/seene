@@ -1,16 +1,19 @@
 {
   "expo": {
-    "name": "app.master.seene",
-    "slug": "app.master.seene",
+    "name": "Seene",
+    "slug": "app-master-seene",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "appmasterseene",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/expo.icon",
+      "bundleIdentifier": "com.seene.master",
+      "supportsTablet": false
     },
     "android": {
+      "package": "com.seene.master",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -32,7 +35,11 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 76
         }
-      ]
+      ],
+      "expo-secure-store",
+      "expo-localization",
+      "react-native-edge-to-edge",
+      "@sentry/react-native"
     ],
     "experiments": {
       "typedRoutes": true,
