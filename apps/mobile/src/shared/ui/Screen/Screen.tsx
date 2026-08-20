@@ -5,7 +5,7 @@
 import type { ReactNode } from 'react';
 import { View } from 'react-native';
 import { SafeAreaView, type Edge } from 'react-native-safe-area-context';
-import { StyleSheet } from 'react-native-unistyles';
+import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 export interface ScreenProps {
   children: ReactNode;
@@ -20,16 +20,21 @@ export function Screen({
   center = false,
   edges = ['top', 'left', 'right'],
 }: ScreenProps) {
+  // Subscribing to the theme here forces the screen to re-render on a theme
+  // change and paint an inline canvas color. Native tab screens are detached /
+  // frozen while inactive, so Unistyles' render-free native update can't reach
+  // them; without this they keep the old theme's background until remounted.
+  const { theme } = useUnistyles();
   styles.useVariants({ padded, center });
   return (
-    <SafeAreaView style={styles.safe} edges={edges}>
+    <SafeAreaView style={[styles.safe, { backgroundColor: theme.colors.bg.canvas }]} edges={edges}>
       <View style={styles.content}>{children}</View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create((theme) => ({
-  safe: { flex: 1, backgroundColor: theme.colors.bg.canvas },
+  safe: { flex: 1 },
   content: {
     flex: 1,
     variants: {
