@@ -5,7 +5,7 @@
  *
  *  - `variant="modal"` — the content of an Expo Router route with
  *    `presentation: 'modal' | 'formSheet'` (reference IMG_1016-1018: ✕ top-left, centered
- *    title). Owns its scroll view, safe-area top inset, and canvas background.
+ *    title). Owns its scroll view, platform-aware header inset, and canvas background.
  *  - `variant="sheet"` — the content of a gorhom bottom sheet. Uses BottomSheetScrollView
  *    so the sheet's pan gesture and the inner scroll cooperate, drops the screen-top inset,
  *    and stays transparent (the Sheet paints its own background). Place it as the sheet's
@@ -17,7 +17,7 @@
  * never hijacks gorhom's scroll handler.
  */
 import type { ReactNode } from 'react';
-import { View, type StyleProp, type ViewStyle } from 'react-native';
+import { Platform, View, type StyleProp, type ViewStyle } from 'react-native';
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -46,6 +46,11 @@ export interface ModalLayoutProps {
   /** Header background. Defaults to `scrim` for route modals and `transparent` in sheets. */
   headerBackground?: HeaderBackground;
   headerColor?: string;
+  /**
+   * Reserve the device top safe area inside the custom header. Native iOS modal cards
+   * already own that inset, so the default is false on iOS and true on Android.
+   */
+  headerTopInset?: boolean;
   /** Footer action content, laid out in-flow at the bottom (not floating). */
   footer?: ReactNode;
   /** Footer background. @default 'transparent' */
@@ -70,6 +75,7 @@ export function ModalLayout({
   headerRight,
   headerBackground,
   headerColor,
+  headerTopInset,
   footer,
   footerBackground = 'transparent',
   footerColor,
@@ -84,6 +90,8 @@ export function ModalLayout({
   const { onScroll, scrollY, topFade, bottomFade } = useScrollFade();
 
   const inSheet = variant === 'sheet';
+  const usesTopInset = headerTopInset ?? (!inSheet && Platform.OS !== 'ios');
+  const topInset = usesTopInset ? insets.top : 0;
   const resolvedHeaderBackground = headerBackground ?? (inSheet ? 'transparent' : 'scrim');
   const close =
     headerLeft ??
@@ -94,7 +102,7 @@ export function ModalLayout({
   const contentPadding: ViewStyle = {
     // The header floats over the scroll view. Initial content clears it, then scrolls
     // underneath so the header scrim and ScrollFade can dissolve it continuously.
-    paddingTop: HEADER_BAR_HEIGHT + (inSheet ? 0 : insets.top) + theme.space[3],
+    paddingTop: HEADER_BAR_HEIGHT + topInset + theme.space[2],
     paddingBottom: (footer ? theme.space[4] : theme.space[8]) + (inSheet ? 0 : insets.bottom),
     paddingHorizontal: padded ? theme.space[4] : 0,
   };
@@ -154,7 +162,7 @@ export function ModalLayout({
           scrollY={!inSheet && scrollable ? scrollY : undefined}
           background={resolvedHeaderBackground}
           color={headerColor}
-          topInset={!inSheet}
+          topInset={usesTopInset}
           left={close}
           right={headerRight}
         />

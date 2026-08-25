@@ -17,6 +17,7 @@ const GLYPHS = {
   add: 'add',
   close: 'close',
   check: 'checkmark',
+  chevronLeft: 'chevron-back',
   chevronRight: 'chevron-forward',
   chevronDown: 'chevron-down',
   search: 'search-outline',

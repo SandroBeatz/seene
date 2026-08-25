@@ -11,7 +11,7 @@ import {
   BottomSheetModal,
   BottomSheetView,
 } from '@gorhom/bottom-sheet';
-import { useUnistyles } from 'react-native-unistyles';
+import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 export type SheetRef = BottomSheetModal;
 
@@ -43,10 +43,19 @@ export const Sheet = forwardRef<BottomSheetModal, SheetProps>(function Sheet(
       backdropComponent={renderBackdrop}
       handleIndicatorStyle={{ backgroundColor: theme.colors.border.strong }}
       backgroundStyle={{ backgroundColor: theme.colors.bg.elevated }}>
-      <BottomSheetView
-        style={{ paddingHorizontal: theme.space[4], paddingBottom: theme.space[8] }}>
+      <BottomSheetView style={[styles.content, snapPoints?.length ? styles.fixedHeight : undefined]}>
         {children}
       </BottomSheetView>
     </BottomSheetModal>
   );
 });
+
+const styles = StyleSheet.create((theme) => ({
+  content: {
+    paddingHorizontal: theme.space[4],
+    paddingBottom: theme.space[8],
+  },
+  // A fixed-detent sheet must constrain its content. Without this, a nested
+  // BottomSheetScrollView grows to its full content height and never becomes scrollable.
+  fixedHeight: { flex: 1 },
+}));
