@@ -48,7 +48,8 @@ export interface ModalLayoutProps {
   headerColor?: string;
   /**
    * Reserve the device top safe area inside the custom header. Native iOS modal cards
-   * already own that inset, so the default is false on iOS and true on Android.
+   * use the standard 16pt modal padding by default instead; pass true to force safe area
+   * or false to remove all top spacing.
    */
   headerTopInset?: boolean;
   /** Footer action content, laid out in-flow at the bottom (not floating). */
@@ -91,7 +92,9 @@ export function ModalLayout({
 
   const inSheet = variant === 'sheet';
   const usesTopInset = headerTopInset ?? (!inSheet && Platform.OS !== 'ios');
-  const topInset = usesTopInset ? insets.top : 0;
+  const standardModalTopPadding =
+    !inSheet && headerTopInset === undefined && Platform.OS === 'ios' ? theme.space[4] : 0;
+  const topSpacing = (usesTopInset ? insets.top : 0) + standardModalTopPadding;
   const resolvedHeaderBackground = headerBackground ?? (inSheet ? 'transparent' : 'scrim');
   const close =
     headerLeft ??
@@ -102,7 +105,7 @@ export function ModalLayout({
   const contentPadding: ViewStyle = {
     // The header floats over the scroll view. Initial content clears it, then scrolls
     // underneath so the header scrim and ScrollFade can dissolve it continuously.
-    paddingTop: HEADER_BAR_HEIGHT + topInset + theme.space[2],
+    paddingTop: HEADER_BAR_HEIGHT + topSpacing + theme.space[2],
     paddingBottom: (footer ? theme.space[4] : theme.space[8]) + (inSheet ? 0 : insets.bottom),
     paddingHorizontal: padded ? theme.space[4] : 0,
   };
@@ -155,7 +158,12 @@ export function ModalLayout({
         </Footer>
       ) : null}
 
-      <View pointerEvents="box-none" style={styles.header}>
+      <View
+        pointerEvents="box-none"
+        style={[
+          styles.header,
+          standardModalTopPadding ? { paddingTop: standardModalTopPadding } : undefined,
+        ]}>
         <ScreenHeader
           title={title}
           titleMode="static"
