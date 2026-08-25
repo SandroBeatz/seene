@@ -46,8 +46,12 @@ function RootLayout() {
           <BottomSheetModalProvider>
             <ErrorBoundary>
               <Stack
-                screenOptions={{ headerShown: false, contentStyle: { backgroundColor: canvas } }}
-              />
+                screenOptions={{ headerShown: false, contentStyle: { backgroundColor: canvas } }}>
+                <Stack.Screen
+                  name="modal-layout-demo"
+                  options={{ presentation: 'modal', animation: 'slide_from_bottom' }}
+                />
+              </Stack>
             </ErrorBoundary>
           </BottomSheetModalProvider>
         </PersistQueryClientProvider>

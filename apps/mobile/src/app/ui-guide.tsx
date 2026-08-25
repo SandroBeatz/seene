@@ -5,7 +5,7 @@
 import { useRef, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import type { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { Stack } from 'expo-router';
+import { Link, Stack } from 'expo-router';
 import { StyleSheet } from 'react-native-unistyles';
 import type { AppointmentStatusColorKey } from '@/shared/theme/tokens';
 import {
@@ -16,11 +16,13 @@ import {
   Divider,
   EmptyState,
   ErrorState,
+  Footer,
   Icon,
   IconButton,
   Input,
   ListItem,
   Modal,
+  ModalLayout,
   Screen,
   Sheet,
   Skeleton,
@@ -53,6 +55,7 @@ export default function UiGuideScreen() {
   const [chip, setChip] = useState('a');
   const [modalOpen, setModalOpen] = useState(false);
   const sheetRef = useRef<BottomSheetModal>(null);
+  const layoutSheetRef = useRef<BottomSheetModal>(null);
 
   return (
     <Screen padded={false}>
@@ -149,6 +152,38 @@ export default function UiGuideScreen() {
           </View>
         </Section>
 
+        <Section title="Layouts">
+          <Text variant="subhead" color="secondary">
+            PageLayout & ModalLayout — header slots, scroll-collapsing title, edge-fade
+            scrim, glass footer.
+          </Text>
+          <View style={styles.row}>
+            <Link href="/page-layout-demo" asChild>
+              <Button label="PageLayout" variant="secondary" />
+            </Link>
+            <Link href="/modal-layout-demo" asChild>
+              <Button label="Modal route" variant="secondary" />
+            </Link>
+            <Button
+              label="Layout sheet"
+              variant="secondary"
+              onPress={() => layoutSheetRef.current?.present()}
+            />
+          </View>
+          <Text variant="caption" color="tertiary">
+            Footer primitive (solid):
+          </Text>
+          <View style={styles.footerPreview}>
+            <Footer
+              floating={false}
+              background="solid"
+              left={<IconButton icon="search" accessibilityLabel="Search" variant="ghost" onPress={() => {}} />}
+              center={<IconButton icon="add" accessibilityLabel="Add" variant="accent" onPress={() => {}} />}
+              right={<IconButton icon="edit" accessibilityLabel="Edit" variant="ghost" onPress={() => {}} />}
+            />
+          </View>
+        </Section>
+
         <Section title="Empty state">
           <View style={styles.stateBox}>
             <EmptyState title="No clients yet" description="Add your first client to get started." actionLabel="Add client" onAction={() => {}} />
@@ -167,6 +202,21 @@ export default function UiGuideScreen() {
         <Text variant="body" color="secondary">
           The primary overlay for previews, pickers, and confirmations.
         </Text>
+      </Sheet>
+
+      {/* ModalLayout in sheet mode: BottomSheetScrollView content, static scrim, no top
+          inset. padded={false} because the Sheet already supplies horizontal padding. */}
+      <Sheet ref={layoutSheetRef} snapPoints={['70%']}>
+        <ModalLayout
+          title="Preferences"
+          variant="sheet"
+          padded={false}
+          onClose={() => layoutSheetRef.current?.dismiss()}
+          footer={<Button label="Done" onPress={() => layoutSheetRef.current?.dismiss()} />}>
+          {Array.from({ length: 10 }).map((_, i) => (
+            <ListItem key={i} title={`Option ${i + 1}`} subtitle="Sheet content scrolls" onPress={() => {}} />
+          ))}
+        </ModalLayout>
       </Sheet>
 
       <Modal
@@ -193,4 +243,5 @@ const styles = StyleSheet.create((theme) => ({
   row: { flexDirection: 'row', alignItems: 'center', gap: theme.space[3] },
   wrapRow: { flexDirection: 'row', flexWrap: 'wrap', gap: theme.space[2] },
   stateBox: { height: 220, borderRadius: theme.radius.lg, overflow: 'hidden', backgroundColor: theme.colors.bg.surface },
+  footerPreview: { borderRadius: theme.radius.lg, overflow: 'hidden', backgroundColor: theme.colors.bg.surface },
 }));

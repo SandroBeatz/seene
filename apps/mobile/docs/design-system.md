@@ -1,6 +1,6 @@
 ---
-version: 1.0
-date: 2026-08-19
+version: 1.1
+date: 2026-08-25
 category: design
 status: proposed
 ---
@@ -117,9 +117,10 @@ Ship a **minimal, high-confidence** set first and grow deliberately (the earlier
 trimmed to Text/Button/Switch on purpose — resist premature breadth):
 
 `Text`, `Button`, `IconButton`, `Input`, `Switch`, `Card`, `ListItem`, `Avatar`, `Badge/Pill`
-(incl. `StatusPill`), `Chip`, `Divider`, `Sheet` (bottom sheet wrapper), `Modal`, and the state
-components in §6. Add `Select`, `SegmentedControl`, `Stepper`, `Calendar`, `Chart`, `PriceInput`,
-`EmojiPicker`, `PhoneInput` as their features arrive.
+(incl. `StatusPill`), `Chip`, `Divider`, `Sheet` (bottom sheet wrapper), `Modal`, the layout
+wrappers in §4.3 (`PageLayout`, `ModalLayout`, `ScreenHeader`, `Footer`, `ScrollFade`), and the
+state components in §6. Add `Select`, `SegmentedControl`, `Stepper`, `Calendar`, `Chart`,
+`PriceInput`, `EmojiPicker`, `PhoneInput` as their features arrive.
 
 ### 4.2 Patterns (composed, documented)
 
@@ -130,6 +131,42 @@ components in §6. Add `Select`, `SegmentedControl`, `Stepper`, `Calendar`, `Cha
 - **Modals** — for blocking confirmations (delete, sign out) via a `useConfirm`-style helper.
 - **Lists** — FlashList-backed; standard `ListItem`, section headers, separators, and the state
   components below.
+
+### 4.3 Layout wrappers (page & modal scaffolds)
+
+Two wrappers give every screen consistent chrome — theme-aware header/footer backgrounds, slot-based
+action buttons, an edge-fade scrim, and (optionally) a scroll-collapsing title — so screens don't
+re-wire scroll handlers, safe areas, or glass. Live examples in `src/app/ui-guide.tsx` (§Layouts)
+plus the `page-layout-demo` / `modal-layout-demo` routes. Import from `@/shared/ui`.
+
+- **`PageLayout`** — full-screen pages. Composes the header + a Reanimated scroll area + scrim +
+  optional floating footer, and sets its own native header options. Key props:
+  - `title`, `titleMode: 'static' | 'collapse'` — `static` keeps the title in the bar; `collapse`
+    renders a large in-content title that folds into the header after `collapseThreshold` px
+    (default 80).
+  - `headerLeft/Center/Right`, `headerBackground: 'transparent' | 'scrim' | 'solid' | 'glass'`,
+    `headerColor`.
+  - `footer` (or `footerLeft/Center/Right`), `footerBackground: 'glass' | 'solid' | 'transparent'`,
+    `footerColor`.
+  - `fade: 'top' | 'bottom' | 'both' | 'none'`, `fadeColor`, `scrollable`, `padded`.
+- **`ModalLayout`** — the same vocabulary drawn as **body** content (no native Stack header), so it
+  works both as a route modal (`presentation: 'modal' | 'formSheet'`, `variant="modal"`) and as the
+  content of a gorhom `Sheet` (`variant="sheet"`, uses `BottomSheetScrollView`; pass `padded={false}`
+  when nesting inside the existing `Sheet`, which already pads). `onClose` renders the default ✕ in
+  the left slot. In `sheet` mode the scrim is static so it never hijacks gorhom's scroll handler.
+- **Underlying primitives** (usually via the wrappers, but reusable directly):
+  - `ScreenHeader` — the header placed in the native slot via `<Stack.Header asChild>`. Unified
+    scroll-driven collapse on iOS **and** Android (native `headerLargeTitle` can't carry our
+    gradient/slots and diverges across platforms); `topInset={false}` when it sits inside a sheet.
+  - `Footer` — floating (default) or in-flow action bar; `glass` background renders Liquid Glass on
+    iOS 26 via `GlassSurface`, tokened fallback elsewhere; owns the bottom safe-area inset.
+  - `ScrollFade` + `useScrollFade` — the edge-fade scrim and the single Reanimated scroll handler
+    that drives both the fade strength and the title collapse. Fades to the same theme color at
+    alpha 0 (fading to literal `transparent` tints the edge black on iOS).
+
+**When to use which:** `PageLayout` for routed screens; `ModalLayout` for modals/sheets; the bare
+`Screen` (§4.1) only for simple padded canvases with no header/scroll chrome; `Modal` for blocking
+confirmations.
 
 ## 5. Theming rules
 
