@@ -1,8 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { ScrollView, View } from 'react-native';
+import { useSessionStore } from '@/entities/session';
 import { SUPPORTED_LOCALES, useLocaleStore } from '@/shared/lib/i18n';
 import { type ThemeMode, useThemeStore } from '@/shared/theme/theme.store';
-import { Card, Chip, Screen, Text } from '@/shared/ui';
+import { Button, Card, Chip, Screen, Text } from '@/shared/ui';
 
 const THEME_MODES: ThemeMode[] = ['auto', 'light', 'dark'];
 
@@ -12,6 +13,7 @@ export default function SettingsScreen() {
   const setMode = useThemeStore((s) => s.setMode);
   const locale = useLocaleStore((s) => s.locale);
   const setLocale = useLocaleStore((s) => s.setLocale);
+  const signOut = useSessionStore((s) => s.signOut);
 
   return (
     <Screen>
@@ -43,6 +45,13 @@ export default function SettingsScreen() {
             </View>
           </View>
         </Card>
+
+        <Button
+          label={t('auth.logOut')}
+          variant="danger"
+          onPress={() => void signOut()}
+          fullWidth
+        />
       </ScrollView>
     </Screen>
   );

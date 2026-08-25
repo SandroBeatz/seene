@@ -72,7 +72,20 @@ api→query→hook pipeline; CI is green.
 
 ---
 
-## Phase 1 — Auth & onboarding
+## Phase 1 — Auth & onboarding 🚧 core built (2026-08-24)
+
+> **Status (2026-08-24).** Built & green (`tsc`, `expo lint`, `jest` 18/18, `expo export --platform
+> ios` bundles): `session` entity (api + Zustand store honouring the auth-lock rules + auth mutations);
+> `master` entity (username-availability query, `master_profile` insert, `master_settings` upsert,
+> specialization keys, country→time-format seed); `features/auth-login` (email+password with a
+> sign-in/create-account toggle, native Google behind the `googleSignIn` flag, Apple gated off);
+> `features/onboarding` (the full 5-step wizard with per-step gating and the single Step-5 write);
+> the root-layout auth/onboarding guard implementing the §3 decision table (splash held until the
+> session resolves). i18n `auth`/`onboarding` catalogs added for en/fr/ru; jest `@/` moduleNameMapper
+> added. **Pending:** native dev-build boot to exercise the flows on device (Google OAuth round-trip,
+> Supabase writes end-to-end); native pickers for country/timezone/time (MVP uses text inputs +
+> two-letter country code); the "deactivated" login notice copy; wiring `master_settings`
+> calendar/booking defaults (Phase 2+).
 
 **Goal:** a master can sign up/in and complete onboarding into a real `master_profile`.
 

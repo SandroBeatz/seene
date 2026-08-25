@@ -56,6 +56,12 @@ export const lightTheme = {
       subtle: palette.violet.subtleLight,
       onAccent: palette.gray[0],
     },
+    // Theme-invariant absolutes — same in light & dark. For brand surfaces that must
+    // not flip with the theme (e.g. the Google button is always white).
+    constant: {
+      white: palette.gray[0],
+      black: palette.gray[1000],
+    },
     feedback: {
       success: palette.green.base,
       successSubtle: palette.green.subtleLight,
@@ -104,6 +110,11 @@ export const darkTheme = {
       pressed: palette.violet.pressedDark,
       subtle: palette.violet.subtleDark,
       onAccent: palette.gray[1000],
+    },
+    // Theme-invariant absolutes — identical to the light theme by design.
+    constant: {
+      white: palette.gray[0],
+      black: palette.gray[1000],
     },
     feedback: {
       success: palette.green.base,

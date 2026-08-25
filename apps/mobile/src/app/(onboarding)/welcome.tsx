@@ -1,10 +1,7 @@
-import { EmptyState, Screen } from '@/shared/ui';
+import { useRouter } from 'expo-router';
+import { OnboardingWizard } from '@/features/onboarding';
 
-// Placeholder — the mandatory 5-step onboarding wizard is Phase 1.
 export default function OnboardingScreen() {
-  return (
-    <Screen padded={false}>
-      <EmptyState title="Onboarding" description="The 5-step setup wizard arrives in Phase 1." />
-    </Screen>
-  );
+  const router = useRouter();
+  return <OnboardingWizard onComplete={() => router.replace('/(tabs)')} />;
 }
