@@ -5,16 +5,16 @@
  *
  *  - `variant="modal"` — the content of an Expo Router route with
  *    `presentation: 'modal' | 'formSheet'` (reference IMG_1016-1018: ✕ top-left, centered
- *    title). Owns its scroll view, platform-aware header inset, and canvas background.
+ *    title). Owns its scroll view, platform-aware header spacing, and canvas background.
  *  - `variant="sheet"` — the content of a gorhom bottom sheet. Uses BottomSheetScrollView
  *    so the sheet's pan gesture and the inner scroll cooperate, drops the screen-top inset,
  *    and stays transparent (the Sheet paints its own background). Place it as the sheet's
  *    scroll content; if you nest it inside the existing `<Sheet>` (which already pads),
  *    pass `padded={false}`.
  *
- * Reuses ScreenHeader (Task app.master.seene-qlu) and ScrollFade (Task app.master.seene-r0b)
- * rather than re-implementing them. In `sheet` mode the scrim is static (always-on) so it
- * never hijacks gorhom's scroll handler.
+ * Reuses ScreenHeader (Task app.master.seene-qlu) and can opt into ScrollFade
+ * (Task app.master.seene-r0b). Route modals leave fading to the native iOS scroll edge by
+ * default, while an explicit fade in `sheet` mode stays static so it never hijacks gorhom.
  */
 import type { ReactNode } from 'react';
 import { Platform, View, type StyleProp, type ViewStyle } from 'react-native';
@@ -27,8 +27,6 @@ import { ScreenHeader, type HeaderBackground } from '@/shared/ui/Header';
 import { IconButton } from '@/shared/ui/IconButton';
 import { ScrollFade } from '@/shared/ui/ScrollFade';
 import { useScrollFade } from '@/shared/ui/hooks/useScrollFade';
-
-const HEADER_BAR_HEIGHT = 44;
 
 export type ModalVariant = 'modal' | 'sheet';
 
@@ -43,7 +41,7 @@ export interface ModalLayoutProps {
   headerLeft?: ReactNode;
   /** Right header slot (extra actions). */
   headerRight?: ReactNode;
-  /** Header background. Defaults to `scrim` for route modals and `transparent` in sheets. */
+  /** Header background. @default 'transparent' */
   headerBackground?: HeaderBackground;
   headerColor?: string;
   /**
@@ -57,7 +55,7 @@ export interface ModalLayoutProps {
   /** Footer background. @default 'transparent' */
   footerBackground?: FooterBackground;
   footerColor?: string;
-  /** Which content edges dissolve. @default 'both' */
+  /** Optional custom edge fade. Native route modals do not need one. @default 'none' */
   fade?: 'top' | 'bottom' | 'both' | 'none';
   fadeColor?: string;
   /** Scroll the content. @default true */
@@ -80,7 +78,7 @@ export function ModalLayout({
   footer,
   footerBackground = 'transparent',
   footerColor,
-  fade = 'both',
+  fade = 'none',
   fadeColor,
   scrollable = true,
   padded = true,
@@ -94,8 +92,7 @@ export function ModalLayout({
   const usesTopInset = headerTopInset ?? (!inSheet && Platform.OS !== 'ios');
   const standardModalTopPadding =
     !inSheet && headerTopInset === undefined && Platform.OS === 'ios' ? theme.space[4] : 0;
-  const topSpacing = (usesTopInset ? insets.top : 0) + standardModalTopPadding;
-  const resolvedHeaderBackground = headerBackground ?? (inSheet ? 'transparent' : 'scrim');
+  const resolvedHeaderBackground = headerBackground ?? 'transparent';
   const close =
     headerLeft ??
     (onClose ? (
@@ -103,9 +100,8 @@ export function ModalLayout({
     ) : undefined);
 
   const contentPadding: ViewStyle = {
-    // The header floats over the scroll view. Initial content clears it, then scrolls
-    // underneath so the header scrim and ScrollFade can dissolve it continuously.
-    paddingTop: HEADER_BAR_HEIGHT + topSpacing + theme.space[2],
+    // The header is in normal flow, so content starts below it and cannot overlap its slots.
+    paddingTop: theme.space[2],
     paddingBottom: (footer ? theme.space[4] : theme.space[8]) + (inSheet ? 0 : insets.bottom),
     paddingHorizontal: padded ? theme.space[4] : 0,
   };
@@ -147,17 +143,6 @@ export function ModalLayout({
   return (
     <View
       style={[styles.root, { backgroundColor: inSheet ? 'transparent' : theme.colors.bg.canvas }]}>
-      <View style={styles.body}>
-        {body}
-        {scrim}
-      </View>
-
-      {footer !== undefined ? (
-        <Footer floating={false} background={footerBackground} color={footerColor}>
-          {footer}
-        </Footer>
-      ) : null}
-
       <View
         pointerEvents="box-none"
         style={[
@@ -175,6 +160,17 @@ export function ModalLayout({
           right={headerRight}
         />
       </View>
+
+      <View style={styles.body}>
+        {body}
+        {scrim}
+      </View>
+
+      {footer !== undefined ? (
+        <Footer floating={false} background={footerBackground} color={footerColor}>
+          {footer}
+        </Footer>
+      ) : null}
     </View>
   );
 }
@@ -184,11 +180,5 @@ const styles = StyleSheet.create(() => ({
   // Relative wrapper so the ScrollFade scrim overlays only the scroll area (not header/footer).
   body: { flex: 1, position: 'relative' },
   scroll: { flex: 1 },
-  header: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 1,
-  },
+  header: { flexShrink: 0 },
 }));

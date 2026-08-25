@@ -95,10 +95,7 @@ function RootLayout() {
             <ErrorBoundary>
               <Stack
                 screenOptions={{ headerShown: false, contentStyle: { backgroundColor: canvas } }}>
-                <Stack.Screen
-                  name="modal-layout-demo"
-                  options={{ presentation: 'modal', animation: 'slide_from_bottom' }}
-                />
+                <Stack.Screen name="modal-layout-demo" options={{ presentation: 'modal' }} />
               </Stack>
             </ErrorBoundary>
           </BottomSheetModalProvider>

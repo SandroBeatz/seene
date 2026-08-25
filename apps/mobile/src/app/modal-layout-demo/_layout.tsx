@@ -12,7 +12,6 @@ export default function ModalLayoutDemoNavigator() {
     <Stack
       screenOptions={{
         headerShown: false,
-        animation: 'slide_from_right',
         contentStyle: { backgroundColor: theme.colors.bg.canvas },
       }}
     />
