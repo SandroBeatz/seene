@@ -54,6 +54,10 @@ export const lightTheme = {
       headerGradientStart: palette.translucent.whiteStrong,
       headerGradientEnd: palette.translucent.whiteClear,
     },
+    interaction: {
+      onSurfacePressed: palette.translucent.blackPressed,
+      onSolidPressed: palette.translucent.whitePressed,
+    },
     accent: {
       default: palette.violet.default,
       pressed: palette.violet.pressed,
@@ -112,6 +116,10 @@ export const darkTheme = {
     navigation: {
       headerGradientStart: palette.translucent.blackStrong,
       headerGradientEnd: palette.translucent.blackClear,
+    },
+    interaction: {
+      onSurfacePressed: palette.translucent.whitePressed,
+      onSolidPressed: palette.translucent.whitePressed,
     },
     accent: {
       default: palette.violet.defaultDark,

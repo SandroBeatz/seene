@@ -52,7 +52,24 @@ export default function UIKitComponentsScreen() {
           variant="accent"
           onPress={() => undefined}
         />
-        <IconButton icon="edit" accessibilityLabel={t('common.edit')} onPress={() => undefined} />
+        <IconButton
+          icon="edit"
+          accessibilityLabel={t('common.edit')}
+          variant="neutral"
+          onPress={() => undefined}
+        />
+        <IconButton
+          icon="trash"
+          accessibilityLabel={t('common.delete')}
+          variant="danger"
+          onPress={() => undefined}
+        />
+        <IconButton
+          icon="close"
+          accessibilityLabel={t('common.close')}
+          variant="ghost"
+          onPress={() => undefined}
+        />
         <IconButton
           icon="search"
           accessibilityLabel={t('common.search')}

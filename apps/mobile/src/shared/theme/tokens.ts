@@ -42,8 +42,10 @@ export const palette = {
   translucent: {
     whiteStrong: 'rgba(255, 255, 255, 0.94)',
     whiteClear: 'rgba(255, 255, 255, 0)',
+    whitePressed: 'rgba(255, 255, 255, 0.24)',
     blackStrong: 'rgba(0, 0, 0, 0.94)',
     blackClear: 'rgba(0, 0, 0, 0)',
+    blackPressed: 'rgba(0, 0, 0, 0.12)',
   },
 } as const;
 
