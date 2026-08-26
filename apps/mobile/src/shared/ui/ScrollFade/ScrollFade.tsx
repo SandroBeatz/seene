@@ -22,6 +22,10 @@ export interface ScrollFadeProps {
   color?: string;
   /** Height of each fade band. @default theme.space[10] (40) */
   height?: number;
+  /** Overrides `height` for the top band only. */
+  topHeight?: number;
+  /** Overrides `height` for the bottom band only. */
+  bottomHeight?: number;
   /** Which edges to render. @default 'both' */
   edges?: 'top' | 'bottom' | 'both';
 }
@@ -42,11 +46,21 @@ function withAlpha(color: string, alpha: number): string {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
-export function ScrollFade({ topFade, bottomFade, color, height, edges = 'both' }: ScrollFadeProps) {
+export function ScrollFade({
+  topFade,
+  bottomFade,
+  color,
+  height,
+  topHeight,
+  bottomHeight,
+  edges = 'both',
+}: ScrollFadeProps) {
   const { theme } = useUnistyles();
   const solid = color ?? theme.colors.bg.canvas;
   const clear = withAlpha(solid, 0);
   const bandHeight = height ?? theme.space[10];
+  const resolvedTopHeight = topHeight ?? bandHeight;
+  const resolvedBottomHeight = bottomHeight ?? bandHeight;
 
   const topStyle = useAnimatedStyle(() => ({ opacity: topFade ? topFade.value : 1 }));
   const bottomStyle = useAnimatedStyle(() => ({ opacity: bottomFade ? bottomFade.value : 1 }));
@@ -57,7 +71,7 @@ export function ScrollFade({ topFade, bottomFade, color, height, edges = 'both' 
   return (
     <View style={styles.overlay}>
       {showTop ? (
-        <Animated.View style={[styles.band, styles.top, { height: bandHeight }, topStyle]}>
+        <Animated.View style={[styles.band, styles.top, { height: resolvedTopHeight }, topStyle]}>
           <LinearGradient
             colors={[solid, clear]}
             start={{ x: 0, y: 0 }}
@@ -67,7 +81,8 @@ export function ScrollFade({ topFade, bottomFade, color, height, edges = 'both' 
         </Animated.View>
       ) : null}
       {showBottom ? (
-        <Animated.View style={[styles.band, styles.bottom, { height: bandHeight }, bottomStyle]}>
+        <Animated.View
+          style={[styles.band, styles.bottom, { height: resolvedBottomHeight }, bottomStyle]}>
           <LinearGradient
             colors={[clear, solid]}
             start={{ x: 0, y: 0 }}

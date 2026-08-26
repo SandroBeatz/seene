@@ -12,12 +12,18 @@
  *    scroll content; if you nest it inside the existing `<Sheet>` (which already pads),
  *    pass `padded={false}`.
  *
- * Reuses ScreenHeader (Task app.master.seene-qlu) and ScrollFade
- * (Task app.master.seene-r0b). The transparent header overlays the scroll area while a
- * full-header-height fade keeps scrolling content legible beneath its slots.
+ * Reuses ScreenHeader (Task app.master.seene-qlu), Footer, and ScrollFade
+ * (Task app.master.seene-r0b). Transparent header/footer chrome overlays the scroll area
+ * while measured full-height fades keep scrolling content legible beneath the actions.
  */
-import type { ReactNode } from 'react';
-import { Platform, View, type StyleProp, type ViewStyle } from 'react-native';
+import { useCallback, useState, type ReactNode } from 'react';
+import {
+  Platform,
+  View,
+  type LayoutChangeEvent,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native';
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -52,7 +58,7 @@ export interface ModalLayoutProps {
    * or false to remove all top spacing.
    */
   headerTopInset?: boolean;
-  /** Footer action content, laid out in-flow at the bottom (not floating). */
+  /** Footer action content, overlaid at the bottom of the scroll area. */
   footer?: ReactNode;
   /** Footer background. @default 'transparent' */
   footerBackground?: FooterBackground;
@@ -88,6 +94,7 @@ export function ModalLayout({
 }: ModalLayoutProps) {
   const { theme } = useUnistyles();
   const insets = useSafeAreaInsets();
+  const [measuredFooterHeight, setMeasuredFooterHeight] = useState(0);
 
   const inSheet = variant === 'sheet';
   const usesTopInset = headerTopInset ?? (!inSheet && Platform.OS !== 'ios');
@@ -95,6 +102,10 @@ export function ModalLayout({
     !inSheet && headerTopInset === undefined && Platform.OS === 'ios' ? theme.space[4] : 0;
   const headerTopSpacing = (usesTopInset ? insets.top : 0) + standardModalTopPadding;
   const headerFadeHeight = HEADER_BAR_HEIGHT + headerTopSpacing;
+  // Default Button height + Footer's vertical padding + safe area. onLayout replaces
+  // this estimate when callers render taller or shorter custom footer content.
+  const estimatedFooterHeight = theme.sizing.control.md + theme.space[6] + insets.bottom;
+  const footerFadeHeight = footer ? measuredFooterHeight || estimatedFooterHeight : theme.space[10];
   const { onScroll, scrollY, topFade, bottomFade } = useScrollFade();
   const resolvedHeaderBackground = headerBackground ?? 'transparent';
   const close =
@@ -103,10 +114,19 @@ export function ModalLayout({
       <IconButton icon="close" accessibilityLabel="Close" variant="glass" onPress={onClose} />
     ) : undefined);
 
+  const onFooterLayout = useCallback((event: LayoutChangeEvent) => {
+    const nextHeight = Math.ceil(event.nativeEvent.layout.height);
+    setMeasuredFooterHeight((currentHeight) =>
+      currentHeight === nextHeight ? currentHeight : nextHeight,
+    );
+  }, []);
+
   const contentPadding: ViewStyle = {
-    // Initial content clears the overlay header, then scrolls through its full-height fade.
+    // Initial/final content clears the overlay chrome, then scrolls through its full-height fades.
     paddingTop: headerFadeHeight + theme.space[2],
-    paddingBottom: (footer ? theme.space[4] : theme.space[8]) + (inSheet ? 0 : insets.bottom),
+    paddingBottom: footer
+      ? footerFadeHeight + theme.space[4]
+      : theme.space[8] + (inSheet ? 0 : insets.bottom),
     paddingHorizontal: padded ? theme.space[4] : 0,
   };
 
@@ -118,7 +138,8 @@ export function ModalLayout({
         topFade={!inSheet && scrollable ? topFade : undefined}
         bottomFade={!inSheet && scrollable ? bottomFade : undefined}
         color={fadeColor ?? (inSheet ? theme.colors.bg.elevated : theme.colors.bg.canvas)}
-        height={headerFadeHeight}
+        topHeight={headerFadeHeight}
+        bottomHeight={footerFadeHeight}
         edges={fade}
       />
     ) : null;
@@ -154,9 +175,11 @@ export function ModalLayout({
       </View>
 
       {footer !== undefined ? (
-        <Footer floating={false} background={footerBackground} color={footerColor}>
-          {footer}
-        </Footer>
+        <View pointerEvents="box-none" style={styles.footer} onLayout={onFooterLayout}>
+          <Footer floating={false} background={footerBackground} color={footerColor}>
+            {footer}
+          </Footer>
+        </View>
       ) : null}
 
       <View
@@ -190,6 +213,13 @@ const styles = StyleSheet.create(() => ({
     top: 0,
     left: 0,
     right: 0,
+    zIndex: 1,
+  },
+  footer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
     zIndex: 1,
   },
 }));
