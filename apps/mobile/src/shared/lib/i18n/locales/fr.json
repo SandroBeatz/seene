@@ -215,6 +215,8 @@
     "layout": {
       "basic": "Écran simple",
       "basicDescription": "Un canvas statique avec zones sûres explicites et header Stack natif.",
+      "gradientHeader": "Header natif adapté au thème",
+      "gradientHeaderDescription": "La Stack native conserve Retour et les gestes tandis qu’un dégradé de tokens sémantiques s’affiche derrière son chrome.",
       "scroll": "Écran défilant",
       "scrollDescription": "Une ScrollView aux insets natifs sous les headers et Native Tabs.",
       "form": "Écran de formulaire",
@@ -257,6 +259,7 @@
     },
     "recommended": {
       "screen": "Pour un contenu statique sans header ; ne passer que les bords non gérés par le navigateur.",
+      "gradientHeader": "Configurer explicitement transparence, teinte, barre d’état et fond dans le layout Stack propriétaire.",
       "scroll": "Pour le contenu défilant sous un header natif.",
       "form": "Pour les formulaires ; garder la prévention de navigation dans la route.",
       "stackOptions": "Conserver titre, header, gestes et animations dans la route ou le layout.",

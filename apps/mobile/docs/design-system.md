@@ -1,5 +1,5 @@
 ---
-version: 2.0
+version: 2.1
 date: 2026-08-26
 category: design
 status: implemented
@@ -7,7 +7,7 @@ status: implemented
 
 # Design System & UI Kit
 
-> Version 2.0 · 2026-08-26 · [Design](./)
+> Version 2.1 · 2026-08-26 · [Design](./)
 
 > The foundation and rules for Seene's native design system. This document defines **how** the
 > system is built and governed — the token contract, component contract, theming, states, and the
@@ -55,6 +55,7 @@ Components use **semantic** tokens only.
   `bg.canvas`, `bg.surface`, `bg.elevated`, `bg.sunken`,
   `content.primary`, `content.secondary`, `content.tertiary`, `content.inverse`, `content.disabled`,
   `border.default`, `border.strong`, `border.subtle`,
+  `navigation.headerGradientStart`, `navigation.headerGradientEnd`,
   `accent.default`, `accent.pressed`, `accent.subtle`, `accent.onAccent`,
   `feedback.success`, `feedback.warning`, `feedback.danger`, `feedback.info` (each with `subtle`/
   `onColor` pairs),
@@ -122,8 +123,9 @@ trimmed to Text/Button/Switch on purpose — resist premature breadth):
 `Text`, `Button`, `IconButton`, `Input`, `Switch`, `Card`, `ListItem`, `Avatar`, `Badge/Pill`
 (incl. `StatusPill`), `Chip`, `Divider`, `Sheet` (bottom sheet wrapper), `Modal`, the visual
 wrappers in §4.3 (`Screen`, `ScreenScrollView`, `FormScreen`, `FormSheetContent`), `Footer`,
-`ScrollFade`, and the state components in §6. Add `Select`, `SegmentedControl`, `Stepper`, `Calendar`, `Chart`,
-`PriceInput`, `EmojiPicker`, `PhoneInput` as their features arrive.
+`ScrollFade`, `NavigationHeaderBackground`, and the state components in §6. Add `Select`,
+`SegmentedControl`, `Stepper`, `Calendar`, `Chart`, `PriceInput`, `EmojiPicker`, `PhoneInput` as
+their features arrive.
 
 ### 4.2 Patterns (composed, documented)
 
@@ -158,6 +160,15 @@ body pattern because Android form sheets require title/actions in content.
 confirmations; `Sheet` is for transient previews/pickers; navigable or deep-linkable flows are Expo
 Router routes. The complete decision table and examples are in
 [Navigation Architecture](./architecture/navigation.md).
+
+`NavigationHeaderBackground` is a visual primitive, not a navigation wrapper. Stack layouts pass it
+to `headerBackground`; the component reads only the active theme's semantic navigation gradient
+tokens. Header transparency, tint, status-bar style, gestures, and presentation stay visible in the
+owning `_layout.tsx` or `Stack.Screen`.
+
+`_layout.tsx` files use the focused `@/shared/ui/NavigationHeaderBackground` entry point. This is a
+bootstrap exception: Expo's web route manifest evaluates layouts before Unistyles selects a theme,
+and importing the complete UI barrel there would eagerly load unrelated themed stylesheets.
 
 ## 5. Theming rules
 
@@ -201,7 +212,9 @@ reinvent them.
    primitives require a short entry here and a reviewer.
 3. **Tokens are the API:** components accept token-named props (`color="content.secondary"`), not
    raw values.
-4. **Barrel exports:** import kit components from `@/shared/ui` only.
+4. **Barrel exports:** screens import kit components from `@/shared/ui`. Route-layout bootstrap code
+   may use a focused UI entry point when static route discovery must avoid eagerly evaluating the
+   full themed barrel; `NavigationHeaderBackground` is the current exception.
 5. **UIKit route catalog:** the development-only `/uikit` route renders foundations, primitives,
    mandatory states, wrappers, and real navigation patterns as living documentation. Keep it
    protected by `__DEV__` so it cannot alter production navigation.

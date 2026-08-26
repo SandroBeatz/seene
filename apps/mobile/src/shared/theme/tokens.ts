@@ -39,6 +39,12 @@ export const palette = {
   amber: { base: '#D98A0B', subtleLight: '#FBF0DA', subtleDark: '#2E2411' },
   red: { base: '#E5484D', subtleLight: '#FCE9E9', subtleDark: '#331717' },
   blue: { base: '#3B82F6', subtleLight: '#E4EEFC', subtleDark: '#15223A' },
+  translucent: {
+    whiteStrong: 'rgba(255, 255, 255, 0.94)',
+    whiteClear: 'rgba(255, 255, 255, 0)',
+    blackStrong: 'rgba(0, 0, 0, 0.94)',
+    blackClear: 'rgba(0, 0, 0, 0)',
+  },
 } as const;
 
 /**

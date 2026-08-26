@@ -20,6 +20,18 @@ export default function UIKitLayoutsScreen() {
         }
       />
       <UIKitExampleCard
+        title={t('uikit.layout.gradientHeader')}
+        description={t('uikit.layout.gradientHeaderDescription')}
+        recommendation={t('uikit.recommended.gradientHeader')}
+        source="src/shared/ui/NavigationHeaderBackground/NavigationHeaderBackground.tsx"
+        code={'headerBackground: () => <NavigationHeaderBackground />'}
+        action={
+          <Link href="/uikit/examples/layouts/basic" asChild>
+            <Button label={t('uikit.openExample')} variant="secondary" />
+          </Link>
+        }
+      />
+      <UIKitExampleCard
         title={t('uikit.layout.scroll')}
         description={t('uikit.layout.scrollDescription')}
         recommendation={t('uikit.recommended.scroll')}

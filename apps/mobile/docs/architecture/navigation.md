@@ -1,5 +1,5 @@
 ---
-version: 1.0
+version: 1.1
 date: 2026-08-26
 category: architecture
 status: implemented
@@ -7,7 +7,7 @@ status: implemented
 
 # Navigation Architecture
 
-> Version 1.0 · 2026-08-26 · [Architecture](./)
+> Version 1.1 · 2026-08-26 · [Architecture](./)
 
 ## Overview
 
@@ -143,6 +143,28 @@ Android Back. Intercept Android Back only for local state that should pop before
 onboarding wizard does this for earlier steps) or for an explicit unsaved-change decision. The
 shared `Sheet` intercepts Android Back only while it is open and dismisses itself.
 
+### Theme-aware native headers
+
+Regular page Stacks and route-modal Stacks keep Expo Router's native header and provide
+`NavigationHeaderBackground` through `headerBackground`. The component renders only the visual
+`LinearGradient`; it does not wrap a screen or hide navigator options. Its start/end colors come
+from the active Unistyles semantic roles
+`colors.navigation.headerGradientStart|headerGradientEnd`. Header tint, status-bar contrast,
+shadow visibility, and transparency remain explicit in the owning `_layout.tsx`.
+
+Route layouts import this component from its focused entry point
+`@/shared/ui/NavigationHeaderBackground`. Expo's web static route manifest evaluates layout modules
+before the app bootstrap has selected a Unistyles theme; importing the complete `@/shared/ui` barrel
+there would eagerly evaluate unrelated theme-dependent stylesheets. Normal screens continue to use
+the UIKit barrel.
+
+The header is transparent on iOS, where scroll wrappers use automatic native content insets. On
+Android it remains in normal layout flow so static content and form fields are not obscured by an
+absolute header. This platform difference does not change Back, gestures, presentation, or the
+gradient itself. The native form sheet remains the deliberate exception: its header is hidden and
+`FormSheetContent` renders cross-platform title/actions because Android form-sheet header behavior
+differs from iOS.
+
 ### Modal decisions
 
 | Pattern              | Configuration                                               | Use                                                     |
@@ -166,6 +188,8 @@ gestures, and detents remain in the parent `_layout.tsx`, never in visual wrappe
   generation and static rendering do not load SecureStore/MMKV.
 - `src/app/(app)/(tabs)/_layout.tsx`: contains the only alpha Native Tabs import. Do not add a
   custom background; iOS owns the native tab-bar material.
+- Regular nested Stacks configure `NavigationHeaderBackground`, theme-aware header tint and
+  status-bar contrast explicitly. Do not move those options into a screen wrapper.
 - Every nested Stack exports `unstable_settings.initialRouteName` so deep links have a predictable
   initial screen and a valid Back destination.
 
@@ -187,10 +211,10 @@ layout with navigator configuration and duplicated native Stack behavior. `Foote
 fullscreen modal uses the same `FormScreen`; presentation mode is not a reason to duplicate a
 wrapper.
 
-The root `StatusBar` follows the active Unistyles theme, including a manually forced theme. A route
-may mount a declarative override when its own background requires different contrast; the photo
-sign-in route is the current example. Loading and error states are explicit routes/components, not
-wrapper side effects.
+The root `StatusBar` follows the active Unistyles theme, including a manually forced theme. A Stack
+screen option overrides it when a route background needs different contrast; the photo sign-in
+route is the current example. Loading and error states are explicit routes/components, not wrapper
+side effects.
 
 ## Usage
 
@@ -204,7 +228,10 @@ export default function ExampleScreen() {
 }
 ```
 
-The Stack owns the top inset and header; the wrapper owns only left/right safe areas.
+The Stack owns the native header. On iOS, scroll wrappers request automatic native insets under the
+transparent gradient header. Static content that intentionally excludes the top safe-area edge
+must either tolerate the header overlay or override `headerTransparent: false`; the wrapper still
+owns only its declared safe-area edges.
 
 ### Add a dynamic route
 
@@ -296,5 +323,6 @@ requires a binary built with the iOS 26 SDK; treat SDK upgrades as a focused com
 | `src/app/(app)/(modals)/quick-create/_layout.tsx`                       | Nested modal Stack                          |
 | `src/shared/lib/navigation/useAuthReturnIntent.ts`                      | Transient protected deep-link return intent |
 | `src/entities/session/model/session.store.ts`                           | Session/profile restoration state           |
+| `src/shared/ui/NavigationHeaderBackground/`                             | Theme-aware native Stack gradient           |
 | `src/shared/ui/{Screen,ScreenScrollView,FormScreen,FormSheetContent}/`  | Minimal visual wrappers                     |
 | `src/app/(dev)/uikit/`                                                  | Development-only living catalog             |

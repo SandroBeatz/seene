@@ -215,6 +215,8 @@
     "layout": {
       "basic": "Обычный экран",
       "basicDescription": "Статический canvas с явными Safe Area edges и нативным Stack header.",
+      "gradientHeader": "Нативный header с поддержкой темы",
+      "gradientHeaderDescription": "Нативный Stack сохраняет Back и gestures, а градиент из семантических токенов рисуется под его chrome.",
       "scroll": "Прокручиваемый экран",
       "scrollDescription": "ScrollView с нативными insets под Stack header и Native Tabs.",
       "form": "Экран формы",
@@ -257,6 +259,7 @@
     },
     "recommended": {
       "screen": "Для статического content без header; передавайте только края, не занятые навигатором.",
+      "gradientHeader": "Явно задавайте прозрачность, tint, status bar и фон в принадлежащем экрану Stack layout.",
       "scroll": "Для content, который прокручивается под нативным header.",
       "form": "Для форм; блокировку ухода оставляйте явно в route.",
       "stackOptions": "Title, header, gestures и animations задавайте в route или layout.",

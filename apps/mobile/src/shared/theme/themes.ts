@@ -50,6 +50,10 @@ export const lightTheme = {
       default: palette.gray[200],
       strong: palette.gray[300],
     },
+    navigation: {
+      headerGradientStart: palette.translucent.whiteStrong,
+      headerGradientEnd: palette.translucent.whiteClear,
+    },
     accent: {
       default: palette.violet.default,
       pressed: palette.violet.pressed,
@@ -104,6 +108,10 @@ export const darkTheme = {
       subtle: palette.gray[900],
       default: palette.gray[800],
       strong: palette.gray[700],
+    },
+    navigation: {
+      headerGradientStart: palette.translucent.blackStrong,
+      headerGradientEnd: palette.translucent.blackClear,
     },
     accent: {
       default: palette.violet.defaultDark,

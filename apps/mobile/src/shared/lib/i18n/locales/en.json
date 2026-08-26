@@ -239,6 +239,8 @@
     "layout": {
       "basic": "Basic screen",
       "basicDescription": "A static canvas with explicit safe-area edges and a native Stack header.",
+      "gradientHeader": "Theme-aware native header",
+      "gradientHeaderDescription": "The native Stack keeps Back and gestures while a semantic-token gradient renders behind its chrome.",
       "scroll": "Scrollable screen",
       "scrollDescription": "A native-inset ScrollView that works under Stack headers and Native Tabs.",
       "form": "Form screen",
@@ -297,6 +299,7 @@
     },
     "recommended": {
       "screen": "Use for headerless static content; pass only the safe-area edges the navigator does not own.",
+      "gradientHeader": "Configure transparency, tint, status bar and background explicitly in the owning Stack layout.",
       "scroll": "Use for content that scrolls under a native header.",
       "form": "Use for forms; keep navigation prevention in the route.",
       "stackOptions": "Keep title, header, gesture and animation options in the route or layout.",

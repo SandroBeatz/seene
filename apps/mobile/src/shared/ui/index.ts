@@ -23,6 +23,7 @@ export { Screen, type ScreenProps } from './Screen';
 export { ScreenScrollView, type ScreenScrollViewProps } from './ScreenScrollView';
 export { FormScreen, type FormScreenProps } from './FormScreen';
 export { FormSheetContent, type FormSheetContentProps } from './FormSheetContent';
+export { NavigationHeaderBackground } from './NavigationHeaderBackground';
 export { Footer, type FooterProps, type FooterBackground } from './Footer';
 export { ScrollFade, type ScrollFadeProps } from './ScrollFade';
 export {

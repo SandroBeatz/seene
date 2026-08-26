@@ -1,5 +1,5 @@
 ---
-version: 1.1
+version: 1.2
 date: 2026-08-26
 category: design
 status: proposed
@@ -7,7 +7,7 @@ status: proposed
 
 # Liquid Glass on iOS
 
-> Version 1.1 · 2026-08-26 · [Design](./)
+> Version 1.2 · 2026-08-26 · [Design](./)
 
 > Seene's policy and mechanics for adopting Apple's **Liquid Glass** design (iOS 26) as far as the
 > platform allows, while degrading cleanly on iOS < 26 and Android. This doc defines **when glass is
@@ -21,8 +21,10 @@ status: proposed
 **Use Liquid Glass maximally on iOS, but never unconditionally.** Concretely:
 
 1. **Prefer native surfaces.** Anything Apple renders as a system material — the tab bar, navigation
-   headers, sheets, search bars, context menus — should be driven by native components so it gets
-   Liquid Glass _for free_ on iOS 26. We do **not** paint custom backgrounds over these surfaces.
+   headers, sheets, search bars, context menus — stays a native component so it gets Liquid Glass
+   _for free_ on iOS 26. A Stack header may render the app's tokened brand gradient through the
+   supported `headerBackground` slot, but it must not replace the native header implementation,
+   Back button, title, gestures, or system controls.
 2. **Add explicit glass for floating chrome.** Custom elements that float over content (a FAB, a
    floating toolbar, a mini-player, an overlay pill) use `expo-glass-effect` (`GlassView` /
    `GlassContainer`).
@@ -45,10 +47,13 @@ When we use a **native** navigator/control, iOS 26 applies Liquid Glass itself. 
   fine. `minimizeBehavior="onScrollDown"` gives the iOS 26 shrink-on-scroll behavior.
 - **Native stack headers / search / sheets** — driven by `react-native-screens` (already a dep) via
   Expo Router's native `Stack`, `Stack.Screen` `headerSearchBarOptions`, and form-sheet
-  presentation. Leave header backgrounds transparent to keep the glass.
+  presentation. Seene's regular Stacks pass `NavigationHeaderBackground` to the supported
+  `headerBackground` option. On iOS the header is transparent, so the theme-aware gradient renders
+  behind native chrome while the OS still owns the controls and iOS 26 material behavior.
 
-> Rule of thumb: if the surface is chrome the OS owns, reach for the native component and _remove_
-> your background, don't add a glass view on top of it.
+> Rule of thumb: if the surface is chrome the OS owns, keep the native component. Use only its
+> supported background slot for app branding; do not add a replacement header or a glass view on
+> top of it.
 
 ### 2.2 Explicit (`expo-glass-effect`)
 
@@ -183,6 +188,7 @@ guessing APIs from memory (per [AGENTS.md](../AGENTS.md)):
 | Path                                           | Role                                               |
 | ---------------------------------------------- | -------------------------------------------------- |
 | `src/app/(app)/(tabs)/_layout.tsx`             | Native tab bar; automatic Liquid Glass on iOS 26   |
+| `src/shared/ui/NavigationHeaderBackground/`    | Tokened gradient behind native Stack chrome        |
 | `src/shared/ui/GlassSurface/GlassSurface.tsx`  | Shared glass primitive: guard + tokened fallback   |
 | `src/shared/ui/hooks/useReduceTransparency.ts` | Tracks the OS Reduce Transparency setting          |
 | `src/shared/theme/theme.store.ts`              | Manual light/dark mode → feeds `colorScheme`       |
