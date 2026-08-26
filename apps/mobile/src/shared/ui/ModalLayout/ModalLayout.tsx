@@ -13,8 +13,8 @@
  *    pass `padded={false}`.
  *
  * Reuses ScreenHeader (Task app.master.seene-qlu) and ScrollFade
- * (Task app.master.seene-r0b). The header remains outside the scroll area, so the fade
- * softens its edges without letting content overlap the header slots.
+ * (Task app.master.seene-r0b). The transparent header overlays the scroll area while a
+ * full-header-height fade keeps scrolling content legible beneath its slots.
  */
 import type { ReactNode } from 'react';
 import { Platform, View, type StyleProp, type ViewStyle } from 'react-native';
@@ -27,6 +27,8 @@ import { ScreenHeader, type HeaderBackground } from '@/shared/ui/Header';
 import { IconButton } from '@/shared/ui/IconButton';
 import { ScrollFade } from '@/shared/ui/ScrollFade';
 import { useScrollFade } from '@/shared/ui/hooks/useScrollFade';
+
+const HEADER_BAR_HEIGHT = 44;
 
 export type ModalVariant = 'modal' | 'sheet';
 
@@ -86,12 +88,14 @@ export function ModalLayout({
 }: ModalLayoutProps) {
   const { theme } = useUnistyles();
   const insets = useSafeAreaInsets();
-  const { onScroll, scrollY, topFade, bottomFade } = useScrollFade();
 
   const inSheet = variant === 'sheet';
   const usesTopInset = headerTopInset ?? (!inSheet && Platform.OS !== 'ios');
   const standardModalTopPadding =
     !inSheet && headerTopInset === undefined && Platform.OS === 'ios' ? theme.space[4] : 0;
+  const headerTopSpacing = (usesTopInset ? insets.top : 0) + standardModalTopPadding;
+  const headerFadeHeight = HEADER_BAR_HEIGHT + headerTopSpacing;
+  const { onScroll, scrollY, topFade, bottomFade } = useScrollFade();
   const resolvedHeaderBackground = headerBackground ?? 'transparent';
   const close =
     headerLeft ??
@@ -100,8 +104,8 @@ export function ModalLayout({
     ) : undefined);
 
   const contentPadding: ViewStyle = {
-    // The header is in normal flow, so content starts below it and cannot overlap its slots.
-    paddingTop: theme.space[2],
+    // Initial content clears the overlay header, then scrolls through its full-height fade.
+    paddingTop: headerFadeHeight + theme.space[2],
     paddingBottom: (footer ? theme.space[4] : theme.space[8]) + (inSheet ? 0 : insets.bottom),
     paddingHorizontal: padded ? theme.space[4] : 0,
   };
@@ -114,6 +118,7 @@ export function ModalLayout({
         topFade={!inSheet && scrollable ? topFade : undefined}
         bottomFade={!inSheet && scrollable ? bottomFade : undefined}
         color={fadeColor ?? (inSheet ? theme.colors.bg.elevated : theme.colors.bg.canvas)}
+        height={headerFadeHeight}
         edges={fade}
       />
     ) : null;
@@ -143,6 +148,17 @@ export function ModalLayout({
   return (
     <View
       style={[styles.root, { backgroundColor: inSheet ? 'transparent' : theme.colors.bg.canvas }]}>
+      <View style={styles.body}>
+        {body}
+        {scrim}
+      </View>
+
+      {footer !== undefined ? (
+        <Footer floating={false} background={footerBackground} color={footerColor}>
+          {footer}
+        </Footer>
+      ) : null}
+
       <View
         pointerEvents="box-none"
         style={[
@@ -160,17 +176,6 @@ export function ModalLayout({
           right={headerRight}
         />
       </View>
-
-      <View style={styles.body}>
-        {body}
-        {scrim}
-      </View>
-
-      {footer !== undefined ? (
-        <Footer floating={false} background={footerBackground} color={footerColor}>
-          {footer}
-        </Footer>
-      ) : null}
     </View>
   );
 }
@@ -180,5 +185,11 @@ const styles = StyleSheet.create(() => ({
   // Relative wrapper so the ScrollFade scrim overlays only the scroll area (not header/footer).
   body: { flex: 1, position: 'relative' },
   scroll: { flex: 1 },
-  header: { flexShrink: 0 },
+  header: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1,
+  },
 }));

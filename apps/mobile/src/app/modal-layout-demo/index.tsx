@@ -33,7 +33,7 @@ export default function ModalLayoutDemo() {
         <Card key={i}>
           <Text variant="body">Modal row {i + 1}</Text>
           <Text variant="subhead" color="secondary">
-            Scroll content stays below the fixed modal header.
+            Scroll content dissolves through the full modal header.
           </Text>
         </Card>
       ))}
