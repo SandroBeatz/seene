@@ -12,9 +12,9 @@
  *    scroll content; if you nest it inside the existing `<Sheet>` (which already pads),
  *    pass `padded={false}`.
  *
- * Reuses ScreenHeader (Task app.master.seene-qlu) and can opt into ScrollFade
- * (Task app.master.seene-r0b). Route modals leave fading to the native iOS scroll edge by
- * default, while an explicit fade in `sheet` mode stays static so it never hijacks gorhom.
+ * Reuses ScreenHeader (Task app.master.seene-qlu) and ScrollFade
+ * (Task app.master.seene-r0b). The header remains outside the scroll area, so the fade
+ * softens its edges without letting content overlap the header slots.
  */
 import type { ReactNode } from 'react';
 import { Platform, View, type StyleProp, type ViewStyle } from 'react-native';
@@ -55,7 +55,7 @@ export interface ModalLayoutProps {
   /** Footer background. @default 'transparent' */
   footerBackground?: FooterBackground;
   footerColor?: string;
-  /** Optional custom edge fade. Native route modals do not need one. @default 'none' */
+  /** Which content edges dissolve. @default 'both' */
   fade?: 'top' | 'bottom' | 'both' | 'none';
   fadeColor?: string;
   /** Scroll the content. @default true */
@@ -78,7 +78,7 @@ export function ModalLayout({
   footer,
   footerBackground = 'transparent',
   footerColor,
-  fade = 'none',
+  fade = 'both',
   fadeColor,
   scrollable = true,
   padded = true,
