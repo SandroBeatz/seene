@@ -3,19 +3,14 @@
  * step, and writes everything at Step 5. `onComplete` is supplied by the route so
  * navigation stays in the app layer.
  */
-import { useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { BackHandler, Platform, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native-unistyles';
 import { isUsernameSyntaxValid, useUsernameAvailability } from '@/entities/master';
 import { errorMessageKey } from '@/shared/api/errors';
-import { Button, Screen, Text } from '@/shared/ui';
-import {
-  canAdvance,
-  ONBOARDING_STEPS,
-  STEP_COUNT,
-  useOnboardingWizard,
-} from '../model/wizard';
+import { Button, FormScreen, Text } from '@/shared/ui';
+import { canAdvance, ONBOARDING_STEPS, STEP_COUNT, useOnboardingWizard } from '../model/wizard';
 import { useCompleteOnboarding } from '../model/submit';
 import {
   AddressStep,
@@ -26,7 +21,7 @@ import {
   type UsernameStatus,
 } from './steps';
 
-export function OnboardingWizard({ onComplete }: { onComplete: () => void }) {
+export function OnboardingWizard({ onComplete }: { onComplete?: () => void }) {
   const { t } = useTranslation();
   const { draft, step, update, setStep } = useOnboardingWizard();
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -43,6 +38,15 @@ export function OnboardingWizard({ onComplete }: { onComplete: () => void }) {
   const isLast = step === STEP_COUNT - 1;
   const canNext = canAdvance(step, draft, availability.data);
 
+  useEffect(() => {
+    if (Platform.OS !== 'android' || step === 0) return;
+    const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+      setStep(step - 1);
+      return true;
+    });
+    return () => subscription.remove();
+  }, [setStep, step]);
+
   function goNext() {
     setSubmitError(null);
     if (!isLast) {
@@ -56,7 +60,28 @@ export function OnboardingWizard({ onComplete }: { onComplete: () => void }) {
   }
 
   return (
-    <Screen>
+    <FormScreen
+      edges={['top', 'left', 'right']}
+      contentContainerStyle={styles.content}
+      footer={
+        <View style={styles.actions}>
+          {step > 0 ? (
+            <Button
+              label={t('onboarding.back')}
+              variant="ghost"
+              onPress={() => setStep(step - 1)}
+              disabled={complete.isPending}
+            />
+          ) : null}
+          <View style={styles.spacer} />
+          <Button
+            label={isLast ? t('onboarding.finish') : t('onboarding.next')}
+            onPress={goNext}
+            disabled={!canNext || complete.isPending}
+            loading={complete.isPending}
+          />
+        </View>
+      }>
       <View style={styles.progress}>
         {ONBOARDING_STEPS.map((key, i) => (
           <View key={key} style={[styles.dot, i <= step ? styles.dotActive : styles.dotIdle]} />
@@ -68,10 +93,7 @@ export function OnboardingWizard({ onComplete }: { onComplete: () => void }) {
         {t('onboarding.stepCounter', { current: step + 1, total: STEP_COUNT })}
       </Text>
 
-      <ScrollView
-        style={styles.body}
-        contentContainerStyle={styles.bodyContent}
-        keyboardShouldPersistTaps="handled">
+      <View style={styles.body}>
         {stepKey === 'specializations' ? (
           <SpecializationsStep draft={draft} update={update} />
         ) : null}
@@ -81,32 +103,14 @@ export function OnboardingWizard({ onComplete }: { onComplete: () => void }) {
         {stepKey === 'address' ? <AddressStep draft={draft} update={update} /> : null}
         {stepKey === 'schedule' ? <ScheduleStep draft={draft} update={update} /> : null}
         {stepKey === 'review' ? <ReviewStep draft={draft} update={update} /> : null}
-      </ScrollView>
+      </View>
 
       {submitError ? (
         <Text variant="footnote" color="danger">
           {submitError}
         </Text>
       ) : null}
-
-      <View style={styles.actions}>
-        {step > 0 ? (
-          <Button
-            label={t('onboarding.back')}
-            variant="ghost"
-            onPress={() => setStep(step - 1)}
-            disabled={complete.isPending}
-          />
-        ) : null}
-        <View style={styles.spacer} />
-        <Button
-          label={isLast ? t('onboarding.finish') : t('onboarding.next')}
-          onPress={goNext}
-          disabled={!canNext || complete.isPending}
-          loading={complete.isPending}
-        />
-      </View>
-    </Screen>
+    </FormScreen>
   );
 }
 
@@ -124,12 +128,12 @@ function deriveUsernameStatus(
 }
 
 const styles = StyleSheet.create((theme) => ({
+  content: { gap: theme.space[2], paddingBottom: theme.space[4] },
   progress: { flexDirection: 'row', gap: theme.space[2], marginBottom: theme.space[3] },
   dot: { flex: 1, height: 4, borderRadius: theme.radius.full },
   dotActive: { backgroundColor: theme.colors.accent.default },
   dotIdle: { backgroundColor: theme.colors.border.default },
-  body: { flex: 1, marginTop: theme.space[3] },
-  bodyContent: { paddingBottom: theme.space[6], gap: theme.space[3] },
+  body: { marginTop: theme.space[3], paddingBottom: theme.space[6], gap: theme.space[3] },
   actions: { flexDirection: 'row', alignItems: 'center', gap: theme.space[3] },
   spacer: { flex: 1 },
 }));

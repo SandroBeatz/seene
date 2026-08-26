@@ -2,7 +2,7 @@
  * Email+password auth with a sign-in / create-account toggle, plus native Google
  * (behind the `googleSignIn` flag) and an Apple button gated off until an Apple
  * Developer account exists (docs/features.md §1). On success the session store's
- * `onAuthChange` subscription updates and the root guard routes onward — this form
+ * `onAuthChange` subscription updates and protected routes switch onward — this form
  * only fires the mutation and surfaces errors.
  */
 import { useState } from 'react';
@@ -68,12 +68,6 @@ export function AuthForm({ onModeChange }: AuthFormProps = {}) {
 
   return (
     <View style={styles.root}>
-      {/* Big in-content title (visible by default). On scroll the route's header
-          shows a compact copy up top — see AuthModalHeader. */}
-      <Text variant="title1" style={styles.title}>
-        {mode === 'signIn' ? t('auth.logIn') : t('auth.createAccount')}
-      </Text>
-
       <View style={styles.fields}>
         <Controller
           control={control}
@@ -164,7 +158,12 @@ export function AuthForm({ onModeChange }: AuthFormProps = {}) {
 
       {/* iOS: Apple sits above Google (platform convention). */}
       {isIOS ? (
-        <SocialButton provider="apple" label={t('auth.continueWithApple')} onPress={onApple} disabled={busy} />
+        <SocialButton
+          provider="apple"
+          label={t('auth.continueWithApple')}
+          onPress={onApple}
+          disabled={busy}
+        />
       ) : null}
 
       {featureFlags.googleSignIn ? (
@@ -184,7 +183,6 @@ export function AuthForm({ onModeChange }: AuthFormProps = {}) {
 
 const styles = StyleSheet.create((theme) => ({
   root: { gap: theme.space[3], alignSelf: 'stretch' },
-  title: { marginBottom: theme.space[1] },
   fields: { gap: theme.space[3] },
   separator: { flexDirection: 'row', alignItems: 'center', gap: theme.space[3] },
   line: { flex: 1, height: StyleSheet.hairlineWidth, backgroundColor: theme.colors.border.default },

@@ -1,11 +1,13 @@
 ---
-version: 1.0
-date: 2026-08-19
+version: 1.1
+date: 2026-08-26
 category: practices
 status: proposed
 ---
 
 # State Management
+
+> Version 1.1 · 2026-08-26 · [Practices](./)
 
 > How the app splits **server state** (data that lives in the backend) from **client state**
 > (data that lives only on the device). The split mirrors the web app, which already separates
@@ -14,11 +16,11 @@ status: proposed
 
 ## 1. The three kinds of state
 
-| Kind | Owner | Examples | Lifetime |
-|---|---|---|---|
-| **Server state** | TanStack Query cache | appointments, clients, services, sales, analytics, master profile/settings | Fetched, cached, revalidated, persisted |
-| **Client state** | Zustand stores | session snapshot, theme, active locale, master preferences view, ephemeral UI (open sheet, wizard step) | App session / persisted |
-| **Form state** | React Hook Form | every create/edit form's in-progress fields + validation | While the form is open |
+| Kind             | Owner                | Examples                                                                                                | Lifetime                                |
+| ---------------- | -------------------- | ------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| **Server state** | TanStack Query cache | appointments, clients, services, sales, analytics, master profile/settings                              | Fetched, cached, revalidated, persisted |
+| **Client state** | Zustand stores       | session snapshot, theme, active locale, master preferences view, ephemeral UI (open sheet, wizard step) | App session / persisted                 |
+| **Form state**   | React Hook Form      | every create/edit form's in-progress fields + validation                                                | While the form is open                  |
 
 **Rule:** never copy server data into Zustand. If it comes from the backend, it belongs in a query.
 Zustand holds only what the backend doesn't own.
@@ -58,26 +60,35 @@ auth-lock rule**:
 ```ts
 // entities/session/model/session.store.ts (shape)
 interface SessionState {
-  session: Session | null
-  profile: SessionProfile | null      // { id, first_name, last_name, username, avatar_url, deactivated_at }
-  isInitialized: boolean
-  init(): Promise<void>               // idempotent; subscribe THEN getSession
-  waitForReady(): Promise<void>       // awaits in-flight profile fetch
-  refreshProfile(): Promise<void>
+  session: Session | null;
+  profile: SessionProfile | null; // { id, first_name, last_name, username, avatar_url, deactivated_at }
+  isInitialized: boolean;
+  isSyncing: boolean;
+  sessionError: unknown | null;
+  init(): Promise<void>; // idempotent; subscribe THEN getSession
+  waitForReady(): Promise<void>; // awaits in-flight profile fetch
+  refreshProfile(): Promise<void>;
+  retry(): Promise<void>;
+  signOut(): Promise<void>;
 }
 ```
 
 **Critical carry-over rules:**
+
 1. Subscribe to `onAuthStateChange` **before** `getSession()` (don't miss refresh events).
 2. The `onAuthStateChange` callback must be **synchronous** — never call `supabase.from()` or
    `getSession()` inside it; that deadlocks Supabase's internal auth lock. Defer the profile fetch
    with `setTimeout(0)` / a microtask escape.
-3. Track an in-flight fetch promise (`_processingPromise`); the guard `await`s `waitForReady()`
-   before deciding, so it never reads a stale `null` profile right after login.
-4. `SIGNED_OUT` → clear session + profile synchronously.
+3. Deduplicate profile loads per user and ignore stale responses by request id. `isSyncing` keeps
+   protected branches on the restoration route while profile state settles.
+4. Surface restoration failures as `sessionError`; the root exposes a retry route instead of
+   flashing auth/onboarding UI.
+5. `SIGNED_OUT` or a successful explicit sign-out clears local session/profile state.
 
-The guard itself lives in the router layout, reads this store, and applies the decision table in
-[business-logic.md](./business-logic.md) §3.
+The root router reads this store and declares mutually exclusive `Stack.Protected` branches. Guard
+changes remove unavailable protected history. A deep-link return target stays in a root-scoped hook,
+not in this store, because navigation intent is not durable client state. See
+[Navigation Architecture](./architecture/navigation.md).
 
 ### Master preferences store
 
@@ -114,8 +125,9 @@ tiny Zustand store when several components must coordinate.
   read-offline from cache, and mutations pause while offline and resume on reconnect.
 - **Phase 3+ (only if needed)**: promote to `expo-sqlite`/`op-sqlite` as an offline-first source of
   truth with an explicit sync layer. Not required for MVP. Q-ARCH-4.
-- Zustand `persist` (MMKV) restores session snapshot, theme, locale, last analytics period across
-  restarts. The Supabase session itself restores from the secure session-storage adapter.
+- Zustand `persist` (MMKV on native, `localStorage` on web) restores theme, locale, and other
+  persisted client preferences. The Supabase session itself restores from the platform-specific
+  session-storage adapter; the session Zustand store is not separately persisted.
 
 ## 6. State-restoration on cold start (sequence)
 

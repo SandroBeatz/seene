@@ -5,10 +5,9 @@
  *   1. Subscribe to `onAuthChange` BEFORE the first `getCurrentSession()`.
  *   2. The auth-change callback stays synchronous; profile fetches are deferred to
  *      the next macrotask so they never run inside Supabase's auth lock.
- *   3. An in-flight profile fetch is tracked; the guard `await`s `waitForReady()`
- *      before deciding, and `isSyncing` keeps it from reading a stale `null` profile
- *      right after login.
- *   4. Signing out clears session + profile synchronously.
+ *   3. Profile loads are deduplicated by user and stale responses are ignored.
+ *   4. `isSyncing` keeps protected-route guards from reading a stale `null` profile.
+ *   5. A successful sign-out clears local session state even if the auth callback is delayed.
  */
 import { create } from 'zustand';
 import {
@@ -27,28 +26,53 @@ interface SessionState {
   isInitialized: boolean;
   /** True while a profile fetch is in flight (guard shows a splash, doesn't redirect). */
   isSyncing: boolean;
+  /** Session/profile restoration error. Protected routing pauses until retry succeeds. */
+  sessionError: unknown | null;
   init: () => Promise<void>;
   waitForReady: () => Promise<void>;
   refreshProfile: () => Promise<void>;
+  retry: () => Promise<void>;
   signOut: () => Promise<void>;
 }
 
 let initPromise: Promise<void> | null = null;
 let processingPromise: Promise<void> | null = null;
+let activeProfileLoad: { userId: string; promise: Promise<void> } | null = null;
+let profileRequestId = 0;
 
 export const useSessionStore = create<SessionState>((set, get) => {
   function loadProfile(userId: string): Promise<void> {
+    if (activeProfileLoad?.userId === userId) return activeProfileLoad.promise;
+
+    const requestId = ++profileRequestId;
     set({ isSyncing: true });
-    processingPromise = (async () => {
+    const promise = (async () => {
       try {
         const profile = await fetchSessionProfile(userId);
-        set({ profile });
+        if (requestId === profileRequestId && get().session?.user.id === userId) {
+          set({ profile, sessionError: null });
+        }
+      } catch (error) {
+        if (requestId === profileRequestId) set({ sessionError: error });
+        throw error;
       } finally {
-        set({ isSyncing: false });
-        processingPromise = null;
+        if (requestId === profileRequestId) {
+          set({ isSyncing: false });
+          activeProfileLoad = null;
+          processingPromise = null;
+        }
       }
     })();
-    return processingPromise;
+    activeProfileLoad = { userId, promise };
+    processingPromise = promise;
+    return promise;
+  }
+
+  function clearSession(): void {
+    profileRequestId += 1;
+    activeProfileLoad = null;
+    processingPromise = null;
+    set({ session: null, profile: null, isSyncing: false, sessionError: null });
   }
 
   return {
@@ -56,6 +80,7 @@ export const useSessionStore = create<SessionState>((set, get) => {
     profile: null,
     isInitialized: false,
     isSyncing: false,
+    sessionError: null,
 
     init: () => {
       if (initPromise) return initPromise;
@@ -64,17 +89,26 @@ export const useSessionStore = create<SessionState>((set, get) => {
         onAuthChange((session) => {
           // Synchronous only (rule 2): update state, defer any network call.
           if (!session) {
-            set({ session: null, profile: null, isSyncing: false });
+            clearSession();
             return;
           }
-          set({ session });
-          setTimeout(() => void loadProfile(session.user.id), 0);
+          const current = get();
+          const sameUser = current.session?.user.id === session.user.id;
+          set({ session, profile: sameUser ? current.profile : null, sessionError: null });
+          if (!sameUser || !current.profile) {
+            setTimeout(() => void loadProfile(session.user.id).catch(() => undefined), 0);
+          }
         });
 
-        const session = await getCurrentSession();
-        set({ session });
-        if (session) await loadProfile(session.user.id);
-        set({ isInitialized: true });
+        try {
+          const session = await getCurrentSession();
+          set({ session, sessionError: null });
+          if (session) await loadProfile(session.user.id);
+        } catch (error) {
+          set({ sessionError: error });
+        } finally {
+          set({ isInitialized: true });
+        }
       })();
       return initPromise;
     },
@@ -90,9 +124,20 @@ export const useSessionStore = create<SessionState>((set, get) => {
       await loadProfile(userId);
     },
 
+    retry: async () => {
+      set({ sessionError: null });
+      try {
+        const session = get().session ?? (await getCurrentSession());
+        set({ session });
+        if (session) await loadProfile(session.user.id);
+      } catch (error) {
+        set({ sessionError: error, isSyncing: false });
+      }
+    },
+
     signOut: async () => {
-      // The auth-change listener clears session + profile once the sign-out lands.
       await apiSignOut();
+      clearSession();
     },
   };
 });

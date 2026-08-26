@@ -7,7 +7,9 @@
     "confirm": "Confirm",
     "retry": "Retry",
     "loading": "Loading…",
-    "search": "Search"
+    "search": "Search",
+    "close": "Close",
+    "continue": "Continue"
   },
   "tabs": {
     "home": "Home",
@@ -115,5 +117,208 @@
     "back": "Back",
     "next": "Next",
     "finish": "Create studio"
+  },
+  "navigation": {
+    "restoringSession": "Restoring your session…",
+    "notFound": "Not found",
+    "notFoundDescription": "This screen doesn't exist.",
+    "goHome": "Go home",
+    "quickCreate": "Create appointment",
+    "openSharedAppointment": "Open shared appointment",
+    "openDynamicClient": "Open dynamic client route",
+    "appointmentDetails": "Appointment",
+    "appointmentForm": "Edit appointment",
+    "appointmentNote": "Note",
+    "checkout": "Checkout",
+    "clientDetails": "Client",
+    "profileSettings": "Profile",
+    "sharedRoute": "Shared route",
+    "dynamicRoute": "Dynamic route",
+    "routeParameter": "Route parameter: {{value}}",
+    "openedFrom": "Opened from: {{source}}",
+    "editInModal": "Edit in standard modal",
+    "openCheckout": "Open checkout form sheet",
+    "formSheetDescription": "A native form sheet with cross-platform content chrome."
+  },
+  "placeholders": {
+    "home": "The navigation foundation is ready. Product data arrives in the next feature phases.",
+    "calendar": "Calendar data is not implemented yet. This screen already owns a native Stack.",
+    "clients": "Client data is not implemented yet. Use the action below to inspect the dynamic route.",
+    "analytics": "Analytics data is not implemented yet.",
+    "profileSettings": "Profile settings will be implemented with the settings feature.",
+    "checkout": "Payment and completion data remain intentionally outside this navigation example."
+  },
+  "settings": {
+    "theme": "Theme",
+    "language": "Language",
+    "themeModes": {
+      "auto": "System",
+      "light": "Light",
+      "dark": "Dark"
+    }
+  },
+  "quickCreate": {
+    "startTitle": "Quick create",
+    "startDescription": "A full-screen route modal owns this multi-step Stack.",
+    "clientTitle": "Choose client",
+    "clientDescription": "Client selection belongs here when the Clients feature is available.",
+    "servicesTitle": "Choose services",
+    "servicesDescription": "Service selection will use domain data without changing the navigation flow.",
+    "dateTimeTitle": "Date and time",
+    "dateTimeDescription": "Availability selection will be connected in the Calendar phase.",
+    "reviewTitle": "Review",
+    "reviewDescription": "Back pops one step. Finish dismisses the whole modal flow to Home.",
+    "finish": "Finish example"
+  },
+  "uikit": {
+    "title": "UIKit",
+    "intro": "Development-only catalog for design tokens, components, layouts and real Expo Router patterns.",
+    "openCatalog": "Open UIKit catalog",
+    "openExample": "Open example",
+    "active": "active",
+    "notUsed": "not used",
+    "platformSpecific": "platform-specific",
+    "badges": {
+      "alpha": "alpha",
+      "typedRoutesBeta": "typed routes beta"
+    },
+    "row": "Row {{value}}",
+    "sections": {
+      "foundations": "Foundations",
+      "components": "Components",
+      "layouts": "Page layouts",
+      "navigation": "Navigation",
+      "modals": "Modals",
+      "authentication": "Authentication"
+    },
+    "sectionDescriptions": {
+      "foundations": "Colors, type, spacing, icons, shadows, borders and safe areas",
+      "components": "Interactive primitives and loading, empty and error states",
+      "layouts": "Static, scrollable and keyboard-aware screen wrappers",
+      "navigation": "Stacks, tabs, dynamic and shared routes, links and Back",
+      "modals": "Route modals, form sheets, nested flows and transient overlays",
+      "authentication": "Protected routes, restoration, return intent and sign-out"
+    },
+    "foundation": {
+      "colors": "Colors",
+      "typography": "Typography",
+      "spacing": "Spacing",
+      "icons": "Icons",
+      "surfaces": "Shadows and borders",
+      "border": "Border",
+      "shadow": "Shadow",
+      "typeSamples": {
+        "display": "Display",
+        "title1": "Title 1",
+        "title3": "Title 3",
+        "body": "Body",
+        "caption": "Caption"
+      },
+      "safeAreas": "Safe areas belong to visual wrappers only when native chrome does not already own that edge."
+    },
+    "components": {
+      "buttons": "Buttons",
+      "inputs": "Inputs and selectors",
+      "cards": "Cards, lists and badges",
+      "states": "Loading, empty and error states",
+      "namePlaceholder": "Jane Doe",
+      "emailPlaceholder": "jane@example.com"
+    },
+    "labels": {
+      "primary": "Primary",
+      "secondary": "Secondary",
+      "selector": "Selector",
+      "add": "Add",
+      "all": "All",
+      "hair": "Hair",
+      "nails": "Nails",
+      "new": "New",
+      "paid": "Paid",
+      "warning": "Warning"
+    },
+    "layout": {
+      "basic": "Basic screen",
+      "basicDescription": "A static canvas with explicit safe-area edges and a native Stack header.",
+      "scroll": "Scrollable screen",
+      "scrollDescription": "A native-inset ScrollView that works under Stack headers and Native Tabs.",
+      "form": "Form screen",
+      "formDescription": "Keyboard-aware scrolling with a fixed, reachable action area.",
+      "dynamic": "Dynamic Stack options",
+      "dynamicDescription": "A route can update its native title without hiding the navigator configuration in a wrapper.",
+      "dynamicAlternateTitle": "Updated title",
+      "changeTitle": "Change native title"
+    },
+    "navigation": {
+      "stack": "Nested Stack inside a tab",
+      "stackDescription": "Settings owns a Stack, so pushed screens keep the selected native tab.",
+      "nativeTabs": "Native Tabs",
+      "nativeTabsDescription": "Five OS-owned tabs provide native chrome and independent nested stacks.",
+      "dynamic": "Dynamic route",
+      "dynamicDescription": "Route parameters identify an entity without duplicating it in navigation state.",
+      "shared": "Shared route",
+      "sharedDescription": "The same appointment route is rendered in Home or Calendar context.",
+      "absoluteRelative": "Absolute and relative links",
+      "absoluteRelativeDescription": "Absolute typed paths are the production default; this relative link is documented for completeness.",
+      "openRelative": "Open relative layout route",
+      "deepLink": "Deep link",
+      "deepLinkDescription": "File-based routes are deep-linkable through the configured app scheme.",
+      "back": "Back navigation",
+      "backDescription": "Native Stack Back, gestures and Android Back should be the default behavior.",
+      "drawer": "Drawer",
+      "drawerDescription": "There is no product scenario that justifies a Drawer alongside five primary tabs."
+    },
+    "modals": {
+      "standard": "Standard route modal",
+      "standardDescription": "Use for focused editing that should return to its origin.",
+      "fullscreen": "Fullscreen multi-step modal",
+      "fullscreenDescription": "Quick create owns a nested Stack while remaining one presented modal.",
+      "formSheet": "Native form sheet",
+      "formSheetDescription": "Checkout uses two numeric detents and renders its title inside content for Android.",
+      "confirmation": "Confirmation modal",
+      "confirmationDescription": "React Native Modal is reserved for self-contained blocking decisions.",
+      "sheet": "Bottom sheet",
+      "sheetDescription": "Gorhom Sheet is for previews, pickers and transient actions, not navigable flows.",
+      "dismiss": "Dismiss and dismissTo",
+      "dismissDescription": "Dismiss returns to the origin; dismissTo closes the whole nested flow to a known route."
+    },
+    "auth": {
+      "restoration": "Session restoration",
+      "restorationDescription": "A dedicated protected loading route prevents auth or onboarding flashes.",
+      "protected": "Protected application route",
+      "protectedDescription": "App routes exist only while session and profile guards are true.",
+      "public": "Public route",
+      "publicDescription": "Sign-in routes exist only while there is no active session.",
+      "returnTo": "Return after authentication",
+      "returnToDescription": "A validated internal deep link is remembered through sign-in and onboarding.",
+      "currentSession": "Current session",
+      "currentSessionDescription": "User: {{user}} · profile: {{profile}}",
+      "signOutTitle": "Sign out?",
+      "signOutDescription": "Protected history will be removed and Back cannot reopen the app."
+    },
+    "recommended": {
+      "screen": "Use for headerless static content; pass only the safe-area edges the navigator does not own.",
+      "scroll": "Use for content that scrolls under a native header.",
+      "form": "Use for forms; keep navigation prevention in the route.",
+      "stackOptions": "Keep title, header, gesture and animation options in the route or layout.",
+      "stack": "Use a nested Stack when a tab needs headers or push navigation.",
+      "nativeTabs": "Keep the alpha API isolated and avoid custom tab backgrounds.",
+      "dynamic": "Pass serializable identifiers through typed route params.",
+      "shared": "Use the group-qualified href when the origin tab must be preserved.",
+      "absolute": "Prefer absolute typed paths in production code.",
+      "deepLink": "Test custom-scheme links in a development build, not Expo Go.",
+      "back": "Prefer native Back; intercept only local wizard steps or unsaved changes.",
+      "drawer": "Do not add a navigator without a real information-architecture need.",
+      "routeModal": "Configure presentation in the parent Stack, not in a content wrapper.",
+      "fullscreen": "Use for long, focused multi-step creation flows.",
+      "formSheet": "Keep detents numeric and limit Android to three or fewer.",
+      "rnModal": "Use only for self-contained alerts and confirmations.",
+      "sheet": "Use for transient overlays that are not deep-linkable.",
+      "dismiss": "Use dismiss for origin return and dismissTo for a known terminal route.",
+      "authRestore": "Keep the root navigator mounted while session state resolves.",
+      "protected": "Treat protected routes as client navigation control, not backend authorization.",
+      "publicRoute": "Keep auth UI in its own public Stack and canonical URL namespace.",
+      "returnTo": "Validate the target as an internal path before imperative replacement.",
+      "signOut": "Let guard changes clear protected history; do not push the sign-in route manually."
+    }
   }
 }

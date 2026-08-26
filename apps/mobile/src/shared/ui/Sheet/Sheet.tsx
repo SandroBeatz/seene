@@ -4,7 +4,8 @@
  * grabber + scrim. Requires BottomSheetModalProvider at the root (see app/_layout).
  * docs/design-system.md §4.2.
  */
-import { forwardRef, type ReactNode, useCallback } from 'react';
+import { forwardRef, type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { BackHandler, Platform } from 'react-native';
 import {
   BottomSheetBackdrop,
   type BottomSheetBackdropProps,
@@ -19,13 +20,26 @@ export interface SheetProps {
   children: ReactNode;
   snapPoints?: (string | number)[];
   onDismiss?: () => void;
+  onChange?: (index: number) => void;
+  enablePanDownToClose?: boolean;
 }
 
 export const Sheet = forwardRef<BottomSheetModal, SheetProps>(function Sheet(
-  { children, snapPoints, onDismiss },
-  ref,
+  { children, snapPoints, onDismiss, onChange, enablePanDownToClose = true },
+  forwardedRef,
 ) {
   const { theme } = useUnistyles();
+  const sheetRef = useRef<BottomSheetModal | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const setRef = useCallback(
+    (instance: BottomSheetModal | null) => {
+      sheetRef.current = instance;
+      if (typeof forwardedRef === 'function') forwardedRef(instance);
+      else if (forwardedRef) forwardedRef.current = instance;
+    },
+    [forwardedRef],
+  );
 
   const renderBackdrop = useCallback(
     (props: BottomSheetBackdropProps) => (
@@ -34,16 +48,38 @@ export const Sheet = forwardRef<BottomSheetModal, SheetProps>(function Sheet(
     [],
   );
 
+  const handleChange = useCallback(
+    (index: number) => {
+      setIsOpen(index >= 0);
+      onChange?.(index);
+    },
+    [onChange],
+  );
+
+  useEffect(() => {
+    if (Platform.OS !== 'android' || !isOpen) return;
+    const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+      sheetRef.current?.dismiss();
+      return true;
+    });
+    return () => subscription.remove();
+  }, [isOpen]);
+
   return (
     <BottomSheetModal
-      ref={ref}
+      ref={setRef}
       snapPoints={snapPoints}
       enableDynamicSizing={!snapPoints}
+      enablePanDownToClose={enablePanDownToClose}
+      keyboardBehavior="interactive"
+      keyboardBlurBehavior="restore"
+      onChange={handleChange}
       onDismiss={onDismiss}
       backdropComponent={renderBackdrop}
       handleIndicatorStyle={{ backgroundColor: theme.colors.border.strong }}
       backgroundStyle={{ backgroundColor: theme.colors.bg.elevated }}>
-      <BottomSheetView style={[styles.content, snapPoints?.length ? styles.fixedHeight : undefined]}>
+      <BottomSheetView
+        style={[styles.content, snapPoints?.length ? styles.fixedHeight : undefined]}>
         {children}
       </BottomSheetView>
     </BottomSheetModal>

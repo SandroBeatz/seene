@@ -7,7 +7,9 @@
     "confirm": "Confirmer",
     "retry": "Réessayer",
     "loading": "Chargement…",
-    "search": "Rechercher"
+    "search": "Rechercher",
+    "close": "Fermer",
+    "continue": "Continuer"
   },
   "tabs": {
     "home": "Accueil",
@@ -115,5 +117,168 @@
     "back": "Retour",
     "next": "Suivant",
     "finish": "Créer le studio"
+  },
+  "navigation": {
+    "restoringSession": "Restauration de votre session…",
+    "notFound": "Introuvable",
+    "notFoundDescription": "Cet écran n’existe pas.",
+    "goHome": "Aller à l’accueil",
+    "quickCreate": "Créer un rendez-vous",
+    "openSharedAppointment": "Ouvrir le rendez-vous partagé",
+    "openDynamicClient": "Ouvrir la route client dynamique",
+    "appointmentDetails": "Rendez-vous",
+    "appointmentForm": "Modifier le rendez-vous",
+    "appointmentNote": "Note",
+    "checkout": "Encaissement",
+    "clientDetails": "Client",
+    "profileSettings": "Profil",
+    "sharedRoute": "Route partagée",
+    "dynamicRoute": "Route dynamique",
+    "routeParameter": "Paramètre de route : {{value}}",
+    "openedFrom": "Ouvert depuis : {{source}}",
+    "editInModal": "Modifier dans une modale standard",
+    "openCheckout": "Ouvrir la feuille d’encaissement",
+    "formSheetDescription": "Une feuille native avec un contenu cohérent sur chaque plateforme."
+  },
+  "placeholders": {
+    "home": "La base de navigation est prête. Les données produit arrivent dans les prochaines phases.",
+    "calendar": "Les données d’agenda ne sont pas encore implémentées. Cet écran possède déjà sa Stack native.",
+    "clients": "Les données client ne sont pas encore implémentées. Utilisez l’action pour inspecter la route dynamique.",
+    "analytics": "Les données statistiques ne sont pas encore implémentées.",
+    "profileSettings": "Les réglages du profil seront ajoutés avec la fonctionnalité Réglages.",
+    "checkout": "Le paiement et la finalisation restent volontairement hors de cet exemple de navigation."
+  },
+  "settings": {
+    "theme": "Thème",
+    "language": "Langue",
+    "themeModes": { "auto": "Système", "light": "Clair", "dark": "Sombre" }
+  },
+  "quickCreate": {
+    "startTitle": "Création rapide",
+    "startDescription": "Une modale plein écran contient cette Stack en plusieurs étapes.",
+    "clientTitle": "Choisir le client",
+    "clientDescription": "La sélection du client sera connectée lorsque la fonctionnalité Clients sera disponible.",
+    "servicesTitle": "Choisir les services",
+    "servicesDescription": "Les données métier seront ajoutées sans modifier le flux de navigation.",
+    "dateTimeTitle": "Date et heure",
+    "dateTimeDescription": "La disponibilité sera connectée pendant la phase Agenda.",
+    "reviewTitle": "Vérification",
+    "reviewDescription": "Retour dépile une étape. Terminer ferme tout le flux vers l’accueil.",
+    "finish": "Terminer l’exemple"
+  },
+  "uikit": {
+    "title": "UIKit",
+    "intro": "Catalogue de développement des tokens, composants, layouts et vrais patterns Expo Router.",
+    "openCatalog": "Ouvrir le catalogue UIKit",
+    "openExample": "Ouvrir l’exemple",
+    "active": "actif",
+    "notUsed": "non utilisé",
+    "platformSpecific": "spécifique à la plateforme",
+    "badges": { "alpha": "alpha", "typedRoutesBeta": "routes typées bêta" },
+    "row": "Ligne {{value}}",
+    "sections": {
+      "foundations": "Fondations",
+      "components": "Composants",
+      "layouts": "Layouts de page",
+      "navigation": "Navigation",
+      "modals": "Modales",
+      "authentication": "Authentification"
+    },
+    "sectionDescriptions": {
+      "foundations": "Couleurs, typo, espacements, icônes, ombres, bordures et zones sûres",
+      "components": "Primitives interactives et états de chargement, vide et erreur",
+      "layouts": "Écrans statiques, défilants et adaptés au clavier",
+      "navigation": "Stacks, onglets, routes dynamiques et partagées, liens et Retour",
+      "modals": "Modales routées, feuilles, flux imbriqués et overlays temporaires",
+      "authentication": "Routes protégées, restauration, retour et déconnexion"
+    },
+    "foundation": {
+      "colors": "Couleurs", "typography": "Typographie", "spacing": "Espacement",
+      "icons": "Icônes", "surfaces": "Ombres et bordures",
+      "border": "Bordure", "shadow": "Ombre",
+      "typeSamples": {
+        "display": "Affichage", "title1": "Titre 1", "title3": "Titre 3",
+        "body": "Corps", "caption": "Légende"
+      },
+      "safeAreas": "Les wrappers gèrent seulement les bords que le chrome natif ne possède pas déjà."
+    },
+    "components": {
+      "buttons": "Boutons", "inputs": "Champs et sélecteurs",
+      "cards": "Cartes, listes et badges", "states": "États de chargement, vide et erreur",
+      "namePlaceholder": "Jeanne Dupont", "emailPlaceholder": "jeanne@example.com"
+    },
+    "labels": {
+      "primary": "Principal", "secondary": "Secondaire", "selector": "Sélecteur",
+      "add": "Ajouter", "all": "Tout", "hair": "Coiffure", "nails": "Ongles",
+      "new": "Nouveau", "paid": "Payé", "warning": "Attention"
+    },
+    "layout": {
+      "basic": "Écran simple",
+      "basicDescription": "Un canvas statique avec zones sûres explicites et header Stack natif.",
+      "scroll": "Écran défilant",
+      "scrollDescription": "Une ScrollView aux insets natifs sous les headers et Native Tabs.",
+      "form": "Écran de formulaire",
+      "formDescription": "Défilement adapté au clavier avec action fixe et accessible.",
+      "dynamic": "Options Stack dynamiques",
+      "dynamicDescription": "La route met à jour son titre natif sans cacher la configuration dans un wrapper.",
+      "dynamicAlternateTitle": "Titre modifié", "changeTitle": "Modifier le titre natif"
+    },
+    "navigation": {
+      "stack": "Stack imbriquée dans un onglet",
+      "stackDescription": "Réglages garde l’onglet sélectionné lors des écrans poussés.",
+      "nativeTabs": "Native Tabs",
+      "nativeTabsDescription": "Cinq onglets système possèdent chacun une Stack indépendante.",
+      "dynamic": "Route dynamique",
+      "dynamicDescription": "Les paramètres identifient l’entité sans dupliquer l’état de navigation.",
+      "shared": "Route partagée",
+      "sharedDescription": "Le même rendez-vous s’affiche dans le contexte Accueil ou Agenda.",
+      "absoluteRelative": "Liens absolus et relatifs",
+      "absoluteRelativeDescription": "Les chemins absolus typés restent le choix production.",
+      "openRelative": "Ouvrir le layout relatif",
+      "deepLink": "Lien profond", "deepLinkDescription": "Les routes fichiers sont accessibles par le scheme de l’app.",
+      "back": "Navigation Retour", "backDescription": "Stack native, gestes et Retour Android sont le comportement par défaut.",
+      "drawer": "Drawer", "drawerDescription": "Aucun scénario ne justifie un Drawer avec cinq onglets principaux."
+    },
+    "modals": {
+      "standard": "Modale routée standard", "standardDescription": "Pour une édition ciblée qui revient à son origine.",
+      "fullscreen": "Modale plein écran multi-étapes", "fullscreenDescription": "La création rapide garde une Stack dans une seule modale.",
+      "formSheet": "Feuille native", "formSheetDescription": "L’encaissement utilise deux detents et un titre dans le contenu sur Android.",
+      "confirmation": "Modale de confirmation", "confirmationDescription": "React Native Modal est réservé aux décisions bloquantes autonomes.",
+      "sheet": "Bottom sheet", "sheetDescription": "Pour aperçus, sélecteurs et actions temporaires, pas pour naviguer.",
+      "dismiss": "Dismiss et dismissTo", "dismissDescription": "Dismiss revient à l’origine ; dismissTo ferme le flux vers une route connue."
+    },
+    "auth": {
+      "restoration": "Restauration de session", "restorationDescription": "Une route de chargement protégée évite les flashes auth/onboarding.",
+      "protected": "Route d’application protégée", "protectedDescription": "Les routes existent seulement avec une session et un profil valides.",
+      "public": "Route publique", "publicDescription": "Les routes de connexion existent seulement sans session active.",
+      "returnTo": "Retour après authentification", "returnToDescription": "Un lien interne validé est conservé pendant connexion et onboarding.",
+      "currentSession": "Session actuelle", "currentSessionDescription": "Utilisateur : {{user}} · profil : {{profile}}",
+      "signOutTitle": "Se déconnecter ?", "signOutDescription": "L’historique protégé sera supprimé et Retour ne rouvrira pas l’app."
+    },
+    "recommended": {
+      "screen": "Pour un contenu statique sans header ; ne passer que les bords non gérés par le navigateur.",
+      "scroll": "Pour le contenu défilant sous un header natif.",
+      "form": "Pour les formulaires ; garder la prévention de navigation dans la route.",
+      "stackOptions": "Conserver titre, header, gestes et animations dans la route ou le layout.",
+      "stack": "Utiliser une Stack imbriquée quand l’onglet a besoin de headers ou de push.",
+      "nativeTabs": "Isoler l’API alpha et éviter un fond d’onglets personnalisé.",
+      "dynamic": "Passer des identifiants sérialisables via des paramètres typés.",
+      "shared": "Utiliser le href qualifié par groupe pour préserver l’onglet d’origine.",
+      "absolute": "Préférer les chemins absolus typés en production.",
+      "deepLink": "Tester les liens par scheme dans un development build, pas Expo Go.",
+      "back": "Préférer Retour natif ; intercepter seulement les étapes locales ou changements non enregistrés.",
+      "drawer": "Ne pas ajouter de navigateur sans besoin réel d’architecture de l’information.",
+      "routeModal": "Configurer presentation dans la Stack parente, pas dans un wrapper.",
+      "fullscreen": "Pour les longs flux de création en plusieurs étapes.",
+      "formSheet": "Utiliser des detents numériques et trois maximum sur Android.",
+      "rnModal": "Seulement pour alertes et confirmations autonomes.",
+      "sheet": "Pour les overlays temporaires non deep-linkables.",
+      "dismiss": "Dismiss pour revenir à l’origine, dismissTo pour une route terminale connue.",
+      "authRestore": "Garder le navigateur racine monté pendant la résolution de session.",
+      "protected": "Les routes protégées ne remplacent pas l’autorisation backend.",
+      "publicRoute": "Garder l’auth dans une Stack publique et un namespace URL dédié.",
+      "returnTo": "Valider le chemin interne avant le replace impératif.",
+      "signOut": "Laisser les guards nettoyer l’historique ; ne pas pousser la connexion manuellement."
+    }
   }
 }

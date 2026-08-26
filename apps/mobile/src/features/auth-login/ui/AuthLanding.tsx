@@ -5,7 +5,7 @@
  *  - iOS shows Apple + Google + email; Android shows Google + email.
  *  - The logo (`logo-black.svg`) tints to the theme's primary content color so it
  *    reads in both light and dark.
- *  - "Continue with email" pushes the `/(auth)/email` screen (a full-screen modal on
+ *  - "Continue with email" pushes `/sign-in/email` (an iOS modal or Android card,
  *    iOS, a pushed page on Android — configured in the (auth) layout).
  */
 import { useState } from 'react';
@@ -91,7 +91,7 @@ export function AuthLanding() {
             label={t('auth.continueWithEmail')}
             variant="secondary"
             size="lg"
-            onPress={() => router.push('/(auth)/email')}
+            onPress={() => router.push('/sign-in/email')}
             fullWidth
           />
         </View>

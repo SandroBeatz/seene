@@ -1,11 +1,13 @@
 ---
-version: 1.0
-date: 2026-08-19
+version: 1.1
+date: 2026-08-26
 category: roadmap
 status: proposed
 ---
 
 # Implementation Roadmap
+
+> Version 1.1 · 2026-08-26 · [Architecture](./architecture/)
 
 > A phased plan from the current stock template to a production app. Each phase has a goal, a
 > concrete deliverable set, and an exit criterion. **Phase 0 is the "first stage"** the brief asks
@@ -16,8 +18,9 @@ status: proposed
 
 **Phase 0 is built (2026-08-19).** The stock template was replaced with the FSD-lite skeleton,
 tooling, data/state plumbing, the Unistyles design system + seed UI kit, i18n, the timezone/format
-core (with tests), Sentry, and CI. `tsc --noEmit`, `expo lint`, and `jest` all pass;
-`expo-doctor` 21/21; the iOS JS bundle builds (2421 modules). See the Phase 0 status box below.
+core (with tests), Sentry, and CI. The production navigation foundation and development-only UIKit
+catalog were completed on 2026-08-26. `tsc --noEmit`, `expo lint`, and 29 Jest tests pass;
+`expo-doctor` is 21/21; iOS, Android, and static web exports build. See the Phase 0 status box below.
 Remaining before Phase 1: run the native dev build on a device/simulator and verify on-device
 timezone data (Q-ARCH-3).
 
@@ -32,7 +35,7 @@ timezone data (Q-ARCH-3).
 > adapter + generated `database.types.ts`; QueryClient + MMKV persistence + focus/online managers;
 > Zustand theme/locale stores; Unistyles tokens + light/dark themes (Seene Violet) + seed kit
 > (`Text, Button, IconButton, Icon, Input, Switch, Card, ListItem, Divider, Badge/StatusPill, Chip,
-> Sheet, Modal, Screen` + `Skeleton/EmptyState/ErrorState`); the `ui-guide` gallery; i18next
+Sheet, Modal, Screen` + `Skeleton/EmptyState/ErrorState`); the development-only `/uikit` catalog; i18next
 > (en/fr/ru); `shared/lib/time-zone` + `shared/lib/formats` (11 passing tests) with a
 > `verifyTimeZoneData` Q-ARCH-3 guard; Sentry + root error boundary; GitHub Actions CI.
 > **Pending:** `npx expo run:ios|android` native dev-build boot on hardware (needs Xcode/Android
@@ -40,12 +43,14 @@ timezone data (Q-ARCH-3).
 > fill `.env.local` from `.env.example` with the Supabase publishable key.
 
 **Deliverables**
+
 1. **Tooling & config:** bun scripts; ESLint (expo) + Prettier; `eslint-plugin-boundaries` +
 
 **Goal:** a runnable dev build with the architecture, tooling, data plumbing, theming, and a seed
 UI kit in place — but no product features yet. Everything later plugs into this.
 
 **Deliverables**
+
 1. **Tooling & config:** bun scripts; ESLint (expo) + Prettier; `eslint-plugin-boundaries` +
    the "no supabase outside api", "no raw style literals" rules; strict TS; path aliases
    (`@shared`, `@entities`, …); env via `EXPO_PUBLIC_*` + `app.config` typing.
@@ -59,7 +64,7 @@ UI kit in place — but no product features yet. Everything later plugs into thi
    up; error normalization.
 6. **Design system core:** Unistyles tokens + light/dark themes (Seene Violet); seed UI kit
    (`Text, Button, IconButton, Input, Switch, Card, ListItem, Avatar, Badge/StatusPill, Chip,
-   Divider, Sheet, Modal` + `Skeleton/Empty/Error` states); a `ui-guide` gallery screen.
+Divider, Sheet, Modal` + `Skeleton/Empty/Error` states); a development-only `/uikit` catalog.
 7. **i18n:** i18next + expo-localization + en/fr/ru catalogs (ported), locale store.
 8. **Time/format core:** `shared/lib/time-zone` (Luxon) + `shared/lib/formats`, with tests; verify
    on-device timezone data (Q-ARCH-3).
@@ -75,13 +80,13 @@ api→query→hook pipeline; CI is green.
 ## Phase 1 — Auth & onboarding 🚧 core built (2026-08-24)
 
 > **Status (2026-08-24).** Built & green (`tsc`, `expo lint`, `jest` 18/18, `expo export --platform
-> ios` bundles): `session` entity (api + Zustand store honouring the auth-lock rules + auth mutations);
+ios` bundles): `session` entity (api + Zustand store honouring the auth-lock rules + auth mutations);
 > `master` entity (username-availability query, `master_profile` insert, `master_settings` upsert,
 > specialization keys, country→time-format seed); `features/auth-login` (email+password with a
 > sign-in/create-account toggle, native Google behind the `googleSignIn` flag, Apple gated off);
 > `features/onboarding` (the full 5-step wizard with per-step gating and the single Step-5 write);
-> the root-layout auth/onboarding guard implementing the §3 decision table (splash held until the
-> session resolves). i18n `auth`/`onboarding` catalogs added for en/fr/ru; jest `@/` moduleNameMapper
+> the root-layout `Stack.Protected` auth/onboarding branches implementing the §3 decision table
+> (splash held until the session resolves). i18n `auth`/`onboarding` catalogs added for en/fr/ru; jest `@/` moduleNameMapper
 > added. **Pending:** native dev-build boot to exercise the flows on device (Google OAuth round-trip,
 > Supabase writes end-to-end); native pickers for country/timezone/time (MVP uses text inputs +
 > two-letter country code); the "deactivated" login notice copy; wiring `master_settings`

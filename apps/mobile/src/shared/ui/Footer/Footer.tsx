@@ -5,8 +5,8 @@
  * GlassSurface, tokened fallback elsewhere), left/center/right action slots, and the
  * bottom safe-area inset so actions never sit under the home indicator.
  *
- * Standalone here; PageLayout (app.master.seene-df8) composes it over its scroll area.
- * OS-owned chrome (the native tab bar) is separate — don't use this to replace it.
+ * It stays a standalone visual primitive. OS-owned chrome (native tab bars, Stack
+ * headers and route sheets) is separate — don't use this to replace it.
  */
 import type { ReactNode } from 'react';
 import { View, type StyleProp, type ViewStyle } from 'react-native';
@@ -117,7 +117,19 @@ const styles = StyleSheet.create((theme) => ({
     justifyContent: 'center',
     gap: theme.space[3],
   },
-  sideStart: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', gap: theme.space[2] },
+  sideStart: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    gap: theme.space[2],
+  },
   center: { alignItems: 'center', justifyContent: 'center' },
-  sideEnd: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: theme.space[2] },
+  sideEnd: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: theme.space[2],
+  },
 }));

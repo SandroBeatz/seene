@@ -7,7 +7,9 @@
     "confirm": "Подтвердить",
     "retry": "Повторить",
     "loading": "Загрузка…",
-    "search": "Поиск"
+    "search": "Поиск",
+    "close": "Закрыть",
+    "continue": "Продолжить"
   },
   "tabs": {
     "home": "Главная",
@@ -115,5 +117,168 @@
     "back": "Назад",
     "next": "Далее",
     "finish": "Создать студию"
+  },
+  "navigation": {
+    "restoringSession": "Восстанавливаем сессию…",
+    "notFound": "Экран не найден",
+    "notFoundDescription": "Такого экрана не существует.",
+    "goHome": "На главную",
+    "quickCreate": "Создать запись",
+    "openSharedAppointment": "Открыть общую запись",
+    "openDynamicClient": "Открыть динамический маршрут клиента",
+    "appointmentDetails": "Запись",
+    "appointmentForm": "Изменить запись",
+    "appointmentNote": "Заметка",
+    "checkout": "Расчёт",
+    "clientDetails": "Клиент",
+    "profileSettings": "Профиль",
+    "sharedRoute": "Общий маршрут",
+    "dynamicRoute": "Динамический маршрут",
+    "routeParameter": "Параметр маршрута: {{value}}",
+    "openedFrom": "Открыто из: {{source}}",
+    "editInModal": "Изменить в стандартном modal",
+    "openCheckout": "Открыть form sheet расчёта",
+    "formSheetDescription": "Нативный form sheet с единым содержимым для разных платформ."
+  },
+  "placeholders": {
+    "home": "Навигационная основа готова. Продуктовые данные появятся на следующих этапах.",
+    "calendar": "Данные календаря ещё не реализованы. У экрана уже есть собственный нативный Stack.",
+    "clients": "Данные клиентов ещё не реализованы. Кнопка ниже открывает динамический маршрут.",
+    "analytics": "Данные аналитики ещё не реализованы.",
+    "profileSettings": "Настройки профиля появятся вместе с модулем настроек.",
+    "checkout": "Оплата и завершение записи намеренно не входят в навигационный пример."
+  },
+  "settings": {
+    "theme": "Тема",
+    "language": "Язык",
+    "themeModes": { "auto": "Системная", "light": "Светлая", "dark": "Тёмная" }
+  },
+  "quickCreate": {
+    "startTitle": "Быстрое создание",
+    "startDescription": "Полноэкранный route modal содержит многошаговый Stack.",
+    "clientTitle": "Выберите клиента",
+    "clientDescription": "Выбор клиента подключится после реализации модуля клиентов.",
+    "servicesTitle": "Выберите услуги",
+    "servicesDescription": "Доменные данные услуг не изменят структуру навигационного сценария.",
+    "dateTimeTitle": "Дата и время",
+    "dateTimeDescription": "Выбор доступного времени подключится на этапе календаря.",
+    "reviewTitle": "Проверка",
+    "reviewDescription": "Назад возвращает один шаг, завершение закрывает весь modal flow на Главную.",
+    "finish": "Завершить пример"
+  },
+  "uikit": {
+    "title": "UIKit",
+    "intro": "Dev-only каталог токенов, компонентов, layouts и реальных паттернов Expo Router.",
+    "openCatalog": "Открыть каталог UIKit",
+    "openExample": "Открыть пример",
+    "active": "активно",
+    "notUsed": "не используется",
+    "platformSpecific": "зависит от платформы",
+    "badges": { "alpha": "альфа", "typedRoutesBeta": "типизированные routes — бета" },
+    "row": "Строка {{value}}",
+    "sections": {
+      "foundations": "Основы",
+      "components": "Компоненты",
+      "layouts": "Layouts экранов",
+      "navigation": "Навигация",
+      "modals": "Модальные сценарии",
+      "authentication": "Авторизация"
+    },
+    "sectionDescriptions": {
+      "foundations": "Цвета, типографика, отступы, иконки, тени, границы и Safe Area",
+      "components": "Интерактивные primitives и состояния загрузки, пустоты и ошибки",
+      "layouts": "Статические, прокручиваемые и keyboard-aware экраны",
+      "navigation": "Stack, tabs, dynamic/shared routes, Link и Back",
+      "modals": "Route modals, form sheets, вложенные flows и временные overlays",
+      "authentication": "Protected routes, восстановление, return intent и выход"
+    },
+    "foundation": {
+      "colors": "Цвета", "typography": "Типографика", "spacing": "Отступы",
+      "icons": "Иконки", "surfaces": "Тени и границы",
+      "border": "Граница", "shadow": "Тень",
+      "typeSamples": {
+        "display": "Крупный текст", "title1": "Заголовок 1", "title3": "Заголовок 3",
+        "body": "Основной текст", "caption": "Подпись"
+      },
+      "safeAreas": "Wrappers управляют только теми краями Safe Area, которые ещё не принадлежат нативному chrome."
+    },
+    "components": {
+      "buttons": "Кнопки", "inputs": "Поля и селекторы",
+      "cards": "Карточки, списки и badges", "states": "Loading, empty и error states",
+      "namePlaceholder": "Анна Иванова", "emailPlaceholder": "anna@example.com"
+    },
+    "labels": {
+      "primary": "Основная", "secondary": "Вторичная", "selector": "Переключатель",
+      "add": "Добавить", "all": "Все", "hair": "Волосы", "nails": "Ногти",
+      "new": "Новое", "paid": "Оплачено", "warning": "Внимание"
+    },
+    "layout": {
+      "basic": "Обычный экран",
+      "basicDescription": "Статический canvas с явными Safe Area edges и нативным Stack header.",
+      "scroll": "Прокручиваемый экран",
+      "scrollDescription": "ScrollView с нативными insets под Stack header и Native Tabs.",
+      "form": "Экран формы",
+      "formDescription": "Keyboard-aware прокрутка с фиксированной доступной action area.",
+      "dynamic": "Динамические Stack options",
+      "dynamicDescription": "Route меняет нативный title, не пряча конфигурацию навигатора во wrapper.",
+      "dynamicAlternateTitle": "Обновлённый заголовок", "changeTitle": "Изменить нативный title"
+    },
+    "navigation": {
+      "stack": "Вложенный Stack во вкладке",
+      "stackDescription": "Settings сохраняет выбранную нативную вкладку при push следующего экрана.",
+      "nativeTabs": "Native Tabs",
+      "nativeTabsDescription": "Пять системных вкладок имеют независимые вложенные Stack.",
+      "dynamic": "Динамический маршрут",
+      "dynamicDescription": "Route params идентифицируют сущность без дублирования navigation state.",
+      "shared": "Общий маршрут",
+      "sharedDescription": "Одна карточка записи отображается в контексте Home или Calendar.",
+      "absoluteRelative": "Абсолютные и относительные ссылки",
+      "absoluteRelativeDescription": "В production по умолчанию используются абсолютные типизированные пути.",
+      "openRelative": "Открыть относительный layout route",
+      "deepLink": "Deep link", "deepLinkDescription": "Файловые маршруты открываются через scheme приложения.",
+      "back": "Возврат назад", "backDescription": "Нативный Stack Back, gestures и Android Back — поведение по умолчанию.",
+      "drawer": "Drawer", "drawerDescription": "Нет продуктового сценария для Drawer рядом с пятью основными вкладками."
+    },
+    "modals": {
+      "standard": "Стандартный route modal", "standardDescription": "Для сфокусированного редактирования с возвратом к источнику.",
+      "fullscreen": "Полноэкранный многошаговый modal", "fullscreenDescription": "Quick create содержит вложенный Stack внутри одного modal.",
+      "formSheet": "Нативный form sheet", "formSheetDescription": "Checkout использует два detent и content title на Android.",
+      "confirmation": "Modal подтверждения", "confirmationDescription": "React Native Modal предназначен только для автономного блокирующего решения.",
+      "sheet": "Bottom sheet", "sheetDescription": "Для preview, picker и временных действий, но не для навигационных flows.",
+      "dismiss": "Dismiss и dismissTo", "dismissDescription": "Dismiss возвращает к источнику, dismissTo закрывает flow до известного route."
+    },
+    "auth": {
+      "restoration": "Восстановление сессии", "restorationDescription": "Отдельный protected loading route предотвращает вспышки auth/onboarding.",
+      "protected": "Защищённый маршрут приложения", "protectedDescription": "App routes существуют только при валидных session и profile.",
+      "public": "Публичный маршрут", "publicDescription": "Sign-in routes существуют только без активной сессии.",
+      "returnTo": "Возврат после авторизации", "returnToDescription": "Проверенный внутренний deep link сохраняется через sign-in и onboarding.",
+      "currentSession": "Текущая сессия", "currentSessionDescription": "Пользователь: {{user}} · профиль: {{profile}}",
+      "signOutTitle": "Выйти из аккаунта?", "signOutDescription": "Protected history будет удалена, и Back не откроет приложение снова."
+    },
+    "recommended": {
+      "screen": "Для статического content без header; передавайте только края, не занятые навигатором.",
+      "scroll": "Для content, который прокручивается под нативным header.",
+      "form": "Для форм; блокировку ухода оставляйте явно в route.",
+      "stackOptions": "Title, header, gestures и animations задавайте в route или layout.",
+      "stack": "Вложенный Stack нужен вкладке с headers или push-навигацией.",
+      "nativeTabs": "Изолируйте alpha API и не задавайте кастомный фон tab bar.",
+      "dynamic": "Передавайте сериализуемые идентификаторы через типизированные params.",
+      "shared": "Используйте group-qualified href, когда нужно сохранить исходную вкладку.",
+      "absolute": "В production предпочитайте абсолютные типизированные пути.",
+      "deepLink": "Проверяйте custom scheme в development build, а не Expo Go.",
+      "back": "Предпочитайте нативный Back; перехватывайте только локальный wizard или несохранённые изменения.",
+      "drawer": "Не добавляйте navigator без реальной задачи информационной архитектуры.",
+      "routeModal": "Presentation задаётся в родительском Stack, а не content wrapper.",
+      "fullscreen": "Подходит для длинного сфокусированного многошагового создания.",
+      "formSheet": "Используйте числовые detents и не больше трёх на Android.",
+      "rnModal": "Только для автономных alert и confirmation.",
+      "sheet": "Для временных overlays без deep link.",
+      "dismiss": "Dismiss возвращает к источнику, dismissTo — к известному terminal route.",
+      "authRestore": "Root navigator остаётся смонтированным при восстановлении сессии.",
+      "protected": "Protected routes управляют клиентской навигацией, но не заменяют backend authorization.",
+      "publicRoute": "Auth UI живёт в отдельном public Stack и стабильном URL namespace.",
+      "returnTo": "Перед imperative replace проверяйте, что target — внутренний путь.",
+      "signOut": "Guard сам очищает protected history; не делайте push sign-in вручную."
+    }
   }
 }

@@ -24,7 +24,7 @@ const ICON_COLOR: Record<IconButtonVariant, string> = {
   glass: 'content.primary',
 };
 
-export function IconButton({ icon, variant = 'neutral', disabled, ...rest }: IconButtonProps) {
+export function IconButton({ icon, variant = 'accent', disabled, ...rest }: IconButtonProps) {
   styles.useVariants({ variant });
   const iconNode = <Icon name={icon} size="md" color={ICON_COLOR[variant]} />;
 

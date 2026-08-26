@@ -1,11 +1,13 @@
 ---
-version: 1.0
-date: 2026-08-19
+version: 1.1
+date: 2026-08-26
 category: architecture
-status: proposed
+status: implemented
 ---
 
 # Mobile Architecture
+
+> Version 1.1 · 2026-08-26 · [Architecture](./architecture/)
 
 > How the app is layered, where each kind of code lives, and the rules that keep it maintainable
 > and backend-swappable. The concrete directory tree is in [project-structure.md](./project-structure.md);
@@ -50,13 +52,13 @@ status: proposed
         imports allowed downward only ↓   (never upward, never sideways)
 ```
 
-| Layer | Contains | May import | Must NOT import |
-|---|---|---|---|
-| `app` | routes, `_layout`, guards | widgets, features, entities, shared | — |
-| `widgets` | composite blocks | features, entities, shared | app, other widgets |
-| `features` | single user actions | entities, shared | app, widgets, other features |
-| `entities` | domain data + atoms | shared, **own** slice only | app, widgets, features, other entities |
-| `shared` | framework-agnostic reuse | shared only | everything above |
+| Layer      | Contains                  | May import                          | Must NOT import                        |
+| ---------- | ------------------------- | ----------------------------------- | -------------------------------------- |
+| `app`      | routes, `_layout`, guards | widgets, features, entities, shared | —                                      |
+| `widgets`  | composite blocks          | features, entities, shared          | app, other widgets                     |
+| `features` | single user actions       | entities, shared                    | app, widgets, other features           |
+| `entities` | domain data + atoms       | shared, **own** slice only          | app, widgets, features, other entities |
+| `shared`   | framework-agnostic reuse  | shared only                         | everything above                       |
 
 Enforce with `eslint-plugin-boundaries` (recommended) so agents can't drift.
 
@@ -83,12 +85,14 @@ Ten entities to build (ported from web): `session`, `master`, `service`, `servic
 ## 4. Data flow (read + write)
 
 **Read:**
+
 ```
 Screen (app/) → Widget → useXQuery() [entities/x/model] → listX() [entities/x/api] → supabase.from()
                               ↑ TanStack cache (keyed, background-refetch, persisted to MMKV)
 ```
 
 **Write (with cache invalidation):**
+
 ```
 Feature form → useCreateXMutation() → createX() [api] → supabase → onSettled: invalidate ['x', userId]
 ```
@@ -121,12 +125,18 @@ and invalidation. See [state-management.md](./state-management.md).
 
 - `src/app/_layout.tsx` initializes Unistyles (imported first), the `QueryClientProvider`,
   gesture-handler root, safe-area, Sentry, i18n, and the theme provider.
-- **Auth/onboarding guard**: a root layout reads the session store (Zustand, backed by
-  `onAuthStateChange`) and redirects using the decision table in
-  [business-logic.md](./business-logic.md) §3. Route groups: `(auth)` (login/register),
-  `(onboarding)` (steps), `(tabs)` (home/calendar/clients/analytics/settings). The guard awaits an
-  in-flight profile fetch before deciding (port the web `_processingPromise`).
-- Keep the guard in a layout, not per-screen.
+- The same root owns mutually exclusive `Stack.Protected` branches for restoration, restoration
+  error, `(auth)`, `(onboarding)`, `(app)`, and the development-only UIKit. Guard changes purge
+  unavailable history; screens do not redirect themselves.
+- `(app)` is a Stack with Native Tabs as its base and route modals as siblings. Each tab owns a
+  nested Stack for native headers and independent push history. Appointment details use a shared
+  `(home,calendar)` route group rather than duplicated screen files.
+- `_layout.tsx`/`Stack.Screen` own navigator configuration. `Screen`, `ScreenScrollView`,
+  `FormScreen`, and `FormSheetContent` own only visual/system content environment.
+- A validated incoming protected deep link is held as a transient return intent through sign-in
+  and onboarding; navigation state is never mirrored in Zustand.
+- Keep guards in layouts, not per-screen. Full route tree, modal decisions, platform caveats, and
+  add-screen recipes: [Navigation Architecture](./architecture/navigation.md).
 
 ## 7. Error handling
 
@@ -148,15 +158,15 @@ and invalidation. See [state-management.md](./state-management.md).
 
 ## 9. What ports directly vs. what must be rebuilt
 
-| Ports directly (logic identical) | Must be rebuilt for native |
-|---|---|
-| Entity types, DTOs, api functions (transport aside) | All UI / components (new design system) |
-| Query/mutation structure & cache keys | Calendar (FullCalendar → native) |
-| Scheduling/availability math | Charts (Chart.js → Skia lib) |
-| Status maps, derived values, validators (Joi→Zod) | Navigation (Vue Router → Expo Router) |
-| Auth/onboarding rules, guard decision table | Supabase client init (browser → RN adapters) |
-| Formatting helpers, i18n catalogs | Overlays (web modals → bottom sheets) |
-| Business rules & invariants | Forms (vue → RHF), state (Pinia → Zustand/TanStack) |
+| Ports directly (logic identical)                    | Must be rebuilt for native                          |
+| --------------------------------------------------- | --------------------------------------------------- |
+| Entity types, DTOs, api functions (transport aside) | All UI / components (new design system)             |
+| Query/mutation structure & cache keys               | Calendar (FullCalendar → native)                    |
+| Scheduling/availability math                        | Charts (Chart.js → Skia lib)                        |
+| Status maps, derived values, validators (Joi→Zod)   | Navigation (Vue Router → Expo Router)               |
+| Auth/onboarding rules, guard decision table         | Supabase client init (browser → RN adapters)        |
+| Formatting helpers, i18n catalogs                   | Overlays (web modals → bottom sheets)               |
+| Business rules & invariants                         | Forms (vue → RHF), state (Pinia → Zustand/TanStack) |
 
 ## 10. Non-negotiable rules (for humans and agents)
 

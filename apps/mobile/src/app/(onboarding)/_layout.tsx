@@ -1,6 +1,11 @@
 import { Stack } from 'expo-router';
 
-// Onboarding group. The 5-step wizard + step guard land in Phase 1.
+// A single transactional wizard route. Steps are local state, not separate URLs.
 export default function OnboardingLayout() {
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="onboarding" />
+      <Stack.Screen name="welcome" />
+    </Stack>
+  );
 }

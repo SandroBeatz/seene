@@ -1,7 +1,6 @@
-import { useRouter } from 'expo-router';
-import { OnboardingWizard } from '@/features/onboarding';
+import { Redirect } from 'expo-router';
 
-export default function OnboardingScreen() {
-  const router = useRouter();
-  return <OnboardingWizard onComplete={() => router.replace('/(tabs)')} />;
+/** Temporary compatibility alias for the pre-navigation-audit URL. */
+export default function LegacyOnboardingRoute() {
+  return <Redirect href="/onboarding" />;
 }

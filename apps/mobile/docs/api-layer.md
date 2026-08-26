@@ -1,11 +1,13 @@
 ---
-version: 1.0
-date: 2026-08-19
+version: 1.1
+date: 2026-08-26
 category: practices
 status: proposed
 ---
 
 # API & Data Layer
+
+> Version 1.1 · 2026-08-26 · [Practices](./)
 
 > The rule that keeps Seene backend-swappable: **components and business logic never touch
 > Supabase.** All data access goes through a thin repository/service layer. This is a direct port
@@ -43,11 +45,11 @@ hooks, components, cache keys, and invalidation stay identical.
 └───────────────────────────────────────────────┘
 ```
 
-| Layer | May import | Must not import |
-|---|---|---|
-| `api/*.api.ts` | `shared/api` (supabase), own types | React, Zustand, other entities |
-| `model/*.queries.ts` | own `api/`, own `model/types` | supabase directly |
-| Components | own `model` hooks | `api/` or supabase directly |
+| Layer                | May import                         | Must not import                |
+| -------------------- | ---------------------------------- | ------------------------------ |
+| `api/*.api.ts`       | `shared/api` (supabase), own types | React, Zustand, other entities |
+| `model/*.queries.ts` | own `api/`, own `model/types`      | supabase directly              |
+| Components           | own `model` hooks                  | `api/` or supabase directly    |
 
 ## 3. Writing an api function
 
@@ -55,8 +57,8 @@ Same contract as web: typed in, typed out, throw on error, no side effects.
 
 ```ts
 // entities/client/api/clients.api.ts
-import { supabase } from '@/shared/api/supabase'
-import type { Client, CreateClientDto } from '../model/types'
+import { supabase } from '@/shared/api/supabase';
+import type { Client, CreateClientDto } from '../model/types';
 
 export async function listClients(userId: string): Promise<Client[]> {
   const { data, error } = await supabase
@@ -64,9 +66,9 @@ export async function listClients(userId: string): Promise<Client[]> {
     .select('*')
     .eq('user_id', userId)
     .order('is_favorite', { ascending: false })
-    .order('first_name')
-  if (error) throw error
-  return data as Client[]
+    .order('first_name');
+  if (error) throw error;
+  return data as Client[];
 }
 
 export async function createClient(userId: string, dto: CreateClientDto): Promise<Client> {
@@ -74,9 +76,9 @@ export async function createClient(userId: string, dto: CreateClientDto): Promis
     .from('client')
     .insert({ ...dto, user_id: userId })
     .select('*')
-    .single()
-  if (error) throw error
-  return data as Client
+    .single();
+  if (error) throw error;
+  return data as Client;
 }
 ```
 
@@ -89,34 +91,34 @@ here too.
 
 ```ts
 // entities/client/model/client.queries.ts
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { listClients, createClient } from '../api/clients.api'
-import type { CreateClientDto } from './types'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { listClients, createClient } from '../api/clients.api';
+import type { CreateClientDto } from './types';
 
 export const clientKeys = {
   all: (userId: string) => ['clients', userId] as const,
-}
+};
 
 export function useClientsQuery(userId: string) {
   return useQuery({
     queryKey: clientKeys.all(userId),
     queryFn: () => listClients(userId),
     enabled: !!userId,
-  })
+  });
 }
 
 export function useCreateClientMutation(userId: string) {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: (dto: CreateClientDto) => createClient(userId, dto),
     onSettled: () => qc.invalidateQueries({ queryKey: clientKeys.all(userId) }),
-  })
+  });
 }
 ```
 
 - **Cache keys:** `[entityName, ...identifiers]` — centralize per entity in a `keys` object so
   queries and invalidations never drift. Mirror the web keys exactly (`['appointments', userId,
-  from, to]`, `['appointments-actionable', userId]`, `['sale-by-appointment', id]`, …).
+from, to]`, `['appointments-actionable', userId]`, `['sale-by-appointment', id]`, …).
 - **Invalidate on `onSettled`**, not just `onSuccess`, so a failed mutation still refreshes (this is
   why the web checkout never leaves a stale `pending`).
 - **`enabled`** gates dependent queries (e.g. client-appointments only when a `clientId` exists).
@@ -133,10 +135,10 @@ more:**
 
 ```ts
 // shared/api/supabase.ts
-import 'react-native-url-polyfill/auto'
-import { AppState } from 'react-native'
-import { createClient } from '@supabase/supabase-js'
-import { sessionStorageAdapter } from './session-storage' // SecureStore/encrypted-MMKV (see below)
+import 'react-native-url-polyfill/auto';
+import { AppState } from 'react-native';
+import { createClient } from '@supabase/supabase-js';
+import { sessionStorageAdapter } from './session-storage'; // SecureStore/encrypted-MMKV (see below)
 
 export const supabase = createClient(
   process.env.EXPO_PUBLIC_SUPABASE_URL!,
@@ -147,22 +149,24 @@ export const supabase = createClient(
       autoRefreshToken: true,
       persistSession: true,
       detectSessionInUrl: false, // no browser URL to parse in RN
-      flowType: 'pkce',          // for native OAuth
+      flowType: 'pkce', // for native OAuth
     },
   },
-)
+);
 
 // Refresh the session only while the app is foregrounded.
 AppState.addEventListener('change', (state) => {
-  if (state === 'active') supabase.auth.startAutoRefresh()
-  else supabase.auth.stopAutoRefresh()
-})
+  if (state === 'active') supabase.auth.startAutoRefresh();
+  else supabase.auth.stopAutoRefresh();
+});
 ```
 
 - **Env:** use `EXPO_PUBLIC_*` vars (bundled, publishable key only — never the `service_role` key).
-- **Session storage adapter (Q-ARCH-2):** Supabase sessions can exceed `expo-secure-store`'s ~2KB
-  value limit. Options: (a) a **chunking** adapter over SecureStore, or (b) store the session blob
-  in **encrypted MMKV** and keep the encryption key in SecureStore. Decide in Phase 0.
+- **Session storage adapter (Q-ARCH-2, implemented):** native stores the potentially large session
+  blob in a dedicated encrypted MMKV instance and stores only its random 32-byte encryption key in
+  SecureStore. `session-storage.web.ts` uses browser `localStorage`; during Expo static rendering it
+  falls back to isolated in-memory storage. The same `.web.ts` split prevents the non-secret query,
+  theme, and locale stores from importing native MMKV during web rendering.
 - **URL polyfill** is required for supabase-js in RN.
 
 ## 6. Auth in the api layer
@@ -183,14 +187,15 @@ export type AppError =
   | { kind: 'duplicate_phone' }
   | { kind: 'already_completed' }
   | { kind: 'appointment_not_found' }
-  | { kind: 'unknown'; message: string }
+  | { kind: 'unknown'; message: string };
 
 export function normalizeError(e: unknown): AppError {
-  const code = (e as any)?.code; const msg = (e as any)?.message ?? ''
-  if (code === '23505') return { kind: 'duplicate_phone' }
-  if (msg.includes('already_completed')) return { kind: 'already_completed' }
-  if (msg.includes('appointment_not_found')) return { kind: 'appointment_not_found' }
-  return { kind: 'unknown', message: msg }
+  const code = (e as any)?.code;
+  const msg = (e as any)?.message ?? '';
+  if (code === '23505') return { kind: 'duplicate_phone' };
+  if (msg.includes('already_completed')) return { kind: 'already_completed' };
+  if (msg.includes('appointment_not_found')) return { kind: 'appointment_not_found' };
+  return { kind: 'unknown', message: msg };
 }
 ```
 
@@ -204,15 +209,15 @@ Only `api/*.api.ts` changes; hooks and components don't:
 ```ts
 // Before (Supabase)
 export async function listClients(userId: string): Promise<Client[]> {
-  const { data, error } = await supabase.from('client').select('*').eq('user_id', userId)
-  if (error) throw error
-  return data as Client[]
+  const { data, error } = await supabase.from('client').select('*').eq('user_id', userId);
+  if (error) throw error;
+  return data as Client[];
 }
 // After (custom REST)
 export async function listClients(userId: string): Promise<Client[]> {
-  const res = await fetch(`${API}/clients?userId=${userId}`, { headers: authHeader() })
-  if (!res.ok) throw new Error(await res.text())
-  return res.json() as Promise<Client[]>
+  const res = await fetch(`${API}/clients?userId=${userId}`, { headers: authHeader() });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json() as Promise<Client[]>;
 }
 ```
 

@@ -1,11 +1,13 @@
 ---
-version: 1.0
-date: 2026-08-19
+version: 2.0
+date: 2026-08-26
 category: architecture
-status: proposed
+status: implemented
 ---
 
 # Project Structure
+
+> Version 2.0 · 2026-08-26 · [Architecture](./architecture/)
 
 > Where every file goes and why. Enforces the FSD-lite layering from
 > [mobile-architecture.md](./mobile-architecture.md). When in doubt about placement, consult the
@@ -35,43 +37,40 @@ app.master.seene/
 
 ```
 src/app/
-├── _layout.tsx                 # root: providers (QueryClient, gesture root, safe-area,
-│                               #   Unistyles theme, i18n, Sentry) + auth guard
-├── index.tsx                   # entry redirect (→ tabs or auth based on session)
+├── _layout.tsx                 # providers + Stack.Protected session branches
+├── session-restoring.tsx       # cold-start session/profile restoration
+├── session-error.tsx           # retryable restoration failure
 ├── (auth)/
 │   ├── _layout.tsx
-│   ├── login.tsx
-│   └── register.tsx
+│   ├── sign-in/index.tsx       # /sign-in
+│   ├── sign-in/email.tsx       # /sign-in/email
+│   └── email.tsx               # legacy redirect
 ├── (onboarding)/
-│   ├── _layout.tsx             # onboarding shell + step guard
-│   ├── specializations.tsx
-│   ├── personal.tsx
-│   ├── location.tsx
-│   ├── schedule.tsx
-│   └── review.tsx
-├── (tabs)/
-│   ├── _layout.tsx             # native tab bar
-│   ├── home.tsx
-│   ├── calendar.tsx
-│   ├── clients.tsx
-│   ├── analytics.tsx
-│   └── settings/
-│       ├── _layout.tsx
-│       ├── index.tsx           # settings hub
-│       ├── profile.tsx
-│       ├── contacts.tsx
-│       ├── working-hours.tsx
-│       ├── booking.tsx
-│       ├── payment-methods.tsx
-│       ├── service-categories.tsx
-│       ├── notifications.tsx
-│       ├── system-region.tsx
-│       └── account.tsx
+│   ├── _layout.tsx
+│   ├── onboarding.tsx          # one local-state wizard route
+│   └── welcome.tsx             # legacy redirect
+├── (app)/
+│   ├── _layout.tsx             # protected Stack: tabs + modal siblings
+│   ├── (tabs)/
+│   │   ├── _layout.tsx         # the only NativeTabs integration
+│   │   ├── (home)/             # nested Stack + canonical /
+│   │   ├── (calendar)/         # nested Stack + /calendar
+│   │   ├── (clients)/          # nested Stack + dynamic client route
+│   │   ├── (analytics)/        # nested Stack
+│   │   ├── (settings)/         # nested Stack + pushed settings routes
+│   │   └── (home,calendar)/appointments/[appointmentId].tsx
+│   │                           # one shared route in two tab Stacks
+│   └── (modals)/
+│       ├── appointment-form.tsx
+│       ├── checkout/[appointmentId].tsx
+│       └── quick-create/       # fullscreen modal with its own Stack
+├── (dev)/uikit/                # __DEV__ + protected living catalog
 └── +not-found.tsx
 ```
 
 Each screen file imports one or a few widgets/features and wires navigation. **No data fetching or
-business logic beyond calling a widget.**
+business logic beyond calling a widget.** See
+[Navigation Architecture](./architecture/navigation.md) for route ownership, flow, and recipes.
 
 ## 3. `src/{widgets,features,entities,shared}`
 
@@ -109,7 +108,10 @@ src/shared/
 │   ├── query-client.ts         # QueryClient + persistence (MMKV)
 │   ├── database.types.ts       # generated Supabase types (recommended)
 │   ├── errors.ts               # normalizeError
-│   └── session-storage.ts      # secure session adapter (SecureStore/encrypted MMKV)
+│   ├── session-storage.ts      # native: SecureStore key + encrypted MMKV
+│   ├── session-storage.web.ts  # browser localStorage + SSR memory fallback
+│   ├── storage.ts              # native non-secret MMKV
+│   └── storage.web.ts          # browser/SSR non-secret storage
 ├── config/                     # env, currencies, date-formats, countries, feature-flags
 ├── lib/
 │   ├── scheduling/             # PURE availability math + __tests__  (no entity imports)
@@ -143,19 +145,19 @@ entities/<entity>/
 
 ## 4. Placement decision rules
 
-| You're adding… | It goes in… |
-|---|---|
-| A new screen / route | `src/app/(group)/name.tsx` (thin) |
-| A composite block used by a screen | `src/widgets/<name>/` |
-| A single user action (a form/flow) | `src/features/<name>/` |
-| A Supabase call | `entities/<x>/api/<x>.api.ts` **only** |
-| A query/mutation hook | `entities/<x>/model/<x>.queries.ts` |
-| A domain type / DTO | `entities/<x>/model/types.ts` |
-| An entity-specific visual atom | `entities/<x>/ui/` |
+| You're adding…                         | It goes in…                                |
+| -------------------------------------- | ------------------------------------------ |
+| A new screen / route                   | `src/app/(group)/name.tsx` (thin)          |
+| A composite block used by a screen     | `src/widgets/<name>/`                      |
+| A single user action (a form/flow)     | `src/features/<name>/`                     |
+| A Supabase call                        | `entities/<x>/api/<x>.api.ts` **only**     |
+| A query/mutation hook                  | `entities/<x>/model/<x>.queries.ts`        |
+| A domain type / DTO                    | `entities/<x>/model/types.ts`              |
+| An entity-specific visual atom         | `entities/<x>/ui/`                         |
 | A pure helper needing **two** entities | `src/shared/lib/<name>/` (never an entity) |
-| A reusable design-system primitive | `src/shared/ui/<Component>/` |
-| A token/color/spacing value | `src/shared/theme/tokens.ts` |
-| App-wide constant/config | `src/shared/config/` |
+| A reusable design-system primitive     | `src/shared/ui/<Component>/`               |
+| A token/color/spacing value            | `src/shared/theme/tokens.ts`               |
+| App-wide constant/config               | `src/shared/config/`                       |
 
 ## 5. Naming conventions
 

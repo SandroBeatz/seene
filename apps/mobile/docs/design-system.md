@@ -1,11 +1,13 @@
 ---
-version: 1.1
-date: 2026-08-25
+version: 2.0
+date: 2026-08-26
 category: design
-status: proposed
+status: implemented
 ---
 
 # Design System & UI Kit
+
+> Version 2.0 · 2026-08-26 · [Design](./)
 
 > The foundation and rules for Seene's native design system. This document defines **how** the
 > system is built and governed — the token contract, component contract, theming, states, and the
@@ -102,11 +104,12 @@ Components use **semantic** tokens only.
 ## 4. Component contract (the UI Kit)
 
 Every kit component:
+
 - Lives in `src/shared/ui/<Component>/` with `index.ts`, the component, its Unistyles styles, and
   (later) a usage snippet.
 - Consumes **only** semantic tokens.
 - Exposes **variants** (not free-form style props): e.g. Button `variant: primary|secondary|ghost|
-  danger`, `size: sm|md|lg`, `state` handled internally.
+danger`, `size: sm|md|lg`, `state` handled internally.
 - Handles its own **interactive states** (default/hover-n-a/pressed/focused/disabled/loading) and
   **accessibility** (role, label, min target).
 - Is theme- and RTL-aware and supports dynamic type.
@@ -117,9 +120,9 @@ Ship a **minimal, high-confidence** set first and grow deliberately (the earlier
 trimmed to Text/Button/Switch on purpose — resist premature breadth):
 
 `Text`, `Button`, `IconButton`, `Input`, `Switch`, `Card`, `ListItem`, `Avatar`, `Badge/Pill`
-(incl. `StatusPill`), `Chip`, `Divider`, `Sheet` (bottom sheet wrapper), `Modal`, the layout
-wrappers in §4.3 (`PageLayout`, `ModalLayout`, `ScreenHeader`, `Footer`, `ScrollFade`), and the
-state components in §6. Add `Select`, `SegmentedControl`, `Stepper`, `Calendar`, `Chart`,
+(incl. `StatusPill`), `Chip`, `Divider`, `Sheet` (bottom sheet wrapper), `Modal`, the visual
+wrappers in §4.3 (`Screen`, `ScreenScrollView`, `FormScreen`, `FormSheetContent`), `Footer`,
+`ScrollFade`, and the state components in §6. Add `Select`, `SegmentedControl`, `Stepper`, `Calendar`, `Chart`,
 `PriceInput`, `EmojiPicker`, `PhoneInput` as their features arrive.
 
 ### 4.2 Patterns (composed, documented)
@@ -132,41 +135,29 @@ state components in §6. Add `Select`, `SegmentedControl`, `Stepper`, `Calendar`
 - **Lists** — FlashList-backed; standard `ListItem`, section headers, separators, and the state
   components below.
 
-### 4.3 Layout wrappers (page & modal scaffolds)
+### 4.3 Visual screen wrappers
 
-Two wrappers give every screen consistent chrome — theme-aware header/footer backgrounds, slot-based
-action buttons, an edge-fade scrim, and (optionally) a scroll-collapsing title — so screens don't
-re-wire scroll handlers, safe areas, or glass. Live examples in `src/app/ui-guide.tsx` (§Layouts)
-plus the `page-layout-demo` / `modal-layout-demo` routes. Import from `@/shared/ui`.
+Screen wrappers provide only the content environment. Expo Router owns navigation hierarchy;
+`_layout.tsx` and route-level `Stack.Screen` own native headers, presentation, gestures,
+animations, and detents. Import wrappers from `@/shared/ui`.
 
-- **`PageLayout`** — full-screen pages. Composes the header + a Reanimated scroll area + scrim +
-  optional floating footer, and sets its own native header options. Key props:
-  - `title`, `titleMode: 'static' | 'collapse'` — `static` keeps the title in the bar; `collapse`
-    renders a large in-content title that folds into the header after `collapseThreshold` px
-    (default 80).
-  - `headerLeft/Center/Right`, `headerBackground: 'transparent' | 'scrim' | 'solid' | 'glass'`,
-    `headerColor`.
-  - `footer` (or `footerLeft/Center/Right`), `footerBackground: 'glass' | 'solid' | 'transparent'`,
-    `footerColor`.
-  - `fade: 'top' | 'bottom' | 'both' | 'none'`, `fadeColor`, `scrollable`, `padded`.
-- **`ModalLayout`** — the same vocabulary drawn as **body** content (no native Stack header), so it
-  works both as a route modal (`presentation: 'modal' | 'formSheet'`, `variant="modal"`) and as the
-  content of a gorhom `Sheet` (`variant="sheet"`, uses `BottomSheetScrollView`; pass `padded={false}`
-  when nesting inside the existing `Sheet`, which already pads). `onClose` renders the default ✕ in
-  the left slot. In `sheet` mode the scrim is static so it never hijacks gorhom's scroll handler.
-- **Underlying primitives** (usually via the wrappers, but reusable directly):
-  - `ScreenHeader` — the header placed in the native slot via `<Stack.Header asChild>`. Unified
-    scroll-driven collapse on iOS **and** Android (native `headerLargeTitle` can't carry our
-    gradient/slots and diverges across platforms); `topInset={false}` when it sits inside a sheet.
-  - `Footer` — floating (default) or in-flow action bar; `glass` background renders Liquid Glass on
-    iOS 26 via `GlassSurface`, tokened fallback elsewhere; owns the bottom safe-area inset.
-  - `ScrollFade` + `useScrollFade` — the edge-fade scrim and the single Reanimated scroll handler
-    that drives both the fade strength and the title collapse. Fades to the same theme color at
-    alpha 0 (fading to literal `transparent` tints the edge black on iOS).
+| Wrapper            | Responsibility                                                  | Main props                                                                |
+| ------------------ | --------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `Screen`           | Static canvas with explicit safe-area edges                     | `padded`, `center`, `edges`, `style`, `contentStyle`                      |
+| `ScreenScrollView` | Scroll canvas with automatic native content insets              | `padded`, `contentContainerStyle`, normal `ScrollViewProps`               |
+| `FormScreen`       | Keyboard avoidance, scrollable fields, and fixed action footer  | `footer`, `padded`, `edges`, `contentContainerStyle`, normal scroll props |
+| `FormSheetContent` | Cross-platform content header/actions inside native form sheets | `title`, `description`, `headerLeft`, `headerRight`, `footer`             |
 
-**When to use which:** `PageLayout` for routed screens; `ModalLayout` for modals/sheets; the bare
-`Screen` (§4.1) only for simple padded canvases with no header/scroll chrome; `Modal` for blocking
-confirmations.
+`PageLayout`, `ModalLayout`, and `ScreenHeader` were removed after the navigation audit. They mixed
+visual layout with Stack configuration, duplicated native headers, and made important route options
+hard to discover. A standard modal and a fullscreen modal reuse the same visual wrappers; their
+presentation is configured in the parent Stack. `FormSheetContent` is the only presentation-aware
+body pattern because Android form sheets require title/actions in content.
+
+`Footer` and `ScrollFade` remain optional visual primitives. `Modal` is for self-contained blocking
+confirmations; `Sheet` is for transient previews/pickers; navigable or deep-linkable flows are Expo
+Router routes. The complete decision table and examples are in
+[Navigation Architecture](./architecture/navigation.md).
 
 ## 5. Theming rules
 
@@ -180,14 +171,14 @@ confirmations.
 
 Each list/section/screen defines all of:
 
-| State | Rule |
-|---|---|
+| State               | Rule                                                                             |
+| ------------------- | -------------------------------------------------------------------------------- |
 | **Loading (first)** | Skeletons on `isPending` only — shaped like the content, not a spinner over data |
-| **Refreshing** | Subtle indicator on `isFetching`; keep existing content visible |
-| **Empty** | Illustration/icon + message + primary action (e.g. "Add your first client") |
-| **Error** | Icon + human message (from normalized errors) + retry |
-| **Disabled** | Reduced-emphasis tokens; never invisible; explain why when useful |
-| **Offline** | Banner + cached content; queued-writes indicator (Phase 1+) |
+| **Refreshing**      | Subtle indicator on `isFetching`; keep existing content visible                  |
+| **Empty**           | Illustration/icon + message + primary action (e.g. "Add your first client")      |
+| **Error**           | Icon + human message (from normalized errors) + retry                            |
+| **Disabled**        | Reduced-emphasis tokens; never invisible; explain why when useful                |
+| **Offline**         | Banner + cached content; queued-writes indicator (Phase 1+)                      |
 
 These ship as reusable components (`SkeletonList`, `EmptyState`, `ErrorState`) so screens don't
 reinvent them.
@@ -211,9 +202,9 @@ reinvent them.
 3. **Tokens are the API:** components accept token-named props (`color="content.secondary"`), not
    raw values.
 4. **Barrel exports:** import kit components from `@/shared/ui` only.
-5. **Snapshot/Storybook (optional, recommended):** a component gallery screen (like the web's
-   `ui-guide`) renders every primitive in light/dark and all states, as living documentation and a
-   visual-regression surface.
+5. **UIKit route catalog:** the development-only `/uikit` route renders foundations, primitives,
+   mandatory states, wrappers, and real navigation patterns as living documentation. Keep it
+   protected by `__DEV__` so it cannot alter production navigation.
 6. **Design tokens are the contract with design:** when Figma/design provides values, they map to
    tokens here; screens consume tokens, so a design change is a token change, not a screen sweep.
 
