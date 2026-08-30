@@ -7,7 +7,6 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { Stack, useRouter } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { UnistylesRuntime, useUnistyles } from 'react-native-unistyles';
 import { useSessionStore } from '@/entities/session';
@@ -69,7 +68,6 @@ function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <StatusBar style={theme.name === 'dark' ? 'light' : 'dark'} animated />
       <SafeAreaProvider>
         <PersistQueryClientProvider
           client={queryClient}
@@ -79,6 +77,7 @@ function RootLayout() {
               <Stack
                 screenOptions={{
                   headerShown: false,
+                  statusBarStyle: theme.name === 'dark' ? 'light' : 'dark',
                   contentStyle: { backgroundColor: canvas },
                 }}>
                 <Stack.Protected guard={isRestoring && !hasSessionError}>
