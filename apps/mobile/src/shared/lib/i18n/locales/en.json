@@ -56,7 +56,12 @@
     "landingTagline": "Your studio, beautifully booked.",
     "legalTerms": "Terms",
     "legalPrivacy": "Privacy Policy",
-    "logIn": "Log in"
+    "logIn": "Log in",
+    "confirmEmailSent": "We sent a confirmation link to {{email}}. Confirm it, then sign in."
+  },
+  "account": {
+    "deactivatedTitle": "Account deactivated",
+    "deactivatedDescription": "This account has been deactivated. Sign out, or contact support to reactivate it."
   },
   "onboarding": {
     "stepTitle": {

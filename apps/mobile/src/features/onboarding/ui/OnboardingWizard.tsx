@@ -10,7 +10,13 @@ import { StyleSheet } from 'react-native-unistyles';
 import { isUsernameSyntaxValid, useUsernameAvailability } from '@/entities/master';
 import { errorMessageKey } from '@/shared/api/errors';
 import { Button, FormScreen, Text } from '@/shared/ui';
-import { canAdvance, ONBOARDING_STEPS, STEP_COUNT, useOnboardingWizard } from '../model/wizard';
+import {
+  canAdvance,
+  ONBOARDING_STEPS,
+  STEP_COUNT,
+  useDebouncedValue,
+  useOnboardingWizard,
+} from '../model/wizard';
 import { useCompleteOnboarding } from '../model/submit';
 import {
   AddressStep,
@@ -27,16 +33,23 @@ export function OnboardingWizard({ onComplete }: { onComplete?: () => void }) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const complete = useCompleteOnboarding();
 
-  const availability = useUsernameAvailability(draft.username);
+  // Only hit the availability RPC once typing settles, and never trust a result that
+  // belongs to an older keystroke (debounce lags the live draft by design).
+  const normalizedUsername = draft.username.trim().toLowerCase();
+  const debouncedUsername = useDebouncedValue(normalizedUsername, 400);
+  const availability = useUsernameAvailability(debouncedUsername);
+  const isUsernameSettled = debouncedUsername === normalizedUsername;
+  const usernameAvailable =
+    isUsernameSettled && !availability.isFetching ? availability.data : undefined;
   const usernameStatus = deriveUsernameStatus(
     draft.username,
-    availability.isFetching,
-    availability.data,
+    !isUsernameSettled || availability.isFetching,
+    usernameAvailable,
   );
 
   const stepKey = ONBOARDING_STEPS[step];
   const isLast = step === STEP_COUNT - 1;
-  const canNext = canAdvance(step, draft, availability.data);
+  const canNext = canAdvance(step, draft, usernameAvailable);
 
   useEffect(() => {
     if (Platform.OS !== 'android' || step === 0) return;
@@ -55,7 +68,12 @@ export function OnboardingWizard({ onComplete }: { onComplete?: () => void }) {
     }
     complete.mutate(draft, {
       onSuccess: onComplete,
-      onError: (err) => setSubmitError(t(errorMessageKey(err))),
+      onError: (err) => {
+        setSubmitError(t(errorMessageKey(err)));
+        // A username can be taken between the live check and the final insert — send
+        // the user back to the field that owns it instead of stranding them on review.
+        if (err.kind === 'username_taken') setStep(ONBOARDING_STEPS.indexOf('personal'));
+      },
     });
   }
 

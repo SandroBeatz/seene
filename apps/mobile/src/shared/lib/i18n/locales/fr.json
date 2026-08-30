@@ -56,7 +56,12 @@
     "landingTagline": "Votre studio, élégamment réservé.",
     "legalTerms": "Conditions",
     "legalPrivacy": "Confidentialité",
-    "logIn": "Connexion"
+    "logIn": "Connexion",
+    "confirmEmailSent": "Nous avons envoyé un lien de confirmation à {{email}}. Confirmez-le, puis connectez-vous."
+  },
+  "account": {
+    "deactivatedTitle": "Compte désactivé",
+    "deactivatedDescription": "Ce compte a été désactivé. Déconnectez-vous ou contactez le support pour le réactiver."
   },
   "onboarding": {
     "stepTitle": {

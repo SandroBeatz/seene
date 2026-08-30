@@ -28,6 +28,7 @@ export function AuthForm({ onModeChange }: AuthFormProps = {}) {
   const { t } = useTranslation();
   const [mode, setMode] = useState<AuthMode>('signIn');
   const [formError, setFormError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const isIOS = process.env.EXPO_OS === 'ios';
 
   const signIn = useSignIn();
@@ -47,13 +48,26 @@ export function AuthForm({ onModeChange }: AuthFormProps = {}) {
 
   const onSubmit = handleSubmit((values) => {
     setFormError(null);
+    setNotice(null);
     const creds = { email: values.email, password: values.password };
-    const mutation = mode === 'signIn' ? signIn : signUp;
-    mutation.mutate(creds, { onError: (e) => setFormError(toErrorMessage(e)) });
+    if (mode === 'signIn') {
+      signIn.mutate(creds, { onError: (e) => setFormError(toErrorMessage(e)) });
+      return;
+    }
+    signUp.mutate(creds, {
+      onError: (e) => setFormError(toErrorMessage(e)),
+      onSuccess: ({ needsConfirmation }) => {
+        // Auto-confirm projects sign the user straight in (onAuthChange routes them
+        // onward). When confirmation is required there is no session yet, so tell the
+        // user to check their inbox instead of leaving them on a silent form.
+        if (needsConfirmation) setNotice(t('auth.confirmEmailSent', { email: values.email }));
+      },
+    });
   });
 
   function switchMode(next: AuthMode) {
     setFormError(null);
+    setNotice(null);
     setMode(next);
     // Keep the schema's `mode` in sync so confirm-password validation applies.
     setValue('mode', next);
@@ -128,6 +142,12 @@ export function AuthForm({ onModeChange }: AuthFormProps = {}) {
       {formError ? (
         <Text variant="footnote" color="danger">
           {formError}
+        </Text>
+      ) : null}
+
+      {notice ? (
+        <Text variant="footnote" color="success">
+          {notice}
         </Text>
       ) : null}
 

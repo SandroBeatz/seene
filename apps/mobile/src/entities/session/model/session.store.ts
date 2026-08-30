@@ -10,6 +10,8 @@
  *   5. A successful sign-out clears local session state even if the auth callback is delayed.
  */
 import { create } from 'zustand';
+import { normalizeError } from '@/shared/api/errors';
+import { kv } from '@/shared/api/storage';
 import {
   fetchSessionProfile,
   getCurrentSession,
@@ -18,6 +20,31 @@ import {
   signOut as apiSignOut,
 } from '../api/session.api';
 import type { SessionProfile } from './types';
+
+/**
+ * Last-known profile cache. The guard needs a profile synchronously on cold start,
+ * but the imperative fetch bypasses the persisted TanStack cache — so on an offline
+ * launch a network failure would otherwise hard-fail to the session-error screen
+ * despite `offlineMode`. We mirror the profile into non-secret MMKV and fall back to
+ * it when (and only when) the fetch fails with a network error.
+ */
+const PROFILE_CACHE_PREFIX = 'session-profile:';
+const profileCacheKey = (userId: string) => `${PROFILE_CACHE_PREFIX}${userId}`;
+
+function readCachedProfile(userId: string): SessionProfile | null {
+  const raw = kv.getString(profileCacheKey(userId));
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as SessionProfile;
+  } catch {
+    return null;
+  }
+}
+
+function writeCachedProfile(userId: string, profile: SessionProfile | null): void {
+  if (profile) kv.set(profileCacheKey(userId), JSON.stringify(profile));
+  else kv.delete(profileCacheKey(userId));
+}
 
 interface SessionState {
   session: Session | null;
@@ -51,9 +78,18 @@ export const useSessionStore = create<SessionState>((set, get) => {
         const profile = await fetchSessionProfile(userId);
         if (requestId === profileRequestId && get().session?.user.id === userId) {
           set({ profile, sessionError: null });
+          writeCachedProfile(userId, profile);
         }
       } catch (error) {
-        if (requestId === profileRequestId) set({ sessionError: error });
+        if (requestId === profileRequestId && get().session?.user.id === userId) {
+          // Offline cold start: serve the last-known profile instead of hard-failing.
+          const cached = readCachedProfile(userId);
+          if (cached && normalizeError(error).kind === 'network') {
+            set({ profile: cached, sessionError: null });
+            return; // recovered — resolve so init() does not flag a session error
+          }
+          set({ sessionError: error });
+        }
         throw error;
       } finally {
         if (requestId === profileRequestId) {
@@ -69,9 +105,11 @@ export const useSessionStore = create<SessionState>((set, get) => {
   }
 
   function clearSession(): void {
+    const userId = get().session?.user.id;
     profileRequestId += 1;
     activeProfileLoad = null;
     processingPromise = null;
+    if (userId) writeCachedProfile(userId, null);
     set({ session: null, profile: null, isSyncing: false, sessionError: null });
   }
 

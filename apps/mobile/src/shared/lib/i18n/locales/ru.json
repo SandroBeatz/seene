@@ -56,7 +56,12 @@
     "landingTagline": "Ваша студия — красиво и по записи.",
     "legalTerms": "Условия",
     "legalPrivacy": "Конфиденциальность",
-    "logIn": "Вход"
+    "logIn": "Вход",
+    "confirmEmailSent": "Мы отправили ссылку для подтверждения на {{email}}. Подтвердите её и войдите."
+  },
+  "account": {
+    "deactivatedTitle": "Аккаунт деактивирован",
+    "deactivatedDescription": "Этот аккаунт деактивирован. Выйдите или обратитесь в поддержку для восстановления."
   },
   "onboarding": {
     "stepTitle": {

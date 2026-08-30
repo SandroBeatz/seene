@@ -29,28 +29,28 @@ function RootLayout() {
   const canvas = theme.colors.bg.canvas;
 
   const init = useSessionStore((state) => state.init);
-  const signOut = useSessionStore((state) => state.signOut);
   const isInitialized = useSessionStore((state) => state.isInitialized);
   const isSyncing = useSessionStore((state) => state.isSyncing);
   const sessionError = useSessionStore((state) => state.sessionError);
   const session = useSessionStore((state) => state.session);
   const profile = useSessionStore((state) => state.profile);
 
+  // A deactivated master is its own destination (not a silent sign-out): they have a
+  // session and a profile, but the app and onboarding are closed to them.
   const isDeactivated = Boolean(session && profile?.deactivated_at);
-  const isRestoring = !isInitialized || isSyncing || isDeactivated;
+  const isBooting = !isInitialized || isSyncing;
   const hasSessionError = Boolean(sessionError) && !isSyncing;
-  const canUseAuth = !isRestoring && !hasSessionError && !session;
-  const canUseOnboarding = !isRestoring && !hasSessionError && Boolean(session) && !profile;
-  const canUseApp = !isRestoring && !hasSessionError && Boolean(session && profile);
+  const canRestore = isBooting && !hasSessionError;
+  const canUseAuth = !isBooting && !hasSessionError && !session;
+  const canUseDeactivated = !isBooting && !hasSessionError && isDeactivated;
+  const canUseOnboarding = !isBooting && !hasSessionError && Boolean(session) && !profile;
+  const canUseApp =
+    !isBooting && !hasSessionError && Boolean(session && profile) && !isDeactivated;
   const { returnTo, clearReturnTo } = useAuthReturnIntent(!canUseApp);
 
   useEffect(() => {
     void init();
   }, [init]);
-
-  useEffect(() => {
-    if (isDeactivated) void signOut();
-  }, [isDeactivated, signOut]);
 
   useEffect(() => {
     UnistylesRuntime.setRootViewBackgroundColor(canvas);
@@ -80,7 +80,7 @@ function RootLayout() {
                   statusBarStyle: theme.name === 'dark' ? 'light' : 'dark',
                   contentStyle: { backgroundColor: canvas },
                 }}>
-                <Stack.Protected guard={isRestoring && !hasSessionError}>
+                <Stack.Protected guard={canRestore}>
                   <Stack.Screen name="session-restoring" />
                 </Stack.Protected>
 
@@ -90,6 +90,10 @@ function RootLayout() {
 
                 <Stack.Protected guard={canUseAuth}>
                   <Stack.Screen name="(auth)" />
+                </Stack.Protected>
+
+                <Stack.Protected guard={canUseDeactivated}>
+                  <Stack.Screen name="account-deactivated" />
                 </Stack.Protected>
 
                 <Stack.Protected guard={canUseOnboarding}>

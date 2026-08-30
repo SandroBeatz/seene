@@ -15,8 +15,15 @@ export type AppError =
 export function normalizeError(e: unknown): AppError {
   const code = (e as { code?: string } | null)?.code;
   const message = (e as { message?: string } | null)?.message ?? '';
+  const details = (e as { details?: string } | null)?.details ?? '';
 
-  if (code === '23505') return { kind: 'duplicate_phone' };
+  // 23505 = Postgres unique_violation. Disambiguate by the offending constraint so a
+  // taken username is not reported as a duplicate phone (both share this code).
+  if (code === '23505') {
+    const constraint = `${message} ${details}`.toLowerCase();
+    if (constraint.includes('username')) return { kind: 'username_taken' };
+    return { kind: 'duplicate_phone' };
+  }
   if (message.includes('already_completed')) return { kind: 'already_completed' };
   if (message.includes('appointment_not_found')) return { kind: 'appointment_not_found' };
   if (message.includes('username_taken')) return { kind: 'username_taken' };

@@ -1,13 +1,13 @@
 ---
-version: 2.0
-date: 2026-08-26
+version: 2.1
+date: 2026-08-30
 category: architecture
 status: implemented
 ---
 
 # Project Structure
 
-> Version 2.0 · 2026-08-26 · [Architecture](./architecture/)
+> Version 2.1 · 2026-08-30 · [Architecture](./architecture/)
 
 > Where every file goes and why. Enforces the FSD-lite layering from
 > [mobile-architecture.md](./mobile-architecture.md). When in doubt about placement, consult the
@@ -74,33 +74,41 @@ business logic beyond calling a widget.** See
 
 ## 3. `src/{widgets,features,entities,shared}`
 
+> **Built vs planned.** The route scaffold in §2 (all five tab Stacks + the modal group) is
+> already in place, but the composite widgets, features, and entities that back most of those
+> screens are still stubs. The lists below mark what exists today (✅) versus what the roadmap
+> will add (◻). Keep this split honest as slices land — it is the fastest way to see how far
+> the product is from the navigation shell. See [roadmap.md](./roadmap.md) for phase ordering.
+
 ```
 src/widgets/                    # composite, screen-level
-├── home/                       # greeting + overview + schedule timeline + actions
-├── calendar/                   # native calendar (agenda/day/week)
-├── appointment-preview-sheet/  # status-aware appointment sheet
-├── client-details-sheet/
-├── action-appointments/
-├── analytics-dashboard/
-└── quick-create-action/        # the "+" opener
+├── ✅ uikit-catalog/           # the development-only /uikit living catalog
+├── ✅ quick-create-flow/       # step scaffold for the quick-create modal
+├── ◻ home/                     # greeting + overview + schedule timeline + actions
+├── ◻ calendar/                 # native calendar (agenda/day/week)
+├── ◻ appointment-preview-sheet/  # status-aware appointment sheet
+├── ◻ client-details-sheet/
+├── ◻ action-appointments/
+└── ◻ analytics-dashboard/
 
 src/features/                   # one user action each
-├── auth-login/  auth-register/
-├── onboarding/                 # step forms + wizard state
-├── appointment-form/  appointment-checkout/
-├── quick-create/               # appointment + time-off wizard (uses shared/lib/scheduling)
-├── client-form/  client-delete/
-├── service-form/  service-category-form/
-├── payment-type-form/
-├── profile-form/  contacts-form/  working-hours-form/  booking-settings-form/
-├── notification-settings-form/  system-region-form/  account-settings/
-└── time-block-form/
+├── ✅ auth-login/              # email+password + gated social sign-in
+├── ✅ onboarding/              # 5-step wizard + wizard state + single Step-5 write
+├── ◻ appointment-form/  appointment-checkout/
+├── ◻ quick-create/            # appointment + time-off wizard (uses shared/lib/scheduling)
+├── ◻ client-form/  client-delete/
+├── ◻ service-form/  service-category-form/
+├── ◻ payment-type-form/
+├── ◻ profile-form/  contacts-form/  working-hours-form/  booking-settings-form/
+├── ◻ notification-settings-form/  system-region-form/  account-settings/
+└── ◻ time-block-form/
 
 src/entities/                   # domain data + atoms  (see anatomy below)
-├── session/  master/
-├── service/  service-category/
-├── client/  appointment/  time-block/
-├── payment-type/  sale/  analytics/
+├── ✅ session/                 # auth store + restoration (see state-management.md)
+├── ✅ master/                  # profile/settings api + username query + config
+├── ◻ service/  service-category/
+├── ◻ client/  appointment/  time-block/
+└── ◻ payment-type/  sale/  analytics/
 
 src/shared/
 ├── api/
@@ -135,13 +143,20 @@ entities/<entity>/
 ├── api/<entity>.api.ts         # supabase.from()/.rpc() — the ONLY supabase import site
 ├── model/
 │   ├── types.ts                # domain + DTO types (or Zod schemas)
-│   ├── <entity>.queries.ts     # TanStack hooks + keys + invalidation
-│   ├── <entity>.store.ts       # Zustand store (only if needed, e.g. session)
-│   └── <entity>.config.ts      # enums, palettes, status maps
+│   ├── queries.ts              # TanStack hooks + keys + invalidation (unprefixed)
+│   └── <entity>.store.ts       # Zustand store (only if needed — e.g. session.store.ts)
+├── config/                     # enums, palettes, status maps, seed constants (+ its tests)
 ├── ui/                         # entity atoms (ClientAvatar, StatusPill…)
 ├── lib/                        # entity-local pure helpers
 └── index.ts                    # public API barrel
 ```
+
+> **Actual naming (as built).** `model/queries.ts` is **not** prefixed with the entity name;
+> a Zustand store **is** (`session.store.ts`). Constant/enum modules live in a sibling
+> `config/` directory, not a `model/<entity>.config.ts` file — e.g.
+> `entities/master/config/specializations.ts` and `config/time-format.ts` (with its
+> co-located `time-format.test.ts`). `ui/` and `lib/` appear only when an entity needs them;
+> `session` and `master` do not have them yet.
 
 ## 4. Placement decision rules
 
@@ -172,7 +187,8 @@ entities/<entity>/
 
 ## 6. Path aliases (tsconfig)
 
-Extend the current `@/*` with layer aliases for clean, boundary-friendly imports:
+These layer aliases are **implemented** in `tsconfig.json` today — use them for clean,
+boundary-friendly imports (never deep relative paths across slices):
 
 ```jsonc
 "paths": {

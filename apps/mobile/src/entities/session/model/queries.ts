@@ -25,10 +25,10 @@ export function useSignIn() {
 }
 
 export function useSignUp() {
-  return useMutation<void, AppError, Credentials>({
+  return useMutation<{ needsConfirmation: boolean }, AppError, Credentials>({
     mutationFn: async ({ email, password }) => {
       try {
-        await signUpWithEmail(email, password);
+        return await signUpWithEmail(email, password);
       } catch (e) {
         throw normalizeError(e);
       }

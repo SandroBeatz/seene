@@ -3,7 +3,7 @@
  * Data is held locally and written in one go at Step 5 — nothing touches the
  * backend mid-wizard except the username availability check.
  */
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { getLocales } from 'expo-localization';
 import {
   defaultTimeFormatForCountry,
@@ -68,6 +68,16 @@ export interface WizardApi {
   step: number;
   update: (patch: Partial<OnboardingDraft>) => void;
   setStep: (step: number) => void;
+}
+
+/** Debounce a rapidly-changing value so the username RPC only fires when typing settles. */
+export function useDebouncedValue<T>(value: T, delayMs: number): T {
+  const [debounced, setDebounced] = useState(value);
+  useEffect(() => {
+    const id = setTimeout(() => setDebounced(value), delayMs);
+    return () => clearTimeout(id);
+  }, [value, delayMs]);
+  return debounced;
 }
 
 export function useOnboardingWizard(): WizardApi {

@@ -1,13 +1,13 @@
 ---
-version: 1.1
-date: 2026-08-26
+version: 1.2
+date: 2026-08-30
 category: roadmap
 status: proposed
 ---
 
 # Implementation Roadmap
 
-> Version 1.1 · 2026-08-26 · [Architecture](./architecture/)
+> Version 1.2 · 2026-08-30 · [Architecture](./architecture/)
 
 > A phased plan from the current stock template to a production app. Each phase has a goal, a
 > concrete deliverable set, and an exit criterion. **Phase 0 is the "first stage"** the brief asks
@@ -16,13 +16,23 @@ status: proposed
 
 ## Current state
 
-**Phase 0 is built (2026-08-19).** The stock template was replaced with the FSD-lite skeleton,
-tooling, data/state plumbing, the Unistyles design system + seed UI kit, i18n, the timezone/format
-core (with tests), Sentry, and CI. The production navigation foundation and development-only UIKit
-catalog were completed on 2026-08-26. `tsc --noEmit`, `expo lint`, and 29 Jest tests pass;
-`expo-doctor` is 21/21; iOS, Android, and static web exports build. See the Phase 0 status box below.
-Remaining before Phase 1: run the native dev build on a device/simulator and verify on-device
-timezone data (Q-ARCH-3).
+**Phase 0 is built (2026-08-19); Phase 1 core is built (2026-08-24).** The stock template was
+replaced with the FSD-lite skeleton, tooling, data/state plumbing, the Unistyles design system +
+seed UI kit, i18n, the timezone/format core (with tests), Sentry, and CI. The production navigation
+foundation and development-only UIKit catalog were completed on 2026-08-26. Since then (through
+2026-08-30) the navigation chrome was polished: theme-aware gradient headers on every tab/modal
+Stack (`NavigationHeaderBackground`), native Liquid-Glass header actions, and the
+[Liquid Glass iOS](./liquid-glass-ios.md) skill + `GlassSurface` primitive with an older-iOS
+fallback. `tsc --noEmit`, `expo lint`, and the Jest suite pass; `expo-doctor` is 21/21; iOS,
+Android, and static web exports build. See the Phase 0 status box below.
+
+**Where the code actually stands.** The full route scaffold (five tab Stacks + the modal group) is
+in place, but most screens are still thin stubs — only `session`/`master` entities,
+`auth-login`/`onboarding` features, and the `uikit-catalog`/`quick-create-flow` widgets exist (see
+[project-structure.md §3](./project-structure.md) for the built-vs-planned split). The next real
+work is **Phase 2** (porting the remaining entities) behind those routes. Remaining Phase 0/1
+carry-over: run the native dev build on a device/simulator, verify on-device timezone data
+(Q-ARCH-3), and exercise the auth/onboarding flows end-to-end on hardware.
 
 ---
 

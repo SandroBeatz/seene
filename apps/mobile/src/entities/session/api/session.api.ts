@@ -19,9 +19,19 @@ export async function signInWithEmail(email: string, password: string): Promise<
   if (error) throw error;
 }
 
-export async function signUpWithEmail(email: string, password: string): Promise<void> {
-  const { error } = await supabase.auth.signUp({ email, password });
+/**
+ * Create an account. When email confirmation is enabled (the Supabase default),
+ * `signUp` returns a user but NO session — the session (and `onAuthChange`) only
+ * arrive after the user confirms via the emailed link. Callers must surface that
+ * pending state instead of silently waiting for a route change that never comes.
+ */
+export async function signUpWithEmail(
+  email: string,
+  password: string,
+): Promise<{ needsConfirmation: boolean }> {
+  const { data, error } = await supabase.auth.signUp({ email, password });
   if (error) throw error;
+  return { needsConfirmation: !data.session };
 }
 
 export async function signOut(): Promise<void> {
