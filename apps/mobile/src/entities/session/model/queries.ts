@@ -6,10 +6,19 @@
 import { useMutation } from '@tanstack/react-query';
 import { type AppError, normalizeError } from '@/shared/api/errors';
 import { signInWithEmail, signInWithGoogle, signUpWithEmail } from '../api/session.api';
+import { useSessionStore } from './session.store';
 
 interface Credentials {
   email: string;
   password: string;
+}
+
+/**
+ * The authenticated master's id. Every entity query keys and RLS-scopes on this, so
+ * data hooks gate on it (`enabled: !!userId`). Returns undefined while signed out.
+ */
+export function useUserId(): string | undefined {
+  return useSessionStore((state) => state.session?.user.id);
 }
 
 export function useSignIn() {
