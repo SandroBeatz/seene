@@ -35,7 +35,9 @@ export function EmptyState({
         </Text>
       ) : null}
       {actionLabel && onAction ? (
-        <Button label={actionLabel} onPress={onAction} variant="primary" />
+        <View style={styles.action}>
+          <Button label={actionLabel} onPress={onAction} variant="primary" />
+        </View>
       ) : null}
     </View>
   );
@@ -49,5 +51,6 @@ const styles = StyleSheet.create((theme) => ({
     gap: theme.space[3],
     padding: theme.space[6],
   },
+  action: { alignSelf: 'center' },
   centered: { textAlign: 'center' },
 }));
