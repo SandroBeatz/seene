@@ -9,8 +9,15 @@ export { Icon, type IconName, type IconProps, type IconSize } from './Icon';
 export { Input, type InputProps } from './Input';
 export { Switch, type SwitchProps } from './Switch';
 export { Card, type CardProps } from './Card';
+export { Avatar, type AvatarProps } from './Avatar';
 export { GlassSurface, type GlassSurfaceProps } from './GlassSurface';
 export { ListItem, type ListItemProps } from './ListItem';
+export {
+  NativeList,
+  type NativeListProps,
+  type NativeListSection,
+  type NativeListRow,
+} from './NativeList';
 export { Divider, type DividerProps } from './Divider';
 export { Badge, StatusPill, type BadgeProps, type BadgeTone, type StatusPillProps } from './Badge';
 export { Chip, type ChipProps } from './Chip';

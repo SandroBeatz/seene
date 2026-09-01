@@ -20,7 +20,7 @@ export default function QuickCreateStartScreen() {
                   icon="close"
                   accessibilityLabel={t('common.close')}
                   variant="ghost"
-                  onPress={() => router.dismiss()}
+                  onPress={() => router.dismissTo('/')}
                 />
               ),
         }}
@@ -32,7 +32,7 @@ export default function QuickCreateStartScreen() {
             accessibilityLabel={t('common.close')}
             tintColor={theme.colors.content.primary}
             variant="plain"
-            onPress={() => router.dismiss()}
+            onPress={() => router.dismissTo('/')}
           />
         </Stack.Toolbar>
       ) : null}

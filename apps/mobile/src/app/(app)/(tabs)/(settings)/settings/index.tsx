@@ -25,6 +25,12 @@ export default function SettingsScreen() {
           subtitle={t('placeholders.profileSettings')}
           onPress={() => router.push('/settings/profile')}
         />
+        <Divider />
+        <ListItem
+          title={t('services.title')}
+          subtitle={t('services.settingsSubtitle')}
+          onPress={() => router.push('/settings/services')}
+        />
       </Card>
 
       <Card>

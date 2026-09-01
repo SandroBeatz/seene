@@ -1,5 +1,5 @@
 ---
-version: 2.1
+version: 2.2
 date: 2026-08-30
 category: architecture
 status: implemented
@@ -7,7 +7,7 @@ status: implemented
 
 # Project Structure
 
-> Version 2.1 · 2026-08-30 · [Architecture](./architecture/)
+> Version 2.2 · 2026-08-30 · [Architecture](./architecture/)
 
 > Where every file goes and why. Enforces the FSD-lite layering from
 > [mobile-architecture.md](./mobile-architecture.md). When in doubt about placement, consult the
@@ -84,6 +84,9 @@ business logic beyond calling a widget.** See
 src/widgets/                    # composite, screen-level
 ├── ✅ uikit-catalog/           # the development-only /uikit living catalog
 ├── ✅ quick-create-flow/       # step scaffold for the quick-create modal
+├── ✅ client-list/             # Phase 2 clients list (states + optimistic favourite)
+├── ✅ client-details/          # Phase 2 client read + new/returning derivation
+├── ✅ service-list/            # Phase 2 services list grouped by category
 ├── ◻ home/                     # greeting + overview + schedule timeline + actions
 ├── ◻ calendar/                 # native calendar (agenda/day/week)
 ├── ◻ appointment-preview-sheet/  # status-aware appointment sheet
@@ -106,9 +109,9 @@ src/features/                   # one user action each
 src/entities/                   # domain data + atoms  (see anatomy below)
 ├── ✅ session/                 # auth store + restoration (see state-management.md)
 ├── ✅ master/                  # profile/settings api + username query + config
-├── ◻ service/  service-category/
-├── ◻ client/  appointment/  time-block/
-└── ◻ payment-type/  sale/  analytics/
+├── ✅ service-category/  service/   # CRUD + optimistic active toggle (RLS user_id filter)
+├── ✅ client/  appointment/  time-block/   # CRUD + derived (isNewClient, effective status, lastVisit)
+└── ✅ payment-type/  sale/  analytics/     # seed cash/card; sale read-only; analytics RPC wrappers
 
 src/shared/
 ├── api/
@@ -157,6 +160,17 @@ entities/<entity>/
 > `entities/master/config/specializations.ts` and `config/time-format.ts` (with its
 > co-located `time-format.test.ts`). `ui/` and `lib/` appear only when an entity needs them;
 > `session` and `master` do not have them yet.
+
+> **Query-hook convention (as built, Phase 2).** Because the import boundary forbids an
+> entity importing a sibling entity, data hooks do **not** read the session store
+> themselves — they take `userId` as their first argument and gate on it
+> (`enabled: !!userId`). The calling widget/feature/screen resolves it once via
+> `useUserId()` (from `@/entities/session`) and passes it down. Reads on the
+> public-SELECT tables (`service`, `service_category`, `master_profile`) **must** filter
+> `.eq('user_id', userId)` or they return other masters' rows. Cache keys are centralised
+> per entity (`serviceKeys`, `clientKeys`, `appointmentKeys`, …); appointment writes
+> invalidate the `['appointments', userId]` prefix plus `appointments-actionable`,
+> `appointment-day-counts`, and `['analytics', userId]`.
 
 ## 4. Placement decision rules
 

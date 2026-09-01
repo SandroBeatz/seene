@@ -27,6 +27,7 @@
     "already_completed": "This appointment is already completed.",
     "appointment_not_found": "Appointment not found.",
     "username_taken": "That username is taken.",
+    "has_related_records": "This can't be deleted while it's still in use.",
     "network": "No connection. Check your internet and try again.",
     "unauthorized": "Your session expired. Please sign in again.",
     "unknown": "Something went wrong. Please try again."
@@ -62,6 +63,31 @@
   "account": {
     "deactivatedTitle": "Account deactivated",
     "deactivatedDescription": "This account has been deactivated. Sign out, or contact support to reactivate it."
+  },
+  "clients": {
+    "toggleFavorite": "Toggle favourite",
+    "emptyTitle": "No clients yet",
+    "emptyDescription": "Clients you add or who book online will appear here.",
+    "notFound": "This client could not be found.",
+    "new": "New client",
+    "returning": "Returning client",
+    "phone": "Phone",
+    "email": "Email",
+    "notes": "Notes",
+    "searchPlaceholder": "Search clients",
+    "add": "Add client",
+    "noResults": "No clients match “{{query}}”"
+  },
+  "services": {
+    "title": "Services",
+    "settingsSubtitle": "Manage what you offer",
+    "uncategorised": "Uncategorised",
+    "emptyTitle": "No services yet",
+    "emptyDescription": "Add the services you offer to book them into appointments.",
+    "meta": "{{duration}} min · {{price}}",
+    "searchPlaceholder": "Search services",
+    "add": "Add service",
+    "noResults": "No services match “{{query}}”"
   },
   "onboarding": {
     "stepTitle": {

@@ -27,6 +27,7 @@
     "already_completed": "Ce rendez-vous est déjà terminé.",
     "appointment_not_found": "Rendez-vous introuvable.",
     "username_taken": "Ce nom d'utilisateur est déjà pris.",
+    "has_related_records": "Impossible de supprimer tant que c'est encore utilisé.",
     "network": "Pas de connexion. Vérifiez votre réseau et réessayez.",
     "unauthorized": "Votre session a expiré. Veuillez vous reconnecter.",
     "unknown": "Une erreur est survenue. Veuillez réessayer."
@@ -62,6 +63,31 @@
   "account": {
     "deactivatedTitle": "Compte désactivé",
     "deactivatedDescription": "Ce compte a été désactivé. Déconnectez-vous ou contactez le support pour le réactiver."
+  },
+  "clients": {
+    "toggleFavorite": "Basculer le favori",
+    "emptyTitle": "Aucun client pour le moment",
+    "emptyDescription": "Les clients que vous ajoutez ou qui réservent en ligne apparaîtront ici.",
+    "notFound": "Ce client est introuvable.",
+    "new": "Nouveau client",
+    "returning": "Client fidèle",
+    "phone": "Téléphone",
+    "email": "E-mail",
+    "notes": "Notes",
+    "searchPlaceholder": "Rechercher des clients",
+    "add": "Ajouter un client",
+    "noResults": "Aucun client ne correspond à « {{query}} »"
+  },
+  "services": {
+    "title": "Prestations",
+    "settingsSubtitle": "Gérez ce que vous proposez",
+    "uncategorised": "Sans catégorie",
+    "emptyTitle": "Aucune prestation pour le moment",
+    "emptyDescription": "Ajoutez les prestations que vous proposez pour les réserver dans des rendez-vous.",
+    "meta": "{{duration}} min · {{price}}",
+    "searchPlaceholder": "Rechercher des prestations",
+    "add": "Ajouter une prestation",
+    "noResults": "Aucune prestation ne correspond à « {{query}} »"
   },
   "onboarding": {
     "stepTitle": {

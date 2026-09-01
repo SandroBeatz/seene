@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { useUnistyles } from 'react-native-unistyles';
 import { NavigationHeaderBackground } from '@/shared/ui/NavigationHeaderBackground';
 
+export const unstable_settings = { anchor: '(tabs)' };
+
 /** Protected application stack: tabs are the base, route modals are siblings. */
 export default function AppLayout() {
   const { t } = useTranslation();

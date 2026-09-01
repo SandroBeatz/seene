@@ -1,5 +1,5 @@
 ---
-version: 1.2
+version: 1.3
 date: 2026-08-30
 category: roadmap
 status: proposed
@@ -7,7 +7,7 @@ status: proposed
 
 # Implementation Roadmap
 
-> Version 1.2 · 2026-08-30 · [Architecture](./architecture/)
+> Version 1.3 · 2026-08-30 · [Architecture](./architecture/)
 
 > A phased plan from the current stock template to a production app. Each phase has a goal, a
 > concrete deliverable set, and an exit criterion. **Phase 0 is the "first stage"** the brief asks
@@ -27,12 +27,13 @@ fallback. `tsc --noEmit`, `expo lint`, and the Jest suite pass; `expo-doctor` is
 Android, and static web exports build. See the Phase 0 status box below.
 
 **Where the code actually stands.** The full route scaffold (five tab Stacks + the modal group) is
-in place, but most screens are still thin stubs — only `session`/`master` entities,
-`auth-login`/`onboarding` features, and the `uikit-catalog`/`quick-create-flow` widgets exist (see
-[project-structure.md §3](./project-structure.md) for the built-vs-planned split). The next real
-work is **Phase 2** (porting the remaining entities) behind those routes. Remaining Phase 0/1
-carry-over: run the native dev build on a device/simulator, verify on-device timezone data
-(Q-ARCH-3), and exercise the auth/onboarding flows end-to-end on hardware.
+in place. **Phase 2 landed the whole data layer** (2026-08-30): all eight entities, the cache-key
++ invalidation graph, and minimal clients/services list screens (see
+[project-structure.md §3](./project-structure.md) for the built-vs-planned split). Most product
+screens (calendar, checkout, home, analytics dashboard, richer forms) are still stubs — that is
+**Phase 3+**. Remaining Phase 0/1/2 carry-over: run the native dev build on a device/simulator,
+verify on-device timezone data (Q-ARCH-3), and exercise the auth/onboarding flows and the new
+entity reads/writes end-to-end on hardware.
 
 ---
 
@@ -116,7 +117,22 @@ guard matches the decision table; session restores on cold start.
 
 ---
 
-## Phase 2 — Core data entities (data layer, minimal UI)
+## Phase 2 — Core data entities (data layer, minimal UI) ✅ built (2026-08-30)
+
+> **Status (2026-08-30).** Built & green (`tsc`, `expo lint`, `jest` 45/45): all eight entities —
+> `service-category`, `service`, `client`, `appointment`, `time-block`, `payment-type`, `sale`
+> (read-only), `analytics` (thin RPC wrappers) — with api + queries + types + config, centralised
+> cache keys, the invalidation graph, and optimistic toggles (service/payment active, client
+> favourite). `ensureSystemPaymentTypes` seeds cash/card idempotently. Foundations landed first:
+> `useUserId()`, `shared/config/palettes`, and the **userId-as-argument** hook convention (entities
+> can't import a sibling entity). RLS reads on public-SELECT tables filter `user_id`. Minimal UI
+> proves the pipeline: the clients tab (`client-list` + `client-details` widgets, states +
+> optimistic favourite + new/returning derivation) and a services list under settings
+> (`service-list`, grouped, optimistic active toggle). Derived values are unit-tested
+> (`isNewClient`, `getEffectiveAppointmentStatus`, `isActionable`, `lastVisitDate`, totals,
+> `isSystemPaymentType`). `errors.ts` gained `has_related_records` (23503) for RESTRICT deletes.
+> **Pending:** exercise reads/writes against the live DB on a native build; richer forms and the
+> remaining screens are Phase 3+.
 
 **Goal:** all master-app entities have api + queries + types, exercised by simple lists.
 

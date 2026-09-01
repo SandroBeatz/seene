@@ -11,8 +11,12 @@ import { Text } from '@/shared/ui/Text';
 export interface ListItemProps {
   title: string;
   subtitle?: string;
+  /** Leading accessory — an avatar or icon. */
   left?: ReactNode;
+  /** Trailing accessory — an icon, a switch, or any custom node. Wins over `trailingText`. */
   right?: ReactNode;
+  /** Trailing text suffix (e.g. a price or count), shown before the chevron. */
+  trailingText?: string;
   onPress?: () => void;
   showChevron?: boolean;
 }
@@ -22,6 +26,7 @@ export function ListItem({
   subtitle,
   left,
   right,
+  trailingText,
   onPress,
   showChevron,
 }: ListItemProps) {
@@ -41,7 +46,14 @@ export function ListItem({
           </Text>
         ) : null}
       </View>
-      {right ?? (chevron ? <Icon name="chevronRight" size="sm" color="content.tertiary" /> : null)}
+      <View style={styles.trailing}>
+        {trailingText ? (
+          <Text variant="subhead" color="secondary" numberOfLines={1}>
+            {trailingText}
+          </Text>
+        ) : null}
+        {right ?? (chevron ? <Icon name="chevronRight" size="sm" color="content.tertiary" /> : null)}
+      </View>
     </View>
   );
 
@@ -67,5 +79,6 @@ const styles = StyleSheet.create((theme) => ({
   },
   left: { justifyContent: 'center' },
   body: { flex: 1, gap: 2 },
+  trailing: { flexDirection: 'row', alignItems: 'center', gap: theme.space[2] },
   pressed: { backgroundColor: theme.colors.bg.sunken },
 }));

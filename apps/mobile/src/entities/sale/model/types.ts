@@ -1,0 +1,19 @@
+/**
+ * Sale domain types. A sale is created atomically by the `complete_appointment` RPC
+ * (Phase 3 checkout); this entity is read-only in Phase 2. Joined `payment_type` and
+ * `items` are modelled as inline shapes to respect same-slice-only imports.
+ */
+import type { Database } from '@/shared/api/database.types';
+
+export type SaleRow = Database['public']['Tables']['sale']['Row'];
+export type SaleItem = Database['public']['Tables']['sale_item']['Row'];
+
+export interface PaymentTypeRef {
+  name: string;
+  color: string;
+}
+
+export interface Sale extends SaleRow {
+  payment_type: PaymentTypeRef | null;
+  items: SaleItem[];
+}

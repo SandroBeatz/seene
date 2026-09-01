@@ -1,7 +1,6 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet } from 'react-native-unistyles';
-import { Card, ScreenScrollView, Text } from '@/shared/ui';
+import { ClientDetails } from '@/widgets/client-details';
 
 export default function ClientDetailsScreen() {
   const { t } = useTranslation();
@@ -10,18 +9,7 @@ export default function ClientDetailsScreen() {
   return (
     <>
       <Stack.Screen options={{ title: t('navigation.clientDetails') }} />
-      <ScreenScrollView contentContainerStyle={styles.content}>
-        <Card>
-          <Text variant="title3">{t('navigation.dynamicRoute')}</Text>
-          <Text variant="body" color="secondary">
-            {t('navigation.routeParameter', { value: clientId })}
-          </Text>
-        </Card>
-      </ScreenScrollView>
+      <ClientDetails clientId={clientId} />
     </>
   );
 }
-
-const styles = StyleSheet.create((theme) => ({
-  content: { gap: theme.space[4] },
-}));
