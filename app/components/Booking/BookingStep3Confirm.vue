@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { MasterPaymentType, MasterService } from '#shared/types/master'
+import type { VerifyResult } from './BookingVerifyModal.vue'
 
 interface BookingResponse {
   booking: {
@@ -11,39 +12,38 @@ interface BookingResponse {
   }
 }
 
+interface PhoneCheck {
+  phone: string
+  clientExists: boolean
+  verified: boolean
+  firstName?: string
+}
+
 const props = defineProps<{
   username: string
   services: Pick<MasterService, 'id' | 'name' | 'duration' | 'price'>[]
 }>()
 
-defineExpose({ triggerConfirm })
+const emit = defineEmits<{
+  changeTime: []
+}>()
 
 const { $ts } = useI18n()
 const bookingState = useBookingState(props.username)
+const queryCache = useQueryCache()
 
 const { data: masterData } = useMasterData(() => props.username)
-const { formatPrice, formatDateTime: formatSlotDateTime } = useMasterFormat(
-  () => masterData.value?.settings
-)
+const { formatPrice, formatDateTime } = useMasterFormat(() => masterData.value?.settings)
 
 // --- Overview ---
 
 const selectedServices = computed(() =>
   props.services.filter((s) => bookingState.value.selectedServiceIds.includes(s.id))
 )
-
 const totalDuration = computed(() => selectedServices.value.reduce((sum, s) => sum + s.duration, 0))
-
 const totalPrice = computed(() =>
   selectedServices.value.reduce((sum, s) => sum + priceToNumber(s.price), 0)
 )
-
-function formatDateTime(slot: string | null) {
-  if (!slot) return ''
-  return formatSlotDateTime(slot)
-}
-
-// --- Payment methods ---
 
 const paymentTypes = computed(() => masterData.value?.payment_types ?? [])
 
@@ -64,151 +64,91 @@ function openNoteModal() {
 }
 
 function saveNote() {
-  bookingState.value.note = noteInput.value
+  bookingState.value.note = noteInput.value.trim()
   showNoteModal.value = false
 }
 
-// --- Phone ---
-
-const phoneInput = ref(bookingState.value.phone)
-const clientFirstName = ref<string | null>(null)
-const isNewClient = ref(false)
-const firstNameInput = ref('')
-const lastNameInput = ref('')
-let checkPhoneDebounce: ReturnType<typeof setTimeout> | null = null
-
-watch(phoneInput, (val) => {
-  bookingState.value.phone = val
-  clientFirstName.value = null
-  isNewClient.value = false
-  firstNameInput.value = ''
-  lastNameInput.value = ''
-
-  if (checkPhoneDebounce) clearTimeout(checkPhoneDebounce)
-
-  const digits = val.replace(/\D/g, '')
-  if (digits.length >= 10) {
-    checkPhoneDebounce = setTimeout(() => checkPhone(digits), 800)
-  }
-})
-
-async function checkPhone(phone: string) {
-  try {
-    const result = await $fetch<{ clientExists: boolean; firstName?: string }>(
-      '/api/auth/phone/check',
-      { query: { phone, username: props.username } }
-    )
-    isNewClient.value = !result.clientExists
-    clientFirstName.value = result.clientExists ? (result.firstName ?? null) : null
-  } catch {
-    // greeting is optional — silent fail
-  }
-}
-
-// --- OTP flow ---
-
-const showOtpModal = ref(false)
-const otpValue = ref<number[]>([])
-const otpError = ref('')
-const otpLoading = ref(false)
-// DEV ONLY: OTP code returned by the API, shown in the modal for easier testing
-const devOtpCode = ref('')
-const resendCountdown = ref(0)
-let countdownInterval: ReturnType<typeof setInterval> | null = null
+// --- Phone lookup: runs as soon as the number is valid ---
 
 const bookingLoading = ref(false)
-const bookingError = ref('')
+const bookingError = ref<'' | 'slotUnavailable' | 'bookingFailed' | 'checkFailed'>('')
 
-const countdownDisplay = computed(() => {
-  const s = resendCountdown.value
-  return `0:${String(s).padStart(2, '0')}`
-})
+const phoneTouched = ref(false)
+const phoneCheck = ref<PhoneCheck | null>(null)
+const checking = ref(false)
+let pendingCheck: Promise<PhoneCheck | null> | null = null
 
-async function triggerConfirm() {
-  otpError.value = ''
-  otpValue.value = []
+const currentCheck = computed(() =>
+  phoneCheck.value?.phone === bookingState.value.phone ? phoneCheck.value : null
+)
+const phoneInvalid = computed(() => phoneTouched.value && !bookingState.value.phone)
+
+function checkPhone(phone: string): Promise<PhoneCheck | null> {
+  if (currentCheck.value) return Promise.resolve(currentCheck.value)
+
+  checking.value = true
+  const request = $fetch<Omit<PhoneCheck, 'phone'>>('/api/auth/phone/check', {
+    query: { phone, username: props.username }
+  })
+    .then((result) => {
+      // Ignore answers for a number that was edited meanwhile.
+      if (bookingState.value.phone !== phone) return null
+      phoneCheck.value = { phone, ...result }
+      return phoneCheck.value
+    })
+    .catch(() => null)
+    .finally(() => {
+      if (pendingCheck === request) {
+        pendingCheck = null
+        checking.value = false
+      }
+    })
+
+  pendingCheck = request
+  return request
+}
+
+watch(
+  () => bookingState.value.phone,
+  (phone) => {
+    bookingError.value = ''
+    if (phone) checkPhone(phone)
+  },
+  { immediate: true }
+)
+
+// --- Submit ---
+
+const showVerifyModal = ref(false)
+
+const busy = computed(() => bookingLoading.value || (checking.value && phoneTouched.value))
+
+async function submit() {
+  phoneTouched.value = true
   bookingError.value = ''
+  const phone = bookingState.value.phone
+  if (!phone || bookingLoading.value) return
 
-  if (isNewClient.value && !firstNameInput.value.trim()) {
-    bookingError.value = 'nameRequired'
+  const check = await (pendingCheck ?? checkPhone(phone))
+  if (!check) {
+    bookingError.value = 'checkFailed'
     return
   }
 
-  try {
-    const result = await $fetch<{ code?: string }>('/api/auth/phone/send', {
-      method: 'POST',
-      body: { phone: bookingState.value.phone }
-    })
-    devOtpCode.value = result.code ?? ''
-    showOtpModal.value = true
-    startCountdown()
-  } catch {
-    bookingError.value = 'sendFailed'
+  if (check.clientExists && check.verified) {
+    await createBooking()
+  } else {
+    showVerifyModal.value = true
   }
 }
 
-function startCountdown() {
-  resendCountdown.value = 59
-  if (countdownInterval) clearInterval(countdownInterval)
-  countdownInterval = setInterval(() => {
-    resendCountdown.value--
-    if (resendCountdown.value <= 0) {
-      clearInterval(countdownInterval!)
-      countdownInterval = null
-    }
-  }, 1000)
+defineExpose({ submit, busy })
+
+async function onVerified(result: VerifyResult) {
+  await createBooking(result)
 }
 
-async function resendCode() {
-  if (resendCountdown.value > 0) return
-  otpValue.value = []
-  otpError.value = ''
-
-  try {
-    const result = await $fetch<{ code?: string }>('/api/auth/phone/send', {
-      method: 'POST',
-      body: { phone: bookingState.value.phone }
-    })
-    devOtpCode.value = result.code ?? ''
-    startCountdown()
-  } catch {
-    otpError.value = 'sendFailed'
-  }
-}
-
-async function onOtpComplete(value: number[]) {
-  if (otpLoading.value) return
-  otpLoading.value = true
-  otpError.value = ''
-
-  const code = value.join('')
-
-  try {
-    const result = await $fetch<{ success: boolean; token?: string; error?: string }>(
-      '/api/auth/phone/verify',
-      {
-        method: 'POST',
-        body: { phone: bookingState.value.phone, code }
-      }
-    )
-
-    if (result.success && result.token) {
-      bookingState.value.otpToken = result.token
-      showOtpModal.value = false
-      await createBooking()
-    } else {
-      otpError.value = result.error ?? 'invalid_code'
-      otpValue.value = []
-    }
-  } catch {
-    otpError.value = 'invalid_code'
-    otpValue.value = []
-  } finally {
-    otpLoading.value = false
-  }
-}
-
-async function createBooking() {
+async function createBooking(details?: VerifyResult) {
   bookingLoading.value = true
   bookingError.value = ''
 
@@ -219,17 +159,16 @@ async function createBooking() {
         service_ids: bookingState.value.selectedServiceIds,
         starts_at: bookingState.value.selectedSlot,
         phone: bookingState.value.phone,
-        ...(isNewClient.value
-          ? {
-              first_name: firstNameInput.value.trim(),
-              last_name: lastNameInput.value.trim() || undefined
-            }
+        ...(details?.firstName
+          ? { first_name: details.firstName, last_name: details.lastName || undefined }
           : {}),
-        ...(bookingState.value.note ? { note: bookingState.value.note } : {}),
-        otp_token: bookingState.value.otpToken
+        ...(details?.otpToken ? { otp_token: details.otpToken } : {}),
+        ...(bookingState.value.note ? { note: bookingState.value.note } : {})
       }
     })
 
+    queryCache.invalidateQueries({ key: ['booking-availability', props.username] })
+    showVerifyModal.value = false
     bookingState.value.booking = {
       id: result.booking.id,
       startsAt: result.booking.starts_at,
@@ -240,10 +179,15 @@ async function createBooking() {
     bookingState.value.step = 4
   } catch (e: unknown) {
     const statusCode = (e as { statusCode?: number }).statusCode
+    showVerifyModal.value = false
+
     if (statusCode === 409) {
       bookingError.value = 'slotUnavailable'
-    } else if (statusCode === 400) {
-      bookingError.value = 'nameRequired'
+      queryCache.invalidateQueries({ key: ['booking-availability', props.username] })
+    } else if (statusCode === 401 && phoneCheck.value) {
+      // The phone is not confirmed after all — ask for the code.
+      phoneCheck.value = { ...phoneCheck.value, verified: false }
+      showVerifyModal.value = true
     } else {
       bookingError.value = 'bookingFailed'
     }
@@ -252,275 +196,233 @@ async function createBooking() {
   }
 }
 
-function otpErrorMessage(code: string) {
-  switch (code) {
-    case 'invalid_code':
-      return $ts('booking.sms.invalidCode')
-    case 'expired_code':
-      return $ts('booking.sms.expiredCode')
-    case 'too_many_attempts':
-      return $ts('booking.sms.tooManyAttempts')
+const errorTitle = computed(() => {
+  switch (bookingError.value) {
+    case 'slotUnavailable':
+      return $ts('booking.errors.slotUnavailable')
+    case 'checkFailed':
+      return $ts('booking.errors.checkFailed')
     default:
-      return $ts('booking.sms.sendFailed')
+      return $ts('booking.errors.bookingFailed')
   }
-}
-
-onUnmounted(() => {
-  if (countdownInterval) clearInterval(countdownInterval)
-  if (checkPhoneDebounce) clearTimeout(checkPhoneDebounce)
 })
 </script>
 
 <template>
   <section class="flex flex-col gap-6">
-    <!-- Section title -->
     <div class="flex flex-col gap-1">
-      <h1 class="text-xl font-semibold text-(--ui-text-highlighted)">
+      <h1 class="text-2xl font-semibold text-highlighted">
         {{ $ts('booking.steps.confirm.title') }}
       </h1>
-      <p class="text-sm text-(--ui-text-muted)">
+      <p class="text-sm text-muted">
         {{ $ts('booking.steps.confirm.description') }}
       </p>
     </div>
 
-    <!-- Booking overview card -->
-    <UCard variant="outline" :ui="{ body: 'p-4 sm:p-4' }">
-      <div class="flex flex-col gap-3">
-        <div class="flex flex-col gap-1">
-          <span
-            v-for="service in selectedServices"
-            :key="service.id"
-            class="text-sm font-medium text-(--ui-text-highlighted)"
+    <!-- Booking overview -->
+    <UCard variant="outline" :ui="{ root: 'rounded-3xl shadow-none', body: 'p-5 sm:p-5' }">
+      <div class="flex flex-col gap-4">
+        <div class="flex items-start gap-3">
+          <div
+            class="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-inverted text-inverted"
           >
-            {{ service.name }}
-          </span>
+            <UIcon name="i-lucide-calendar-check" class="size-5" />
+          </div>
+          <div class="flex min-w-0 flex-col">
+            <span class="text-base font-semibold capitalize text-highlighted">
+              {{ bookingState.selectedSlot ? formatDateTime(bookingState.selectedSlot) : '' }}
+            </span>
+            <span class="text-sm text-muted">
+              {{ $ts('booking.service.duration', { duration: totalDuration }) }}
+            </span>
+          </div>
+          <UButton
+            variant="link"
+            color="neutral"
+            size="sm"
+            :label="$ts('booking.steps.confirm.changeTime')"
+            class="ms-auto shrink-0"
+            @click="emit('changeTime')"
+          />
         </div>
 
         <USeparator />
 
-        <div class="flex items-center gap-2 text-sm">
-          <UIcon name="i-lucide-calendar" class="size-4 shrink-0 text-(--ui-text-muted)" />
-          <span class="capitalize text-(--ui-text)">
-            {{ formatDateTime(bookingState.selectedSlot) }}
-          </span>
-        </div>
-
-        <div class="flex items-center gap-2 text-sm">
-          <UIcon name="i-lucide-clock" class="size-4 shrink-0 text-(--ui-text-muted)" />
-          <span class="text-(--ui-text)">
-            {{ $ts('booking.service.duration', { duration: totalDuration }) }}
-          </span>
-        </div>
+        <ul class="flex flex-col gap-2">
+          <li
+            v-for="service in selectedServices"
+            :key="service.id"
+            class="flex items-baseline justify-between gap-3 text-sm"
+          >
+            <span class="text-highlighted">{{ service.name }}</span>
+            <span class="shrink-0 text-muted">{{ formatPrice(service.price) }}</span>
+          </li>
+        </ul>
 
         <USeparator />
 
         <div class="flex items-center justify-between">
-          <span class="text-sm text-(--ui-text-muted)">
-            {{ $ts('booking.steps.confirm.total') }}
-          </span>
-          <span class="font-semibold text-primary">
-            {{ formatPrice(totalPrice) }}
-          </span>
+          <span class="text-sm text-muted">{{ $ts('booking.steps.confirm.total') }}</span>
+          <span class="text-lg font-semibold text-highlighted">{{ formatPrice(totalPrice) }}</span>
         </div>
 
-        <template v-if="paymentTypes.length > 0">
-          <USeparator />
-
-          <div class="flex flex-col gap-2">
-            <span class="text-xs text-(--ui-text-muted)">
-              {{ $ts('booking.steps.confirm.paymentTitle') }}
-            </span>
-            <div class="flex flex-wrap gap-2">
-              <span
-                v-for="payment in paymentTypes"
-                :key="payment.id"
-                class="inline-flex items-center gap-1.5 rounded-full border border-(--ui-border-muted) px-2.5 py-1 text-xs text-(--ui-text-highlighted)"
-              >
-                <span class="size-2 rounded-full" :style="{ backgroundColor: payment.color }" />
-                {{ paymentLabel(payment) }}
-              </span>
-            </div>
-          </div>
-        </template>
+        <div v-if="paymentTypes.length > 0" class="flex flex-wrap items-center gap-2">
+          <span class="text-xs text-muted">{{ $ts('booking.steps.confirm.paymentTitle') }}:</span>
+          <UBadge
+            v-for="payment in paymentTypes"
+            :key="payment.id"
+            color="neutral"
+            variant="outline"
+            class="rounded-full"
+          >
+            <span class="size-2 rounded-full" :style="{ backgroundColor: payment.color }" />
+            {{ paymentLabel(payment) }}
+          </UBadge>
+        </div>
       </div>
     </UCard>
 
-    <!-- Note section -->
-    <div class="flex flex-col gap-2">
-      <div
-        v-if="bookingState.note"
-        class="rounded-lg border border-(--ui-border-muted) bg-(--ui-bg-muted) p-3"
+    <!-- Phone -->
+    <UFormField
+      :label="$ts('booking.steps.confirm.phone')"
+      :error="phoneInvalid ? $ts('booking.errors.phoneInvalid') : false"
+      :ui="{ label: 'text-base font-semibold' }"
+    >
+      <BookingPhoneInput
+        v-model="bookingState.phone"
+        :default-country="masterData?.profile.country"
+        :disabled="bookingLoading"
+        :invalid="phoneInvalid"
+        @submit="submit"
+      />
+    </UFormField>
+
+    <!-- Phone lookup status -->
+    <Transition name="fade" mode="out-in">
+      <p
+        v-if="bookingState.phone && checking && !currentCheck"
+        key="checking"
+        class="-mt-3 flex items-center gap-2 text-sm text-muted"
+        role="status"
       >
-        <p class="text-sm text-(--ui-text)">{{ bookingState.note }}</p>
-        <UButton
-          size="xs"
-          variant="ghost"
-          color="neutral"
-          icon="i-lucide-pencil"
-          :label="$ts('booking.steps.confirm.editNote')"
-          class="mt-2 -ml-1"
-          @click="openNoteModal"
-        />
-      </div>
+        <UIcon name="i-lucide-loader-circle" class="size-4 animate-spin" />
+        {{ $ts('booking.steps.confirm.checkingPhone') }}
+      </p>
+      <UAlert
+        v-else-if="currentCheck?.clientExists"
+        key="known"
+        color="success"
+        variant="subtle"
+        icon="i-lucide-hand"
+        class="-mt-2"
+        :title="
+          currentCheck.firstName
+            ? $ts('booking.steps.confirm.welcome', { name: currentCheck.firstName })
+            : $ts('booking.steps.confirm.welcomeAnonymous')
+        "
+        :description="
+          currentCheck.verified
+            ? $ts('booking.steps.confirm.verifiedHint')
+            : $ts('booking.steps.confirm.unverifiedHint')
+        "
+      />
+      <UAlert
+        v-else-if="currentCheck"
+        key="new"
+        color="neutral"
+        variant="subtle"
+        icon="i-lucide-sparkles"
+        class="-mt-2"
+        :title="$ts('booking.steps.confirm.newClientTitle')"
+        :description="$ts('booking.steps.confirm.newClientHint')"
+      />
+    </Transition>
+
+    <!-- Note -->
+    <div v-if="bookingState.note" class="flex items-start gap-3 rounded-2xl bg-elevated p-4">
+      <UIcon name="i-lucide-notebook-pen" class="mt-0.5 size-4 shrink-0 text-muted" />
+      <p class="flex-1 text-sm text-default">{{ bookingState.note }}</p>
       <UButton
-        v-else
         size="sm"
         variant="ghost"
         color="neutral"
-        icon="i-lucide-notebook-pen"
-        :label="$ts('booking.steps.confirm.addNote')"
-        class="-ml-2 self-start"
+        icon="i-lucide-pencil"
+        :aria-label="$ts('booking.steps.confirm.editNote')"
         @click="openNoteModal"
       />
     </div>
+    <UButton
+      v-else
+      size="lg"
+      variant="soft"
+      color="neutral"
+      icon="i-lucide-notebook-pen"
+      :label="$ts('booking.steps.confirm.addNote')"
+      class="self-start"
+      @click="openNoteModal"
+    />
 
-    <!-- Phone input -->
-    <div class="flex flex-col gap-2">
-      <label class="text-sm font-medium text-(--ui-text-highlighted)">
-        {{ $ts('booking.steps.confirm.phone') }}
-      </label>
-
-      <Transition name="fade">
-        <p v-if="clientFirstName" class="text-sm font-medium text-primary">
-          {{ $ts('booking.steps.confirm.welcome', { name: clientFirstName }) }}
-        </p>
-      </Transition>
-
-      <UInput
-        v-model="phoneInput"
-        type="tel"
-        :placeholder="$ts('booking.steps.confirm.phonePlaceholder')"
-        size="lg"
-        icon="i-lucide-phone"
-        autocomplete="tel"
-      />
-
-      <Transition name="fade">
-        <div v-if="isNewClient" class="flex flex-col gap-3">
-          <p class="text-sm text-(--ui-text-muted)">
-            {{ $ts('booking.steps.confirm.newClientHint') }}
-          </p>
-          <UInput
-            v-model="firstNameInput"
-            :placeholder="$ts('booking.steps.confirm.firstName')"
-            size="lg"
-            icon="i-lucide-user"
-            autocomplete="given-name"
-          />
-          <UInput
-            v-model="lastNameInput"
-            :placeholder="$ts('booking.steps.confirm.lastName')"
-            size="lg"
-            icon="i-lucide-user"
-            autocomplete="family-name"
-          />
-        </div>
-      </Transition>
-    </div>
-
-    <!-- Booking error -->
     <UAlert
       v-if="bookingError"
       color="error"
       variant="subtle"
       icon="i-lucide-circle-alert"
-      :title="
+      :title="errorTitle"
+      :actions="
         bookingError === 'slotUnavailable'
-          ? $ts('booking.errors.slotUnavailable')
-          : bookingError === 'nameRequired'
-            ? $ts('booking.errors.nameRequired')
-            : $ts('booking.errors.bookingFailed')
+          ? [
+              {
+                label: $ts('booking.steps.confirm.changeTime'),
+                color: 'error',
+                variant: 'solid',
+                onClick: () => emit('changeTime')
+              }
+            ]
+          : []
       "
     />
-
-    <!-- Booking loading -->
-    <div
-      v-if="bookingLoading"
-      class="flex items-center justify-center gap-2 py-2 text-sm text-(--ui-text-muted)"
-    >
-      <UIcon name="i-lucide-loader-circle" class="size-4 animate-spin" />
-      <span>{{ $ts('booking.steps.confirm.creatingBooking') }}</span>
-    </div>
 
     <!-- Note modal -->
     <UModal v-model:open="showNoteModal" :title="$ts('booking.steps.confirm.noteModalTitle')">
       <template #body>
-        <div class="flex flex-col gap-4">
-          <UTextarea
-            v-model="noteInput"
-            :placeholder="$ts('booking.steps.confirm.notePlaceholder')"
-            :rows="4"
-            autofocus
-          />
-          <div class="flex justify-end gap-2">
-            <UButton
-              color="neutral"
-              variant="ghost"
-              :label="$ts('booking.steps.confirm.cancel')"
-              @click="showNoteModal = false"
-            />
-            <UButton
-              color="primary"
-              :label="$ts('booking.steps.confirm.saveNote')"
-              @click="saveNote"
-            />
-          </div>
-        </div>
+        <UTextarea
+          v-model="noteInput"
+          :placeholder="$ts('booking.steps.confirm.notePlaceholder')"
+          :rows="4"
+          size="xl"
+          autofocus
+          class="w-full"
+        />
       </template>
-    </UModal>
-
-    <!-- OTP modal -->
-    <UModal
-      v-model:open="showOtpModal"
-      :title="$ts('booking.sms.title')"
-      :description="$ts('booking.sms.codeSentTo', { phone: phoneInput })"
-      :dismissible="!otpLoading"
-    >
-      <template #body>
-        <div class="flex flex-col items-center gap-5 py-2">
-          <UPinInput
-            v-model="otpValue"
-            :length="4"
-            type="number"
+      <template #footer>
+        <div class="flex w-full gap-2">
+          <UButton
+            color="neutral"
+            variant="outline"
             size="xl"
-            :disabled="otpLoading"
-            otp
-            @complete="onOtpComplete"
+            :label="$ts('booking.steps.confirm.cancel')"
+            class="flex-1 justify-center"
+            @click="showNoteModal = false"
           />
-
-          <UAlert
-            v-if="otpError"
-            color="error"
-            variant="subtle"
-            icon="i-lucide-circle-alert"
-            :title="otpErrorMessage(otpError)"
+          <UButton
+            color="primary"
+            size="xl"
+            :label="$ts('booking.steps.confirm.saveNote')"
+            class="flex-1 justify-center"
+            @click="saveNote"
           />
-
-          <!-- DEV ONLY: show the OTP code so it can be entered during testing -->
-          <UAlert
-            v-if="devOtpCode"
-            color="warning"
-            variant="subtle"
-            icon="i-lucide-flask-conical"
-            :title="$ts('booking.sms.devCode', { code: devOtpCode })"
-          />
-
-          <div class="text-sm text-(--ui-text-muted)">
-            <span v-if="resendCountdown > 0">
-              {{ $ts('booking.sms.resendIn', { countdown: countdownDisplay }) }}
-            </span>
-            <UButton
-              v-else
-              size="sm"
-              variant="ghost"
-              color="neutral"
-              :label="$ts('booking.sms.resend')"
-              @click="resendCode"
-            />
-          </div>
         </div>
       </template>
     </UModal>
+
+    <BookingVerifyModal
+      v-model:open="showVerifyModal"
+      :phone="bookingState.phone"
+      :needs-details="!currentCheck?.clientExists"
+      :needs-code="!currentCheck?.verified"
+      :submitting="bookingLoading"
+      @done="onVerified"
+    />
   </section>
 </template>
 

@@ -28,20 +28,24 @@ export interface BookingState {
   selectedDate: string | null
   selectedSlot: string | null
   note: string
+  /** E.164 phone, kept across bookings so a returning client does not retype it. */
   phone: string
-  otpToken: string
   booking: BookingResult | null
 }
 
-export function useBookingState(username: string) {
-  return useState<BookingState>(`booking:${username}`, () => ({
+export function createBookingState(overrides: Partial<BookingState> = {}): BookingState {
+  return {
     step: 1,
     selectedServiceIds: [],
     selectedDate: null,
     selectedSlot: null,
     note: '',
     phone: '',
-    otpToken: '',
-    booking: null
-  }))
+    booking: null,
+    ...overrides
+  }
+}
+
+export function useBookingState(username: string) {
+  return useState<BookingState>(`booking:${username}`, () => createBookingState())
 }

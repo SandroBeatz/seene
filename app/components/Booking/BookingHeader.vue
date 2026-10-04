@@ -1,18 +1,21 @@
 <script setup lang="ts">
 const props = defineProps<{
   step: 1 | 2 | 3
-  canProceed: boolean
 }>()
 
 const emit = defineEmits<{
   back: []
-  next: []
 }>()
 
 const { $ts } = useI18n()
 
-const actionLabel = computed(() =>
-  props.step === 3 ? $ts('booking.header.confirm') : $ts('booking.header.next')
+const stepTitle = computed(
+  () =>
+    [
+      $ts('booking.header.steps.services'),
+      $ts('booking.header.steps.slots'),
+      $ts('booking.header.steps.confirm')
+    ][props.step - 1]
 )
 
 const progressLabel = computed(() =>
@@ -21,16 +24,19 @@ const progressLabel = computed(() =>
 </script>
 
 <template>
-  <header
-    class="sticky top-0 z-10 grid grid-cols-[auto_1fr_auto] items-center gap-3 border-b border-[var(--ui-border-muted)] bg-[var(--ui-bg)]/95 px-4 py-3 backdrop-blur"
-  >
-    <UButton
-      color="neutral"
-      variant="ghost"
-      icon="i-lucide-arrow-left"
-      :aria-label="$ts('booking.header.back')"
-      @click="emit('back')"
-    />
+  <header class="sticky top-0 z-10 flex flex-col gap-3 bg-default/95 px-4 pb-3 pt-3 backdrop-blur">
+    <div class="grid grid-cols-[auto_1fr_auto] items-center gap-3">
+      <UButton
+        color="neutral"
+        variant="ghost"
+        size="lg"
+        icon="i-lucide-arrow-left"
+        :aria-label="$ts('booking.header.back')"
+        @click="emit('back')"
+      />
+      <span class="truncate text-center text-sm font-medium text-highlighted">{{ stepTitle }}</span>
+      <span class="w-10 text-end text-xs tabular-nums text-muted">{{ step }}/3</span>
+    </div>
 
     <div
       class="flex items-center gap-1.5"
@@ -43,20 +49,9 @@ const progressLabel = computed(() =>
       <div
         v-for="segment in 3"
         :key="segment"
-        class="h-1.5 min-w-0 flex-1 rounded-full transition-colors"
-        :class="segment <= step ? 'bg-primary' : 'bg-[var(--ui-bg-muted)]'"
+        class="h-1 min-w-0 flex-1 rounded-full transition-colors duration-300"
+        :class="segment <= step ? 'bg-inverted' : 'bg-accented'"
       />
     </div>
-
-    <UButton
-      v-if="canProceed"
-      color="primary"
-      variant="solid"
-      size="sm"
-      trailing-icon="i-lucide-arrow-right"
-      :label="actionLabel"
-      @click="emit('next')"
-    />
-    <div v-else class="h-8 w-8" aria-hidden="true" />
   </header>
 </template>

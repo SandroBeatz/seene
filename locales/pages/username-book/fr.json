@@ -3,8 +3,12 @@
     "header": {
       "back": "Retour",
       "next": "Suivant",
-      "confirm": "Confirmer",
-      "progressLabel": "Étape {step} sur {total}"
+      "progressLabel": "Étape {step} sur {total}",
+      "steps": {
+        "services": "Prestations",
+        "slots": "Date et heure",
+        "confirm": "Confirmation"
+      }
     },
     "steps": {
       "services": {
@@ -18,9 +22,19 @@
         "title": "Choisir la date et l'heure",
         "description": "Choisissez un jour et une heure disponibles pour votre visite.",
         "noSlots": "Aucun créneau disponible",
-        "nextAvailable": "Date disponible la plus proche : {date}",
         "noUpcomingSlots": "Aucun créneau disponible dans les 30 prochains jours.",
-        "goToNextAvailable": "Aller à la date"
+        "loading": "Recherche des créneaux libres…",
+        "loadFailed": "Impossible de charger les créneaux",
+        "retry": "Réessayer",
+        "legendFree": "Libre",
+        "legendBusy": "Complet",
+        "dayFull": "aucun créneau libre",
+        "slotCount": "Créneaux libres : {count}",
+        "groups": {
+          "morning": "Matin",
+          "afternoon": "Après-midi",
+          "evening": "Soir"
+        }
       },
       "confirm": {
         "title": "Confirmer la réservation",
@@ -34,12 +48,17 @@
         "saveNote": "Enregistrer",
         "cancel": "Annuler",
         "phone": "Numéro de téléphone",
-        "phonePlaceholder": "+7 (___) ___-__-__",
-        "welcome": "Bon retour, {name} ! 👋",
-        "newClientHint": "C'est votre première fois ? Présentez-vous, s'il vous plaît.",
+        "welcome": "Bon retour, {name} !",
+        "newClientHint": "Après « Réserver », nous vous demanderons votre nom et confirmerons votre numéro par SMS — une seule fois.",
         "firstName": "Prénom",
         "lastName": "Nom",
-        "creatingBooking": "Création de votre réservation..."
+        "creatingBooking": "Création de votre réservation...",
+        "changeTime": "Changer l'heure",
+        "checkingPhone": "Vérification du numéro…",
+        "welcomeAnonymous": "Bon retour !",
+        "verifiedHint": "Votre numéro est confirmé — appuyez sur « Réserver » et c’est fait.",
+        "unverifiedHint": "Nous enverrons un code SMS unique pour confirmer votre numéro.",
+        "newClientTitle": "Première visite ?"
       },
       "success": {
         "title": "Réservation confirmée !",
@@ -77,12 +96,31 @@
     "errors": {
       "bookingFailed": "Impossible de créer la réservation, veuillez réessayer",
       "slotUnavailable": "Ce créneau n'est plus disponible, veuillez en choisir un autre",
-      "nameRequired": "Le prénom est requis"
+      "nameRequired": "Le prénom est requis",
+      "checkFailed": "Impossible de vérifier le numéro, réessayez",
+      "phoneInvalid": "Saisissez un numéro valide"
     },
     "disabled": {
       "title": "Réservation en ligne indisponible",
       "description": "Ce spécialiste n'accepte pas les réservations en ligne pour le moment.",
       "backToProfile": "Retour au profil"
+    },
+    "footer": {
+      "book": "Réserver",
+      "servicesCount": "Prestations : {count}"
+    },
+    "phone": {
+      "country": "Pays",
+      "searchCountry": "Rechercher un pays…"
+    },
+    "verify": {
+      "detailsTitle": "Ravi de vous rencontrer !",
+      "detailsDescription": "Dites au maître comment vous appeler.",
+      "optional": "Facultatif",
+      "getCode": "Recevoir le code SMS",
+      "sendingCode": "Envoi du code…",
+      "checkingCode": "Vérification du code…",
+      "changePhone": "Changer de numéro"
     }
   }
 }

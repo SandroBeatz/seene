@@ -76,16 +76,11 @@ const scrollToPageTop = () => {
 function bookSelectedServices() {
   const bookingState = useBookingState(username.value)
 
-  bookingState.value = {
+  bookingState.value = createBookingState({
     step: 2,
     selectedServiceIds: [...selectedServiceIds.value],
-    selectedDate: null,
-    selectedSlot: null,
-    note: '',
-    phone: '',
-    otpToken: '',
-    booking: null
-  }
+    phone: bookingState.value.phone
+  })
 
   return navigateTo($localePath(`/${username.value}/book`))
 }

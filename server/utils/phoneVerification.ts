@@ -1,6 +1,5 @@
 import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto'
 
-const PHONE_RE = /^\d{10,15}$/
 const TOKEN_TTL_SECONDS = 15 * 60
 
 type PhoneVerificationPayload = {
@@ -9,18 +8,53 @@ type PhoneVerificationPayload = {
   nonce: string
 }
 
+/** Validates an E.164 phone ('+996555123456') and returns it canonicalized. */
 export function normalizePhone(phone: unknown) {
   if (typeof phone !== 'string') {
     throw createError({ statusCode: 400, message: 'Phone is required' })
   }
 
-  const normalized = phone.replace(/\D/g, '')
+  const normalized = phone.trim().startsWith('+') ? toE164(phone) : null
 
-  if (!PHONE_RE.test(normalized)) {
-    throw createError({ statusCode: 400, message: 'Phone must contain 10 to 15 digits' })
+  if (!normalized) {
+    throw createError({ statusCode: 400, message: 'Phone must be a valid E.164 number' })
   }
 
   return normalized
+}
+
+/**
+ * A phone is confirmed once — when the client first books and passes the SMS
+ * check. Every later booking with that number skips the OTP step.
+ */
+export async function isPhoneVerified(
+  supabase: ReturnType<typeof useServiceSupabase>,
+  phone: string
+) {
+  const { data, error } = await supabase
+    .from('phone_verification')
+    .select('phone')
+    .eq('phone', phone)
+    .maybeSingle()
+
+  if (error) {
+    throw createError({ statusCode: 500, message: 'Failed to check phone verification' })
+  }
+
+  return Boolean(data)
+}
+
+export async function markPhoneVerified(
+  supabase: ReturnType<typeof useServiceSupabase>,
+  phone: string
+) {
+  const { error } = await supabase
+    .from('phone_verification')
+    .upsert({ phone, verified_at: new Date().toISOString() }, { onConflict: 'phone' })
+
+  if (error) {
+    throw createError({ statusCode: 500, message: 'Failed to save phone verification' })
+  }
 }
 
 export function createPhoneVerificationToken(phone: string) {
