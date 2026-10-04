@@ -159,7 +159,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <UModal
+  <UDrawer
     v-model:open="open"
     :dismissible="!busy"
     :title="stage === 'details' ? $ts('booking.verify.detailsTitle') : $ts('booking.sms.title')"
@@ -168,7 +168,10 @@ onUnmounted(() => {
         ? $ts('booking.verify.detailsDescription')
         : $ts('booking.sms.codeSentTo', { phone: phoneDisplay })
     "
-    :ui="{ footer: 'flex-col gap-2' }"
+    :ui="{
+      container: 'mx-auto w-full max-w-lg',
+      footer: 'flex-col gap-2 pb-[max(1rem,env(safe-area-inset-bottom))]'
+    }"
   >
     <template #body>
       <!-- Stage 1: new client details -->
@@ -301,5 +304,5 @@ onUnmounted(() => {
         @click="open = false"
       />
     </template>
-  </UModal>
+  </UDrawer>
 </template>
