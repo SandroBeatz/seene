@@ -356,6 +356,21 @@ export type Database = {
         }
         Relationships: []
       }
+      phone_verification: {
+        Row: {
+          phone: string
+          verified_at: string
+        }
+        Insert: {
+          phone: string
+          verified_at?: string
+        }
+        Update: {
+          phone?: string
+          verified_at?: string
+        }
+        Relationships: []
+      }
       payment_type: {
         Row: {
           color: string

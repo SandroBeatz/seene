@@ -60,6 +60,8 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 500, message: 'Failed to mark OTP code as used' })
   }
 
+  await markPhoneVerified(supabase, phone)
+
   return {
     success: true,
     token: createPhoneVerificationToken(phone)

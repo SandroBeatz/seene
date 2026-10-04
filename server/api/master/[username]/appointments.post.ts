@@ -63,21 +63,23 @@ export default defineEventHandler(async (event) => {
   const lastName = parseName(body.last_name, 'last_name')
   const note = parseNote(body.note)
 
-  if (!verifyPhoneVerificationToken(body.otp_token, phone)) {
-    throw createError({
-      statusCode: 401,
-      message: 'Phone verification token is invalid or expired'
-    })
-  }
-
   const supabase = useServiceSupabase()
+  const hasFreshToken = verifyPhoneVerificationToken(body.otp_token, phone)
 
-  // Step 1: load master profile (schedule needed for slot validation)
-  const { data: profile } = await supabase
-    .from('master_profile')
-    .select('id, user_id, schedule')
-    .eq('username', username)
-    .maybeSingle()
+  // Step 1: load master profile (schedule needed for slot validation). A phone
+  // confirmed on an earlier booking needs no OTP token.
+  const [{ data: profile }, phoneVerified] = await Promise.all([
+    supabase
+      .from('master_profile')
+      .select('id, user_id, schedule')
+      .eq('username', username)
+      .maybeSingle(),
+    hasFreshToken ? true : isPhoneVerified(supabase, phone)
+  ])
+
+  if (!phoneVerified) {
+    throw createError({ statusCode: 401, message: 'Phone verification is required' })
+  }
 
   // If master not found, let the RPC return master_not_found
   if (profile) {

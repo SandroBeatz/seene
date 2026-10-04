@@ -59,16 +59,7 @@ const address = computed(() => {
 })
 
 function returnToProfile() {
-  bookingState.value = {
-    step: 1,
-    selectedServiceIds: [],
-    selectedDate: null,
-    selectedSlot: null,
-    note: '',
-    phone: '',
-    otpToken: '',
-    booking: null
-  }
+  bookingState.value = createBookingState({ phone: bookingState.value.phone })
   void navigateTo($localePath(`/${props.username}`))
 }
 

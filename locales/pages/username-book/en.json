@@ -3,8 +3,12 @@
     "header": {
       "back": "Back",
       "next": "Next",
-      "confirm": "Confirm",
-      "progressLabel": "Step {step} of {total}"
+      "progressLabel": "Step {step} of {total}",
+      "steps": {
+        "services": "Services",
+        "slots": "Date and time",
+        "confirm": "Confirmation"
+      }
     },
     "steps": {
       "services": {
@@ -18,9 +22,19 @@
         "title": "Choose date and time",
         "description": "Pick an available day and time for your visit.",
         "noSlots": "No available times",
-        "nextAvailable": "Nearest available date: {date}",
         "noUpcomingSlots": "There are no available times in the next 30 days.",
-        "goToNextAvailable": "Go to date"
+        "loading": "Looking for free times…",
+        "loadFailed": "Couldn't load free times",
+        "retry": "Try again",
+        "legendFree": "Free",
+        "legendBusy": "Full",
+        "dayFull": "no free times",
+        "slotCount": "Free slots: {count}",
+        "groups": {
+          "morning": "Morning",
+          "afternoon": "Afternoon",
+          "evening": "Evening"
+        }
       },
       "confirm": {
         "title": "Confirm booking",
@@ -34,12 +48,17 @@
         "saveNote": "Save",
         "cancel": "Cancel",
         "phone": "Phone number",
-        "phonePlaceholder": "+7 (___) ___-__-__",
-        "welcome": "Welcome back, {name}! 👋",
-        "newClientHint": "First time here? Please introduce yourself.",
+        "welcome": "Welcome back, {name}!",
+        "newClientHint": "After you tap “Book now” we’ll ask your name and confirm your number by SMS — only once.",
         "firstName": "First name",
         "lastName": "Last name",
-        "creatingBooking": "Creating your booking..."
+        "creatingBooking": "Creating your booking...",
+        "changeTime": "Change time",
+        "checkingPhone": "Checking your number…",
+        "welcomeAnonymous": "Welcome back!",
+        "verifiedHint": "Your number is confirmed — tap “Book now” and you’re done.",
+        "unverifiedHint": "We’ll send a one-time SMS code to confirm your number.",
+        "newClientTitle": "First time here?"
       },
       "success": {
         "title": "Booking confirmed!",
@@ -77,12 +96,31 @@
     "errors": {
       "bookingFailed": "Failed to create booking, please try again",
       "slotUnavailable": "This time slot is no longer available, please choose another",
-      "nameRequired": "First name is required"
+      "nameRequired": "First name is required",
+      "checkFailed": "Couldn't check the number, please try again",
+      "phoneInvalid": "Enter a valid phone number"
     },
     "disabled": {
       "title": "Online booking unavailable",
       "description": "This master is not currently accepting online bookings.",
       "backToProfile": "Back to profile"
+    },
+    "footer": {
+      "book": "Book now",
+      "servicesCount": "Services: {count}"
+    },
+    "phone": {
+      "country": "Country",
+      "searchCountry": "Search country…"
+    },
+    "verify": {
+      "detailsTitle": "Nice to meet you!",
+      "detailsDescription": "Tell the master how to address you.",
+      "optional": "Optional",
+      "getCode": "Get SMS code",
+      "sendingCode": "Sending the code…",
+      "checkingCode": "Checking the code…",
+      "changePhone": "Change number"
     }
   }
 }

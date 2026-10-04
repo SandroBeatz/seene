@@ -3,10 +3,10 @@ import {
   type AppointmentRow,
   type TimeBlockRow,
   addDays,
+  buildFreeSlots,
   getProfileSchedule,
   getProfileTimezone,
   getScheduleDay,
-  hasAnyFreeSlot,
   isValidDate,
   parseServiceIdsQuery,
   zonedTimeToUtc
@@ -14,6 +14,10 @@ import {
 
 const MAX_RANGE_DAYS = 60
 
+/**
+ * Free slots for every day in [from, to], computed in one pass so the booking
+ * calendar can mark free/busy days and switch days without another request.
+ */
 export default defineEventHandler(async (event) => {
   const username = getRouterParam(event, 'username')
   const query = getQuery(event)
@@ -49,7 +53,19 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, message: 'Master not found' })
   }
 
-  const [{ data: services, error: servicesError }, { data: settingsRow }] = await Promise.all([
+  const schedule = getProfileSchedule(profile.schedule)
+  const timezone = getProfileTimezone(profile.schedule)
+  const rangeStart = zonedTimeToUtc(from, '00:00:00', timezone).toISOString()
+  const rangeEnd = zonedTimeToUtc(addDays(to, 1), '00:00:00', timezone).toISOString()
+
+  // Everything below depends only on the profile, so it runs in one round trip.
+  const [
+    { data: services, error: servicesError },
+    { data: settingsRow },
+    { data: appointments, error: appointmentsError },
+    { data: timeBlocks, error: timeBlocksError },
+    { data: bookings, error: bookingsError }
+  ] = await Promise.all([
     supabase
       .from('service')
       .select('id, duration')
@@ -58,92 +74,94 @@ export default defineEventHandler(async (event) => {
       .in('id', serviceIds),
     supabase
       .from('master_settings')
-      .select('calendar_slot_step_minutes, booking_buffer_minutes, booking_min_notice_minutes')
+      .select(
+        'online_booking_enabled, calendar_slot_step_minutes, booking_buffer_minutes, booking_min_notice_minutes'
+      )
       .eq('user_id', profile.user_id)
-      .maybeSingle()
+      .maybeSingle(),
+    supabase
+      .from('appointments')
+      .select('start_at, duration')
+      .eq('user_id', profile.user_id)
+      .neq('status', 'cancelled')
+      .lt('start_at', rangeEnd)
+      .gte('start_at', rangeStart),
+    supabase
+      .from('time_block')
+      .select('start_at, end_at, all_day')
+      .eq('user_id', profile.user_id)
+      .lt('start_at', rangeEnd)
+      .gt('end_at', rangeStart),
+    supabase
+      .from('bookings')
+      .select('starts_at, ends_at')
+      .eq('master_id', profile.id)
+      .neq('status', 'cancelled')
+      .lt('starts_at', rangeEnd)
+      .gt('ends_at', rangeStart)
   ])
 
-  if (servicesError) {
-    throw createError({ statusCode: 500, message: 'Failed to load services' })
+  if (!settingsRow || !settingsRow.online_booking_enabled) {
+    throw createError({ statusCode: 403, message: 'Online booking is disabled' })
+  }
+
+  if (servicesError || appointmentsError || timeBlocksError || bookingsError) {
+    throw createError({ statusCode: 500, message: 'Failed to load availability' })
   }
 
   if (!services || services.length !== serviceIds.length) {
     throw createError({ statusCode: 400, message: 'One or more services are unavailable' })
   }
 
-  const slotStepMinutes = settingsRow?.calendar_slot_step_minutes ?? 15
-  const bufferMinutes = settingsRow?.booking_buffer_minutes ?? 0
-  const minNoticeMinutes = settingsRow?.booking_min_notice_minutes ?? 0
+  if (!schedule) {
+    return dates.map((date) => ({ date, slots: [] as string[] }))
+  }
 
   const serviceDuration = services.reduce((total, service) => total + service.duration, 0)
-  const schedule = getProfileSchedule(profile.schedule)
-  const timezone = getProfileTimezone(profile.schedule)
-
-  if (!schedule) {
-    return dates.map((date) => ({ date, available: false }))
+  const slotParams = {
+    slotStepMinutes: settingsRow.calendar_slot_step_minutes ?? 15,
+    bufferMinutes: settingsRow.booking_buffer_minutes ?? 0,
+    minNoticeMinutes: settingsRow.booking_min_notice_minutes ?? 0,
+    nowMs: Date.now()
   }
 
-  const rangeStart = zonedTimeToUtc(from, '00:00:00', timezone)
-  const rangeEnd = zonedTimeToUtc(addDays(to, 1), '00:00:00', timezone)
-
-  const [
-    { data: appointments, error: appointmentsError },
-    { data: timeBlocks, error: timeBlocksError }
-  ] = await Promise.all([
-    supabase
-      .from('appointments')
-      .select('start_at, duration')
-      .eq('user_id', profile.user_id)
-      .neq('status', 'cancelled')
-      .lt('start_at', rangeEnd.toISOString())
-      .gte('start_at', rangeStart.toISOString()),
-    supabase
-      .from('time_block')
-      .select('start_at, end_at, all_day')
-      .eq('user_id', profile.user_id)
-      .lt('start_at', rangeEnd.toISOString())
-      .gt('end_at', rangeStart.toISOString())
-  ])
-
-  if (appointmentsError) {
-    throw createError({ statusCode: 500, message: 'Failed to load appointments' })
-  }
-
-  if (timeBlocksError) {
-    throw createError({ statusCode: 500, message: 'Failed to load time blocks' })
-  }
+  const busyRows: AppointmentRow[] = [
+    ...((appointments ?? []) as AppointmentRow[]),
+    ...(bookings ?? []).map((b) => ({
+      start_at: b.starts_at,
+      duration: Math.round(
+        (new Date(b.ends_at).getTime() - new Date(b.starts_at).getTime()) / 60_000
+      )
+    }))
+  ]
 
   return dates.map((date) => {
     const scheduleDay = getScheduleDay(schedule, date)
-    if (!scheduleDay?.enabled) return { date, available: false }
+    if (!scheduleDay?.enabled) return { date, slots: [] as string[] }
 
-    const dayStart = zonedTimeToUtc(date, '00:00:00', timezone)
-    const dayEnd = zonedTimeToUtc(addDays(date, 1), '00:00:00', timezone)
+    const dayStart = zonedTimeToUtc(date, '00:00:00', timezone).getTime()
+    const dayEnd = zonedTimeToUtc(addDays(date, 1), '00:00:00', timezone).getTime()
 
-    const dayAppointments = (appointments ?? []).filter((a) => {
+    const dayAppointments = busyRows.filter((a) => {
       const t = new Date(a.start_at).getTime()
-      return t >= dayStart.getTime() && t < dayEnd.getTime()
+      return t >= dayStart && t < dayEnd
     })
 
-    const dayBlocks = (timeBlocks ?? []).filter(
-      (b) =>
-        new Date(b.start_at).getTime() < dayEnd.getTime() &&
-        new Date(b.end_at).getTime() > dayStart.getTime()
+    const dayBlocks = ((timeBlocks ?? []) as TimeBlockRow[]).filter(
+      (b) => new Date(b.start_at).getTime() < dayEnd && new Date(b.end_at).getTime() > dayStart
     )
 
-    const available = hasAnyFreeSlot({
+    const slots = buildFreeSlots({
       date,
       scheduleDay,
-      appointments: dayAppointments as AppointmentRow[],
-      timeBlocks: dayBlocks as TimeBlockRow[],
+      appointments: dayAppointments,
+      timeBlocks: dayBlocks,
       serviceDuration,
       timezone,
-      slotStepMinutes,
-      bufferMinutes,
-      minNoticeMinutes
+      ...slotParams
     })
 
-    return { date, available }
+    return { date, slots }
   })
 })
 
