@@ -37,7 +37,7 @@ const emit = defineEmits<{
           </p>
         </Transition>
 
-        <div class="flex gap-3">
+        <div class="flex items-center justify-between gap-3">
           <UButton
             color="neutral"
             variant="outline"
@@ -45,18 +45,17 @@ const emit = defineEmits<{
             icon="i-lucide-arrow-left"
             :label="$ts('booking.header.back')"
             :disabled="props.nextLoading"
-            class="h-14 justify-center px-5"
+            class="h-12 justify-center px-5"
             @click="emit('back')"
           />
           <UButton
             color="primary"
             size="xl"
-            block
             trailing-icon="i-lucide-arrow-right"
             :label="props.nextLabel"
             :disabled="!props.canProceed"
             :loading="props.nextLoading"
-            class="h-14 flex-1 text-base font-semibold"
+            class="h-12 justify-center px-5"
             @click="emit('next')"
           />
         </div>

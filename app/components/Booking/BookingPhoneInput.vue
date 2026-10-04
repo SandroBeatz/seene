@@ -43,9 +43,13 @@ const countries = computed<CountryItem[]>(() => {
 const selectedCountry = computed(() => countries.value.find((item) => item.code === country.value))
 const isInternational = computed(() => display.value.startsWith('+'))
 
+// Example in international grouping without the calling code ('555 123 456'):
+// the dial code is already shown as a prefix, so no national trunk '0'/'8'.
 const placeholder = computed(() => {
   if (!country.value) return '+'
-  return getExampleNumber(country.value, examples)?.formatNational() ?? ''
+  const example = getExampleNumber(country.value, examples)
+  if (!example) return ''
+  return example.formatInternational().replace(`+${example.countryCallingCode}`, '').trim()
 })
 
 function initialCountry(): CountryCode | undefined {
@@ -89,9 +93,9 @@ watch(model, (value) => {
       :aria-label="$ts('booking.phone.country')"
       trailing-icon="i-lucide-chevron-down"
       :ui="{
-        base: 'w-[88px] rounded-s-3xl ps-4',
+        base: 'w-[68px] rounded-s-3xl ps-3.5 pe-7',
         content: 'w-72',
-        trailingIcon: 'size-4',
+        trailingIcon: 'size-3.5',
         placeholder: 'hidden'
       }"
       @update:model-value="onCountryChange"

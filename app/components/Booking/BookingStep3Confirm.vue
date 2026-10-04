@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { MasterPaymentType, MasterService } from '#shared/types/master'
-import type { VerifyResult } from './BookingVerifyModal.vue'
+import type { VerifyResult } from './BookingVerifyDrawer.vue'
 
 interface BookingResponse {
   booking: {
@@ -55,17 +55,17 @@ function paymentLabel(payment: MasterPaymentType) {
 
 // --- Note ---
 
-const showNoteModal = ref(false)
+const showNoteDrawer = ref(false)
 const noteInput = ref(bookingState.value.note)
 
-function openNoteModal() {
+function openNoteDrawer() {
   noteInput.value = bookingState.value.note
-  showNoteModal.value = true
+  showNoteDrawer.value = true
 }
 
 function saveNote() {
   bookingState.value.note = noteInput.value.trim()
-  showNoteModal.value = false
+  showNoteDrawer.value = false
 }
 
 // --- Phone lookup: runs as soon as the number is valid ---
@@ -119,7 +119,7 @@ watch(
 
 // --- Submit ---
 
-const showVerifyModal = ref(false)
+const showVerifyDrawer = ref(false)
 
 const busy = computed(() => bookingLoading.value || (checking.value && phoneTouched.value))
 
@@ -138,7 +138,7 @@ async function submit() {
   if (check.clientExists && check.verified) {
     await createBooking()
   } else {
-    showVerifyModal.value = true
+    showVerifyDrawer.value = true
   }
 }
 
@@ -168,7 +168,7 @@ async function createBooking(details?: VerifyResult) {
     })
 
     queryCache.invalidateQueries({ key: ['booking-availability', props.username] })
-    showVerifyModal.value = false
+    showVerifyDrawer.value = false
     bookingState.value.booking = {
       id: result.booking.id,
       startsAt: result.booking.starts_at,
@@ -179,7 +179,7 @@ async function createBooking(details?: VerifyResult) {
     bookingState.value.step = 4
   } catch (e: unknown) {
     const statusCode = (e as { statusCode?: number }).statusCode
-    showVerifyModal.value = false
+    showVerifyDrawer.value = false
 
     if (statusCode === 409) {
       bookingError.value = 'slotUnavailable'
@@ -187,7 +187,7 @@ async function createBooking(details?: VerifyResult) {
     } else if (statusCode === 401 && phoneCheck.value) {
       // The phone is not confirmed after all — ask for the code.
       phoneCheck.value = { ...phoneCheck.value, verified: false }
-      showVerifyModal.value = true
+      showVerifyDrawer.value = true
     } else {
       bookingError.value = 'bookingFailed'
     }
@@ -348,7 +348,7 @@ const errorTitle = computed(() => {
         color="neutral"
         icon="i-lucide-pencil"
         :aria-label="$ts('booking.steps.confirm.editNote')"
-        @click="openNoteModal"
+        @click="openNoteDrawer"
       />
     </div>
     <UButton
@@ -359,7 +359,7 @@ const errorTitle = computed(() => {
       icon="i-lucide-notebook-pen"
       :label="$ts('booking.steps.confirm.addNote')"
       class="self-start"
-      @click="openNoteModal"
+      @click="openNoteDrawer"
     />
 
     <UAlert
@@ -382,8 +382,15 @@ const errorTitle = computed(() => {
       "
     />
 
-    <!-- Note modal -->
-    <UModal v-model:open="showNoteModal" :title="$ts('booking.steps.confirm.noteModalTitle')">
+    <!-- Note drawer -->
+    <UDrawer
+      v-model:open="showNoteDrawer"
+      :title="$ts('booking.steps.confirm.noteModalTitle')"
+      :ui="{
+        container: 'mx-auto w-full max-w-lg',
+        footer: 'pb-[max(1rem,env(safe-area-inset-bottom))]'
+      }"
+    >
       <template #body>
         <UTextarea
           v-model="noteInput"
@@ -402,7 +409,7 @@ const errorTitle = computed(() => {
             size="xl"
             :label="$ts('booking.steps.confirm.cancel')"
             class="flex-1 justify-center"
-            @click="showNoteModal = false"
+            @click="showNoteDrawer = false"
           />
           <UButton
             color="primary"
@@ -413,10 +420,10 @@ const errorTitle = computed(() => {
           />
         </div>
       </template>
-    </UModal>
+    </UDrawer>
 
-    <BookingVerifyModal
-      v-model:open="showVerifyModal"
+    <BookingVerifyDrawer
+      v-model:open="showVerifyDrawer"
       :phone="bookingState.phone"
       :needs-details="!currentCheck?.clientExists"
       :needs-code="!currentCheck?.verified"
