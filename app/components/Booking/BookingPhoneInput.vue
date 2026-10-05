@@ -33,11 +33,9 @@ const emit = defineEmits<{
 
 const { $ts, getLocale } = useI18n()
 
-const stored = model.value ? parsePhoneNumberFromString(`+${model.value}`) : undefined
-const country = ref<CountryCode | undefined>(stored?.country ?? initialCountry())
-// A stored number is shown as national digits after the dial-code prefix,
-// grouped the way that country writes it ('555 123 456').
-const display = ref(stored ? resolvePhoneInput(stored.nationalNumber, stored.country).display : '')
+const country = ref<CountryCode | undefined>(initialCountry())
+const display = ref('')
+showCanonical(model.value)
 
 const countries = computed<CountryItem[]>(() => {
   const names = new Intl.DisplayNames([getLocale()], { type: 'region' })
@@ -63,6 +61,17 @@ const placeholder = computed(() => {
   return example.formatInternational().replace(`+${example.countryCallingCode}`, '').trim()
 })
 
+/**
+ * Show a canonical number as national digits after the dial-code prefix,
+ * grouped the way that country writes it ('555 123 456').
+ */
+function showCanonical(value: string) {
+  const parsed = value ? parsePhoneNumberFromString(`+${value}`) : undefined
+  if (!parsed?.country) return
+  country.value = parsed.country
+  display.value = resolvePhoneInput(parsed.nationalNumber, parsed.country).display
+}
+
 function initialCountry(): CountryCode | undefined {
   const browserRegion = import.meta.client ? navigator.language.split('-')[1] : undefined
   return toPhoneCountry(props.defaultCountry) ?? toPhoneCountry(browserRegion)
@@ -81,11 +90,15 @@ function onCountryChange(code: CountryCode) {
   onInput(isInternational.value ? '' : display.value)
 }
 
-// External resets (e.g. the booking state cleared) clear the field too.
+// External changes: a reset clears the field, a restored number fills it.
 watch(model, (value) => {
-  if (!value && resolvePhoneInput(display.value, country.value).canonical) {
-    display.value = ''
+  const shown = resolvePhoneInput(display.value, country.value).canonical
+  if (value === shown) return
+  if (!value) {
+    if (shown) display.value = ''
+    return
   }
+  showCanonical(value)
 })
 </script>
 

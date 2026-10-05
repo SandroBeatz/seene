@@ -50,5 +50,9 @@ export function createBookingState(overrides: Partial<BookingState> = {}): Booki
 }
 
 export function useBookingState(username: string) {
-  return useState<BookingState>(`booking:${username}`, () => createBookingState())
+  const savedPhone = useSavedPhone()
+  // Start with the phone remembered on this device (see useSavedPhone).
+  return useState<BookingState>(`booking:${username}`, () =>
+    createBookingState({ phone: savedPhone.read() })
+  )
 }
