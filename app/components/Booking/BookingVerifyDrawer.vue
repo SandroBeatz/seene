@@ -9,7 +9,7 @@ const props = defineProps<{
   phone: string
   /** New client: ask for a name first. */
   needsDetails: boolean
-  /** Phone not confirmed yet: ask for the SMS code. */
+  /** Phone not confirmed yet: ask for a one-time code. */
   needsCode: boolean
   /** The booking itself is being created after this modal finished. */
   submitting: boolean
@@ -24,6 +24,12 @@ const emit = defineEmits<{
 const { $ts } = useI18n()
 
 type Stage = 'details' | 'code'
+type CodeChannel = 'whatsapp' | 'telegram'
+
+const CHANNELS: { id: CodeChannel; icon: string; iconClass: string }[] = [
+  { id: 'whatsapp', icon: 'i-simple-icons-whatsapp', iconClass: 'text-[#25D366]' },
+  { id: 'telegram', icon: 'i-simple-icons-telegram', iconClass: 'text-[#26A5E4]' }
+]
 
 const stage = ref<Stage>('details')
 const firstName = ref('')
@@ -34,11 +40,19 @@ const phoneDisplay = computed(() => formatPhone(props.phone))
 const nameMissing = computed(() => !firstName.value.trim())
 
 watch(open, (isOpen) => {
-  if (!isOpen) return
+  if (!isOpen) {
+    channelPickerOpen.value = false
+    return
+  }
   stage.value = props.needsDetails ? 'details' : 'code'
   nameTouched.value = false
   otpToken.value = ''
-  if (stage.value === 'code') sendCode()
+  channel.value = null
+  devCode.value = ''
+  otpError.value = ''
+  otpValue.value = []
+  // Known client with an unconfirmed number goes straight to the channel choice.
+  if (stage.value === 'code') channelPickerOpen.value = true
 })
 
 // --- Details ---
@@ -48,14 +62,37 @@ function submitDetails() {
   if (nameMissing.value) return
 
   if (props.needsCode) {
-    stage.value = 'code'
-    sendCode()
+    channelPickerOpen.value = true
   } else {
     finish()
   }
 }
 
-// --- SMS code ---
+// --- Channel choice (WhatsApp / Telegram) ---
+
+const channelPickerOpen = ref(false)
+const channel = ref<CodeChannel | null>(null)
+
+const channelName = computed(() =>
+  channel.value ? $ts(`booking.verify.channels.${channel.value}.name`) : ''
+)
+
+function chooseChannel(id: CodeChannel) {
+  channel.value = id
+  channelPickerOpen.value = false
+  stage.value = 'code'
+  resendCountdown.value = 0
+  sendCode()
+}
+
+// The code step needs a channel: closing the picker without one steps back.
+watch(channelPickerOpen, (isOpen) => {
+  if (isOpen || channel.value || stage.value !== 'code') return
+  if (props.needsDetails) stage.value = 'details'
+  else open.value = false
+})
+
+// --- One-time code ---
 
 const otpValue = ref<number[]>([])
 const otpError = ref('')
@@ -67,7 +104,7 @@ const resendCountdown = ref(0)
 let countdownInterval: ReturnType<typeof setInterval> | null = null
 
 async function sendCode() {
-  if (sending.value) return
+  if (sending.value || !channel.value) return
   sending.value = true
   otpError.value = ''
   otpValue.value = []
@@ -75,7 +112,7 @@ async function sendCode() {
   try {
     const result = await $fetch<{ code?: string }>('/api/auth/phone/send', {
       method: 'POST',
-      body: { phone: props.phone }
+      body: { phone: props.phone, channel: channel.value }
     })
     devCode.value = result.code ?? ''
     startCountdown()
@@ -159,7 +196,9 @@ onUnmounted(() => {
     :description="
       stage === 'details'
         ? $ts('booking.verify.detailsDescription')
-        : $ts('booking.sms.codeSentTo', { phone: phoneDisplay })
+        : channel
+          ? $ts('booking.sms.codeSentTo', { channel: channelName, phone: phoneDisplay })
+          : phoneDisplay
     "
     :ui="{
       container: 'mx-auto w-full max-w-lg',
@@ -190,9 +229,11 @@ onUnmounted(() => {
         </div>
       </div>
 
-      <!-- Stage 2: SMS code -->
+      <!-- Stage 2: one-time code (after a channel is chosen) -->
       <div v-else class="flex flex-col items-center gap-5 py-2">
-        <div v-if="sending && !resendCountdown" class="flex flex-col items-center gap-3 py-4">
+        <div v-if="!channel" class="py-4" />
+
+        <div v-else-if="sending && !resendCountdown" class="flex flex-col items-center gap-3 py-4">
           <UIcon name="i-lucide-loader-circle" class="size-8 animate-spin text-muted" />
           <span class="text-sm text-muted">{{ $ts('booking.verify.sendingCode') }}</span>
         </div>
@@ -208,7 +249,10 @@ onUnmounted(() => {
             :color="otpError ? 'error' : 'primary'"
             otp
             autofocus
-            :ui="{ base: 'size-14 text-2xl rounded-2xl' }"
+            :ui="{
+              root: 'gap-2.5',
+              base: 'h-15 w-12 !rounded-lg text-2xl font-semibold tabular-nums'
+            }"
             @complete="onOtpComplete"
           />
 
@@ -251,6 +295,16 @@ onUnmounted(() => {
               @click="sendCode"
             />
           </div>
+
+          <UButton
+            variant="link"
+            color="neutral"
+            size="sm"
+            :disabled="busy || sending"
+            :label="$ts('booking.verify.otherChannel')"
+            class="-mt-3 text-muted"
+            @click="channelPickerOpen = true"
+          />
         </template>
       </div>
     </template>
@@ -264,6 +318,7 @@ onUnmounted(() => {
         :loading="busy || sending"
         :label="needsCode ? $ts('booking.verify.getCode') : $ts('booking.footer.book')"
         :trailing-icon="needsCode ? 'i-lucide-arrow-right' : undefined"
+        :ui="{ trailingIcon: 'ms-0' }"
         @click="submitDetails"
       />
       <UButton
@@ -285,4 +340,32 @@ onUnmounted(() => {
       />
     </template>
   </UDrawer>
+
+  <!-- Channel picker: a popup over the drawer; a choice is required to get a code -->
+  <UModal
+    v-model:open="channelPickerOpen"
+    :title="$ts('booking.verify.channelTitle')"
+    :description="$ts('booking.verify.channelDescription', { phone: phoneDisplay })"
+    :ui="{ content: 'max-w-sm rounded-xl', body: 'flex flex-col gap-2.5' }"
+  >
+    <template #body>
+      <UButton
+        v-for="item in CHANNELS"
+        :key="item.id"
+        color="neutral"
+        variant="outline"
+        size="xl"
+        block
+        :label="$ts(`booking.verify.channels.${item.id}.action`)"
+        :ui="{
+          base: 'h-14 justify-start gap-3 rounded-xl px-4',
+          leadingIcon: `size-6 ${item.iconClass}`,
+          trailingIcon: 'size-4 text-dimmed'
+        }"
+        :icon="item.icon"
+        trailing-icon="i-lucide-chevron-right"
+        @click="chooseChannel(item.id)"
+      />
+    </template>
+  </UModal>
 </template>
