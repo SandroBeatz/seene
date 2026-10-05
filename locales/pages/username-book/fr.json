@@ -46,14 +46,14 @@
         "cancel": "Annuler",
         "phone": "Numéro de téléphone",
         "welcome": "Ravis de vous revoir, {name} !",
-        "newClientHint": "À l’étape suivante, nous vous demanderons votre prénom et confirmerons votre numéro par SMS. Cela prend moins d’une minute, une seule fois.",
+        "newClientHint": "À l’étape suivante, nous vous demanderons votre prénom et enverrons un code de confirmation via WhatsApp ou Telegram. Cela prend moins d’une minute, une seule fois.",
         "firstName": "Prénom",
         "creatingBooking": "Création de votre réservation...",
         "changeTime": "Changer l'heure",
         "checkingPhone": "Vérification du numéro…",
         "welcomeAnonymous": "Ravis de vous revoir !",
         "verifiedHint": "Votre numéro est déjà confirmé — il ne reste qu’à appuyer sur « Réserver ».",
-        "unverifiedHint": "Nous vous enverrons un court code SMS pour confirmer votre numéro. Une seule fois suffit.",
+        "unverifiedHint": "Nous vous enverrons un court code via WhatsApp ou Telegram pour confirmer votre numéro. Une seule fois suffit.",
         "newClientTitle": "Première visite ? Bienvenue !"
       },
       "success": {
@@ -75,15 +75,15 @@
       "price": "{price} ₽"
     },
     "sms": {
-      "title": "Entrez le code SMS",
-      "codeSentTo": "Code envoyé au {phone}",
+      "title": "Saisissez le code",
+      "codeSentTo": "Code envoyé via {channel} au {phone}",
       "resendIn": "Renvoyer dans {countdown}",
       "resend": "Renvoyer le code",
       "devCode": "Code de test : {code}",
       "invalidCode": "Code invalide, veuillez réessayer",
       "expiredCode": "Le code a expiré, veuillez en demander un nouveau",
       "tooManyAttempts": "Trop de tentatives, veuillez demander un nouveau code",
-      "sendFailed": "Échec de l'envoi du SMS, veuillez réessayer"
+      "sendFailed": "Impossible d’envoyer le code, réessayez"
     },
     "errors": {
       "bookingFailed": "Impossible de créer la réservation, veuillez réessayer",
@@ -111,7 +111,20 @@
       "getCode": "Recevoir le code SMS",
       "sendingCode": "Envoi du code…",
       "checkingCode": "Vérification du code…",
-      "changePhone": "Changer de numéro"
+      "changePhone": "Changer de numéro",
+      "channelTitle": "Où envoyer le code ?",
+      "channelDescription": "Choisissez une messagerie — nous enverrons un code à 4 chiffres pour le {phone}.",
+      "otherChannel": "Recevoir autrement",
+      "channels": {
+        "whatsapp": {
+          "name": "WhatsApp",
+          "action": "Recevoir sur WhatsApp"
+        },
+        "telegram": {
+          "name": "Telegram",
+          "action": "Recevoir sur Telegram"
+        }
+      }
     }
   }
 }

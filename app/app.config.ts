@@ -37,6 +37,18 @@ export default defineAppConfig({
       }
     },
 
+    // Same dimmed + blurred backdrop as drawers. Modal sets its overlay color in
+    // the `overlay: true` variant, so it has to be overridden there.
+    modal: {
+      variants: {
+        overlay: {
+          true: {
+            overlay: 'bg-neutral-800/50 backdrop-blur-sm'
+          }
+        }
+      }
+    },
+
     empty: {
       slots: {
         avatar: 'bg-neutral-100 text-primary'
