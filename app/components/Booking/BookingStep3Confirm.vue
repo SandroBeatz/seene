@@ -119,14 +119,24 @@ function checkPhone(phone: string): Promise<PhoneCheck | null> {
   return request
 }
 
+const savedPhone = useSavedPhone()
+
 watch(
   () => bookingState.value.phone,
   (phone) => {
     bookingError.value = ''
-    if (phone) checkPhone(phone)
+    if (!phone) return
+    // Remember every valid number on this device for the next booking.
+    savedPhone.save(phone)
+    checkPhone(phone)
   },
   { immediate: true }
 )
+
+// The cookie may be gone while localStorage still has the number.
+onMounted(() => {
+  if (!bookingState.value.phone) bookingState.value.phone = savedPhone.read()
+})
 
 // --- Submit ---
 
