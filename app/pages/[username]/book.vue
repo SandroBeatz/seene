@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { BookingSummary } from '~/components/Booking/BookingShell.vue'
+
 definePageMeta({ layout: 'booking', middleware: 'master-locale' })
 
 const route = useRoute()
@@ -73,26 +75,22 @@ const nextLabel = computed(() =>
   bookingState.value.step === 3 ? $ts('booking.footer.book') : $ts('booking.header.next')
 )
 
-const summary = computed(() => {
+const summary = computed<BookingSummary | null>(() => {
   const state = bookingState.value
   const selected = (data.value?.services ?? []).filter((s) =>
     state.selectedServiceIds.includes(s.id)
   )
-  if (!selected.length) return ''
-
-  if (state.step === 2 && state.selectedSlot) {
-    return formatDateTime(state.selectedSlot)
-  }
-
-  if (state.step !== 1) return ''
+  const [first] = selected
+  if (!first) return null
 
   const duration = selected.reduce((sum, s) => sum + s.duration, 0)
   const price = selected.reduce((sum, s) => sum + priceToNumber(s.price), 0)
-  return [
-    $ts('booking.footer.servicesCount', { count: selected.length }),
-    $ts('booking.service.duration', { duration }),
-    formatPrice(price)
-  ].join(' · ')
+
+  return {
+    title: selected.length > 1 ? `${first.name} +${selected.length - 1}` : first.name,
+    details: [$ts('booking.service.duration', { duration }), formatPrice(price)].join(' · '),
+    when: state.step >= 2 && state.selectedSlot ? formatDateTime(state.selectedSlot) : undefined
+  }
 })
 
 function scrollTop() {

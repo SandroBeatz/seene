@@ -38,6 +38,14 @@ Visible user-facing text should be localized in all supported languages: `en`, `
 `locales/pages/...`; shared navigation or app-wide copy belongs in `locales/en.json`,
 `locales/fr.json`, and `locales/ru.json`.
 
+## Phone Numbers
+
+Strict rule: a phone is stored, sent to the API and returned by the API as E.164 digits
+only — country code + national number, no `+`, no spaces, no punctuation (`996555123456`).
+Formatting such as `+996 555 123 456` is display-only (`resolvePhoneInput` while typing,
+`formatPhone` for read-only UI). The server validates with `normalizePhone()` and rejects
+any other format. Use the helpers in `shared/utils/phone.ts`; do not hand-roll parsing.
+
 ## Testing Guidelines
 
 There is no committed test suite yet. For now, validate changes with `pnpm lint`,

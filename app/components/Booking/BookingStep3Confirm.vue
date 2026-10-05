@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { MasterPaymentType, MasterService } from '#shared/types/master'
+import type { MasterService } from '#shared/types/master'
 import type { VerifyResult } from './BookingVerifyDrawer.vue'
 
 interface BookingResponse {
@@ -28,12 +28,12 @@ const emit = defineEmits<{
   changeTime: []
 }>()
 
-const { $ts } = useI18n()
+const { $ts, getLocale } = useI18n()
 const bookingState = useBookingState(props.username)
 const queryCache = useQueryCache()
 
 const { data: masterData } = useMasterData(() => props.username)
-const { formatPrice, formatDateTime } = useMasterFormat(() => masterData.value?.settings)
+const { formatPrice, formatTime } = useMasterFormat(() => masterData.value?.settings)
 
 // --- Overview ---
 
@@ -45,13 +45,24 @@ const totalPrice = computed(() =>
   selectedServices.value.reduce((sum, s) => sum + priceToNumber(s.price), 0)
 )
 
-const paymentTypes = computed(() => masterData.value?.payment_types ?? [])
+// "Tuesday, 6 October" + "11:00 – 12:00" reads faster than a numeric date.
+const slotDay = computed(() => {
+  const slot = bookingState.value.selectedSlot
+  if (!slot) return ''
+  return new Intl.DateTimeFormat(getLocale(), {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long'
+  }).format(new Date(slot))
+})
 
-function paymentLabel(payment: MasterPaymentType) {
-  if (payment.kind === 'cash') return $ts('booking.payment.cash')
-  if (payment.kind === 'card') return $ts('booking.payment.card')
-  return payment.name
-}
+const slotTimeRange = computed(() => {
+  const slot = bookingState.value.selectedSlot
+  if (!slot) return ''
+  const start = new Date(slot)
+  const end = new Date(start.getTime() + totalDuration.value * 60_000)
+  return `${formatTime(start)} – ${formatTime(end)}`
+})
 
 // --- Note ---
 
@@ -159,9 +170,7 @@ async function createBooking(details?: VerifyResult) {
         service_ids: bookingState.value.selectedServiceIds,
         starts_at: bookingState.value.selectedSlot,
         phone: bookingState.value.phone,
-        ...(details?.firstName
-          ? { first_name: details.firstName, last_name: details.lastName || undefined }
-          : {}),
+        ...(details?.firstName ? { first_name: details.firstName } : {}),
         ...(details?.otpToken ? { otp_token: details.otpToken } : {}),
         ...(bookingState.value.note ? { note: bookingState.value.note } : {})
       }
@@ -210,37 +219,34 @@ const errorTitle = computed(() => {
 
 <template>
   <section class="flex flex-col gap-6">
-    <div class="flex flex-col gap-1">
-      <h1 class="text-2xl font-semibold text-highlighted">
-        {{ $ts('booking.steps.confirm.title') }}
-      </h1>
-      <p class="text-sm text-muted">
-        {{ $ts('booking.steps.confirm.description') }}
-      </p>
-    </div>
+    <p class="text-xs text-muted">
+      {{ $ts('booking.steps.confirm.description') }}
+    </p>
 
     <!-- Booking overview -->
-    <UCard variant="outline" :ui="{ root: 'rounded-3xl shadow-none', body: 'p-5 sm:p-5' }">
+    <UCard variant="outline" :ui="{ root: 'rounded-xl shadow-none', body: 'p-4 sm:p-4' }">
       <div class="flex flex-col gap-4">
-        <div class="flex items-start gap-3">
+        <div class="flex items-center gap-3">
           <div
-            class="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-inverted text-inverted"
+            class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"
           >
             <UIcon name="i-lucide-calendar-check" class="size-5" />
           </div>
-          <div class="flex min-w-0 flex-col">
-            <span class="text-base font-semibold capitalize text-highlighted">
-              {{ bookingState.selectedSlot ? formatDateTime(bookingState.selectedSlot) : '' }}
+          <div class="flex min-w-0 flex-col gap-0.5">
+            <span class="truncate text-sm font-semibold first-letter:uppercase text-highlighted">
+              {{ slotDay }}
             </span>
-            <span class="text-sm text-muted">
+            <span class="text-xs text-muted tabular-nums">
+              {{ slotTimeRange }} ·
               {{ $ts('booking.service.duration', { duration: totalDuration }) }}
             </span>
           </div>
           <UButton
-            variant="link"
+            variant="ghost"
             color="neutral"
             size="sm"
-            :label="$ts('booking.steps.confirm.changeTime')"
+            icon="i-lucide-pencil"
+            :aria-label="$ts('booking.steps.confirm.changeTime')"
             class="ms-auto shrink-0"
             @click="emit('changeTime')"
           />
@@ -264,20 +270,6 @@ const errorTitle = computed(() => {
         <div class="flex items-center justify-between">
           <span class="text-sm text-muted">{{ $ts('booking.steps.confirm.total') }}</span>
           <span class="text-lg font-semibold text-highlighted">{{ formatPrice(totalPrice) }}</span>
-        </div>
-
-        <div v-if="paymentTypes.length > 0" class="flex flex-wrap items-center gap-2">
-          <span class="text-xs text-muted">{{ $ts('booking.steps.confirm.paymentTitle') }}:</span>
-          <UBadge
-            v-for="payment in paymentTypes"
-            :key="payment.id"
-            color="neutral"
-            variant="outline"
-            class="rounded-full"
-          >
-            <span class="size-2 rounded-full" :style="{ backgroundColor: payment.color }" />
-            {{ paymentLabel(payment) }}
-          </UBadge>
         </div>
       </div>
     </UCard>
@@ -313,7 +305,7 @@ const errorTitle = computed(() => {
         key="known"
         color="success"
         variant="subtle"
-        icon="i-lucide-hand"
+        :icon="currentCheck.verified ? 'i-lucide-badge-check' : 'i-lucide-message-square-text'"
         class="-mt-2"
         :title="
           currentCheck.firstName

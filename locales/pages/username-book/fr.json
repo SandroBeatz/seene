@@ -3,18 +3,14 @@
     "header": {
       "back": "Retour",
       "next": "Suivant",
-      "progressLabel": "Étape {step} sur {total}",
-      "steps": {
-        "services": "Prestations",
-        "slots": "Date et heure",
-        "confirm": "Confirmation"
-      }
+      "progressLabel": "Étape {step} sur {total}"
     },
     "steps": {
       "services": {
         "title": "Choisir les services",
         "description": "Sélectionnez un ou plusieurs services pour votre visite.",
         "empty": "Aucun service n'est encore disponible à la réservation.",
+        "allCategories": "Tout",
         "otherCategory": "Autres services",
         "toggleService": "Sélectionner {service}"
       },
@@ -34,13 +30,14 @@
           "morning": "Matin",
           "afternoon": "Après-midi",
           "evening": "Soir"
-        }
+        },
+        "calendarTitle": "Choisissez un jour",
+        "openCalendar": "Ouvrir le calendrier"
       },
       "confirm": {
         "title": "Confirmer la réservation",
         "description": "Vérifiez les détails et entrez votre numéro de téléphone.",
         "total": "Total",
-        "paymentTitle": "Moyens de paiement acceptés",
         "addNote": "Ajouter une note",
         "editNote": "Modifier la note",
         "noteModalTitle": "Ajouter une note",
@@ -48,17 +45,16 @@
         "saveNote": "Enregistrer",
         "cancel": "Annuler",
         "phone": "Numéro de téléphone",
-        "welcome": "Bon retour, {name} !",
-        "newClientHint": "Après « Réserver », nous vous demanderons votre nom et confirmerons votre numéro par SMS — une seule fois.",
+        "welcome": "Ravis de vous revoir, {name} !",
+        "newClientHint": "À l’étape suivante, nous vous demanderons votre prénom et confirmerons votre numéro par SMS. Cela prend moins d’une minute, une seule fois.",
         "firstName": "Prénom",
-        "lastName": "Nom",
         "creatingBooking": "Création de votre réservation...",
         "changeTime": "Changer l'heure",
         "checkingPhone": "Vérification du numéro…",
-        "welcomeAnonymous": "Bon retour !",
-        "verifiedHint": "Votre numéro est confirmé — appuyez sur « Réserver » et c’est fait.",
-        "unverifiedHint": "Nous enverrons un code SMS unique pour confirmer votre numéro.",
-        "newClientTitle": "Première visite ?"
+        "welcomeAnonymous": "Ravis de vous revoir !",
+        "verifiedHint": "Votre numéro est déjà confirmé — il ne reste qu’à appuyer sur « Réserver ».",
+        "unverifiedHint": "Nous vous enverrons un court code SMS pour confirmer votre numéro. Une seule fois suffit.",
+        "newClientTitle": "Première visite ? Bienvenue !"
       },
       "success": {
         "title": "Réservation confirmée !",
@@ -77,10 +73,6 @@
     "service": {
       "duration": "{duration} min",
       "price": "{price} ₽"
-    },
-    "payment": {
-      "cash": "Espèces",
-      "card": "Carte"
     },
     "sms": {
       "title": "Entrez le code SMS",
@@ -107,7 +99,7 @@
     },
     "footer": {
       "book": "Réserver",
-      "servicesCount": "Prestations : {count}"
+      "nothingSelected": "Aucune prestation choisie"
     },
     "phone": {
       "country": "Pays",
@@ -116,7 +108,6 @@
     "verify": {
       "detailsTitle": "Ravi de vous rencontrer !",
       "detailsDescription": "Dites au maître comment vous appeler.",
-      "optional": "Facultatif",
       "getCode": "Recevoir le code SMS",
       "sendingCode": "Envoi du code…",
       "checkingCode": "Vérification du code…",

@@ -1,14 +1,11 @@
 <script setup lang="ts">
-import { parsePhoneNumberFromString } from 'libphonenumber-js'
-
 export interface VerifyResult {
   firstName: string
-  lastName: string
   otpToken: string
 }
 
 const props = defineProps<{
-  /** E.164 phone being confirmed. */
+  /** Canonical phone being confirmed (digits only, e.g. '996555123456'). */
   phone: string
   /** New client: ask for a name first. */
   needsDetails: boolean
@@ -30,13 +27,10 @@ type Stage = 'details' | 'code'
 
 const stage = ref<Stage>('details')
 const firstName = ref('')
-const lastName = ref('')
 const nameTouched = ref(false)
 const otpToken = ref('')
 
-const phoneDisplay = computed(
-  () => parsePhoneNumberFromString(props.phone)?.formatInternational() ?? props.phone
-)
+const phoneDisplay = computed(() => formatPhone(props.phone))
 const nameMissing = computed(() => !firstName.value.trim())
 
 watch(open, (isOpen) => {
@@ -146,7 +140,6 @@ function otpErrorMessage(code: string) {
 function finish() {
   emit('done', {
     firstName: firstName.value.trim(),
-    lastName: lastName.value.trim(),
     otpToken: otpToken.value
   })
 }
@@ -187,19 +180,6 @@ onUnmounted(() => {
             icon="i-lucide-user"
             autocomplete="given-name"
             autofocus
-            class="w-full"
-            @keydown.enter.prevent="submitDetails"
-          />
-        </UFormField>
-        <UFormField
-          :label="$ts('booking.steps.confirm.lastName')"
-          :hint="$ts('booking.verify.optional')"
-        >
-          <UInput
-            v-model="lastName"
-            size="xl"
-            icon="i-lucide-user"
-            autocomplete="family-name"
             class="w-full"
             @keydown.enter.prevent="submitDetails"
           />

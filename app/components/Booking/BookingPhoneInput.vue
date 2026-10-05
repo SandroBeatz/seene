@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { getCountries, getExampleNumber, type CountryCode } from 'libphonenumber-js'
+import {
+  getCountries,
+  getExampleNumber,
+  parsePhoneNumberFromString,
+  type CountryCode
+} from 'libphonenumber-js'
 import examples from 'libphonenumber-js/mobile/examples'
 
 interface CountryItem {
@@ -16,7 +21,10 @@ const props = defineProps<{
   invalid?: boolean
 }>()
 
-/** E.164 ('+996555123456') when the typed number is valid, '' otherwise. */
+/**
+ * Canonical phone: digits only, no '+' or spaces ('996555123456') when the
+ * typed number is valid, '' otherwise. Formatting lives only in `display`.
+ */
 const model = defineModel<string>({ default: '' })
 
 const emit = defineEmits<{
@@ -25,8 +33,11 @@ const emit = defineEmits<{
 
 const { $ts, getLocale } = useI18n()
 
-const country = ref<CountryCode | undefined>(initialCountry())
-const display = ref(model.value ? resolvePhoneInput(model.value).display : '')
+const stored = model.value ? parsePhoneNumberFromString(`+${model.value}`) : undefined
+const country = ref<CountryCode | undefined>(stored?.country ?? initialCountry())
+// A stored number is shown as national digits after the dial-code prefix,
+// grouped the way that country writes it ('555 123 456').
+const display = ref(stored ? resolvePhoneInput(stored.nationalNumber, stored.country).display : '')
 
 const countries = computed<CountryItem[]>(() => {
   const names = new Intl.DisplayNames([getLocale()], { type: 'region' })
@@ -53,7 +64,6 @@ const placeholder = computed(() => {
 })
 
 function initialCountry(): CountryCode | undefined {
-  if (model.value) return resolvePhoneInput(model.value).country
   const browserRegion = import.meta.client ? navigator.language.split('-')[1] : undefined
   return toPhoneCountry(props.defaultCountry) ?? toPhoneCountry(browserRegion)
 }
@@ -62,7 +72,7 @@ function onInput(value: string | number) {
   const state = resolvePhoneInput(String(value ?? ''), country.value)
   display.value = state.display
   if (state.country) country.value = state.country
-  model.value = state.e164
+  model.value = state.canonical
 }
 
 function onCountryChange(code: CountryCode) {
@@ -73,7 +83,7 @@ function onCountryChange(code: CountryCode) {
 
 // External resets (e.g. the booking state cleared) clear the field too.
 watch(model, (value) => {
-  if (!value && resolvePhoneInput(display.value, country.value).e164) {
+  if (!value && resolvePhoneInput(display.value, country.value).canonical) {
     display.value = ''
   }
 })

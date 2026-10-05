@@ -3,18 +3,14 @@
     "header": {
       "back": "Назад",
       "next": "Далее",
-      "progressLabel": "Шаг {step} из {total}",
-      "steps": {
-        "services": "Услуги",
-        "slots": "Дата и время",
-        "confirm": "Подтверждение"
-      }
+      "progressLabel": "Шаг {step} из {total}"
     },
     "steps": {
       "services": {
         "title": "Выберите услуги",
         "description": "Выберите одну или несколько услуг для записи.",
         "empty": "Пока нет услуг, доступных для записи.",
+        "allCategories": "Все",
         "otherCategory": "Другие услуги",
         "toggleService": "Выбрать {service}"
       },
@@ -34,13 +30,14 @@
           "morning": "Утро",
           "afternoon": "День",
           "evening": "Вечер"
-        }
+        },
+        "calendarTitle": "Выберите день",
+        "openCalendar": "Открыть календарь"
       },
       "confirm": {
         "title": "Подтвердите запись",
         "description": "Проверьте детали и введите номер телефона.",
         "total": "Итого",
-        "paymentTitle": "Способы оплаты",
         "addNote": "Добавить заметку",
         "editNote": "Изменить заметку",
         "noteModalTitle": "Добавить заметку",
@@ -48,17 +45,16 @@
         "saveNote": "Сохранить",
         "cancel": "Отмена",
         "phone": "Номер телефона",
-        "welcome": "С возвращением, {name}!",
-        "newClientHint": "После «Записаться» спросим имя и подтвердим номер по SMS — всего один раз.",
+        "welcome": "Рады снова вас видеть, {name}!",
+        "newClientHint": "На следующем шаге попросим ваше имя и подтвердим номер по SMS. Это займёт меньше минуты и нужно только один раз.",
         "firstName": "Имя",
-        "lastName": "Фамилия",
         "creatingBooking": "Создаём вашу запись...",
         "changeTime": "Изменить время",
         "checkingPhone": "Проверяем номер…",
-        "welcomeAnonymous": "С возвращением!",
-        "verifiedHint": "Номер подтверждён — нажмите «Записаться», и готово.",
-        "unverifiedHint": "Пришлём одноразовый SMS-код, чтобы подтвердить номер.",
-        "newClientTitle": "Вы у нас впервые?"
+        "welcomeAnonymous": "Рады снова вас видеть!",
+        "verifiedHint": "Номер уже подтверждён — осталось нажать «Записаться».",
+        "unverifiedHint": "Пришлём короткий SMS-код, чтобы подтвердить номер. Это нужно сделать всего один раз.",
+        "newClientTitle": "Вы у нас впервые? Добро пожаловать!"
       },
       "success": {
         "title": "Запись подтверждена!",
@@ -77,10 +73,6 @@
     "service": {
       "duration": "{duration} мин",
       "price": "{price} ₽"
-    },
-    "payment": {
-      "cash": "Наличные",
-      "card": "Карта"
     },
     "sms": {
       "title": "Введите код из SMS",
@@ -107,7 +99,7 @@
     },
     "footer": {
       "book": "Записаться",
-      "servicesCount": "Услуг: {count}"
+      "nothingSelected": "Услуги не выбраны"
     },
     "phone": {
       "country": "Страна",
@@ -116,7 +108,6 @@
     "verify": {
       "detailsTitle": "Давайте познакомимся!",
       "detailsDescription": "Подскажите мастеру, как к вам обращаться.",
-      "optional": "Необязательно",
       "getCode": "Получить код",
       "sendingCode": "Отправляем код…",
       "checkingCode": "Проверяем код…",

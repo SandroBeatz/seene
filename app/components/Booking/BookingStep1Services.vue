@@ -40,6 +40,39 @@ const serviceGroups = computed<MasterServiceGroup[]>(() => {
   return groups
 })
 
+const ALL_CATEGORIES = 'all'
+const UNCATEGORIZED = 'uncategorized'
+
+const activeCategory = ref<string>(ALL_CATEGORIES)
+
+function groupKey(group: MasterServiceGroup) {
+  return group.category?.id ?? UNCATEGORIZED
+}
+
+const categoryTabs = computed(() => [
+  { label: $ts('booking.steps.services.allCategories'), value: ALL_CATEGORIES },
+  ...serviceGroups.value.map((group) => ({
+    label: group.category?.name ?? $ts('booking.steps.services.otherCategory'),
+    value: groupKey(group)
+  }))
+])
+
+const visibleGroups = computed(() =>
+  activeCategory.value === ALL_CATEGORIES
+    ? serviceGroups.value
+    : serviceGroups.value.filter((group) => groupKey(group) === activeCategory.value)
+)
+
+// Fall back to "All" if the selected category disappears (e.g. services reloaded).
+watch(serviceGroups, (groups) => {
+  if (
+    activeCategory.value !== ALL_CATEGORIES &&
+    !groups.some((group) => groupKey(group) === activeCategory.value)
+  ) {
+    activeCategory.value = ALL_CATEGORIES
+  }
+})
+
 function isSelected(serviceId: string) {
   return bookingState.value.selectedServiceIds.includes(serviceId)
 }
@@ -65,14 +98,9 @@ function toggleService(serviceId: string) {
 
 <template>
   <section class="flex flex-col gap-5">
-    <div class="flex flex-col gap-1">
-      <h1 class="text-xl font-semibold text-(--ui-text-highlighted)">
-        {{ $ts('booking.steps.services.title') }}
-      </h1>
-      <p class="text-sm text-(--ui-text-muted)">
-        {{ $ts('booking.steps.services.description') }}
-      </p>
-    </div>
+    <p class="text-xs text-muted">
+      {{ $ts('booking.steps.services.description') }}
+    </p>
 
     <div v-if="loading" class="flex flex-col gap-3" aria-hidden="true">
       <USkeleton v-for="index in 4" :key="index" class="h-24 w-full rounded-lg" />
@@ -83,13 +111,24 @@ function toggleService(serviceId: string) {
     </p>
 
     <div v-else class="flex flex-col gap-5">
-      <section
-        v-for="group in serviceGroups"
-        :key="group.category?.id ?? 'uncategorized'"
-        class="flex flex-col gap-2"
-      >
+      <UTabs
+        v-if="showCategoryHeaders && categoryTabs.length > 2"
+        v-model="activeCategory"
+        :items="categoryTabs"
+        :content="false"
+        size="md"
+        class="w-full"
+        :ui="{
+          list: 'overflow-x-auto rounded-xl [scrollbar-width:none]',
+          indicator: 'rounded-lg bg-zinc-900',
+          trigger: 'shrink-0 cursor-pointer rounded-lg px-3.5 py-2 whitespace-nowrap',
+          label: 'overflow-visible'
+        }"
+      />
+
+      <section v-for="group in visibleGroups" :key="groupKey(group)" class="flex flex-col gap-2">
         <h2
-          v-if="showCategoryHeaders"
+          v-if="showCategoryHeaders && activeCategory === ALL_CATEGORIES"
           class="px-1 text-xs font-semibold uppercase tracking-wide text-(--ui-text-muted)"
         >
           {{ group.category?.name ?? $ts('booking.steps.services.otherCategory') }}
