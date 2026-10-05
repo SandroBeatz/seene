@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { parseDate, type DateValue } from '@internationalized/date'
+
 interface DayOption {
   date: string
   dayLabel: string
@@ -126,6 +128,31 @@ function selectSlot(slot: string) {
   bookingState.value.selectedSlot = slot
 }
 
+// --- Month calendar modal ---
+
+const calendarOpen = ref(false)
+
+const calendarValue = computed({
+  get: () =>
+    bookingState.value.selectedDate ? parseDate(bookingState.value.selectedDate) : undefined,
+  set: (value: DateValue | undefined) => {
+    const day = value && days.value.find((item) => item.date === value.toString())
+    if (!day) return
+    selectDate(day)
+    calendarOpen.value = false
+  }
+})
+
+const calendarMin = computed(() => (days.value[0] ? parseDate(days.value[0].date) : undefined))
+const calendarMax = computed(() => {
+  const last = days.value.at(-1)
+  return last ? parseDate(last.date) : undefined
+})
+
+function isDateUnavailable(date: DateValue) {
+  return !days.value.find((day) => day.date === date.toString())?.slots.length
+}
+
 function slotCountLabel(count: number) {
   return $ts('booking.steps.slots.slotCount', { count })
 }
@@ -133,14 +160,9 @@ function slotCountLabel(count: number) {
 
 <template>
   <section class="flex flex-col gap-5">
-    <div class="flex flex-col gap-1">
-      <h1 class="text-2xl font-semibold text-highlighted">
-        {{ $ts('booking.steps.slots.title') }}
-      </h1>
-      <p class="text-sm text-muted">
-        {{ $ts('booking.steps.slots.description') }}
-      </p>
-    </div>
+    <p class="text-xs text-muted">
+      {{ $ts('booking.steps.slots.description') }}
+    </p>
 
     <UAlert
       v-if="error && !availability"
@@ -161,13 +183,13 @@ function slotCountLabel(count: number) {
     <!-- Loading: day strip + slot grid placeholders -->
     <template v-else-if="isPending">
       <USkeleton class="h-5 w-32" />
-      <div class="-mx-4 flex gap-2 overflow-hidden px-4" aria-hidden="true">
-        <USkeleton v-for="index in 7" :key="index" class="h-[84px] w-16 shrink-0 rounded-2xl" />
+      <div class="-mx-4 flex gap-1.5 overflow-hidden px-4" aria-hidden="true">
+        <USkeleton v-for="index in 8" :key="index" class="h-16 w-12 shrink-0 rounded-lg" />
       </div>
       <div class="flex flex-col gap-3" aria-hidden="true">
         <USkeleton class="h-4 w-24" />
-        <div class="grid grid-cols-3 gap-2 sm:grid-cols-4">
-          <USkeleton v-for="index in 8" :key="index" class="h-12 rounded-3xl" />
+        <div class="grid grid-cols-4 gap-2 sm:grid-cols-5">
+          <USkeleton v-for="index in 8" :key="index" class="h-9 rounded-3xl" />
         </div>
       </div>
       <p class="flex items-center justify-center gap-2 text-sm text-muted" role="status">
@@ -189,7 +211,7 @@ function slotCountLabel(count: number) {
       <div class="flex flex-col gap-3">
         <div class="flex items-center justify-between gap-3">
           <span class="text-base font-semibold capitalize text-highlighted">{{ monthLabel }}</span>
-          <div class="flex items-center gap-3 text-xs text-muted">
+          <div class="flex shrink-0 items-center gap-3 text-xs text-muted">
             <span class="inline-flex items-center gap-1.5">
               <span class="size-2 rounded-full bg-success" />
               {{ $ts('booking.steps.slots.legendFree') }}
@@ -202,7 +224,7 @@ function slotCountLabel(count: number) {
         </div>
 
         <div ref="stripRef" class="-mx-4 snap-x overflow-x-auto px-4 pb-1 [scrollbar-width:none]">
-          <div class="flex w-max gap-2">
+          <div class="flex w-max gap-1.5">
             <UButton
               v-for="day in days"
               :key="day.date"
@@ -218,7 +240,7 @@ function slotCountLabel(count: number) {
               variant="outline"
               :ui="{
                 base: [
-                  'h-[84px] w-16 shrink-0 snap-center flex-col justify-center gap-0.5 rounded-2xl p-0 transition',
+                  'h-16 w-12 shrink-0 snap-center flex-col justify-center gap-0.5 rounded-lg p-0 transition',
                   bookingState.selectedDate === day.date
                     ? 'bg-inverted text-inverted ring-inverted hover:bg-inverted/90'
                     : day.slots.length
@@ -228,9 +250,9 @@ function slotCountLabel(count: number) {
               }"
               @click="selectDate(day)"
             >
-              <span class="text-[11px] font-medium uppercase opacity-80">{{ day.dayLabel }}</span>
+              <span class="text-[10px] font-medium uppercase opacity-80">{{ day.dayLabel }}</span>
               <span
-                class="text-xl font-semibold leading-tight"
+                class="text-base font-semibold leading-tight"
                 :class="{ 'line-through decoration-1': !day.slots.length }"
               >
                 {{ day.dayNumber }}
@@ -246,11 +268,39 @@ function slotCountLabel(count: number) {
 
       <!-- Slots for the selected day -->
       <div v-if="selectedDay" class="flex flex-col gap-4">
-        <div class="flex items-baseline justify-between gap-3">
-          <span class="text-sm font-medium capitalize text-highlighted">
-            {{ formatWeekdayDate(parseLocalDate(selectedDay.date)) }}
-          </span>
-          <span class="text-xs text-muted">{{ slotCountLabel(selectedDay.slots.length) }}</span>
+        <div class="flex items-center justify-between gap-3">
+          <UDrawer
+            v-model:open="calendarOpen"
+            :title="$ts('booking.steps.slots.calendarTitle')"
+            :ui="{
+              container: 'mx-auto w-full max-w-lg',
+              body: 'flex justify-center pb-[max(1rem,env(safe-area-inset-bottom))]'
+            }"
+          >
+            <UButton
+              color="neutral"
+              variant="ghost"
+              size="sm"
+              icon="i-lucide-calendar-days"
+              trailing-icon="i-lucide-chevron-down"
+              :label="formatWeekdayDate(parseLocalDate(selectedDay.date))"
+              :aria-label="`${formatWeekdayDate(parseLocalDate(selectedDay.date))}, ${$ts('booking.steps.slots.openCalendar')}`"
+              class="-ml-2 min-w-0 text-sm font-medium capitalize text-highlighted"
+            />
+
+            <template #body>
+              <UCalendar
+                v-model="calendarValue"
+                color="primary"
+                :min-value="calendarMin"
+                :max-value="calendarMax"
+                :is-date-unavailable="isDateUnavailable"
+                :week-starts-on="1"
+                :year-controls="false"
+                class="w-full"
+              />
+            </template>
+          </UDrawer>
         </div>
 
         <div v-for="group in slotGroups" :key="group.key" class="flex flex-col gap-2">
@@ -258,7 +308,7 @@ function slotCountLabel(count: number) {
             <UIcon :name="group.icon" class="size-3.5" />
             {{ $ts(`booking.steps.slots.groups.${group.key}`) }}
           </span>
-          <div class="grid grid-cols-3 gap-2 sm:grid-cols-4">
+          <div class="grid grid-cols-4 gap-2 sm:grid-cols-5">
             <UButton
               v-for="slot in group.slots"
               :key="slot"
@@ -266,9 +316,9 @@ function slotCountLabel(count: number) {
               :variant="bookingState.selectedSlot === slot ? 'solid' : 'outline'"
               :aria-pressed="bookingState.selectedSlot === slot"
               color="primary"
-              size="lg"
+              size="sm"
               block
-              class="h-12 text-base font-medium"
+              class="h-9 text-sm font-medium"
               @click="selectSlot(slot)"
             />
           </div>

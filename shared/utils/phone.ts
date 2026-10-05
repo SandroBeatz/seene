@@ -1,10 +1,15 @@
 /**
  * Phone helpers shared by the booking UI and the server API.
  *
- * Every phone that crosses the client → server boundary is in E.164 form
- * ('+996555123456'), the same format the master dashboard (master.seene) stores
- * in `client.phone`. The server re-validates with these helpers, so a value
- * that is not a valid E.164 number never reaches the database.
+ * CANONICAL FORMAT — strict rule:
+ *   A phone is stored, sent to the API and returned by the API as the E.164
+ *   digits only: country calling code + national number, no '+', no spaces,
+ *   no punctuation. Example: '996555123456'.
+ *
+ * Formatting ('+996 555 123 456') is display-only and happens in the UI via
+ * `resolvePhoneInput` / `formatPhone`. Never send a formatted value to the API
+ * and never persist one. The server re-validates with `toCanonicalPhone`, so a
+ * value that is not a valid number never reaches the database.
  */
 import {
   AsYouType,
@@ -21,15 +26,24 @@ export function toPhoneCountry(value: string | null | undefined): CountryCode | 
   return code && isSupportedCountry(code) ? code : undefined
 }
 
-/** Valid number → E.164 string, anything else → null. */
-export function toE164(value: string, defaultCountry?: CountryCode): string | null {
-  const parsed = parsePhoneNumberFromString(value.trim(), defaultCountry)
-  return parsed?.isValid() ? parsed.number : null
-}
-
-/** Digits-only key used to match legacy rows stored without '+' or formatting. */
+/** Strip everything but digits. */
 export function phoneDigits(value: string) {
   return value.replace(/\D/g, '')
+}
+
+/**
+ * Strict canonical check: `value` must already be digits only ('996555123456')
+ * and form a valid number. Returns it unchanged, or null.
+ */
+export function toCanonicalPhone(value: string): string | null {
+  if (!/^\d+$/.test(value)) return null
+  return parsePhoneNumberFromString(`+${value}`)?.isValid() ? value : null
+}
+
+/** Canonical digits → international display ('+996 555 123 456'). */
+export function formatPhone(canonical: string): string {
+  if (!canonical) return ''
+  return parsePhoneNumberFromString(`+${canonical}`)?.formatInternational() ?? `+${canonical}`
 }
 
 export interface PhoneInputState {
@@ -37,32 +51,52 @@ export interface PhoneInputState {
   country?: CountryCode
   /** Formatted as-you-type value shown in the input. */
   display: string
-  /** E.164 value when the number is valid, otherwise ''. */
-  e164: string
+  /** Canonical digits ('996555123456') when the number is valid, otherwise ''. */
+  canonical: string
 }
 
 /**
- * Resolve raw input: '+…' is parsed internationally (the country is detected
- * from the calling code), anything else is treated as a national number of the
- * selected country. A national trunk prefix ('0500…' in KG, '8916…' in RU) is
- * handled by libphonenumber.
+ * Resolve raw input:
+ * - '+…' is parsed internationally; the country is detected from the calling code.
+ * - Anything else is a national number of the selected country. A trunk prefix
+ *   ('0555…' in KG, '8916…' in RU) is dropped — the dial code is already shown
+ *   next to the field — and the rest is grouped like the international format of
+ *   that country without the code ('555 123 456', '916 123 45 67').
  */
 export function resolvePhoneInput(value: string, country?: CountryCode): PhoneInputState {
   const trimmed = value.trim()
 
   if (!trimmed) {
-    return { country, display: '', e164: '' }
+    return { country, display: '', canonical: '' }
   }
 
-  const international = trimmed.startsWith('+')
-  const typer = new AsYouType(international ? undefined : country)
-  const display = typer.input(international ? `+${phoneDigits(trimmed)}` : trimmed)
+  if (trimmed.startsWith('+') || !country) {
+    const typer = new AsYouType()
+    const display = typer.input(`+${phoneDigits(trimmed)}`)
+    const number = typer.getNumber()
+    return {
+      country: typer.getCountry() ?? country,
+      display,
+      canonical: number?.isValid() ? phoneDigits(number.number) : ''
+    }
+  }
+
+  const national = new AsYouType(country)
+  national.input(phoneDigits(trimmed))
+  const nationalNumber = national.getNationalNumber()
+  if (!nationalNumber) {
+    return { country, display: '', canonical: '' }
+  }
+
+  const callingCode = getCountryCallingCode(country)
+  const typer = new AsYouType()
+  const formatted = typer.input(`+${callingCode}${nationalNumber}`)
   const number = typer.getNumber()
 
   return {
-    country: typer.getCountry() ?? (international ? undefined : country),
-    display,
-    e164: number?.isValid() ? number.number : ''
+    country,
+    display: formatted.slice(`+${callingCode}`.length).trim(),
+    canonical: number?.isValid() ? phoneDigits(number.number) : ''
   }
 }
 

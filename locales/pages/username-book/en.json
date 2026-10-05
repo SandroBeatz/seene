@@ -3,18 +3,14 @@
     "header": {
       "back": "Back",
       "next": "Next",
-      "progressLabel": "Step {step} of {total}",
-      "steps": {
-        "services": "Services",
-        "slots": "Date and time",
-        "confirm": "Confirmation"
-      }
+      "progressLabel": "Step {step} of {total}"
     },
     "steps": {
       "services": {
         "title": "Choose services",
         "description": "Select one or more services for your visit.",
         "empty": "No services are available for booking yet.",
+        "allCategories": "All",
         "otherCategory": "Other services",
         "toggleService": "Select {service}"
       },
@@ -34,13 +30,14 @@
           "morning": "Morning",
           "afternoon": "Afternoon",
           "evening": "Evening"
-        }
+        },
+        "calendarTitle": "Choose a day",
+        "openCalendar": "Open calendar"
       },
       "confirm": {
         "title": "Confirm booking",
         "description": "Review your booking and enter your phone number.",
         "total": "Total",
-        "paymentTitle": "Accepted payment",
         "addNote": "Add a note",
         "editNote": "Edit note",
         "noteModalTitle": "Add a note",
@@ -48,17 +45,16 @@
         "saveNote": "Save",
         "cancel": "Cancel",
         "phone": "Phone number",
-        "welcome": "Welcome back, {name}!",
-        "newClientHint": "After you tap “Book now” we’ll ask your name and confirm your number by SMS — only once.",
+        "welcome": "Great to see you again, {name}!",
+        "newClientHint": "Next, we'll ask for your name and confirm your number by SMS. It takes less than a minute and you only do it once.",
         "firstName": "First name",
-        "lastName": "Last name",
         "creatingBooking": "Creating your booking...",
         "changeTime": "Change time",
         "checkingPhone": "Checking your number…",
-        "welcomeAnonymous": "Welcome back!",
-        "verifiedHint": "Your number is confirmed — tap “Book now” and you’re done.",
-        "unverifiedHint": "We’ll send a one-time SMS code to confirm your number.",
-        "newClientTitle": "First time here?"
+        "welcomeAnonymous": "Great to see you again!",
+        "verifiedHint": "Your number is already verified — just tap “Book now”.",
+        "unverifiedHint": "We'll send a quick SMS code to confirm your number. You only need to do this once.",
+        "newClientTitle": "First time here? Welcome!"
       },
       "success": {
         "title": "Booking confirmed!",
@@ -77,10 +73,6 @@
     "service": {
       "duration": "{duration} min",
       "price": "{price} ₽"
-    },
-    "payment": {
-      "cash": "Cash",
-      "card": "Card"
     },
     "sms": {
       "title": "Enter SMS code",
@@ -107,7 +99,7 @@
     },
     "footer": {
       "book": "Book now",
-      "servicesCount": "Services: {count}"
+      "nothingSelected": "No services selected"
     },
     "phone": {
       "country": "Country",
@@ -116,7 +108,6 @@
     "verify": {
       "detailsTitle": "Nice to meet you!",
       "detailsDescription": "Tell the master how to address you.",
-      "optional": "Optional",
       "getCode": "Get SMS code",
       "sendingCode": "Sending the code…",
       "checkingCode": "Checking the code…",

@@ -28,7 +28,10 @@ export interface BookingState {
   selectedDate: string | null
   selectedSlot: string | null
   note: string
-  /** E.164 phone, kept across bookings so a returning client does not retype it. */
+  /**
+   * Canonical phone — digits only, no '+' ('996555123456'). Kept across bookings
+   * so a returning client does not retype it.
+   */
   phone: string
   booking: BookingResult | null
 }

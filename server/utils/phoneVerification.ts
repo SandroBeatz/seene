@@ -8,19 +8,34 @@ type PhoneVerificationPayload = {
   nonce: string
 }
 
-/** Validates an E.164 phone ('+996555123456') and returns it canonicalized. */
+/**
+ * Validates an incoming phone. The API accepts only the canonical format —
+ * E.164 digits without '+', spaces or punctuation ('996555123456') — and
+ * that same string is what gets stored. See `shared/utils/phone.ts`.
+ */
 export function normalizePhone(phone: unknown) {
   if (typeof phone !== 'string') {
     throw createError({ statusCode: 400, message: 'Phone is required' })
   }
 
-  const normalized = phone.trim().startsWith('+') ? toE164(phone) : null
+  const canonical = toCanonicalPhone(phone)
 
-  if (!normalized) {
-    throw createError({ statusCode: 400, message: 'Phone must be a valid E.164 number' })
+  if (!canonical) {
+    throw createError({
+      statusCode: 400,
+      message: "Phone must be digits only with the country code, e.g. '996555123456'"
+    })
   }
 
-  return normalized
+  return canonical
+}
+
+/**
+ * Lookup keys for a canonical phone. Rows written before the digits-only rule
+ * may still hold '+996…'; match both until that data is migrated.
+ */
+export function phoneLookupKeys(canonical: string) {
+  return [canonical, `+${canonical}`]
 }
 
 /**
@@ -34,7 +49,8 @@ export async function isPhoneVerified(
   const { data, error } = await supabase
     .from('phone_verification')
     .select('phone')
-    .eq('phone', phone)
+    .in('phone', phoneLookupKeys(phone))
+    .limit(1)
     .maybeSingle()
 
   if (error) {

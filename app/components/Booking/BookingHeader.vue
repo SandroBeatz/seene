@@ -12,9 +12,9 @@ const { $ts } = useI18n()
 const stepTitle = computed(
   () =>
     [
-      $ts('booking.header.steps.services'),
-      $ts('booking.header.steps.slots'),
-      $ts('booking.header.steps.confirm')
+      $ts('booking.steps.services.title'),
+      $ts('booking.steps.slots.title'),
+      $ts('booking.steps.confirm.title')
     ][props.step - 1]
 )
 
@@ -34,7 +34,7 @@ const progressLabel = computed(() =>
         :aria-label="$ts('booking.header.back')"
         @click="emit('back')"
       />
-      <span class="truncate text-center text-sm font-medium text-highlighted">{{ stepTitle }}</span>
+      <h1 class="truncate text-center text-base font-semibold text-highlighted">{{ stepTitle }}</h1>
       <span class="w-10 text-end text-xs tabular-nums text-muted">{{ step }}/3</span>
     </div>
 

@@ -44,6 +44,14 @@ Use Nuxt UI semantic classes such as `text-muted`, `bg-elevated`, `bg-inverted`,
 
 The header is styled floating/rounded via `app.config.ts` slot overrides — do not add a `border` or sticky class directly on `UHeader` or it will conflict.
 
+## Phone Numbers — strict format rule
+
+- **Canonical format:** E.164 digits only — country code + national number, **no `+`, no spaces, no punctuation**. Example: `996555123456`.
+- This exact string is what the client sends to the API, what the API returns, and what is stored in the database (`client.phone`, `phone_verification.phone`, `otp_codes.phone`).
+- Formatting (`+996 555 123 456`) is **display-only**: the input field formats as-you-type per country (`resolvePhoneInput`), read-only UI uses `formatPhone`. Never send or persist a formatted value.
+- The server validates with `normalizePhone()` (`server/utils/phoneVerification.ts`) and rejects anything that is not canonical digits (400).
+- All helpers live in `shared/utils/phone.ts` — use them, do not hand-roll phone parsing.
+
 ## Skills
 
 Project-local skills live in `.claude/skills/`. Two skills are mandatory for UI/markup work and must both be invoked:

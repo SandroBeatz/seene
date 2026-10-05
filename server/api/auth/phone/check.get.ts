@@ -21,12 +21,11 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, message: 'Master not found' })
   }
 
-  // Legacy rows may hold bare digits ('996555…') instead of E.164.
   const { data: client, error } = await supabase
     .from('client')
     .select('first_name')
     .eq('user_id', profile.user_id)
-    .in('phone', [phone, phoneDigits(phone)])
+    .in('phone', phoneLookupKeys(phone))
     .limit(1)
     .maybeSingle()
 
