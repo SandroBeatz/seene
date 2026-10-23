@@ -97,135 +97,119 @@
     "brows_lashes": "Brows and eyelashes"
   },
   "booking": {
+    "title": "Booking with {name}",
     "header": {
       "back": "Back",
+      "close": "Close booking",
       "next": "Next",
-      "progressLabel": "Step {step} of {total}",
-      "close": "Close booking"
+      "progressLabel": "Step {step} of {total}"
     },
     "steps": {
       "services": {
         "title": "Choose a service",
-        "empty": "No services are available for booking yet.",
-        "allCategories": "All",
-        "otherCategory": "Other services"
+        "empty": "No services available for booking yet."
       },
       "slots": {
-        "title": "Choose date and time",
-        "description": "Pick an available day and time for your visit.",
-        "noSlots": "No available times",
-        "noUpcomingSlots": "No free time in the next {days} days.",
-        "loading": "Looking for free times…",
-        "loadFailed": "Couldn't load free times",
-        "retry": "Try again",
-        "legendFree": "Free",
-        "legendBusy": "Full",
-        "dayFull": "no free times",
-        "slotCount": "Free slots: {count}",
+        "title": "When suits you?",
+        "change": "Change",
+        "timezone": "master's time · {place}",
+        "zones": {
+          "bishkek": "Bishkek time",
+          "almaty": "Almaty time",
+          "toronto": "Toronto time",
+          "vancouver": "Vancouver time",
+          "edmonton": "Edmonton time",
+          "winnipeg": "Winnipeg time",
+          "halifax": "Halifax time"
+        },
         "groups": {
           "morning": "Morning",
           "afternoon": "Afternoon",
           "evening": "Evening"
         },
-        "calendarTitle": "Choose a day",
-        "openCalendar": "Open calendar",
-        "taken": "That time was just taken. Here are the nearest free slots.",
-        "timezone": "Master's time · {place}"
+        "dayFull": "no free time",
+        "taken": "That time was just taken. Please pick another.",
+        "loadFailed": "Could not load free times",
+        "retry": "Retry",
+        "noSlots": "No free time",
+        "noUpcomingSlots": "No free slots in the next {days} days."
       },
       "confirm": {
-        "title": "Your details",
-        "total": "Total",
-        "addNote": "Add a note",
-        "editNote": "Edit note",
-        "noteModalTitle": "Add a note",
-        "notePlaceholder": "E.g.: gel allergy, prefer natural style...",
-        "saveNote": "Save",
-        "cancel": "Cancel",
+        "phoneTitle": "Your phone number",
+        "phoneHint": "We'll send a confirmation and a link to cancel. No passwords, no sign-up.",
         "phone": "Phone number",
-        "welcome": "Great to see you again, {name}!",
-        "firstName": "First name",
-        "creatingBooking": "Creating your booking...",
-        "changeTime": "Change time",
-        "checkingPhone": "Checking your number…",
-        "welcomeAnonymous": "Great to see you again!",
-        "verifiedHint": "Your number is already verified — just tap “Book now”.",
+        "privacyNote": "Only {name} sees your number. We don't send ads or share it with other masters.",
+        "continue": "Continue",
+        "welcome": "Welcome back, {name}!",
         "notYou": "Not you?",
-        "codeTitle": "Let's confirm your number",
-        "codeHint": "We'll send a short code via WhatsApp or Telegram. You won't need a code again to book this master on this device.",
+        "service": "Service",
+        "when": "When",
+        "price": "Price",
+        "knownHint": "Your number is already confirmed on this phone, no code needed. A reminder will come in WhatsApp the day before.",
+        "newTitle": "Almost done",
+        "newHint": "We'll confirm your number with a code so the booking is really yours.",
+        "firstName": "Your name",
         "reminders": "Remind me about the visit",
-        "remindersHint": "A message the day before, with a link to cancel.",
-        "marketing": "Tell me about the master's free slots and offers"
+        "remindersHint": "in WhatsApp the day before",
+        "marketing": "Tell me about {name}'s free slots and offers"
       },
       "success": {
         "title": "You're booked",
-        "description": "{name} is expecting you.",
-        "master": "Master",
-        "services": "Services",
-        "dateTime": "Date and time",
-        "address": "Address",
-        "calendarTitle": "Appointment with {master}",
-        "heading": "Done",
+        "description": "{name} is expecting you on {day} at {time}",
         "pendingTitle": "Request sent",
-        "pendingDescription": "{name} will confirm the booking soon.",
+        "pendingDescription": "{name} will confirm your booking for {day} at {time}",
         "directions": "Directions",
-        "done": "Done"
+        "toProfile": "Back to the master's page",
+        "messageNote": "A confirmation and a cancel link will come in WhatsApp. You can cancel online {until}.",
+        "cancelDayBefore": "until {time} the day before",
+        "cancelSameDay": "until {time} on the day",
+        "cancelOn": "until {time}, {day}",
+        "calendarTitle": "Booking with {master}"
       }
+    },
+    "code": {
+      "title": "Enter the code",
+      "sentTo": "We sent 4 digits via {channel} to {phone}",
+      "aria": "4-digit code",
+      "resendIn": "Send again in {time}",
+      "resend": "Send again",
+      "otherChannel": "Didn't get it? Send via {channel}",
+      "changePhone": "Change number",
+      "get": "Get the code",
+      "confirm": "Confirm and book",
+      "channelTitle": "Where to send the code",
+      "channels": {
+        "whatsapp": "WhatsApp",
+        "telegram": "Telegram"
+      },
+      "devCode": "Test code: {code}",
+      "enterCode": "Enter the 4-digit code",
+      "invalid": "Wrong code, please try again",
+      "expired": "The code has expired, request a new one",
+      "tooManyAttempts": "Too many attempts, request a new code",
+      "tooManyRequests": "Too many code requests. Try again later",
+      "sendFailed": "Could not send the code, please try again"
     },
     "addToCalendar": "Add to calendar",
     "service": {
-      "duration": "{duration} min",
-      "price": "{price} ₽",
       "priceFrom": "from {price}"
     },
-    "sms": {
-      "title": "Enter the code",
-      "codeSentTo": "Code sent via {channel} to {phone}",
-      "resendIn": "Resend in {countdown}",
-      "resend": "Resend code",
-      "devCode": "Test code: {code}",
-      "invalidCode": "Invalid code, please try again",
-      "expiredCode": "Code has expired, please request a new one",
-      "tooManyAttempts": "Too many attempts, please request a new code",
-      "tooManyRequests": "Too many code requests. Please try again later",
-      "sendFailed": "Couldn't send the code, please try again"
-    },
-    "errors": {
-      "bookingFailed": "Failed to create booking, please try again",
-      "slotUnavailable": "This time slot is no longer available, please choose another",
-      "nameRequired": "First name is required",
-      "checkFailed": "Couldn't check the number, please try again",
-      "phoneInvalid": "Enter a valid phone number",
-      "limit": "You already have 2 upcoming bookings with this master. To book more, message the master.",
-      "refused": "Online booking with this master is not available. Please contact the master directly."
-    },
     "footer": {
-      "book": "Book now",
-      "policy": "By tapping \"Book\", you agree to the {link}.",
+      "book": "Book",
+      "policy": "By continuing, you agree to the {link}",
       "policyLink": "privacy policy"
     },
     "phone": {
       "country": "Country",
       "searchCountry": "Search country…"
     },
-    "verify": {
-      "detailsTitle": "Nice to meet you!",
-      "detailsDescription": "Tell the master how to address you.",
-      "sendingCode": "Sending the code…",
-      "checkingCode": "Checking the code…",
-      "changePhone": "Change number",
-      "channelTitle": "Where should we send the code?",
-      "channelDescription": "Pick a messenger — we'll send a 4-digit code for {phone}.",
-      "otherChannel": "Get it another way",
-      "channels": {
-        "whatsapp": {
-          "name": "WhatsApp",
-          "action": "Get it on WhatsApp"
-        },
-        "telegram": {
-          "name": "Telegram",
-          "action": "Get it on Telegram"
-        }
-      }
+    "errors": {
+      "bookingFailed": "Could not create the booking, please try again",
+      "checkFailed": "Could not check the number, please try again",
+      "phoneInvalid": "Enter a valid phone number",
+      "nameRequired": "Enter your name",
+      "limit": "You already have 2 upcoming bookings with this master. To book more, message the master.",
+      "refused": "Online booking with this master is not available. Please contact the master directly."
     }
   }
 }

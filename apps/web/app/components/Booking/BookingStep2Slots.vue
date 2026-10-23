@@ -1,65 +1,65 @@
 <script setup lang="ts">
-import { parseDate, type DateValue } from '@internationalized/date'
+import type { MasterPageData } from '#shared/types/master'
 
 interface DayOption {
   date: string
-  dayLabel: string
-  dayNumber: string
-  slots: string[]
-}
-
-interface SlotGroup {
-  key: 'morning' | 'afternoon' | 'evening'
-  icon: string
+  weekday: string
+  day: string
+  label: string
   slots: string[]
 }
 
 const props = defineProps<{
-  username: string
+  data: MasterPageData
   /** The slot she had picked was taken while she was filling in her details. */
   slotTaken?: boolean
 }>()
 
+defineEmits<{
+  changeServices: []
+  next: []
+}>()
+
 const { $ts, getLocale } = useI18n()
-const bookingState = useBookingState(props.username)
-
-const { data: masterData } = useMasterData(() => props.username)
-const timezone = computed(() => masterData.value?.timezone)
-// Days are plain dates already in the master's time zone; times are instants
-// shown in her time zone.
-const { formatWeekdayDate } = useMasterFormat(() => masterData.value?.settings)
-const { formatTime } = useMasterFormat(() => masterData.value?.settings, timezone)
-
-const hourFormatter = computed(
-  () => new Intl.DateTimeFormat('en-US', { hour: 'numeric', hourCycle: 'h23', timeZone: timezone.value })
-)
-
-// "Time in Bishkek": her city, or the zone's own name when the city is not set.
-const timezonePlace = computed(() => {
-  const city = masterData.value?.profile.city
-  if (city) return city
-  const zone = timezone.value
-  return zone ? (zone.split('/').at(-1) ?? zone).replace(/_/g, ' ') : ''
-})
+const username = computed(() => props.data.profile.username)
+const bookingState = useBookingState(username.value)
+const summary = useBookingSummary(() => props.data)
+const timezone = computed(() => props.data.timezone)
+const { formatTime } = useMasterFormat(() => props.data.settings, timezone)
 
 const {
   data: availability,
   isPending,
   error,
   refetch
-} = useBookingAvailability(
-  () => props.username,
-  () => bookingState.value.selectedServiceIds
-)
+} = useBookingAvailability(username, () => bookingState.value.selectedServiceIds)
+
+// Days are plain dates in the master's time zone: format them as such (noon UTC
+// stays on the same date in every zone the formatter could use).
+function dateAt(date: string) {
+  return new Date(`${date}T12:00:00Z`)
+}
 
 const days = computed<DayOption[]>(() => {
-  const formatter = new Intl.DateTimeFormat(getLocale(), { weekday: 'short', day: 'numeric' })
+  const short = new Intl.DateTimeFormat(getLocale(), { weekday: 'short', timeZone: 'UTC' })
+  const long = new Intl.DateTimeFormat(getLocale(), {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    timeZone: 'UTC'
+  })
 
   return (availability.value ?? []).map(({ date, slots }) => {
-    const parts = Object.fromEntries(
-      formatter.formatToParts(parseLocalDate(date)).map((part) => [part.type, part.value])
-    )
-    return { date, dayLabel: parts.weekday ?? '', dayNumber: parts.day ?? '', slots }
+    const weekday = short.format(dateAt(date)).replace(/\.$/, '')
+    return {
+      date,
+      weekday: weekday.charAt(0).toUpperCase() + weekday.slice(1),
+      day: String(Number(date.slice(8, 10))),
+      label: slots.length
+        ? long.format(dateAt(date))
+        : `${long.format(dateAt(date))}, ${$ts('booking.steps.slots.dayFull')}`,
+      slots
+    }
   })
 })
 
@@ -68,19 +68,51 @@ const selectedDay = computed(() =>
   days.value.find((day) => day.date === bookingState.value.selectedDate)
 )
 
-const monthLabel = computed(() => {
-  const date = bookingState.value.selectedDate ?? days.value[0]?.date
-  if (!date) return ''
-  return new Intl.DateTimeFormat(getLocale(), { month: 'long', year: 'numeric' }).format(
-    parseLocalDate(date)
-  )
+// "October – November" across the horizon.
+const monthsLabel = computed(() => {
+  const first = days.value[0]?.date
+  const last = days.value.at(-1)?.date
+  if (!first || !last) return ''
+  const month = new Intl.DateTimeFormat(getLocale(), { month: 'long', timeZone: 'UTC' })
+  const from = month.format(dateAt(first))
+  const to = month.format(dateAt(last))
+  const label = from === to ? from : `${from} – ${to}`
+  return label.charAt(0).toUpperCase() + label.slice(1)
 })
 
-const slotGroups = computed<SlotGroup[]>(() => {
-  const groups: SlotGroup[] = [
-    { key: 'morning', icon: 'i-lucide-sunrise', slots: [] },
-    { key: 'afternoon', icon: 'i-lucide-sun', slots: [] },
-    { key: 'evening', icon: 'i-lucide-moon', slots: [] }
+// "Bishkek time": a phrase per known zone, else the master's city.
+const ZONE_KEYS: Record<string, string> = {
+  'Asia/Bishkek': 'bishkek',
+  'Asia/Almaty': 'almaty',
+  'America/Toronto': 'toronto',
+  'America/Vancouver': 'vancouver',
+  'America/Edmonton': 'edmonton',
+  'America/Winnipeg': 'winnipeg',
+  'America/Halifax': 'halifax'
+}
+
+const timezoneLabel = computed(() => {
+  const key = ZONE_KEYS[timezone.value]
+  if (key) return $ts(`booking.steps.slots.zones.${key}`)
+  const place =
+    props.data.profile.city ?? (timezone.value.split('/').at(-1) ?? '').replace(/_/g, ' ')
+  return $ts('booking.steps.slots.timezone', { place })
+})
+
+const hourFormatter = computed(
+  () =>
+    new Intl.DateTimeFormat('en-US', {
+      hour: 'numeric',
+      hourCycle: 'h23',
+      timeZone: timezone.value
+    })
+)
+
+const slotGroups = computed(() => {
+  const groups = [
+    { key: 'morning', slots: [] as string[] },
+    { key: 'afternoon', slots: [] as string[] },
+    { key: 'evening', slots: [] as string[] }
   ]
 
   for (const slot of selectedDay.value?.slots ?? []) {
@@ -91,7 +123,7 @@ const slotGroups = computed<SlotGroup[]>(() => {
   return groups.filter((group) => group.slots.length > 0)
 })
 
-// Keep the stored selection only while it is still free; otherwise jump to the
+// Keep the stored choice only while it is still free; otherwise jump to the
 // first day with free time.
 watch(
   days,
@@ -115,25 +147,17 @@ watch(
   { immediate: true }
 )
 
-// --- Day strip scrolling ---
-
-const stripRef = ref<HTMLElement | null>(null)
+const stripRef = useTemplateRef<HTMLElement>('strip')
 
 function scrollToSelected(behavior: ScrollBehavior = 'smooth') {
   nextTick(() => {
     stripRef.value
-      ?.querySelector<HTMLElement>('[data-selected="true"]')
+      ?.querySelector<HTMLElement>('[aria-pressed="true"]')
       ?.scrollIntoView({ behavior, inline: 'center', block: 'nearest' })
   })
 }
 
-watch(
-  () => isPending.value,
-  (pending) => {
-    if (!pending) scrollToSelected('auto')
-  },
-  { immediate: true }
-)
+watch(isPending, (pending) => !pending && scrollToSelected('auto'), { immediate: true })
 
 function selectDate(day: DayOption) {
   if (!day.slots.length) return
@@ -142,219 +166,162 @@ function selectDate(day: DayOption) {
   scrollToSelected()
 }
 
-function selectSlot(slot: string) {
-  bookingState.value.selectedSlot = slot
-}
-
-// --- Month calendar modal ---
-
-const calendarOpen = ref(false)
-
-const calendarValue = computed({
-  get: () =>
-    bookingState.value.selectedDate ? parseDate(bookingState.value.selectedDate) : undefined,
-  set: (value: DateValue | undefined) => {
-    const day = value && days.value.find((item) => item.date === value.toString())
-    if (!day) return
-    selectDate(day)
-    calendarOpen.value = false
-  }
+const nextLabel = computed(() => {
+  const slot = bookingState.value.selectedSlot
+  if (!slot) return $ts('booking.header.next')
+  const day = new Intl.DateTimeFormat(getLocale(), {
+    weekday: 'short',
+    day: 'numeric',
+    timeZone: timezone.value
+  })
+    .format(new Date(slot))
+    .replace(/[.,]/g, '')
+  return `${$ts('booking.header.next')} · ${day}, ${formatTime(slot)}`
 })
-
-const calendarMin = computed(() => (days.value[0] ? parseDate(days.value[0].date) : undefined))
-const calendarMax = computed(() => {
-  const last = days.value.at(-1)
-  return last ? parseDate(last.date) : undefined
-})
-
-function isDateUnavailable(date: DateValue) {
-  return !days.value.find((day) => day.date === date.toString())?.slots.length
-}
-
-function slotCountLabel(count: number) {
-  return $ts('booking.steps.slots.slotCount', { count })
-}
 </script>
 
 <template>
-  <section class="flex flex-col gap-5">
-    <UAlert
-      v-if="slotTaken"
-      color="warning"
-      variant="subtle"
-      icon="i-lucide-clock-alert"
-      :title="$ts('booking.steps.slots.taken')"
-    />
+  <section class="flex flex-1 flex-col">
+    <div class="seene-reveal flex flex-col gap-4.5 px-4 pt-2">
+      <h1 class="mx-1 font-display text-[26px] font-bold tracking-[-0.03em] text-highlighted">
+        {{ $ts('booking.steps.slots.title') }}
+      </h1>
 
-    <p v-if="timezonePlace" class="flex items-center gap-1.5 text-xs text-muted">
-      <UIcon name="i-lucide-globe" class="size-3.5 shrink-0" />
-      {{ $ts('booking.steps.slots.timezone', { place: timezonePlace }) }}
-    </p>
-
-    <UAlert
-      v-if="error && !availability"
-      color="error"
-      variant="subtle"
-      icon="i-lucide-wifi-off"
-      :title="$ts('booking.steps.slots.loadFailed')"
-      :actions="[
-        {
-          label: $ts('booking.steps.slots.retry'),
-          color: 'error',
-          variant: 'solid',
-          onClick: () => void refetch()
-        }
-      ]"
-    />
-
-    <!-- Loading: day strip + slot grid placeholders -->
-    <template v-else-if="isPending">
-      <USkeleton class="h-5 w-32" />
-      <div class="-mx-4 flex gap-1.5 overflow-hidden px-4" aria-hidden="true">
-        <USkeleton v-for="index in 8" :key="index" class="h-16 w-12 shrink-0 rounded-lg" />
-      </div>
-      <div class="flex flex-col gap-3" aria-hidden="true">
-        <USkeleton class="h-4 w-24" />
-        <div class="grid grid-cols-4 gap-2 sm:grid-cols-5">
-          <USkeleton v-for="index in 8" :key="index" class="h-9 rounded-3xl" />
+      <div class="flex items-center gap-3 rounded-[16px] bg-muted px-3.5 py-3">
+        <BookingThumb
+          v-if="summary.services.value[0]"
+          :service="summary.services.value[0]"
+          class="size-10 rounded-[10px] text-sm"
+        />
+        <div class="flex min-w-0 flex-1 flex-col gap-0.5">
+          <p class="text-sm font-semibold text-highlighted">{{ summary.name.value }}</p>
+          <p class="text-[13px] text-muted">{{ summary.details.value }}</p>
         </div>
+        <UButton
+          variant="link"
+          :label="$ts('booking.steps.slots.change')"
+          class="shrink-0 p-1 text-sm font-semibold text-(--seene-accent-text) hover:text-(--seene-accent-text)"
+          @click="$emit('changeServices')"
+        />
       </div>
-      <p class="flex items-center justify-center gap-2 text-sm text-muted" role="status">
-        <UIcon name="i-lucide-loader-circle" class="size-4 animate-spin" />
-        {{ $ts('booking.steps.slots.loading') }}
-      </p>
-    </template>
 
-    <UEmpty
-      v-else-if="!hasAnyFreeDay"
-      icon="i-lucide-calendar-x"
-      :title="$ts('booking.steps.slots.noSlots')"
-      :description="
-        $ts('booking.steps.slots.noUpcomingSlots', {
-          days: masterData?.settings.booking_horizon_days ?? 14
-        })
-      "
-      variant="naked"
-    />
+      <UAlert
+        v-if="slotTaken"
+        color="warning"
+        variant="subtle"
+        icon="i-lucide-clock-alert"
+        class="rounded-[14px]"
+        :title="$ts('booking.steps.slots.taken')"
+      />
 
-    <template v-else>
-      <!-- Day strip -->
-      <div class="flex flex-col gap-3">
-        <div class="flex items-center justify-between gap-3">
-          <span class="text-base font-semibold capitalize text-highlighted">{{ monthLabel }}</span>
-          <div class="flex shrink-0 items-center gap-3 text-xs text-muted">
-            <span class="inline-flex items-center gap-1.5">
-              <span class="size-2 rounded-full bg-success" />
-              {{ $ts('booking.steps.slots.legendFree') }}
-            </span>
-            <span class="inline-flex items-center gap-1.5">
-              <span class="size-2 rounded-full bg-accented" />
-              {{ $ts('booking.steps.slots.legendBusy') }}
-            </span>
+      <UAlert
+        v-if="error && !availability"
+        color="error"
+        variant="subtle"
+        icon="i-lucide-wifi-off"
+        class="rounded-[14px]"
+        :title="$ts('booking.steps.slots.loadFailed')"
+        :actions="[
+          {
+            label: $ts('booking.steps.slots.retry'),
+            color: 'error',
+            variant: 'solid',
+            onClick: () => void refetch()
+          }
+        ]"
+      />
+
+      <template v-else-if="isPending">
+        <div class="-mx-4 flex gap-1.5 overflow-hidden px-4" aria-hidden="true">
+          <USkeleton v-for="index in 7" :key="index" class="h-18 w-13 shrink-0 rounded-[16px]" />
+        </div>
+        <div class="grid grid-cols-4 gap-1.5" aria-hidden="true">
+          <USkeleton v-for="index in 6" :key="index" class="h-11 rounded-[12px]" />
+        </div>
+      </template>
+
+      <UEmpty
+        v-else-if="!hasAnyFreeDay"
+        icon="i-lucide-calendar-x"
+        :title="$ts('booking.steps.slots.noSlots')"
+        :description="
+          $ts('booking.steps.slots.noUpcomingSlots', { days: data.settings.booking_horizon_days })
+        "
+        variant="naked"
+      />
+
+      <template v-else>
+        <div class="flex flex-col gap-2.5">
+          <div class="flex items-center justify-between gap-3 px-1">
+            <span class="text-[15px] font-semibold text-highlighted">{{ monthsLabel }}</span>
+            <span class="text-xs text-muted">{{ timezoneLabel }}</span>
           </div>
-        </div>
 
-        <div ref="stripRef" class="-mx-4 snap-x overflow-x-auto px-4 pb-1 [scrollbar-width:none]">
-          <div class="flex w-max gap-1.5">
-            <UButton
+          <div
+            ref="strip"
+            class="-mx-4 flex gap-1.5 overflow-x-auto px-4 [scrollbar-width:none]"
+          >
+            <button
               v-for="day in days"
               :key="day.date"
-              :data-selected="bookingState.selectedDate === day.date"
+              type="button"
               :disabled="!day.slots.length"
               :aria-pressed="bookingState.selectedDate === day.date"
-              :aria-label="
-                day.slots.length
-                  ? `${formatWeekdayDate(parseLocalDate(day.date))}, ${slotCountLabel(day.slots.length)}`
-                  : `${formatWeekdayDate(parseLocalDate(day.date))}, ${$ts('booking.steps.slots.dayFull')}`
+              :aria-label="day.label"
+              class="flex h-18 w-13 shrink-0 flex-col items-center justify-center gap-1 rounded-[16px] border transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-40"
+              :class="
+                bookingState.selectedDate === day.date
+                  ? 'border-primary bg-primary text-inverted'
+                  : 'border-default bg-elevated text-highlighted'
               "
-              color="neutral"
-              variant="outline"
-              :ui="{
-                base: [
-                  'h-16 w-12 shrink-0 snap-center flex-col justify-center gap-0.5 rounded-lg p-0 transition',
-                  bookingState.selectedDate === day.date
-                    ? 'bg-inverted text-inverted ring-inverted hover:bg-inverted/90'
-                    : day.slots.length
-                      ? 'bg-default text-highlighted'
-                      : 'bg-elevated text-dimmed ring-transparent disabled:opacity-100'
-                ].join(' ')
-              }"
               @click="selectDate(day)"
             >
-              <span class="text-[10px] font-medium uppercase opacity-80">{{ day.dayLabel }}</span>
+              <span class="text-xs">{{ day.weekday }}</span>
+              <span class="font-display text-lg leading-none font-bold">{{ day.day }}</span>
               <span
-                class="text-base font-semibold leading-tight"
-                :class="{ 'line-through decoration-1': !day.slots.length }"
-              >
-                {{ day.dayNumber }}
-              </span>
-              <span
-                class="size-1.5 rounded-full"
-                :class="day.slots.length ? 'bg-success' : 'bg-transparent'"
+                class="size-1 rounded-full"
+                :class="
+                  !day.slots.length
+                    ? 'bg-transparent'
+                    : bookingState.selectedDate === day.date
+                      ? 'bg-(--ui-text-inverted)'
+                      : 'bg-primary'
+                "
               />
-            </UButton>
+            </button>
           </div>
-        </div>
-      </div>
-
-      <!-- Slots for the selected day -->
-      <div v-if="selectedDay" class="flex flex-col gap-4">
-        <div class="flex items-center justify-between gap-3">
-          <UDrawer
-            v-model:open="calendarOpen"
-            :title="$ts('booking.steps.slots.calendarTitle')"
-            :ui="{
-              container: 'mx-auto w-full max-w-lg',
-              body: 'flex justify-center pb-[max(1rem,env(safe-area-inset-bottom))]'
-            }"
-          >
-            <UButton
-              color="neutral"
-              variant="ghost"
-              size="sm"
-              icon="i-lucide-calendar-days"
-              trailing-icon="i-lucide-chevron-down"
-              :label="formatWeekdayDate(parseLocalDate(selectedDay.date))"
-              :aria-label="`${formatWeekdayDate(parseLocalDate(selectedDay.date))}, ${$ts('booking.steps.slots.openCalendar')}`"
-              class="-ml-2 min-w-0 text-sm font-medium capitalize text-highlighted"
-            />
-
-            <template #body>
-              <UCalendar
-                v-model="calendarValue"
-                color="primary"
-                :min-value="calendarMin"
-                :max-value="calendarMax"
-                :is-date-unavailable="isDateUnavailable"
-                :week-starts-on="1"
-                :year-controls="false"
-                class="w-full"
-              />
-            </template>
-          </UDrawer>
         </div>
 
         <div v-for="group in slotGroups" :key="group.key" class="flex flex-col gap-2">
-          <span class="inline-flex items-center gap-1.5 text-xs font-medium uppercase text-muted">
-            <UIcon :name="group.icon" class="size-3.5" />
+          <p class="px-1 text-[13px] text-muted">
             {{ $ts(`booking.steps.slots.groups.${group.key}`) }}
-          </span>
-          <div class="grid grid-cols-4 gap-2 sm:grid-cols-5">
-            <UButton
+          </p>
+          <div class="grid grid-cols-4 gap-1.5">
+            <button
               v-for="slot in group.slots"
               :key="slot"
-              :label="formatTime(slot)"
-              :variant="bookingState.selectedSlot === slot ? 'solid' : 'outline'"
+              type="button"
               :aria-pressed="bookingState.selectedSlot === slot"
-              color="primary"
-              size="sm"
-              block
-              class="h-9 text-sm font-medium"
-              @click="selectSlot(slot)"
-            />
+              class="h-11 rounded-[12px] border text-[15px] font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              :class="
+                bookingState.selectedSlot === slot
+                  ? 'border-primary bg-primary text-inverted'
+                  : 'border-default bg-elevated text-highlighted'
+              "
+              @click="bookingState.selectedSlot = slot"
+            >
+              {{ formatTime(slot) }}
+            </button>
           </div>
         </div>
-      </div>
-    </template>
+      </template>
+      <div class="h-2" />
+    </div>
+
+    <BookingFooter
+      :label="nextLabel"
+      :disabled="!bookingState.selectedSlot"
+      @click="$emit('next')"
+    />
   </section>
 </template>

@@ -103,7 +103,10 @@ watch(model, (value) => {
 </script>
 
 <template>
-  <UFieldGroup size="xl" class="w-full">
+  <div
+    class="flex w-full items-stretch overflow-hidden rounded-[16px] border-2 bg-elevated transition-colors"
+    :class="invalid ? 'border-error' : 'border-primary'"
+  >
     <USelectMenu
       :model-value="country"
       :items="countries"
@@ -114,20 +117,21 @@ watch(model, (value) => {
       :content="{ align: 'start' }"
       :disabled="disabled"
       :aria-label="$ts('booking.phone.country')"
+      variant="none"
       trailing-icon="i-lucide-chevron-down"
       :ui="{
-        base: 'w-[68px] rounded-s-3xl ps-3.5 pe-7',
+        base: 'h-auto shrink-0 gap-1.5 rounded-none border-e border-default py-4 ps-3.5 pe-8 text-base font-medium text-highlighted md:text-base',
+        trailing: 'pe-3',
         content: 'w-72',
-        trailingIcon: 'size-3.5',
+        trailingIcon: 'size-3.5 text-highlighted',
         placeholder: 'hidden'
       }"
       @update:model-value="onCountryChange"
     >
-      <span class="flex items-center text-xl leading-none">
-        <template v-if="selectedCountry">{{ selectedCountry.flag }}</template>
-        <UIcon v-else name="i-lucide-globe" class="size-5 text-muted" />
+      <span v-if="selectedCountry" class="whitespace-nowrap">
+        {{ selectedCountry.code }} {{ selectedCountry.dial }}
       </span>
-
+      <UIcon v-else name="i-lucide-globe" class="size-5 text-muted" />
       <template #item-leading="{ item }">
         <span class="text-lg leading-none">{{ item.flag }}</span>
       </template>
@@ -136,7 +140,6 @@ watch(model, (value) => {
         <span class="ms-1 text-muted">{{ item.dial }}</span>
       </template>
     </USelectMenu>
-
     <UInput
       :model-value="display"
       type="tel"
@@ -144,28 +147,13 @@ watch(model, (value) => {
       autocomplete="tel"
       :placeholder="placeholder"
       :disabled="disabled"
-      :color="invalid ? 'error' : 'primary'"
-      :highlight="invalid"
+      variant="none"
       :aria-label="$ts('booking.steps.confirm.phone')"
       :aria-invalid="invalid"
-      class="flex-1"
-      :style="{ '--dial-code-length': `${(selectedCountry?.dial.length ?? 0) + 1.5}ch` }"
-      :ui="{
-        base:
-          !isInternational && selectedCountry
-            ? 'ps-(--dial-code-length) rounded-e-3xl'
-            : 'rounded-e-3xl',
-        leading: 'pointer-events-none text-base text-muted'
-      }"
+      class="min-w-0 flex-1"
+      :ui="{ base: 'h-full px-3.5 py-4 text-lg font-medium tracking-wide text-highlighted md:text-lg' }"
       @update:model-value="onInput"
       @keydown.enter.prevent="emit('submit')"
-    >
-      <template v-if="!isInternational && selectedCountry" #leading>
-        {{ selectedCountry.dial }}
-      </template>
-      <template v-if="model" #trailing>
-        <UIcon name="i-lucide-circle-check" class="size-5 text-success" />
-      </template>
-    </UInput>
-  </UFieldGroup>
+    />
+  </div>
 </template>
