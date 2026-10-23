@@ -40,7 +40,11 @@ Theme colors are configured through Nuxt UI semantic tokens:
 | `secondary` | `sky`      | Instagram-like action accent       |
 | `neutral`   | `zinc`     | Text, backgrounds, borders         |
 
-Use Nuxt UI semantic classes such as `text-muted`, `bg-elevated`, `bg-inverted`, and component props like `color="primary"` or `color="secondary"`. The app intentionally supports light mode only; semantic `--ui-*` variables are overridden in the `:root` block in `main.css`.
+Use Nuxt UI semantic classes such as `text-muted`, `bg-elevated`, `bg-inverted`, and component props like `color="primary"` or `color="secondary"`. The marketing site is light only; semantic `--ui-*` variables are overridden in the `:root` block in `main.css`.
+
+Design tokens from the site design live in `@theme` in `main.css`: `font-sans` (Inter), `font-display` (Inter Tight, headings and large numbers), `font-mono` (JetBrains Mono, prices and times) and the neutrals `ink`, `ink-muted`, `line`, `surface`.
+
+**Master pages are themed per master.** `/[username]` and its booking use the `master` and `booking` layouts, which set `--ui-*` variables on their wrapper (not `:root`) from `useMasterTheme()`: light or dark theme and the master's accent as `primary`, with button text picked for ≥ 4.5:1 contrast (`shared/utils/masterTheme.ts`). Inside those layouts never hard-code `bg-white`, `zinc-*` or other fixed colors — use semantic classes so the dark theme and the accent work.
 
 The header is styled floating/rounded via `app.config.ts` slot overrides — do not add a `border` or sticky class directly on `UHeader` or it will conflict.
 
@@ -51,6 +55,10 @@ The header is styled floating/rounded via `app.config.ts` slot overrides — do 
 - Formatting (`+996 555 123 456`) is **display-only**: the input field formats as-you-type per country (`resolvePhoneInput`), read-only UI uses `formatPhone`. Never send or persist a formatted value.
 - The server validates with `normalizePhone()` (`server/utils/phoneVerification.ts`) and rejects anything that is not canonical digits (400).
 - All helpers live in `shared/utils/phone.ts` — use them, do not hand-roll phone parsing.
+
+## Usernames
+
+A master's page is `/<username>`. Format: lowercase `a–z`, digits, `_`, `-`, 3–30 characters, starting with a letter or digit, no dots, site paths reserved. The rule lives in `shared/utils/username.ts` and must match the `master_profile_username_format` CHECK and the master app. When adding a top-level page, add its path to `RESERVED_USERNAMES` and to the CHECK in a migration.
 
 ## Skills
 

@@ -1,3 +1,5 @@
+import type { MasterPageTheme } from '../utils/masterTheme'
+
 export interface MasterProfile {
   id: string
   user_id: string
@@ -19,6 +21,14 @@ export interface MasterProfile {
   instagram: string | null
   tiktok: string | null
   contact_email: string | null
+  /** Page poster (public URL), shown above the avatar */
+  cover_url: string | null
+  experience_years: number | null
+  show_visits_count: boolean
+  /** Link for the "Map" button */
+  map_url: string | null
+  /** "Verified master" badge, set by Seene */
+  is_verified: boolean
 }
 
 export type MasterLanguage = 'en' | 'fr' | 'ru'
@@ -40,6 +50,17 @@ export interface MasterSettings {
   booking_buffer_minutes: number
   booking_min_notice_minutes: number
   calendar_slot_step_minutes: number
+  /** Theme of the public page */
+  page_theme: MasterPageTheme
+  /** Accent preset key or '#RRGGBB' (see `shared/utils/masterTheme.ts`) */
+  page_accent: string
+  /** How many days ahead clients can book */
+  booking_horizon_days: number
+  /** Up to how many hours before the visit a client can cancel by link */
+  cancel_window_hours: number
+  /** Vacation dates (YYYY-MM-DD), inclusive; online booking is paused */
+  vacation_from: string | null
+  vacation_until: string | null
 }
 
 export interface ServiceCategory {
@@ -56,6 +77,19 @@ export interface MasterService {
   duration: number
   price: string | number
   color: string
+  sort_order: number
+  photo_url: string | null
+  /** Show the price as "from <price>" */
+  price_from: boolean
+  /** false: listed on the page but not bookable online */
+  show_online: boolean
+}
+
+/** A photo in the "Works" block, optionally captioned by a service. */
+export interface PortfolioItem {
+  id: string
+  photo_url: string
+  service_id: string | null
   sort_order: number
 }
 
@@ -79,6 +113,7 @@ export interface MasterPageData {
   categories: ServiceCategory[]
   services: MasterService[]
   payment_types: MasterPaymentType[]
+  portfolio: PortfolioItem[]
 }
 
 export interface MasterServiceGroup {

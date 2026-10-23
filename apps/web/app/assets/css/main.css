@@ -1,6 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 @import 'tailwindcss';
 @import '@nuxt/ui';
+
+/* Design tokens from the site design ("Seene: дизайн сайта"). Google Fonts serve
+   the Cyrillic subsets of all three families on demand (unicode-range). */
+@theme {
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  /* Headings and large numbers */
+  --font-display: 'Inter Tight', 'Inter', system-ui, sans-serif;
+  /* Prices, times, codes */
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --color-ink: #0b0b0c;
+  --color-ink-muted: #5c5c63;
+  --color-line: #e7e7e4;
+  --color-surface: #f6f6f4;
+}
 
 :root {
   --ui-primary: var(--ui-color-primary-950);
@@ -9,31 +24,26 @@
   --ui-header-height: 4rem;
 
   --ui-text-dimmed: var(--ui-color-neutral-400);
-  --ui-text-muted: var(--ui-color-neutral-500);
+  --ui-text-muted: var(--color-ink-muted);
   --ui-text-toned: var(--ui-color-neutral-700);
   --ui-text: var(--ui-color-neutral-800);
-  --ui-text-highlighted: var(--ui-color-neutral-950);
+  --ui-text-highlighted: var(--color-ink);
   --ui-text-inverted: white;
 
   --ui-bg: white;
-  --ui-bg-muted: var(--ui-color-neutral-50);
+  --ui-bg-muted: var(--color-surface);
   --ui-bg-elevated: white;
   --ui-bg-accented: var(--ui-color-neutral-100);
   --ui-bg-inverted: var(--ui-color-neutral-950);
 
-  --ui-border: var(--ui-color-neutral-200);
+  --ui-border: var(--color-line);
   --ui-border-muted: var(--ui-color-neutral-100);
   --ui-border-accented: var(--ui-color-neutral-300);
   --ui-border-inverted: var(--ui-color-neutral-950);
 }
 
 body {
-  font-family:
-    'Inter',
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    sans-serif;
+  font-family: var(--font-sans);
   font-size: 16px;
   line-height: 1.6;
   @apply bg-default text-default antialiased scheme-light;

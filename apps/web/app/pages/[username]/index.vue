@@ -3,7 +3,7 @@ import type { TabsItem } from '@nuxt/ui'
 
 definePageMeta({ layout: 'master', middleware: 'master-locale' })
 
-const { setTheme } = useMasterTheme()
+const { setTheme, setMasterSettings } = useMasterTheme()
 const route = useRoute()
 const { $ts, $localePath } = useI18n()
 
@@ -13,6 +13,13 @@ const selectedServiceIds = ref<string[]>([])
 const username = computed(() => route.params.username as string)
 
 const { data, status, error } = useMasterData(username)
+
+// The master's theme and color for the layout.
+watch(
+  () => data.value?.settings,
+  (settings) => settings && setMasterSettings(settings),
+  { immediate: true }
+)
 const { formatPrice } = useMasterFormat(() => data.value?.settings)
 
 watch(
