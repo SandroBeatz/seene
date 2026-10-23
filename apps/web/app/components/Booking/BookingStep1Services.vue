@@ -13,6 +13,13 @@ const { $ts } = useI18n()
 const bookingState = useBookingState(props.data.profile.username)
 const { formatPrice } = useMasterFormat(() => props.data.settings)
 const { formatDuration } = useMasterPageFormat(() => props.data.settings)
+const summary = useBookingSummary(() => props.data)
+
+const footerSummary = computed(() =>
+  summary.services.value.length
+    ? { price: summary.priceLabel.value, details: summary.meta.value }
+    : null
+)
 
 const services = computed(() => props.data.services.filter((s) => s.show_online))
 
@@ -38,11 +45,12 @@ function priceLabel(service: MasterService) {
 <template>
   <section class="flex flex-1 flex-col">
     <div class="seene-reveal flex flex-col gap-2.5 px-4 pt-2">
-      <h1
-        class="mx-1 mb-1.5 font-display text-[26px] font-bold tracking-[-0.03em] text-highlighted"
-      >
-        {{ $ts('booking.steps.services.title') }}
-      </h1>
+      <div class="mx-1 mb-1.5 flex flex-col gap-1">
+        <h1 class="font-display text-[26px] font-bold tracking-[-0.03em] text-highlighted">
+          {{ $ts('booking.steps.services.title') }}
+        </h1>
+        <p class="text-sm text-muted">{{ $ts('booking.steps.services.hint') }}</p>
+      </div>
 
       <p v-if="!services.length" class="py-8 text-center text-sm text-muted">
         {{ $ts('booking.steps.services.empty') }}
@@ -69,7 +77,7 @@ function priceLabel(service: MasterService) {
         <span class="flex shrink-0 flex-col items-end gap-1.5">
           <span class="text-[15px] font-semibold whitespace-nowrap">{{ priceLabel(service) }}</span>
           <span
-            class="flex size-5.5 items-center justify-center rounded-full"
+            class="flex size-5.5 items-center justify-center rounded-[7px]"
             :class="isSelected(service.id) ? 'bg-primary text-inverted' : 'border-2 border-default'"
             aria-hidden="true"
           >
@@ -83,6 +91,7 @@ function priceLabel(service: MasterService) {
     <BookingFooter
       :label="$ts('booking.header.next')"
       :disabled="!bookingState.selectedServiceIds.length"
+      :summary="footerSummary"
       @click="$emit('next')"
     />
   </section>

@@ -466,7 +466,13 @@ defineExpose({ back })
       </div>
       <dl class="rounded-[18px] border border-default px-4 py-1 text-sm">
         <div class="flex justify-between gap-3 border-b border-default py-3">
-          <dt class="text-muted">{{ $ts('booking.steps.confirm.service') }}</dt>
+          <dt class="text-muted">
+            {{
+              summary.services.value.length > 1
+                ? $ts('booking.steps.confirm.services')
+                : $ts('booking.steps.confirm.service')
+            }}
+          </dt>
           <dd class="text-end font-semibold text-highlighted">{{ summary.name.value }}</dd>
         </div>
         <div class="flex justify-between gap-3 border-b border-default py-3">

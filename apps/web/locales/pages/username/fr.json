@@ -107,7 +107,8 @@
     "steps": {
       "services": {
         "title": "Choisissez une prestation",
-        "empty": "Aucune prestation disponible pour le moment."
+        "empty": "Aucune prestation disponible pour le moment.",
+        "hint": "Vous pouvez en choisir plusieurs"
       },
       "slots": {
         "title": "Quand vous convient-il ?",
@@ -132,7 +133,10 @@
         "loadFailed": "Impossible de charger les créneaux",
         "retry": "Réessayer",
         "noSlots": "Aucun créneau libre",
-        "noUpcomingSlots": "Aucun créneau libre dans les {days} prochains jours."
+        "noUpcomingSlots": "Tout est réservé pour les {days} prochains jours",
+        "changeServices": "Modifier les prestations : {price}, {duration}",
+        "otherService": "Choisir une autre prestation",
+        "loading": "Chargement des créneaux"
       },
       "confirm": {
         "phoneTitle": "Votre numéro de téléphone",
@@ -151,7 +155,8 @@
         "firstName": "Votre prénom",
         "reminders": "Me rappeler le rendez-vous",
         "remindersHint": "sur WhatsApp la veille",
-        "marketing": "M’informer des créneaux libres et des offres de {name}"
+        "marketing": "M’informer des créneaux libres et des offres de {name}",
+        "services": "Prestations"
       },
       "success": {
         "title": "Rendez-vous confirmé",
@@ -192,7 +197,13 @@
     },
     "addToCalendar": "Ajouter au calendrier",
     "service": {
-      "priceFrom": "à partir de {price}"
+      "priceFrom": "à partir de {price}",
+      "count": {
+        "one": "{count} prestation",
+        "few": "{count} prestations",
+        "many": "{count} prestations",
+        "other": "{count} prestations"
+      }
     },
     "footer": {
       "book": "Réserver",

@@ -97,3 +97,33 @@ textarea {
     animation: none;
   }
 }
+
+/* Loading placeholders on master pages: a light sweep over the muted surface. */
+@keyframes seene-shimmer {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: -50% 0;
+  }
+}
+
+.seene-skeleton {
+  display: block;
+  background-color: color-mix(in srgb, var(--ui-bg-accented) 60%, var(--ui-bg-muted));
+  background-image: linear-gradient(
+    90deg,
+    transparent 30%,
+    color-mix(in srgb, var(--ui-bg) 70%, transparent) 50%,
+    transparent 70%
+  );
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  animation: seene-shimmer 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .seene-skeleton {
+    animation: none;
+  }
+}

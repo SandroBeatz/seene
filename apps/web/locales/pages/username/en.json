@@ -107,7 +107,8 @@
     "steps": {
       "services": {
         "title": "Choose a service",
-        "empty": "No services available for booking yet."
+        "empty": "No services available for booking yet.",
+        "hint": "You can pick several"
       },
       "slots": {
         "title": "When suits you?",
@@ -132,7 +133,10 @@
         "loadFailed": "Could not load free times",
         "retry": "Retry",
         "noSlots": "No free time",
-        "noUpcomingSlots": "No free slots in the next {days} days."
+        "noUpcomingSlots": "Fully booked for the next {days} days",
+        "changeServices": "Change services: {price}, {duration}",
+        "otherService": "Choose another service",
+        "loading": "Loading free times"
       },
       "confirm": {
         "phoneTitle": "Your phone number",
@@ -151,7 +155,8 @@
         "firstName": "Your name",
         "reminders": "Remind me about the visit",
         "remindersHint": "in WhatsApp the day before",
-        "marketing": "Tell me about {name}'s free slots and offers"
+        "marketing": "Tell me about {name}'s free slots and offers",
+        "services": "Services"
       },
       "success": {
         "title": "You're booked",
@@ -192,7 +197,13 @@
     },
     "addToCalendar": "Add to calendar",
     "service": {
-      "priceFrom": "from {price}"
+      "priceFrom": "from {price}",
+      "count": {
+        "one": "{count} service",
+        "few": "{count} services",
+        "many": "{count} services",
+        "other": "{count} services"
+      }
     },
     "footer": {
       "book": "Book",
