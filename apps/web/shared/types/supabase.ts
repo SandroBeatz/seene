@@ -151,8 +151,10 @@ export type Database = {
           birthday: string | null
           created_at: string
           email: string | null
+          emoji: string | null
           first_name: string
           id: string
+          is_favorite: boolean
           last_name: string | null
           notes: string | null
           phone: string
@@ -164,8 +166,10 @@ export type Database = {
           birthday?: string | null
           created_at?: string
           email?: string | null
+          emoji?: string | null
           first_name: string
           id?: string
+          is_favorite?: boolean
           last_name?: string | null
           notes?: string | null
           phone: string
@@ -177,150 +181,14 @@ export type Database = {
           birthday?: string | null
           created_at?: string
           email?: string | null
+          emoji?: string | null
           first_name?: string
           id?: string
+          is_favorite?: boolean
           last_name?: string | null
           notes?: string | null
           phone?: string
           source?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      master_profile: {
-        Row: {
-          address: string | null
-          avatar_url: string | null
-          bio: string | null
-          can_travel: boolean
-          city: string | null
-          contact_email: string | null
-          country: string
-          created_at: string
-          first_name: string
-          house_number: string | null
-          id: string
-          instagram: string | null
-          last_name: string
-          phone: string
-          place_id: string | null
-          schedule: Json
-          specializations: string[]
-          telegram: string | null
-          tiktok: string | null
-          user_id: string
-          username: string
-          whatsapp: string | null
-          works_at_place: boolean
-          zip_code: string | null
-        }
-        Insert: {
-          address?: string | null
-          avatar_url?: string | null
-          bio?: string | null
-          can_travel?: boolean
-          city?: string | null
-          contact_email?: string | null
-          country?: string
-          created_at?: string
-          first_name: string
-          house_number?: string | null
-          id?: string
-          instagram?: string | null
-          last_name: string
-          phone: string
-          place_id?: string | null
-          schedule: Json
-          specializations: string[]
-          telegram?: string | null
-          tiktok?: string | null
-          user_id: string
-          username: string
-          whatsapp?: string | null
-          works_at_place?: boolean
-          zip_code?: string | null
-        }
-        Update: {
-          address?: string | null
-          avatar_url?: string | null
-          bio?: string | null
-          can_travel?: boolean
-          city?: string | null
-          contact_email?: string | null
-          country?: string
-          created_at?: string
-          first_name?: string
-          house_number?: string | null
-          id?: string
-          instagram?: string | null
-          last_name?: string
-          phone?: string
-          place_id?: string | null
-          schedule?: Json
-          specializations?: string[]
-          telegram?: string | null
-          tiktok?: string | null
-          user_id?: string
-          username?: string
-          whatsapp?: string | null
-          works_at_place?: boolean
-          zip_code?: string | null
-        }
-        Relationships: []
-      }
-      master_settings: {
-        Row: {
-          booking_buffer_minutes: number
-          booking_default_status: string
-          booking_min_notice_minutes: number
-          calendar_first_day: number
-          calendar_slot_step_minutes: number
-          created_at: string
-          currency: string
-          date_format: string
-          default_calendar_view: string
-          id: string
-          language: string
-          online_booking_enabled: boolean
-          theme: string
-          time_format: number
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          booking_buffer_minutes?: number
-          booking_default_status?: string
-          booking_min_notice_minutes?: number
-          calendar_first_day?: number
-          calendar_slot_step_minutes?: number
-          created_at?: string
-          currency?: string
-          date_format?: string
-          default_calendar_view?: string
-          id?: string
-          language?: string
-          online_booking_enabled?: boolean
-          theme?: string
-          time_format?: number
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          booking_buffer_minutes?: number
-          booking_default_status?: string
-          booking_min_notice_minutes?: number
-          calendar_first_day?: number
-          calendar_slot_step_minutes?: number
-          created_at?: string
-          currency?: string
-          date_format?: string
-          default_calendar_view?: string
-          id?: string
-          language?: string
-          online_booking_enabled?: boolean
-          theme?: string
-          time_format?: number
           updated_at?: string
           user_id?: string
         }
@@ -353,6 +221,168 @@ export type Database = {
           phone?: string
           revoked_at?: string | null
           token_hash?: string
+        }
+        Relationships: []
+      }
+      master_profile: {
+        Row: {
+          address: string | null
+          avatar_url: string | null
+          bio: string | null
+          can_travel: boolean
+          city: string | null
+          contact_email: string | null
+          country: string
+          created_at: string
+          deactivated_at: string | null
+          first_name: string
+          house_number: string | null
+          id: string
+          instagram: string | null
+          last_name: string
+          phone: string
+          place_id: string | null
+          schedule: Json
+          specializations: string[]
+          telegram: string | null
+          tiktok: string | null
+          user_id: string
+          username: string
+          whatsapp: string | null
+          works_at_place: boolean
+          zip_code: string | null
+        }
+        Insert: {
+          address?: string | null
+          avatar_url?: string | null
+          bio?: string | null
+          can_travel?: boolean
+          city?: string | null
+          contact_email?: string | null
+          country?: string
+          created_at?: string
+          deactivated_at?: string | null
+          first_name: string
+          house_number?: string | null
+          id?: string
+          instagram?: string | null
+          last_name: string
+          phone: string
+          place_id?: string | null
+          schedule: Json
+          specializations: string[]
+          telegram?: string | null
+          tiktok?: string | null
+          user_id: string
+          username: string
+          whatsapp?: string | null
+          works_at_place?: boolean
+          zip_code?: string | null
+        }
+        Update: {
+          address?: string | null
+          avatar_url?: string | null
+          bio?: string | null
+          can_travel?: boolean
+          city?: string | null
+          contact_email?: string | null
+          country?: string
+          created_at?: string
+          deactivated_at?: string | null
+          first_name?: string
+          house_number?: string | null
+          id?: string
+          instagram?: string | null
+          last_name?: string
+          phone?: string
+          place_id?: string | null
+          schedule?: Json
+          specializations?: string[]
+          telegram?: string | null
+          tiktok?: string | null
+          user_id?: string
+          username?: string
+          whatsapp?: string | null
+          works_at_place?: boolean
+          zip_code?: string | null
+        }
+        Relationships: []
+      }
+      master_settings: {
+        Row: {
+          alert_awaiting_confirmation_enabled: boolean
+          alert_cancellation_enabled: boolean
+          alert_new_booking_enabled: boolean
+          alert_upcoming_appointment_enabled: boolean
+          alert_upcoming_offset_minutes: number
+          booking_buffer_minutes: number
+          booking_default_status: string
+          booking_min_notice_minutes: number
+          calendar_first_day: number
+          calendar_slot_step_minutes: number
+          client_reminder_offsets_minutes: number[]
+          client_reminder_whatsapp_enabled: boolean
+          created_at: string
+          currency: string
+          date_format: string
+          default_calendar_view: string
+          id: string
+          language: string
+          online_booking_enabled: boolean
+          theme: string
+          time_format: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          alert_awaiting_confirmation_enabled?: boolean
+          alert_cancellation_enabled?: boolean
+          alert_new_booking_enabled?: boolean
+          alert_upcoming_appointment_enabled?: boolean
+          alert_upcoming_offset_minutes?: number
+          booking_buffer_minutes?: number
+          booking_default_status?: string
+          booking_min_notice_minutes?: number
+          calendar_first_day?: number
+          calendar_slot_step_minutes?: number
+          client_reminder_offsets_minutes?: number[]
+          client_reminder_whatsapp_enabled?: boolean
+          created_at?: string
+          currency?: string
+          date_format?: string
+          default_calendar_view?: string
+          id?: string
+          language?: string
+          online_booking_enabled?: boolean
+          theme?: string
+          time_format?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          alert_awaiting_confirmation_enabled?: boolean
+          alert_cancellation_enabled?: boolean
+          alert_new_booking_enabled?: boolean
+          alert_upcoming_appointment_enabled?: boolean
+          alert_upcoming_offset_minutes?: number
+          booking_buffer_minutes?: number
+          booking_default_status?: string
+          booking_min_notice_minutes?: number
+          calendar_first_day?: number
+          calendar_slot_step_minutes?: number
+          client_reminder_offsets_minutes?: number[]
+          client_reminder_whatsapp_enabled?: boolean
+          created_at?: string
+          currency?: string
+          date_format?: string
+          default_calendar_view?: string
+          id?: string
+          language?: string
+          online_booking_enabled?: boolean
+          theme?: string
+          time_format?: number
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -389,21 +419,6 @@ export type Database = {
           ip_hash?: string | null
           phone?: string
           used?: boolean
-        }
-        Relationships: []
-      }
-      phone_verification: {
-        Row: {
-          phone: string
-          verified_at: string
-        }
-        Insert: {
-          phone: string
-          verified_at?: string
-        }
-        Update: {
-          phone?: string
-          verified_at?: string
         }
         Relationships: []
       }
@@ -445,6 +460,108 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      phone_verification: {
+        Row: {
+          phone: string
+          verified_at: string
+        }
+        Insert: {
+          phone: string
+          verified_at?: string
+        }
+        Update: {
+          phone?: string
+          verified_at?: string
+        }
+        Relationships: []
+      }
+      sale: {
+        Row: {
+          amount: number
+          appointment_id: string
+          client_id: string
+          created_at: string
+          id: string
+          paid_at: string
+          payment_type_id: string | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          appointment_id: string
+          client_id: string
+          created_at?: string
+          id?: string
+          paid_at?: string
+          payment_type_id?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          appointment_id?: string
+          client_id?: string
+          created_at?: string
+          id?: string
+          paid_at?: string
+          payment_type_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'sale_appointment_id_fkey'
+            columns: ['appointment_id']
+            isOneToOne: true
+            referencedRelation: 'appointments'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'sale_client_id_fkey'
+            columns: ['client_id']
+            isOneToOne: false
+            referencedRelation: 'client'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'sale_payment_type_id_fkey'
+            columns: ['payment_type_id']
+            isOneToOne: false
+            referencedRelation: 'payment_type'
+            referencedColumns: ['id']
+          }
+        ]
+      }
+      sale_item: {
+        Row: {
+          id: string
+          name_snapshot: string
+          price_snapshot: number
+          sale_id: string
+          service_id: string | null
+        }
+        Insert: {
+          id?: string
+          name_snapshot: string
+          price_snapshot: number
+          sale_id: string
+          service_id?: string | null
+        }
+        Update: {
+          id?: string
+          name_snapshot?: string
+          price_snapshot?: number
+          sale_id?: string
+          service_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'sale_item_sale_id_fkey'
+            columns: ['sale_id']
+            isOneToOne: false
+            referencedRelation: 'sale'
+            referencedColumns: ['id']
+          }
+        ]
       }
       service: {
         Row: {
@@ -505,6 +622,7 @@ export type Database = {
           id: string
           name: string
           sort_order: number
+          updated_at: string
           user_id: string
         }
         Insert: {
@@ -512,6 +630,7 @@ export type Database = {
           id?: string
           name: string
           sort_order?: number
+          updated_at?: string
           user_id: string
         }
         Update: {
@@ -519,6 +638,7 @@ export type Database = {
           id?: string
           name?: string
           sort_order?: number
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
@@ -561,9 +681,29 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      analytics_period_metrics: {
+        Args: { p_from: string; p_to: string; p_uid: string }
+        Returns: Json
+      }
+      appointment_day_counts: {
+        Args: { p_from: string; p_to: string; p_tz: string }
+        Returns: {
+          cnt: number
+          day: string
+        }[]
+      }
       check_username_available: {
         Args: { p_username: string }
         Returns: boolean
+      }
+      complete_appointment: {
+        Args: {
+          p_amount: number
+          p_appointment_id: string
+          p_items: Json
+          p_payment_type_id: string
+        }
+        Returns: string
       }
       create_appointment_from_booking: {
         Args: {
@@ -587,9 +727,32 @@ export type Database = {
         }
         Returns: Json
       }
-      find_client_name_by_phone: {
-        Args: { master_user_id: string; phone: string }
-        Returns: string
+      get_analytics_v2: {
+        Args: {
+          p_from: string
+          p_granularity?: string
+          p_prev_from: string
+          p_prev_to: string
+          p_to: string
+          p_tz?: string
+        }
+        Returns: Json
+      }
+      get_analytics_widgets_v2: {
+        Args: {
+          p_days_from: string
+          p_days_to: string
+          p_mix_from: string
+          p_mix_to: string
+          p_top_from: string
+          p_top_to: string
+          p_tz?: string
+        }
+        Returns: Json
+      }
+      update_sale_details: {
+        Args: { p_amount: number; p_items: Json; p_sale_id: string }
+        Returns: undefined
       }
     }
     Enums: {
