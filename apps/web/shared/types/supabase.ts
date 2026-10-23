@@ -729,6 +729,36 @@ export type Database = {
         }
         Relationships: []
       }
+      slot_hold: {
+        Row: {
+          created_at: string
+          end_at: string
+          expires_at: string
+          holder_hash: string
+          id: string
+          master_user_id: string
+          start_at: string
+        }
+        Insert: {
+          created_at?: string
+          end_at: string
+          expires_at: string
+          holder_hash: string
+          id?: string
+          master_user_id: string
+          start_at: string
+        }
+        Update: {
+          created_at?: string
+          end_at?: string
+          expires_at?: string
+          holder_hash?: string
+          id?: string
+          master_user_id?: string
+          start_at?: string
+        }
+        Relationships: []
+      }
       time_block: {
         Row: {
           all_day: boolean
@@ -794,9 +824,13 @@ export type Database = {
       create_appointment_from_booking: {
         Args: {
           p_first_name?: string
+          p_future_limit?: number
+          p_holder_hash?: string
           p_last_name?: string
+          p_marketing_consent?: boolean
           p_note?: string
           p_phone: string
+          p_reminders_consent?: boolean
           p_service_ids: string[]
           p_starts_at: string
           p_username: string
@@ -835,6 +869,16 @@ export type Database = {
           p_tz?: string
         }
         Returns: Json
+      }
+      hold_booking_slot: {
+        Args: {
+          p_duration: number
+          p_holder_hash: string
+          p_starts_at: string
+          p_ttl_minutes?: number
+          p_username: string
+        }
+        Returns: string
       }
       update_sale_details: {
         Args: { p_amount: number; p_items: Json; p_sale_id: string }

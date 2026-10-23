@@ -3,7 +3,6 @@ definePageMeta({ layout: 'master', middleware: 'master-locale' })
 
 const { setTheme, setMasterSettings } = useMasterTheme()
 const route = useRoute()
-const { $localePath } = useI18n()
 
 const username = computed(() => route.params.username as string)
 
@@ -36,17 +35,23 @@ const bookingEnabled = computed(
     data.value.services.some((service) => service.show_online)
 )
 
-/** Opens booking: on the time step when a service was picked, else on the service step. */
-function book(serviceId?: string) {
-  const bookingState = useBookingState(username.value)
+const bookingState = useBookingState(username.value)
+const { goTo } = useBookingFlow(username)
 
+/** Opens booking over the page: on the time step when a service was picked. */
+function book(serviceId?: string) {
+  const state = bookingState.value
+  const keepChoice = !serviceId || state.selectedServiceIds[0] === serviceId
+
+  // The same service keeps the picked time; another one starts over.
   bookingState.value = createBookingState({
-    step: serviceId ? 2 : 1,
-    selectedServiceIds: serviceId ? [serviceId] : [],
-    phone: bookingState.value.phone
+    ...(keepChoice && !state.booking ? state : {}),
+    selectedServiceIds: serviceId ? [serviceId] : keepChoice ? state.selectedServiceIds : [],
+    phone: state.phone,
+    booking: null
   })
 
-  return navigateTo($localePath(`/${username.value}/book`))
+  return goTo(serviceId ? 'time' : 'services')
 }
 </script>
 
@@ -87,6 +92,8 @@ function book(serviceId?: string) {
       <MasterBookBar :data="data" :booking-enabled="bookingEnabled" @book="book()" />
 
       <MasterFooter />
+
+      <BookingSheet :data="data" :booking-enabled="bookingEnabled" />
     </template>
   </div>
 </template>

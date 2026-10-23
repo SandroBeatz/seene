@@ -95,5 +95,137 @@
     "depilation": "Депиляция",
     "cosmetology": "Косметология",
     "brows_lashes": "Брови и ресницы"
+  },
+  "booking": {
+    "header": {
+      "back": "Назад",
+      "next": "Далее",
+      "progressLabel": "Шаг {step} из {total}",
+      "close": "Закрыть запись"
+    },
+    "steps": {
+      "services": {
+        "title": "Выберите услугу",
+        "empty": "Пока нет услуг, доступных для записи.",
+        "allCategories": "Все",
+        "otherCategory": "Другие услуги"
+      },
+      "slots": {
+        "title": "Выберите дату и время",
+        "description": "Выберите доступный день и время для записи.",
+        "noSlots": "Нет доступного времени",
+        "noUpcomingSlots": "В ближайшие {days} дн. нет свободного времени.",
+        "loading": "Ищем свободное время…",
+        "loadFailed": "Не удалось загрузить свободное время",
+        "retry": "Повторить",
+        "legendFree": "Есть время",
+        "legendBusy": "Нет мест",
+        "dayFull": "нет свободного времени",
+        "slotCount": "Свободно: {count}",
+        "groups": {
+          "morning": "Утро",
+          "afternoon": "День",
+          "evening": "Вечер"
+        },
+        "calendarTitle": "Выберите день",
+        "openCalendar": "Открыть календарь",
+        "taken": "Это время только что заняли. Вот ближайшие свободные окна.",
+        "timezone": "Время мастера · {place}"
+      },
+      "confirm": {
+        "title": "Ваши данные",
+        "total": "Итого",
+        "addNote": "Добавить заметку",
+        "editNote": "Изменить заметку",
+        "noteModalTitle": "Добавить заметку",
+        "notePlaceholder": "Например: аллергия на гель, предпочитаю натуральный стиль...",
+        "saveNote": "Сохранить",
+        "cancel": "Отмена",
+        "phone": "Номер телефона",
+        "welcome": "Рады снова вас видеть, {name}!",
+        "firstName": "Имя",
+        "creatingBooking": "Создаём вашу запись...",
+        "changeTime": "Изменить время",
+        "checkingPhone": "Проверяем номер…",
+        "welcomeAnonymous": "Рады снова вас видеть!",
+        "verifiedHint": "Номер уже подтверждён — осталось нажать «Записаться».",
+        "notYou": "Не вы?",
+        "codeTitle": "Подтвердим номер",
+        "codeHint": "Пришлём короткий код в WhatsApp или Telegram. На этом устройстве код для записи к мастеру больше не понадобится.",
+        "reminders": "Напомнить о записи",
+        "remindersHint": "Сообщение накануне визита со ссылкой для отмены.",
+        "marketing": "Сообщать о свободных окнах и акциях мастера"
+      },
+      "success": {
+        "title": "Вы записаны",
+        "description": "{name} ждёт вас.",
+        "master": "Мастер",
+        "services": "Услуги",
+        "dateTime": "Дата и время",
+        "address": "Адрес",
+        "calendarTitle": "Запись к {master}",
+        "heading": "Готово",
+        "pendingTitle": "Заявка отправлена",
+        "pendingDescription": "{name} подтвердит запись в ближайшее время.",
+        "directions": "Как добраться",
+        "done": "Готово"
+      }
+    },
+    "addToCalendar": "Добавить в календарь",
+    "service": {
+      "duration": "{duration} мин",
+      "price": "{price} ₽",
+      "priceFrom": "от {price}"
+    },
+    "sms": {
+      "title": "Введите код",
+      "codeSentTo": "Код отправлен в {channel} на {phone}",
+      "resendIn": "Отправить снова через {countdown}",
+      "resend": "Отправить снова",
+      "devCode": "Тестовый код: {code}",
+      "invalidCode": "Неверный код, попробуйте ещё раз",
+      "expiredCode": "Код истёк, запросите новый",
+      "tooManyAttempts": "Слишком много попыток, запросите новый код",
+      "tooManyRequests": "Слишком много запросов кода. Попробуйте позже",
+      "sendFailed": "Не удалось отправить код, попробуйте ещё раз"
+    },
+    "errors": {
+      "bookingFailed": "Не удалось создать запись, попробуйте ещё раз",
+      "slotUnavailable": "Это время уже занято, выберите другое",
+      "nameRequired": "Введите имя",
+      "checkFailed": "Не удалось проверить номер, попробуйте ещё раз",
+      "phoneInvalid": "Введите корректный номер телефона",
+      "limit": "У вас уже есть 2 будущие записи к этому мастеру. Чтобы записаться ещё, напишите мастеру.",
+      "refused": "Онлайн-запись к этому мастеру недоступна. Свяжитесь с мастером напрямую."
+    },
+    "footer": {
+      "book": "Записаться",
+      "policy": "Нажимая «Записаться», вы соглашаетесь с {link}.",
+      "policyLink": "политикой конфиденциальности"
+    },
+    "phone": {
+      "country": "Страна",
+      "searchCountry": "Поиск страны…"
+    },
+    "verify": {
+      "detailsTitle": "Давайте познакомимся!",
+      "detailsDescription": "Подскажите мастеру, как к вам обращаться.",
+      "sendingCode": "Отправляем код…",
+      "checkingCode": "Проверяем код…",
+      "changePhone": "Изменить номер",
+      "channelTitle": "Куда прислать код?",
+      "channelDescription": "Выберите мессенджер — пришлём 4-значный код для номера {phone}.",
+      "otherChannel": "Получить другим способом",
+      "channels": {
+        "whatsapp": {
+          "name": "WhatsApp",
+          "action": "Получить в WhatsApp"
+        },
+        "telegram": {
+          "name": "Telegram",
+          "action": "Получить в Telegram"
+        }
+      }
+    }
   }
 }

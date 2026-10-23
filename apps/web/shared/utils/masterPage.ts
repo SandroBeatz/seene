@@ -130,3 +130,16 @@ export function todayIn(timezone: string, now = Date.now()): string {
     day: '2-digit'
   }).format(now)
 }
+
+/** "Map" / "How to get there": the master's own map link, else a search for her address. */
+export function masterMapLink(profile: {
+  map_url: string | null
+  address: string | null
+  house_number: string | null
+  city: string | null
+}) {
+  if (profile.map_url) return profile.map_url
+  if (!profile.address) return null
+  const query = [profile.address, profile.house_number, profile.city].filter(Boolean).join(' ')
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`
+}

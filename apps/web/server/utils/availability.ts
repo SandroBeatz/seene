@@ -21,8 +21,10 @@ type SlotSettings = {
 
 /**
  * Free slots for every day in [from, to] (YYYY-MM-DD, master's time zone) for a
- * visit of `durationMinutes`. Busy time is appointments, legacy bookings and time
- * blocks; vacation days have no slots. One round trip for the whole range.
+ * visit of `durationMinutes`. Busy time is appointments, legacy bookings, time
+ * blocks and slots held by other clients on the details step (`holderHash` is
+ * the caller's own hold, which stays free for her); vacation days have no
+ * slots. One round trip for the whole range.
  */
 export async function loadDailySlots({
   supabase,
@@ -30,6 +32,7 @@ export async function loadDailySlots({
   settings,
   dates,
   durationMinutes,
+  holderHash = null,
   nowMs = Date.now()
 }: {
   supabase: ReturnType<typeof useServiceSupabase>
@@ -37,6 +40,7 @@ export async function loadDailySlots({
   settings: SlotSettings
   dates: string[]
   durationMinutes: number
+  holderHash?: string | null
   nowMs?: number
 }): Promise<DailySlots[]> {
   const schedule = getProfileSchedule(profile.schedule)
@@ -51,7 +55,8 @@ export async function loadDailySlots({
   const [
     { data: appointments, error: appointmentsError },
     { data: timeBlocks, error: timeBlocksError },
-    { data: bookings, error: bookingsError }
+    { data: bookings, error: bookingsError },
+    { data: holds, error: holdsError }
   ] = await Promise.all([
     supabase
       .from('appointments')
@@ -72,10 +77,17 @@ export async function loadDailySlots({
       .eq('master_id', profile.id)
       .neq('status', 'cancelled')
       .lt('starts_at', rangeEnd)
-      .gt('ends_at', rangeStart)
+      .gt('ends_at', rangeStart),
+    supabase
+      .from('slot_hold')
+      .select('start_at, end_at, holder_hash')
+      .eq('master_user_id', profile.user_id)
+      .gt('expires_at', new Date(nowMs).toISOString())
+      .lt('start_at', rangeEnd)
+      .gte('start_at', rangeStart)
   ])
 
-  if (appointmentsError || timeBlocksError || bookingsError) {
+  if (appointmentsError || timeBlocksError || bookingsError || holdsError) {
     throw createError({ statusCode: 500, message: 'Failed to load availability' })
   }
 
@@ -88,12 +100,10 @@ export async function loadDailySlots({
 
   const busyRows: AppointmentRow[] = [
     ...((appointments ?? []) as AppointmentRow[]),
-    ...(bookings ?? []).map((b) => ({
-      start_at: b.starts_at,
-      duration: Math.round(
-        (new Date(b.ends_at).getTime() - new Date(b.starts_at).getTime()) / 60_000
-      )
-    }))
+    ...(bookings ?? []).map((b) => intervalRow(b.starts_at, b.ends_at)),
+    ...(holds ?? [])
+      .filter((h) => h.holder_hash !== holderHash)
+      .map((h) => intervalRow(h.start_at, h.end_at))
   ]
 
   return dates.map((date) => {
@@ -124,6 +134,13 @@ export async function loadDailySlots({
 
     return { date, slots }
   })
+}
+
+function intervalRow(start: string, end: string): AppointmentRow {
+  return {
+    start_at: start,
+    duration: Math.round((new Date(end).getTime() - new Date(start).getTime()) / 60_000)
+  }
 }
 
 export function buildDateRange(from: string, to: string): string[] {

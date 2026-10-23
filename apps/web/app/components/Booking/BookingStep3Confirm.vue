@@ -7,6 +7,7 @@ interface BookingResponse {
     id: string
     starts_at: string
     ends_at: string
+    status: 'pending' | 'confirmed'
     services: BookingService[]
     master: BookingMaster
   }
@@ -26,6 +27,9 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   changeTime: []
+  /** The held slot was taken by someone else: pick another time. */
+  slotTaken: []
+  booked: []
 }>()
 
 const { $ts, getLocale } = useI18n()
@@ -33,7 +37,45 @@ const bookingState = useBookingState(props.username)
 const queryCache = useQueryCache()
 
 const { data: masterData } = useMasterData(() => props.username)
-const { formatPrice, formatTime } = useMasterFormat(() => masterData.value?.settings)
+const timezone = computed(() => masterData.value?.timezone)
+const { formatPrice, formatTime } = useMasterFormat(() => masterData.value?.settings, timezone)
+
+// --- Slot hold: nobody else can take her time while she fills this in ---
+
+let holdTimer: ReturnType<typeof setTimeout> | null = null
+let booked = false
+
+async function holdSlot() {
+  const [serviceId] = bookingState.value.selectedServiceIds
+  const startsAt = bookingState.value.selectedSlot
+  if (!serviceId || !startsAt) return
+
+  try {
+    const { expires_at } = await $fetch<{ expires_at: string }>(
+      `/api/master/${props.username}/hold`,
+      { method: 'POST', body: { service_id: serviceId, starts_at: startsAt } }
+    )
+    // Renew shortly before it lapses, for as long as she stays on this step.
+    if (holdTimer) clearTimeout(holdTimer)
+    holdTimer = setTimeout(holdSlot, Math.max(new Date(expires_at).getTime() - Date.now() - 30_000, 30_000))
+  } catch (e: unknown) {
+    if ((e as { statusCode?: number }).statusCode === 409) {
+      queryCache.invalidateQueries({ key: ['booking-availability', props.username] })
+      emit('slotTaken')
+    }
+    // Other failures: the booking re-checks the slot anyway.
+  }
+}
+
+onMounted(holdSlot)
+
+onBeforeUnmount(() => {
+  if (holdTimer) clearTimeout(holdTimer)
+  // Left without booking: let the time go for others right away.
+  if (!booked) {
+    $fetch(`/api/master/${props.username}/hold`, { method: 'DELETE' }).catch(() => {})
+  }
+})
 
 // --- Overview ---
 
@@ -52,7 +94,8 @@ const slotDay = computed(() => {
   return new Intl.DateTimeFormat(getLocale(), {
     weekday: 'long',
     day: 'numeric',
-    month: 'long'
+    month: 'long',
+    timeZone: timezone.value
   }).format(new Date(slot))
 })
 
@@ -82,7 +125,9 @@ function saveNote() {
 // --- Phone lookup: runs as soon as the number is valid ---
 
 const bookingLoading = ref(false)
-const bookingError = ref<'' | 'slotUnavailable' | 'bookingFailed' | 'checkFailed'>('')
+const bookingError = ref<
+  '' | 'slotUnavailable' | 'bookingFailed' | 'checkFailed' | 'limit' | 'refused'
+>('')
 
 const phoneTouched = ref(false)
 const phoneCheck = ref<PhoneCheck | null>(null)
@@ -201,25 +246,35 @@ async function createBooking(details?: VerifyResult) {
         phone: bookingState.value.phone,
         ...(details?.firstName ? { first_name: details.firstName } : {}),
         ...(details?.otpToken ? { otp_token: details.otpToken } : {}),
-        ...(bookingState.value.note ? { note: bookingState.value.note } : {})
+        ...(bookingState.value.note ? { note: bookingState.value.note } : {}),
+        reminders_consent: bookingState.value.remindersConsent,
+        marketing_consent: bookingState.value.marketingConsent
       }
     })
 
+    booked = true
     queryCache.invalidateQueries({ key: ['booking-availability', props.username] })
+    queryCache.invalidateQueries({ key: ['master', props.username, 'nearest'] })
     showVerifyDrawer.value = false
     bookingState.value.booking = {
       id: result.booking.id,
       startsAt: result.booking.starts_at,
       endsAt: result.booking.ends_at,
+      status: result.booking.status,
       services: result.booking.services,
       master: result.booking.master
     }
-    bookingState.value.step = 4
+    emit('booked')
   } catch (e: unknown) {
-    const statusCode = (e as { statusCode?: number }).statusCode
+    const { statusCode, data } = e as { statusCode?: number; data?: { data?: { code?: string } } }
+    const code = data?.data?.code
     showVerifyDrawer.value = false
 
-    if (statusCode === 409) {
+    if (code === 'booking_limit') {
+      bookingError.value = 'limit'
+    } else if (code === 'booking_refused') {
+      bookingError.value = 'refused'
+    } else if (statusCode === 409) {
       bookingError.value = 'slotUnavailable'
       queryCache.invalidateQueries({ key: ['booking-availability', props.username] })
     } else if (statusCode === 401 && phoneCheck.value) {
@@ -240,6 +295,10 @@ const errorTitle = computed(() => {
       return $ts('booking.errors.slotUnavailable')
     case 'checkFailed':
       return $ts('booking.errors.checkFailed')
+    case 'limit':
+      return $ts('booking.errors.limit')
+    case 'refused':
+      return $ts('booking.errors.refused')
     default:
       return $ts('booking.errors.bookingFailed')
   }
@@ -248,12 +307,8 @@ const errorTitle = computed(() => {
 
 <template>
   <section class="flex flex-col gap-6">
-    <p class="text-xs text-muted">
-      {{ $ts('booking.steps.confirm.description') }}
-    </p>
-
     <!-- Booking overview -->
-    <UCard variant="outline" :ui="{ root: 'rounded-xl shadow-none', body: 'p-4 sm:p-4' }">
+    <UCard variant="outline" :ui="{ root: 'rounded-[16px] shadow-none', body: 'p-4 sm:p-4' }">
       <div class="flex flex-col gap-4">
         <div class="flex items-center gap-3">
           <div
@@ -365,7 +420,7 @@ const errorTitle = computed(() => {
     </Transition>
 
     <!-- Note -->
-    <div v-if="bookingState.note" class="flex items-start gap-3 rounded-2xl bg-elevated p-4">
+    <div v-if="bookingState.note" class="flex items-start gap-3 rounded-[14px] bg-elevated p-4">
       <UIcon name="i-lucide-notebook-pen" class="mt-0.5 size-4 shrink-0 text-muted" />
       <p class="flex-1 text-sm text-default">{{ bookingState.note }}</p>
       <UButton
@@ -387,6 +442,19 @@ const errorTitle = computed(() => {
       class="self-start"
       @click="openNoteDrawer"
     />
+
+    <!-- Consents: service reminders on by default, news and offers opt-in -->
+    <div class="flex flex-col gap-3">
+      <USwitch
+        v-model="bookingState.remindersConsent"
+        :label="$ts('booking.steps.confirm.reminders')"
+        :description="$ts('booking.steps.confirm.remindersHint')"
+      />
+      <UCheckbox
+        v-model="bookingState.marketingConsent"
+        :label="$ts('booking.steps.confirm.marketing')"
+      />
+    </div>
 
     <UAlert
       v-if="bookingError"

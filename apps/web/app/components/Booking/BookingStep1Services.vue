@@ -10,6 +10,10 @@ const props = defineProps<{
   loading?: boolean
 }>()
 
+const emit = defineEmits<{
+  select: [serviceId: string]
+}>()
+
 const bookingState = useBookingState(props.username)
 
 const { data: masterData } = useMasterData(() => props.username)
@@ -77,31 +81,19 @@ function isSelected(serviceId: string) {
   return bookingState.value.selectedServiceIds.includes(serviceId)
 }
 
-function setServiceSelected(serviceId: string, selected: boolean | 'indeterminate') {
-  const selectedIds = bookingState.value.selectedServiceIds
-  const shouldSelect = selected === true
-
-  if (shouldSelect && !selectedIds.includes(serviceId)) {
-    bookingState.value.selectedServiceIds = [...selectedIds, serviceId]
-    return
+// One service per booking: a tap picks it and moves on to the time.
+function select(serviceId: string) {
+  if (!isSelected(serviceId)) {
+    bookingState.value.selectedServiceIds = [serviceId]
+    bookingState.value.selectedDate = null
+    bookingState.value.selectedSlot = null
   }
-
-  if (!shouldSelect && selectedIds.includes(serviceId)) {
-    bookingState.value.selectedServiceIds = selectedIds.filter((id) => id !== serviceId)
-  }
-}
-
-function toggleService(serviceId: string) {
-  setServiceSelected(serviceId, !isSelected(serviceId))
+  emit('select', serviceId)
 }
 </script>
 
 <template>
   <section class="flex flex-col gap-5">
-    <p class="text-xs text-muted">
-      {{ $ts('booking.steps.services.description') }}
-    </p>
-
     <div v-if="loading" class="flex flex-col gap-3" aria-hidden="true">
       <USkeleton v-for="index in 4" :key="index" class="h-24 w-full rounded-lg" />
     </div>
@@ -120,7 +112,7 @@ function toggleService(serviceId: string) {
         class="w-full"
         :ui="{
           list: 'overflow-x-auto rounded-xl [scrollbar-width:none]',
-          indicator: 'rounded-lg bg-zinc-900',
+          indicator: 'rounded-lg bg-inverted',
           trigger: 'shrink-0 cursor-pointer rounded-lg px-3.5 py-2 whitespace-nowrap',
           label: 'overflow-visible'
         }"
@@ -135,57 +127,35 @@ function toggleService(serviceId: string) {
         </h2>
 
         <div class="flex flex-col gap-2">
-          <UCard
+          <UButton
             v-for="service in group.items"
             :key="service.id"
-            role="checkbox"
-            tabindex="0"
-            :aria-checked="isSelected(service.id)"
+            color="neutral"
             variant="outline"
-            class="cursor-pointer transition"
-            :class="
-              isSelected(service.id)
-                ? 'ring-2 ring-primary bg-(--ui-bg-elevated)'
-                : 'hover:bg-(--ui-bg-muted)'
-            "
-            :ui="{ body: 'p-4 sm:p-4' }"
-            @click="toggleService(service.id)"
-            @keydown.enter.prevent="toggleService(service.id)"
-            @keydown.space.prevent="toggleService(service.id)"
+            :aria-pressed="isSelected(service.id)"
+            class="w-full rounded-[14px] p-4 text-start transition"
+            :class="isSelected(service.id) ? 'bg-elevated ring-2 ring-primary' : 'bg-default'"
+            @click="select(service.id)"
           >
-            <div class="flex items-center justify-between gap-4">
-              <div class="flex min-w-0 items-center gap-3">
-                <span
-                  class="size-3 shrink-0 rounded-full ring-4 ring-current/10"
-                  :style="{ color: service.color, backgroundColor: service.color }"
-                  aria-hidden="true"
-                />
-                <div class="flex min-w-0 flex-col gap-1">
-                  <span class="truncate font-medium text-(--ui-text-highlighted)">
-                    {{ service.name }}
-                  </span>
-                  <span class="text-sm text-(--ui-text-muted)">
-                    {{ $ts('booking.service.duration', { duration: service.duration }) }}
-                  </span>
-                </div>
-              </div>
-
-              <div class="flex shrink-0 items-center gap-3">
-                <span class="font-semibold text-primary whitespace-nowrap">
-                  {{ formatPrice(service.price) }}
+            <span class="flex w-full items-center justify-between gap-4">
+              <span class="flex min-w-0 flex-col gap-1">
+                <span class="truncate font-medium text-highlighted">{{ service.name }}</span>
+                <span class="text-sm font-normal text-muted">
+                  {{ $ts('booking.service.duration', { duration: service.duration }) }}
                 </span>
-                <UCheckbox
-                  color="primary"
-                  :model-value="isSelected(service.id)"
-                  :aria-label="
-                    $ts('booking.steps.services.toggleService', { service: service.name })
-                  "
-                  @click.stop
-                  @update:model-value="(selected) => setServiceSelected(service.id, selected)"
-                />
-              </div>
-            </div>
-          </UCard>
+              </span>
+              <span class="flex shrink-0 items-center gap-2">
+                <span class="font-mono font-semibold whitespace-nowrap text-highlighted">
+                  {{
+                    service.price_from
+                      ? $ts('booking.service.priceFrom', { price: formatPrice(service.price) })
+                      : formatPrice(service.price)
+                  }}
+                </span>
+                <UIcon name="i-lucide-chevron-right" class="size-4 text-dimmed" />
+              </span>
+            </span>
+          </UButton>
         </div>
       </section>
     </div>

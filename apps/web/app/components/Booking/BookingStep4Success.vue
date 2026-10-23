@@ -1,83 +1,65 @@
 <script setup lang="ts">
-import type { MasterProfile } from '#shared/types/master'
+import type { MasterPageData } from '#shared/types/master'
 
 const props = defineProps<{
   username: string
-  profile?: MasterProfile
+  data: MasterPageData
 }>()
 
-const { $ts, $localePath } = useI18n()
+const { $ts, getLocale } = useI18n()
 const bookingState = useBookingState(props.username)
-
-const { data: masterData } = useMasterData(() => props.username)
-const { formatDateTime } = useMasterFormat(() => masterData.value?.settings)
+const { formatTime } = useMasterFormat(() => props.data.settings, () => props.data.timezone)
 
 const booking = computed(() => bookingState.value.booking)
+const profile = computed(() => props.data.profile)
+const confirmed = computed(() => booking.value?.status === 'confirmed')
 
-const masterName = computed(() => {
-  const master = booking.value?.master
-  if (master) {
-    return `${master.first_name} ${master.last_name}`.trim()
-  }
-
-  if (props.profile) {
-    return `${props.profile.first_name} ${props.profile.last_name}`.trim()
-  }
-
-  return props.username
-})
-
-const masterInitials = computed(() =>
-  masterName.value
-    .split(' ')
-    .map((part) => part[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase()
+const masterName = computed(() =>
+  `${profile.value.first_name} ${profile.value.last_name}`.trim()
 )
 
-const serviceNames = computed(() => booking.value?.services.map((service) => service.name) ?? [])
+const serviceNames = computed(() => booking.value?.services.map((s) => s.name).join(', ') ?? '')
 
-const formattedDateTime = computed(() => {
-  if (!booking.value?.startsAt) return ''
-
-  return formatDateTime(booking.value.startsAt)
+const when = computed(() => {
+  const current = booking.value
+  if (!current) return ''
+  const day = new Intl.DateTimeFormat(getLocale(), {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    timeZone: props.data.timezone
+  }).format(new Date(current.startsAt))
+  return `${day}, ${formatTime(current.startsAt)} – ${formatTime(current.endsAt)}`
 })
 
-const address = computed(() => {
-  if (!props.profile?.works_at_place) return ''
+const address = computed(() =>
+  profile.value.works_at_place
+    ? [
+        [profile.value.address, profile.value.house_number].filter(Boolean).join(' '),
+        profile.value.city
+      ]
+        .filter(Boolean)
+        .join(', ')
+    : ''
+)
 
-  return [
-    props.profile.address,
-    props.profile.house_number,
-    props.profile.city,
-    props.profile.zip_code,
-    props.profile.country
-  ]
-    .filter(Boolean)
-    .join(', ')
-})
-
-function returnToProfile() {
-  bookingState.value = createBookingState({ phone: bookingState.value.phone })
-  void navigateTo($localePath(`/${props.username}`))
-}
+const mapUrl = computed(() => (profile.value.works_at_place ? masterMapLink(profile.value) : null))
 
 function downloadCalendarFile() {
-  const currentBooking = booking.value
-  if (!currentBooking || !import.meta.client) return
+  const current = booking.value
+  if (!current || !import.meta.client) return
 
   const event = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
     'PRODID:-//Seene//Booking//EN',
     'BEGIN:VEVENT',
-    `UID:${currentBooking.id}@seene`,
+    `UID:${current.id}@seene`,
     `DTSTAMP:${toIcsDate(new Date())}`,
-    `DTSTART:${toIcsDate(new Date(currentBooking.startsAt))}`,
-    `DTEND:${toIcsDate(new Date(currentBooking.endsAt))}`,
+    `DTSTART:${toIcsDate(new Date(current.startsAt))}`,
+    `DTEND:${toIcsDate(new Date(current.endsAt))}`,
     `SUMMARY:${escapeIcsText($ts('booking.steps.success.calendarTitle', { master: masterName.value }))}`,
-    `DESCRIPTION:${escapeIcsText(serviceNames.value.join(', '))}`,
+    `DESCRIPTION:${escapeIcsText(serviceNames.value)}`,
     ...(address.value ? [`LOCATION:${escapeIcsText(address.value)}`] : []),
     'END:VEVENT',
     'END:VCALENDAR'
@@ -87,7 +69,7 @@ function downloadCalendarFile() {
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')
   link.href = url
-  link.download = `seene-booking-${currentBooking.id}.ics`
+  link.download = `seene-booking-${current.id}.ics`
   link.click()
   URL.revokeObjectURL(url)
 }
@@ -109,121 +91,67 @@ function escapeIcsText(value: string) {
 </script>
 
 <template>
-  <section class="flex min-h-full flex-col gap-6">
-    <header class="flex items-center justify-between gap-3">
-      <div class="min-w-0">
-        <p class="truncate text-sm font-medium text-(--ui-text-highlighted)">
-          {{ masterName }}
-        </p>
+  <section v-if="booking" class="flex flex-col gap-6 pt-4">
+    <div class="seene-reveal flex flex-col items-center gap-3 text-center">
+      <div class="flex size-16 items-center justify-center rounded-full bg-primary text-inverted">
+        <UIcon name="i-lucide-check" class="size-8" />
       </div>
-
-      <UButton
-        icon="i-lucide-x"
-        color="neutral"
-        variant="ghost"
-        size="lg"
-        :aria-label="$ts('booking.steps.success.closeAria')"
-        @click="returnToProfile"
-      />
-    </header>
-
-    <div class="flex flex-col items-center gap-3 text-center">
-      <div
-        class="flex size-20 items-center justify-center rounded-full bg-primary/10 text-primary ring-1 ring-primary/20"
-      >
-        <UIcon name="i-lucide-check" class="size-10" />
-      </div>
-
       <div class="flex flex-col gap-1">
-        <h1 class="text-2xl font-semibold text-(--ui-text-highlighted)">
-          {{ $ts('booking.steps.success.title') }}
-        </h1>
-        <p class="text-sm text-(--ui-text-muted)">
-          {{ $ts('booking.steps.success.description') }}
+        <h2 class="font-display text-2xl font-bold text-highlighted">
+          {{
+            confirmed ? $ts('booking.steps.success.title') : $ts('booking.steps.success.pendingTitle')
+          }}
+        </h2>
+        <p class="text-sm text-muted">
+          {{
+            confirmed
+              ? $ts('booking.steps.success.description', { name: profile.first_name })
+              : $ts('booking.steps.success.pendingDescription', { name: profile.first_name })
+          }}
         </p>
       </div>
     </div>
 
-    <UCard variant="outline" :ui="{ body: 'p-4 sm:p-4' }">
-      <div class="flex flex-col gap-4">
-        <div class="flex items-center gap-3">
-          <UAvatar
-            :text="masterInitials"
-            :alt="$ts('booking.steps.success.masterAvatarAlt', { master: masterName })"
-            size="lg"
-          />
-          <div class="min-w-0">
-            <p class="text-xs text-(--ui-text-muted)">{{ $ts('booking.steps.success.master') }}</p>
-            <p class="truncate text-sm font-medium text-(--ui-text-highlighted)">
-              {{ masterName }}
-            </p>
-          </div>
-        </div>
-
-        <USeparator />
-
-        <div class="flex flex-col gap-2">
-          <p class="text-xs text-(--ui-text-muted)">{{ $ts('booking.steps.success.services') }}</p>
-          <ul class="flex flex-col gap-1">
-            <li
-              v-for="service in serviceNames"
-              :key="service"
-              class="flex items-start gap-2 text-sm text-(--ui-text-highlighted)"
-            >
-              <UIcon name="i-lucide-sparkles" class="mt-0.5 size-4 shrink-0 text-primary" />
-              <span>{{ service }}</span>
-            </li>
-          </ul>
-        </div>
-
-        <USeparator />
-
-        <div class="flex items-center gap-3">
-          <UIcon name="i-lucide-calendar-clock" class="size-5 shrink-0 text-(--ui-text-muted)" />
-          <div class="min-w-0">
-            <p class="text-xs text-(--ui-text-muted)">
-              {{ $ts('booking.steps.success.dateTime') }}
-            </p>
-            <p class="text-sm font-medium capitalize text-(--ui-text-highlighted)">
-              {{ formattedDateTime }}
-            </p>
-          </div>
-        </div>
-
-        <template v-if="address">
-          <USeparator />
-          <div class="flex items-center gap-3">
-            <UIcon name="i-lucide-map-pin" class="size-5 shrink-0 text-(--ui-text-muted)" />
-            <div class="min-w-0">
-              <p class="text-xs text-(--ui-text-muted)">
-                {{ $ts('booking.steps.success.address') }}
-              </p>
-              <p class="text-sm font-medium text-(--ui-text-highlighted)">
-                {{ address }}
-              </p>
-            </div>
-          </div>
-        </template>
+    <dl class="flex flex-col gap-3 rounded-[16px] border border-default p-4 text-sm">
+      <div class="flex flex-col gap-0.5">
+        <dt class="text-xs text-muted">{{ $ts('booking.steps.success.services') }}</dt>
+        <dd class="font-medium text-highlighted">{{ serviceNames }}</dd>
       </div>
-    </UCard>
+      <div class="flex flex-col gap-0.5">
+        <dt class="text-xs text-muted">{{ $ts('booking.steps.success.dateTime') }}</dt>
+        <dd class="font-medium text-highlighted first-letter:uppercase">{{ when }}</dd>
+      </div>
+      <div class="flex flex-col gap-0.5">
+        <dt class="text-xs text-muted">{{ $ts('booking.steps.success.master') }}</dt>
+        <dd class="font-medium text-highlighted">{{ masterName }}</dd>
+      </div>
+      <div v-if="address" class="flex flex-col gap-0.5">
+        <dt class="text-xs text-muted">{{ $ts('booking.steps.success.address') }}</dt>
+        <dd class="font-medium text-highlighted">{{ address }}</dd>
+      </div>
+    </dl>
 
-    <div class="mt-auto flex flex-col gap-3 pb-2">
+    <div class="grid gap-2" :class="mapUrl ? 'grid-cols-2' : 'grid-cols-1'">
       <UButton
-        block
+        color="neutral"
+        variant="outline"
         size="lg"
         icon="i-lucide-calendar-plus"
         :label="$ts('booking.addToCalendar')"
-        :disabled="!booking"
+        class="justify-center rounded-[14px]"
         @click="downloadCalendarFile"
       />
       <UButton
-        block
-        size="lg"
+        v-if="mapUrl"
+        :to="mapUrl"
+        target="_blank"
+        rel="noopener noreferrer"
         color="neutral"
         variant="outline"
-        icon="i-lucide-user"
-        :label="$ts('booking.steps.success.returnToProfile')"
-        @click="returnToProfile"
+        size="lg"
+        icon="i-lucide-navigation"
+        :label="$ts('booking.steps.success.directions')"
+        class="justify-center rounded-[14px]"
       />
     </div>
   </section>

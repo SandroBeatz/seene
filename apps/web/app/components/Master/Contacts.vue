@@ -12,12 +12,7 @@ const MAX_CONTACTS = 5
 /** Filled contacts only, in the spec's order, at most 5 in a row. */
 const contacts = computed(() => {
   const p = props.profile
-  const address = [p.address, p.house_number, p.city].filter(Boolean).join(' ')
-  const mapUrl =
-    p.map_url ||
-    (p.address
-      ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`
-      : null)
+  const mapUrl = masterMapLink(p)
 
   const items = [
     {
