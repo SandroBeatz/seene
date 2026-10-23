@@ -1,30 +1,25 @@
 /**
- * Lookup used by the booking confirm step: is this phone a known client of the
- * master, and has it already been confirmed by SMS (then no OTP is needed)?
+ * Lookup used by the booking confirm step. It never says whether a phone is a
+ * client of the master: without this device's token every number gets the same
+ * answer ("a code is needed"). Only a device trusted for this phone and master
+ * is recognised, and only then is the client's name returned.
  */
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
   const phone = normalizePhone(query.phone)
-  const username = typeof query.username === 'string' ? query.username.trim() : null
   const supabase = useServiceSupabase()
+  const masterUserId = await getMasterUserId(supabase, query.username)
 
-  if (!username) {
-    throw createError({ statusCode: 400, message: 'Username is required' })
-  }
+  const devicePhone = await readDevicePhone(event, supabase, masterUserId)
 
-  const [{ data: profile }, verified] = await Promise.all([
-    supabase.from('master_profile').select('user_id').eq('username', username).maybeSingle(),
-    isPhoneVerified(supabase, phone)
-  ])
-
-  if (!profile) {
-    throw createError({ statusCode: 404, message: 'Master not found' })
+  if (devicePhone !== phone) {
+    return { recognized: false }
   }
 
   const { data: client, error } = await supabase
     .from('client')
     .select('first_name')
-    .eq('user_id', profile.user_id)
+    .eq('user_id', masterUserId)
     .in('phone', phoneLookupKeys(phone))
     .limit(1)
     .maybeSingle()
@@ -34,8 +29,7 @@ export default defineEventHandler(async (event) => {
   }
 
   return {
-    clientExists: Boolean(client),
-    verified,
+    recognized: true,
     ...(client?.first_name ? { firstName: client.first_name } : {})
   }
 })

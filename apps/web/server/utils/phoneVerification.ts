@@ -38,41 +38,6 @@ export function phoneLookupKeys(canonical: string) {
   return [canonical, `+${canonical}`]
 }
 
-/**
- * A phone is confirmed once — when the client first books and passes the SMS
- * check. Every later booking with that number skips the OTP step.
- */
-export async function isPhoneVerified(
-  supabase: ReturnType<typeof useServiceSupabase>,
-  phone: string
-) {
-  const { data, error } = await supabase
-    .from('phone_verification')
-    .select('phone')
-    .in('phone', phoneLookupKeys(phone))
-    .limit(1)
-    .maybeSingle()
-
-  if (error) {
-    throw createError({ statusCode: 500, message: 'Failed to check phone verification' })
-  }
-
-  return Boolean(data)
-}
-
-export async function markPhoneVerified(
-  supabase: ReturnType<typeof useServiceSupabase>,
-  phone: string
-) {
-  const { error } = await supabase
-    .from('phone_verification')
-    .upsert({ phone, verified_at: new Date().toISOString() }, { onConflict: 'phone' })
-
-  if (error) {
-    throw createError({ statusCode: 500, message: 'Failed to save phone verification' })
-  }
-}
-
 export function createPhoneVerificationToken(phone: string) {
   const payload: PhoneVerificationPayload = {
     phone,
@@ -136,7 +101,7 @@ function parsePayload(value: string): PhoneVerificationPayload | null {
   return null
 }
 
-function getTokenSecret() {
+export function getTokenSecret() {
   const config = useRuntimeConfig()
   const secret = config.phoneVerificationTokenSecret || config.supabaseServiceRoleKey
 

@@ -41,7 +41,16 @@ export function useSavedPhone() {
     writeStorage(canonical)
   }
 
-  return { read, save }
+  function clear() {
+    cookie.value = null
+    try {
+      localStorage.removeItem(STORAGE_KEY)
+    } catch {
+      // Blocked storage: nothing was saved there.
+    }
+  }
+
+  return { read, save, clear }
 }
 
 function readStorage() {

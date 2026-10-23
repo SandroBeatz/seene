@@ -46,15 +46,15 @@
         "cancel": "Annuler",
         "phone": "Numéro de téléphone",
         "welcome": "Ravis de vous revoir, {name} !",
-        "newClientHint": "À l’étape suivante, nous vous demanderons votre prénom et enverrons un code de confirmation via WhatsApp ou Telegram. Cela prend moins d’une minute, une seule fois.",
         "firstName": "Prénom",
         "creatingBooking": "Création de votre réservation...",
         "changeTime": "Changer l'heure",
         "checkingPhone": "Vérification du numéro…",
         "welcomeAnonymous": "Ravis de vous revoir !",
         "verifiedHint": "Votre numéro est déjà confirmé — il ne reste qu’à appuyer sur « Réserver ».",
-        "unverifiedHint": "Nous vous enverrons un court code via WhatsApp ou Telegram pour confirmer votre numéro. Une seule fois suffit.",
-        "newClientTitle": "Première visite ? Bienvenue !"
+        "notYou": "Ce n’est pas vous ?",
+        "codeTitle": "Confirmons votre numéro",
+        "codeHint": "Nous vous enverrons un court code via WhatsApp ou Telegram. Sur cet appareil, plus besoin de code pour réserver chez ce professionnel."
       },
       "success": {
         "title": "Réservation confirmée !",
@@ -83,6 +83,7 @@
       "invalidCode": "Code invalide, veuillez réessayer",
       "expiredCode": "Le code a expiré, veuillez en demander un nouveau",
       "tooManyAttempts": "Trop de tentatives, veuillez demander un nouveau code",
+      "tooManyRequests": "Trop de demandes de code. Réessayez plus tard",
       "sendFailed": "Impossible d’envoyer le code, réessayez"
     },
     "errors": {
@@ -108,7 +109,6 @@
     "verify": {
       "detailsTitle": "Ravi de vous rencontrer !",
       "detailsDescription": "Dites au maître comment vous appeler.",
-      "getCode": "Recevoir le code SMS",
       "sendingCode": "Envoi du code…",
       "checkingCode": "Vérification du code…",
       "changePhone": "Changer de numéro",
