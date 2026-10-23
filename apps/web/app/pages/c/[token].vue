@@ -132,6 +132,7 @@ const status = computed(() => {
 })
 
 const title = computed(() => {
+  if (state.value === 'moved') return $ts('cancel.titleMoved')
   if (state.value === 'cancelled') return $ts('cancel.titleCancelled')
   if (state.value === 'past') return $ts('cancel.titlePast')
   return $ts('cancel.title')
@@ -379,6 +380,25 @@ async function confirmCancel() {
           :label="$ts('cancel.bookAgain')"
           class="justify-center rounded-[16px] py-4 text-base font-semibold"
           @click="bookAgain()"
+        />
+      </div>
+
+      <div v-else-if="state === 'moved'" class="flex flex-col gap-3">
+        <div
+          class="flex items-start gap-2.5 rounded-[14px] bg-muted p-3.5 text-sm leading-normal text-highlighted"
+          role="status"
+        >
+          <UIcon name="i-lucide-calendar-check" class="mt-0.5 size-4.5 shrink-0" />
+          <span>{{ $ts('cancel.movedNote') }}</span>
+        </div>
+        <UButton
+          :to="$localePath(`/${username}`)"
+          color="neutral"
+          variant="outline"
+          size="xl"
+          block
+          :label="$ts('cancel.toProfile')"
+          class="justify-center rounded-[16px] py-3.5 text-[15px] font-semibold"
         />
       </div>
 

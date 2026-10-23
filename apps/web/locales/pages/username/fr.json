@@ -229,6 +229,7 @@
   "cancel": {
     "title": "Votre rendez-vous",
     "titleCancelled": "Rendez-vous annulé",
+    "titleMoved": "Rendez-vous déplacé",
     "titlePast": "Ce rendez-vous est passé",
     "status": {
       "confirmed": "Confirmé",
@@ -248,6 +249,7 @@
     "whatsapp": "Écrire sur WhatsApp",
     "whatsappText": "Bonjour ! J’ai rendez-vous avec vous le {when}, mais je ne pourrai pas venir.",
     "cancelledNote": "Le créneau est de nouveau libre. Merci d’avoir prévenu à l’avance.",
+    "movedNote": "La carte indique le nouvel horaire. La confirmation avec le lien du nouveau rendez-vous a été envoyée sur WhatsApp : utilisez-le pour l’annuler ou le déplacer à nouveau.",
     "bookAgain": "Reprendre rendez-vous",
     "pastNote": "Ce lien n’ouvre plus le rendez-vous. Vous pouvez en reprendre un sur la page du professionnel.",
     "toProfile": "Voir la page du professionnel",

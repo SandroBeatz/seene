@@ -229,6 +229,7 @@
   "cancel": {
     "title": "Your booking",
     "titleCancelled": "Booking cancelled",
+    "titleMoved": "Booking moved",
     "titlePast": "This visit has passed",
     "status": {
       "confirmed": "Confirmed",
@@ -248,6 +249,7 @@
     "whatsapp": "Message on WhatsApp",
     "whatsappText": "Hello! I am booked with you on {when}, but I cannot make it.",
     "cancelledNote": "The slot is free for someone else now. Thank you for letting us know in advance.",
+    "movedNote": "The card shows the new time. The confirmation with a link to the new booking was sent to WhatsApp: use it to cancel or move it again.",
     "bookAgain": "Book again",
     "pastNote": "This link no longer opens the booking. You can book again on the master’s page.",
     "toProfile": "Go to the master’s page",
