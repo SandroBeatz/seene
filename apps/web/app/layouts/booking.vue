@@ -2,6 +2,7 @@
 import { en, fr, ru } from '@nuxt/ui/locale'
 
 const { getLocale } = useI18n()
+const { cssVars } = useMasterTheme()
 
 // Localize Nuxt UI internals (calendar month/weekday names, aria labels).
 const uiLocale = computed(() => ({ en, fr, ru })[getLocale() as 'en' | 'fr' | 'ru'] ?? en)
@@ -9,8 +10,10 @@ const uiLocale = computed(() => ({ en, fr, ru })[getLocale() as 'en' | 'fr' | 'r
 
 <template>
   <UApp :locale="uiLocale">
-    <UMain class="min-h-dvh bg-[var(--ui-bg)] text-[var(--ui-text)]">
-      <slot />
-    </UMain>
+    <div :style="cssVars">
+      <UMain class="min-h-dvh bg-default text-default">
+        <slot />
+      </UMain>
+    </div>
   </UApp>
 </template>

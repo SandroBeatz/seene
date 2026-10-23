@@ -5,6 +5,7 @@ definePageMeta({ layout: 'booking', middleware: 'master-locale' })
 
 const route = useRoute()
 const { $ts, $localePath } = useI18n()
+const { setMasterSettings } = useMasterTheme()
 
 const username = computed(() => route.params.username as string)
 const bookingState = useBookingState(username.value)
@@ -12,6 +13,13 @@ const bookingState = useBookingState(username.value)
 const step3Ref = ref<{ submit: () => Promise<void>; busy: boolean } | null>(null)
 
 const { data, status, error } = useMasterData(username)
+
+// The master's theme and color for the layout.
+watch(
+  () => data.value?.settings,
+  (settings) => settings && setMasterSettings(settings),
+  { immediate: true }
+)
 const { formatPrice, formatDateTime } = useMasterFormat(() => data.value?.settings)
 
 watch(

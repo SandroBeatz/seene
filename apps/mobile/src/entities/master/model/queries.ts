@@ -13,11 +13,23 @@ export const masterKeys = {
 
 /** Minimum length before we bother hitting the RPC. */
 export const MIN_USERNAME_LENGTH = 3;
-const USERNAME_PATTERN = /^[a-z0-9_.]+$/;
+/**
+ * The page lives at seene/<username>. Same rule as the web
+ * (apps/web/shared/utils/username.ts) and the `master_profile_username_format`
+ * CHECK in the database: lowercase letters, digits, '_' and '-', 3-30 characters,
+ * starting with a letter or digit, no dots, site paths reserved.
+ */
+const USERNAME_PATTERN = /^[a-z0-9][a-z0-9_-]{2,29}$/;
+const RESERVED_USERNAMES = new Set([
+  'about', 'admin', 'api', 'app', 'assets', 'blog', 'book', 'booking', 'c',
+  'calculator', 'compare', 'en', 'fr', 'help', 'login', 'master', 'masters',
+  'pricing', 'privacy', 'ru', 'seene', 'signup', 'static', 'support', 'terms',
+  'waitlist', 'www',
+]);
 
 export function isUsernameSyntaxValid(username: string): boolean {
   const value = username.trim().toLowerCase();
-  return value.length >= MIN_USERNAME_LENGTH && USERNAME_PATTERN.test(value);
+  return USERNAME_PATTERN.test(value) && !RESERVED_USERNAMES.has(value);
 }
 
 export function useUsernameAvailability(username: string) {

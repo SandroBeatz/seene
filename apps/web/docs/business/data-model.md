@@ -1,12 +1,12 @@
 ---
-version: 2.0
-date: 2026-05-05
+version: 2.1
+date: 2026-10-23
 category: business
 ---
 
 # Data Model
 
-> Version 2.0 · 2026-05-05 · [Business](../)
+> Version 2.1 · 2026-10-23 · [Business](../)
 
 ## Overview
 
@@ -48,25 +48,44 @@ Identity, location, and availability data for the master. Populated once at the 
 
 ### Schema
 
-| Column            | Type          | Nullable | Default             | Description                                          |
-| ----------------- | ------------- | -------- | ------------------- | ---------------------------------------------------- |
-| `id`              | `uuid`        | NO       | `gen_random_uuid()` | Primary key                                          |
-| `user_id`         | `uuid`        | NO       | —                   | FK → `auth.users.id`; one profile per auth user      |
-| `first_name`      | `text`        | NO       | —                   | From onboarding Step 2                               |
-| `last_name`       | `text`        | NO       | —                   | From onboarding Step 2                               |
-| `phone`           | `text`        | NO       | —                   | International format, from Step 2                    |
-| `username`        | `text`        | NO       | —                   | Unique; forms public URL `seene.app/<username>`      |
-| `specializations` | `text[]`      | NO       | —                   | Array of category keys (see details below)           |
-| `country`         | `text`        | NO       | `''`                | ISO 3166-1 alpha-2 code or full country name         |
-| `address`         | `text`        | YES      | `null`              | Street address                                       |
-| `house_number`    | `text`        | YES      | `null`              | House/building number                                |
-| `zip_code`        | `text`        | YES      | `null`              | Postal code                                          |
-| `city`            | `text`        | YES      | `null`              | City name                                            |
-| `place_id`        | `text`        | YES      | `null`              | Google Places ID; used for geocoding and map display |
-| `works_at_place`  | `boolean`     | NO       | `true`              | Master accepts clients at their own address          |
-| `can_travel`      | `boolean`     | NO       | `false`             | Master can travel to client's location               |
-| `schedule`        | `jsonb`       | NO       | —                   | Weekly schedule with timezone (see structure below)  |
-| `created_at`      | `timestamptz` | NO       | `now()`             | Row creation timestamp                               |
+| Column              | Type          | Nullable | Default             | Description                                                                                    |
+| ------------------- | ------------- | -------- | ------------------- | ---------------------------------------------------------------------------------------------- |
+| `id`                | `uuid`        | NO       | `gen_random_uuid()` | Primary key                                                                                    |
+| `user_id`           | `uuid`        | NO       | —                   | FK → `auth.users.id`; one profile per auth user                                                |
+| `first_name`        | `text`        | NO       | —                   | From onboarding Step 2                                                                         |
+| `last_name`         | `text`        | NO       | —                   | From onboarding Step 2                                                                         |
+| `phone`             | `text`        | NO       | —                   | International format, from Step 2                                                              |
+| `username`          | `text`        | NO       | —                   | Unique; forms public URL `getseene.app/<username>` (format below)                              |
+| `specializations`   | `text[]`      | NO       | —                   | Array of category keys (see details below)                                                     |
+| `country`           | `text`        | NO       | `''`                | ISO 3166-1 alpha-2 code or full country name                                                   |
+| `address`           | `text`        | YES      | `null`              | Street address                                                                                 |
+| `house_number`      | `text`        | YES      | `null`              | House/building number                                                                          |
+| `zip_code`          | `text`        | YES      | `null`              | Postal code                                                                                    |
+| `city`              | `text`        | YES      | `null`              | City name                                                                                      |
+| `place_id`          | `text`        | YES      | `null`              | Google Places ID; used for geocoding and map display                                           |
+| `works_at_place`    | `boolean`     | NO       | `true`              | Master accepts clients at their own address                                                    |
+| `can_travel`        | `boolean`     | NO       | `false`             | Master can travel to client's location                                                         |
+| `schedule`          | `jsonb`       | NO       | —                   | Weekly schedule with timezone (see structure below)                                            |
+| `created_at`        | `timestamptz` | NO       | `now()`             | Row creation timestamp                                                                         |
+| `cover_url`         | `text`        | YES      | `null`              | Page poster, public URL in the `master-media` bucket                                           |
+| `experience_years`  | `smallint`    | YES      | `null`              | Years of experience, 0–80                                                                      |
+| `show_visits_count` | `boolean`     | NO       | `false`             | Show the number of visits on the public page                                                   |
+| `map_url`           | `text`        | YES      | `null`              | Link for the "Map" button                                                                      |
+| `is_verified`       | `boolean`     | NO       | `false`             | "Verified master" badge. Set by Seene; a trigger ignores changes from the master's own session |
+
+`bio` is limited to 600 characters (`master_profile_bio_length`).
+
+### `username` format
+
+The page lives at `/<username>`, so the rule is strict and enforced in three places that must stay in
+sync: the `master_profile_username_format` CHECK, `shared/utils/username.ts` (web) and
+`isUsernameSyntaxValid` (master app).
+
+- lowercase `a–z`, digits, `_` and `-`; 3–30 characters; starts with a letter or digit;
+- **no dots** (they read as a file extension in a URL);
+- site paths are reserved: `about`, `admin`, `api`, `app`, `assets`, `blog`, `book`, `booking`,
+  `calculator`, `compare`, `help`, `login`, `master`, `masters`, `pricing`, `privacy`, `seene`,
+  `signup`, `static`, `support`, `terms`, `waitlist`, `www` (plus locale prefixes).
 
 ### Constraints & indexes
 
@@ -139,16 +158,22 @@ Per-master display and behaviour preferences. Created via upsert at the end of o
 
 ### Schema
 
-| Column                       | Type          | Nullable | Default             | Constraint | Description                                           |
-| ---------------------------- | ------------- | -------- | ------------------- | ---------- | ----------------------------------------------------- |
-| `id`                         | `uuid`        | NO       | `gen_random_uuid()` | PK         | —                                                     |
-| `user_id`                    | `uuid`        | NO       | —                   | UNIQUE, FK | FK → `auth.users.id`                                  |
-| `time_format`                | `smallint`    | NO       | `24`                | —          | `12` (AM/PM) or `24` (HH:MM)                          |
-| `calendar_first_day`         | `smallint`    | NO       | `1`                 | `0–6`      | Week start: 0=Sunday … 6=Saturday                     |
-| `calendar_slot_step_minutes` | `smallint`    | NO       | `15`                | `1–120`    | Calendar time grid resolution in minutes              |
-| `default_calendar_view`      | `text`        | NO       | `'timeGridWeek'`    | enum check | One of: `dayGridMonth`, `timeGridWeek`, `timeGridDay` |
-| `created_at`                 | `timestamptz` | NO       | `now()`             | —          | —                                                     |
-| `updated_at`                 | `timestamptz` | NO       | `now()`             | —          | Application-maintained, not a trigger                 |
+| Column                       | Type          | Nullable | Default             | Constraint     | Description                                                                                                |
+| ---------------------------- | ------------- | -------- | ------------------- | -------------- | ---------------------------------------------------------------------------------------------------------- |
+| `id`                         | `uuid`        | NO       | `gen_random_uuid()` | PK             | —                                                                                                          |
+| `user_id`                    | `uuid`        | NO       | —                   | UNIQUE, FK     | FK → `auth.users.id`                                                                                       |
+| `time_format`                | `smallint`    | NO       | `24`                | —              | `12` (AM/PM) or `24` (HH:MM)                                                                               |
+| `calendar_first_day`         | `smallint`    | NO       | `1`                 | `0–6`          | Week start: 0=Sunday … 6=Saturday                                                                          |
+| `calendar_slot_step_minutes` | `smallint`    | NO       | `15`                | `1–120`        | Calendar time grid resolution in minutes                                                                   |
+| `default_calendar_view`      | `text`        | NO       | `'timeGridWeek'`    | enum check     | One of: `dayGridMonth`, `timeGridWeek`, `timeGridDay`                                                      |
+| `created_at`                 | `timestamptz` | NO       | `now()`             | —              | —                                                                                                          |
+| `updated_at`                 | `timestamptz` | NO       | `now()`             | —              | Application-maintained, not a trigger                                                                      |
+| `page_theme`                 | `text`        | NO       | `'light'`           | `light`/`dark` | Theme of the public page (`theme` is the master app's own theme)                                           |
+| `page_accent`                | `text`        | NO       | `'rose'`            | preset or hex  | Accent color: `rose`, `powder`, `lavender`, `sage`, `terracotta`, `graphite`, `gold`, `black` or `#RRGGBB` |
+| `booking_horizon_days`       | `smallint`    | NO       | `14`                | `1–90`         | How many days ahead clients can book                                                                       |
+| `cancel_window_hours`        | `smallint`    | NO       | `12`                | `0–168`        | Cancel by link allowed up to N hours before the visit                                                      |
+| `vacation_from`              | `date`        | YES      | `null`              | —              | Vacation start; online booking is paused                                                                   |
+| `vacation_until`             | `date`        | YES      | `null`              | `>= from`      | Vacation end, inclusive                                                                                    |
 
 ### Row-Level Security
 
@@ -209,20 +234,23 @@ Individual services that a master offers — e.g. "Manicure", "Haircut & Blowdry
 
 ### Schema
 
-| Column        | Type          | Nullable | Default             | Description                                             |
-| ------------- | ------------- | -------- | ------------------- | ------------------------------------------------------- |
-| `id`          | `uuid`        | NO       | `gen_random_uuid()` | Primary key                                             |
-| `user_id`     | `uuid`        | NO       | —                   | FK → `auth.users.id`                                    |
-| `category_id` | `uuid`        | YES      | `null`              | FK → `service_category.id`; SET NULL on category delete |
-| `name`        | `text`        | NO       | —                   | Service display name                                    |
-| `description` | `text`        | YES      | `null`              | Optional description                                    |
-| `duration`    | `integer`     | NO       | —                   | Duration in minutes                                     |
-| `price`       | `numeric`     | NO       | —                   | Price (currency determined by master's locale)          |
-| `color`       | `text`        | NO       | `'#a78bfa'`         | Hex color for calendar rendering                        |
-| `is_active`   | `boolean`     | NO       | `true`              | Whether the service is available for booking            |
-| `sort_order`  | `integer`     | NO       | `0`                 | Controls display ordering                               |
-| `created_at`  | `timestamptz` | NO       | `now()`             | —                                                       |
-| `updated_at`  | `timestamptz` | NO       | `now()`             | Application-maintained                                  |
+| Column        | Type          | Nullable | Default             | Description                                              |
+| ------------- | ------------- | -------- | ------------------- | -------------------------------------------------------- |
+| `id`          | `uuid`        | NO       | `gen_random_uuid()` | Primary key                                              |
+| `user_id`     | `uuid`        | NO       | —                   | FK → `auth.users.id`                                     |
+| `category_id` | `uuid`        | YES      | `null`              | FK → `service_category.id`; SET NULL on category delete  |
+| `name`        | `text`        | NO       | —                   | Service display name                                     |
+| `description` | `text`        | YES      | `null`              | Optional description                                     |
+| `duration`    | `integer`     | NO       | —                   | Duration in minutes                                      |
+| `price`       | `numeric`     | NO       | —                   | Price (currency determined by master's locale)           |
+| `color`       | `text`        | NO       | `'#a78bfa'`         | Hex color for calendar rendering                         |
+| `is_active`   | `boolean`     | NO       | `true`              | Whether the service is available for booking             |
+| `sort_order`  | `integer`     | NO       | `0`                 | Controls display ordering                                |
+| `created_at`  | `timestamptz` | NO       | `now()`             | —                                                        |
+| `updated_at`  | `timestamptz` | NO       | `now()`             | Application-maintained                                   |
+| `photo_url`   | `text`        | YES      | `null`              | Photo in the public service list (`master-media` bucket) |
+| `price_from`  | `boolean`     | NO       | `false`             | Show the price as "from <price>"                         |
+| `show_online` | `boolean`     | NO       | `true`              | `false`: listed on the page, not bookable online         |
 
 ### Constraints & indexes
 
@@ -248,19 +276,22 @@ The master's address book. Each entry represents a person who has had or may hav
 
 ### Schema
 
-| Column       | Type          | Nullable | Default             | Description                                           |
-| ------------ | ------------- | -------- | ------------------- | ----------------------------------------------------- |
-| `id`         | `uuid`        | NO       | `gen_random_uuid()` | Primary key                                           |
-| `user_id`    | `uuid`        | NO       | —                   | FK → `auth.users.id`                                  |
-| `first_name` | `text`        | NO       | —                   | —                                                     |
-| `last_name`  | `text`        | YES      | `null`              | Optional                                              |
-| `phone`      | `text`        | NO       | —                   | Required; unique per master (see index below)         |
-| `email`      | `text`        | YES      | `null`              | Optional                                              |
-| `birthday`   | `date`        | YES      | `null`              | Optional                                              |
-| `notes`      | `text`        | YES      | `null`              | Free-text master notes                                |
-| `source`     | `text`        | NO       | `'manual'`          | How this client was added (currently only `'manual'`) |
-| `created_at` | `timestamptz` | NO       | `now()`             | —                                                     |
-| `updated_at` | `timestamptz` | NO       | `now()`             | Application-maintained                                |
+| Column              | Type          | Nullable | Default             | Description                                                     |
+| ------------------- | ------------- | -------- | ------------------- | --------------------------------------------------------------- |
+| `id`                | `uuid`        | NO       | `gen_random_uuid()` | Primary key                                                     |
+| `user_id`           | `uuid`        | NO       | —                   | FK → `auth.users.id`                                            |
+| `first_name`        | `text`        | NO       | —                   | —                                                               |
+| `last_name`         | `text`        | YES      | `null`              | Optional                                                        |
+| `phone`             | `text`        | NO       | —                   | Required; unique per master (see index below)                   |
+| `email`             | `text`        | YES      | `null`              | Optional                                                        |
+| `birthday`          | `date`        | YES      | `null`              | Optional                                                        |
+| `notes`             | `text`        | YES      | `null`              | Free-text master notes                                          |
+| `source`            | `text`        | NO       | `'manual'`          | How this client was added: `'manual'` or `'online_booking'`     |
+| `blocked`           | `boolean`     | NO       | `false`             | Blacklist: online booking is refused without a reason           |
+| `reminders_consent` | `boolean`     | NO       | `false`             | Agreed to service messages (reminders) on the booking form      |
+| `marketing_consent` | `boolean`     | NO       | `false`             | Agreed to messages about next visits and offers; off by default |
+| `created_at`        | `timestamptz` | NO       | `now()`             | —                                                               |
+| `updated_at`        | `timestamptz` | NO       | `now()`             | Application-maintained                                          |
 
 ### Constraints & indexes
 
@@ -282,6 +313,24 @@ CREATE POLICY "Master manages own clients"
 ### Deletion behaviour
 
 A client **cannot be deleted** if they have existing appointments — the `appointments_client_id_fkey` uses `RESTRICT`. Appointments must be removed (or transferred) before deleting a client.
+
+---
+
+## `portfolio_item`
+
+Photos in the "Works" block of the public page. Public read, owner writes (same policies as `service`).
+
+| Column       | Type          | Nullable | Default             | Description                                       |
+| ------------ | ------------- | -------- | ------------------- | ------------------------------------------------- |
+| `id`         | `uuid`        | NO       | `gen_random_uuid()` | Primary key                                       |
+| `user_id`    | `uuid`        | NO       | —                   | FK → `auth.users.id`, cascade                     |
+| `photo_url`  | `text`        | NO       | —                   | Public URL in the `master-media` bucket           |
+| `service_id` | `uuid`        | YES      | `null`              | FK → `service.id`, SET NULL; caption of the photo |
+| `sort_order` | `integer`     | NO       | `0`                 | Display order                                     |
+| `created_at` | `timestamptz` | NO       | `now()`             | —                                                 |
+
+Files for the poster, portfolio and service photos live in the public `master-media` bucket as
+`<user_id>/<file>`, with owner-only write policies like `avatars`.
 
 ---
 
