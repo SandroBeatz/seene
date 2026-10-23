@@ -19,6 +19,8 @@ const props = defineProps<{
   defaultCountry?: string | null
   disabled?: boolean
   invalid?: boolean
+  /** Right of the number: a spinner while it is being checked, a check mark when it is fine. */
+  status?: 'checking' | 'ready' | null
 }>()
 
 /**
@@ -155,5 +157,21 @@ watch(model, (value) => {
       @update:model-value="onInput"
       @keydown.enter.prevent="emit('submit')"
     />
+    <span v-if="status" class="flex w-10 shrink-0 items-center justify-center pe-3">
+      <span
+        v-if="status === 'checking'"
+        role="status"
+        :aria-label="$ts('booking.steps.confirm.checkingPhone')"
+        class="size-4 animate-spin rounded-full border-2 border-default border-t-(--ui-text-muted) motion-reduce:animate-[spin_2.4s_linear_infinite]"
+      />
+      <span
+        v-else
+        role="img"
+        :aria-label="$ts('booking.steps.confirm.phoneOk')"
+        class="flex size-5 items-center justify-center rounded-full bg-success text-white"
+      >
+        <UIcon name="i-lucide-check" class="size-3.5" />
+      </span>
+    </span>
   </div>
 </template>

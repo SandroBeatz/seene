@@ -150,13 +150,16 @@
         "when": "Quand",
         "price": "Prix",
         "knownHint": "Votre numéro est déjà confirmé sur ce téléphone, pas besoin de code. Un rappel arrivera sur WhatsApp la veille.",
-        "newTitle": "Presque terminé",
-        "newHint": "Nous confirmons votre numéro par un code pour que la réservation soit bien la vôtre.",
         "firstName": "Votre prénom",
         "reminders": "Me rappeler le rendez-vous",
         "remindersHint": "sur WhatsApp la veille",
         "marketing": "M’informer des créneaux libres et des offres de {name}",
-        "services": "Prestations"
+        "services": "Prestations",
+        "checkingPhone": "Vérification du numéro",
+        "phoneOk": "Numéro valide",
+        "firstTitle": "Votre première visite",
+        "firstHint": "À quel nom réserver ? {name} ne voit que votre prénom et votre numéro.",
+        "namePlaceholder": "Prénom"
       },
       "success": {
         "title": "Rendez-vous confirmé",
@@ -181,7 +184,7 @@
       "otherChannel": "Pas reçu ? Envoyer via {channel}",
       "changePhone": "Changer de numéro",
       "get": "Recevoir le code",
-      "confirm": "Confirmer et réserver",
+      "confirm": "Confirmer",
       "channelTitle": "Où envoyer le code",
       "channels": {
         "whatsapp": "WhatsApp",

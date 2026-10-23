@@ -150,13 +150,16 @@
         "when": "When",
         "price": "Price",
         "knownHint": "Your number is already confirmed on this phone, no code needed. A reminder will come in WhatsApp the day before.",
-        "newTitle": "Almost done",
-        "newHint": "We'll confirm your number with a code so the booking is really yours.",
         "firstName": "Your name",
         "reminders": "Remind me about the visit",
         "remindersHint": "in WhatsApp the day before",
         "marketing": "Tell me about {name}'s free slots and offers",
-        "services": "Services"
+        "services": "Services",
+        "checkingPhone": "Checking the number",
+        "phoneOk": "Number is fine",
+        "firstTitle": "Your first visit",
+        "firstHint": "What name should we book under? {name} sees only your name and number.",
+        "namePlaceholder": "Name"
       },
       "success": {
         "title": "You're booked",
@@ -181,7 +184,7 @@
       "otherChannel": "Didn't get it? Send via {channel}",
       "changePhone": "Change number",
       "get": "Get the code",
-      "confirm": "Confirm and book",
+      "confirm": "Confirm",
       "channelTitle": "Where to send the code",
       "channels": {
         "whatsapp": "WhatsApp",
