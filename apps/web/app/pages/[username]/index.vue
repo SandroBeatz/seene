@@ -58,7 +58,7 @@ function book(serviceId?: string) {
         <USkeleton class="size-23 rounded-full border-4 border-(--ui-bg)" />
         <USkeleton class="h-7 w-48" />
         <USkeleton class="h-4 w-32" />
-        <USkeleton class="mt-2 h-16 w-full rounded-2xl" />
+        <USkeleton class="mt-2 h-16 w-full rounded-[16px]" />
       </div>
     </template>
 
@@ -83,9 +83,10 @@ function book(serviceId?: string) {
         @book="book"
       />
 
-      <MasterFooter />
-
+      <!-- Sticky while scrolling, then settles in place above the footer. -->
       <MasterBookBar :data="data" :booking-enabled="bookingEnabled" @book="book()" />
+
+      <MasterFooter />
     </template>
   </div>
 </template>

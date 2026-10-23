@@ -33,7 +33,7 @@ const stats = computed(() => {
   if (visits) {
     const { value, plus } = roundVisits(visits)
     items.push({
-      value: `${new Intl.NumberFormat(getLocale()).format(value)}${plus ? '+' : ''}`,
+      value: `${new Intl.NumberFormat(getLocale(), { useGrouping: 'always' }).format(value)}${plus ? '+' : ''}`,
       label: plural('master.stats.visits', value)
     })
   }
@@ -111,7 +111,7 @@ async function share() {
 
       <dl
         v-if="stats.length"
-        class="grid divide-x divide-default rounded-2xl border border-default"
+        class="grid divide-x divide-default rounded-[16px] border border-default"
         :style="{ gridTemplateColumns: `repeat(${stats.length}, minmax(0, 1fr))` }"
       >
         <div

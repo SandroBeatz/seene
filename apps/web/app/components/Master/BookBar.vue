@@ -62,7 +62,7 @@ const whatsappUrl = computed(() => {
       size="xl"
       block
       trailing-icon="i-lucide-arrow-right"
-      class="seene-rise rounded-2xl px-4.5 py-3.5 shadow-lg shadow-black/15"
+      class="seene-rise rounded-[16px] px-4.5 py-3.5 shadow-lg shadow-black/15"
       :ui="{ trailingIcon: 'ms-auto' }"
       @click="$emit('book')"
     >
@@ -87,7 +87,7 @@ const whatsappUrl = computed(() => {
         block
         icon="i-simple-icons-whatsapp"
         :label="$ts('master.book.whatsapp')"
-        class="seene-rise rounded-2xl bg-[#0E7A3F] py-4 text-base font-semibold text-white shadow-lg shadow-black/15 hover:bg-[#0B6633]"
+        class="seene-rise rounded-[16px] bg-[#0E7A3F] py-4 text-base font-semibold text-white shadow-lg shadow-black/15 hover:bg-[#0B6633]"
       />
       <p class="text-xs text-muted">
         {{ $ts('master.book.whatsappHint', { name: data.profile.first_name }) }}
