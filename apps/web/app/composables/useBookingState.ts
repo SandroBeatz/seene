@@ -40,6 +40,18 @@ export interface BookingState {
   /** News and offers from the master (off unless she ticks it). */
   marketingConsent: boolean
   booking: BookingResult | null
+  /**
+   * Moving an existing booking (opened from its personal link): the new one
+   * replaces it, and the old one is cancelled only once the new one exists.
+   */
+  reschedule: BookingReschedule | null
+}
+
+export interface BookingReschedule {
+  /** Token of the old booking's link; the server checks it is hers */
+  token: string
+  /** Start of the old booking (ISO), shown while she picks a new time */
+  startsAt: string
 }
 
 export function createBookingState(overrides: Partial<BookingState> = {}): BookingState {
@@ -52,6 +64,7 @@ export function createBookingState(overrides: Partial<BookingState> = {}): Booki
     remindersConsent: true,
     marketingConsent: false,
     booking: null,
+    reschedule: null,
     ...overrides
   }
 }

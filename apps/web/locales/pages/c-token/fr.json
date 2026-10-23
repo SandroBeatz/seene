@@ -1,0 +1,69 @@
+{
+  "master": {
+    "verified": {
+      "label": "Pro vérifiée",
+      "hint": "Pro vérifiée : Seene a vérifié le numéro et le profil"
+    },
+    "duration": {
+      "hours": "{count} h",
+      "minutes": "{count} min"
+    }
+  },
+  "specializations": {
+    "makeup": "Maquillage",
+    "hair": "Coiffure",
+    "nails": "Ongles",
+    "barber": "Barbier",
+    "massage": "Massage",
+    "tattoo_piercing": "Tatouage & Piercing",
+    "depilation": "Dépilation",
+    "cosmetology": "Cosmétologie",
+    "brows_lashes": "Sourcils & Cils"
+  },
+  "booking": {
+    "service": {
+      "priceFrom": "à partir de {price}"
+    }
+  },
+  "cancel": {
+    "title": "Votre rendez-vous",
+    "titleCancelled": "Rendez-vous annulé",
+    "titlePast": "Ce rendez-vous est passé",
+    "status": {
+      "confirmed": "Confirmé",
+      "pending": "En attente de confirmation",
+      "cancelled": "Annulé"
+    },
+    "rows": {
+      "service": "Prestation",
+      "when": "Quand",
+      "address": "Adresse",
+      "price": "Prix"
+    },
+    "move": "Choisir un autre horaire",
+    "cancel": "Annuler le rendez-vous",
+    "cancelUntil": "Annulation en ligne possible jusqu’au {when}",
+    "late": "Le rendez-vous est dans moins de {hours} h : l’annulation en ligne est fermée. Écrivez au professionnel : {name} vous proposera un autre horaire.",
+    "whatsapp": "Écrire sur WhatsApp",
+    "whatsappText": "Bonjour ! J’ai rendez-vous avec vous le {when}, mais je ne pourrai pas venir.",
+    "cancelledNote": "Le créneau est de nouveau libre. Merci d’avoir prévenu à l’avance.",
+    "bookAgain": "Reprendre rendez-vous",
+    "pastNote": "Ce lien n’ouvre plus le rendez-vous. Vous pouvez en reprendre un sur la page du professionnel.",
+    "toProfile": "Voir la page du professionnel",
+    "sheet": {
+      "title": "Annuler le rendez-vous ?",
+      "description": "{when}. Le créneau sera libéré tout de suite.",
+      "reason": "Motif, si vous le souhaitez",
+      "reasonPlaceholder": "Par exemple : je suis malade",
+      "confirm": "Oui, annuler",
+      "keep": "Non, le garder"
+    },
+    "errors": {
+      "cancelFailed": "Impossible d’annuler le rendez-vous, réessayez",
+      "windowClosed": "L’annulation en ligne est fermée. Écrivez au professionnel."
+    },
+    "seo": {
+      "title": "Votre rendez-vous · Seene"
+    }
+  }
+}

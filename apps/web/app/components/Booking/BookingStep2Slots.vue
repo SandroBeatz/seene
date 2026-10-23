@@ -27,6 +27,19 @@ const summary = useBookingSummary(() => props.data)
 const timezone = computed(() => props.data.timezone)
 const { formatTime } = useMasterFormat(() => props.data.settings, timezone)
 
+/** "Fri, 24 Oct, 11:30": the booking being moved, while she picks a new time. */
+const rescheduleFrom = computed(() => {
+  const from = bookingState.value.reschedule?.startsAt
+  if (!from) return ''
+  const day = new Intl.DateTimeFormat(getLocale(), {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+    timeZone: timezone.value
+  }).format(new Date(from))
+  return `${day}, ${formatTime(from)}`
+})
+
 const {
   data: availability,
   isPending,
@@ -198,6 +211,16 @@ const isEmpty = computed(() => !isPending.value && !error.value && !hasAnyFreeDa
       <h1 class="mx-1 font-display text-[26px] font-bold tracking-[-0.03em] text-highlighted">
         {{ $ts('booking.steps.slots.title') }}
       </h1>
+
+      <UAlert
+        v-if="rescheduleFrom"
+        color="neutral"
+        variant="subtle"
+        icon="i-lucide-calendar-sync"
+        class="rounded-[14px]"
+        :title="$ts('booking.steps.slots.rescheduleFrom', { when: rescheduleFrom })"
+        :description="$ts('booking.steps.slots.rescheduleNote')"
+      />
 
       <UAlert
         v-if="slotTaken"

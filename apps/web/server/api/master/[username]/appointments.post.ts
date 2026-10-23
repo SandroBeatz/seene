@@ -17,9 +17,13 @@ type AppointmentRequestBody = {
   otp_token?: unknown
   reminders_consent?: unknown
   marketing_consent?: unknown
+  /** Token of the booking being moved (from its personal link) */
+  reschedule_token?: unknown
 }
 
 type BookingResponse = {
+  /** Personal link to cancel or move this booking */
+  link: string
   booking: {
     id: string
     starts_at: string
@@ -60,13 +64,14 @@ export default defineEventHandler(async (event) => {
   const note = parseNote(body.note)
   const remindersConsent = parseConsent(body.reminders_consent, 'reminders_consent')
   const marketingConsent = parseConsent(body.marketing_consent, 'marketing_consent')
+  const rescheduleToken = parseRescheduleToken(body.reschedule_token)
 
   const supabase = useServiceSupabase()
 
   // Step 1: load master profile (schedule needed for slot validation)
   const { data: profile } = await supabase
     .from('master_profile')
-    .select('id, user_id, schedule')
+    .select('id, user_id, first_name, last_name, schedule')
     .eq('username', username)
     .maybeSingle()
 
@@ -81,6 +86,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const holderHash = readHolderHash(event)
+  let messageSettings: { language: string | null; time_format: number | null } | null = null
 
   // If master not found, let the RPC return master_not_found
   if (profile) {
@@ -88,7 +94,7 @@ export default defineEventHandler(async (event) => {
       supabase
         .from('master_settings')
         .select(
-          'online_booking_enabled, booking_min_notice_minutes, booking_buffer_minutes, calendar_slot_step_minutes, vacation_from, vacation_until'
+          'online_booking_enabled, booking_min_notice_minutes, booking_buffer_minutes, calendar_slot_step_minutes, vacation_from, vacation_until, language, time_format'
         )
         .eq('user_id', profile.user_id)
         .maybeSingle(),
@@ -104,6 +110,7 @@ export default defineEventHandler(async (event) => {
     if (!settingsRow || !settingsRow.online_booking_enabled) {
       throw createError({ statusCode: 403, message: 'Online booking is disabled' })
     }
+    messageSettings = settingsRow
 
     // Gate: the slot is one she could have been shown (schedule, breaks, step,
     // notice, vacation, other clients' holds). The RPC repeats the conflict
@@ -125,6 +132,8 @@ export default defineEventHandler(async (event) => {
     }
   }
 
+  const link = createBookingLinkToken()
+
   const { data, error } = await supabase.rpc('create_appointment_from_booking', {
     p_username: username,
     p_service_ids: serviceIds,
@@ -136,14 +145,43 @@ export default defineEventHandler(async (event) => {
     p_holder_hash: holderHash ?? undefined,
     p_reminders_consent: remindersConsent ?? undefined,
     p_marketing_consent: marketingConsent ?? undefined,
-    p_future_limit: FUTURE_BOOKINGS_LIMIT
+    p_future_limit: FUTURE_BOOKINGS_LIMIT,
+    p_link_hash: link.hash,
+    p_replaces_hash: rescheduleToken ? hashBookingLinkToken(rescheduleToken) : undefined
   })
 
   if (error) {
     throw mapCreateAppointmentError(error.message)
   }
 
-  return parseBookingResponse(data)
+  const { created, booking } = parseBookingResponse(data)
+  const locale = messageLocale(messageSettings?.language)
+  const linkUrl = bookingLinkUrl(event, link.token, locale)
+
+  // The confirmation goes once, for the booking just made (not on a repeated
+  // tap). A failed message does not undo the booking.
+  if (created && profile) {
+    try {
+      await sendMessage(
+        { phone, channel: 'whatsapp' },
+        {
+          template: booking.status === 'confirmed' ? 'booking_confirmed' : 'booking_pending',
+          master: `${profile.first_name} ${profile.last_name}`.trim(),
+          when: formatVisitTime(booking.starts_at, {
+            locale,
+            timezone: getProfileTimezone(profile.schedule),
+            hour12: messageSettings?.time_format === 12
+          }),
+          link: linkUrl
+        },
+        locale
+      )
+    } catch (sendError) {
+      console.error('[booking] confirmation not sent', sendError)
+    }
+  }
+
+  return { link: linkUrl, booking } satisfies BookingResponse
 
   /**
    * A repeated tap after the booking went through: her own appointment now
@@ -194,6 +232,19 @@ function parseStartsAt(value: unknown) {
   }
 
   return startsAt.toISOString()
+}
+
+function parseRescheduleToken(value: unknown) {
+  if (value === undefined || value === null) {
+    return null
+  }
+
+  const token = parseBookingLinkToken(value)
+  if (!token) {
+    throw createError({ statusCode: 400, message: 'reschedule_token is invalid' })
+  }
+
+  return token
 }
 
 function parseName(value: unknown, field: string) {
@@ -254,6 +305,16 @@ function mapCreateAppointmentError(message: string) {
     })
   }
 
+  // The booking being moved can no longer be cancelled (window closed,
+  // cancelled already, or not hers).
+  if (message.includes('reschedule_unavailable')) {
+    return createError({
+      statusCode: 409,
+      message: 'The booking can no longer be moved',
+      data: { code: 'reschedule_unavailable' }
+    })
+  }
+
   if (message.includes('slot_unavailable')) {
     return createError({ statusCode: 409, message: 'Slot is unavailable' })
   }
@@ -278,12 +339,15 @@ function mapCreateAppointmentError(message: string) {
   return createError({ statusCode: 500, message: 'Failed to create appointment' })
 }
 
-function parseBookingResponse(value: Json | null): BookingResponse {
+function parseBookingResponse(value: Json | null) {
   if (!isRecord(value) || !isRecord(value.booking)) {
     throw createError({ statusCode: 500, message: 'Appointment response is invalid' })
   }
 
-  return value as unknown as BookingResponse
+  return {
+    created: value.created !== false,
+    booking: value.booking as unknown as BookingResponse['booking']
+  }
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

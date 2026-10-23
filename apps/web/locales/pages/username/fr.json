@@ -136,7 +136,9 @@
         "noUpcomingSlots": "Tout est réservé pour les {days} prochains jours",
         "changeServices": "Modifier les prestations : {price}, {duration}",
         "otherService": "Choisir une autre prestation",
-        "loading": "Chargement des créneaux"
+        "loading": "Chargement des créneaux",
+        "rescheduleFrom": "Déplacement du rendez-vous du {when}",
+        "rescheduleNote": "L’ancien rendez-vous sera annulé une fois le nouvel horaire réservé."
       },
       "confirm": {
         "phoneTitle": "Votre numéro de téléphone",
@@ -172,7 +174,8 @@
         "cancelDayBefore": "jusqu’à {time} la veille",
         "cancelSameDay": "jusqu’à {time} le jour même",
         "cancelOn": "jusqu’à {time}, {day}",
-        "calendarTitle": "Rendez-vous avec {master}"
+        "calendarTitle": "Rendez-vous avec {master}",
+        "rescheduledTitle": "Rendez-vous déplacé"
       }
     },
     "code": {
@@ -223,7 +226,8 @@
       "phoneInvalid": "Saisissez un numéro valide",
       "nameRequired": "Saisissez votre prénom",
       "limit": "Vous avez déjà 2 rendez-vous à venir avec cette professionnelle. Pour en prendre un autre, écrivez-lui.",
-      "refused": "La réservation en ligne n’est pas disponible. Contactez directement la professionnelle."
+      "refused": "La réservation en ligne n’est pas disponible. Contactez directement la professionnelle.",
+      "rescheduleUnavailable": "Ce rendez-vous ne peut plus être déplacé en ligne. Écrivez au professionnel."
     }
   }
 }

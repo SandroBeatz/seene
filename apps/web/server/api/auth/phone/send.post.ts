@@ -3,7 +3,7 @@ import { randomInt } from 'node:crypto'
 const CODE_CHANNELS = ['whatsapp', 'telegram'] as const
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody<{ phone?: string; channel?: string }>(event)
+  const body = await readBody<{ phone?: string; channel?: string; locale?: string }>(event)
   const phone = normalizePhone(body.phone)
   const channel = CODE_CHANNELS.find((item) => item === body.channel)
 
@@ -64,9 +64,15 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 500, message: 'Failed to create OTP code' })
   }
 
-  // TODO: deliver the code via `channel` (WhatsApp / Telegram). Until a provider
-  // is wired, the code is returned only where exposing it is allowed: local dev,
-  // or an environment that sets NUXT_OTP_EXPOSE_CODE=true for testing.
+  try {
+    await sendMessage({ phone, channel }, { template: 'code', code }, messageLocale(body.locale))
+  } catch {
+    throw createError({ statusCode: 502, message: 'Failed to send the code' })
+  }
+
+  // Until a real provider delivers codes, the code is also returned where
+  // exposing it is allowed: local dev, or an environment that sets
+  // NUXT_OTP_EXPOSE_CODE=true for testing.
   const exposeCode = import.meta.dev || useRuntimeConfig().otpExposeCode
 
   return { success: true, channel, ...(exposeCode ? { code } : {}) }

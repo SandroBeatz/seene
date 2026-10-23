@@ -1,12 +1,12 @@
 ---
-version: 2.1
-date: 2026-10-23
+version: 2.2
+date: 2026-10-24
 category: business
 ---
 
 # Data Model
 
-> Version 2.1 · 2026-10-23 · [Business](../)
+> Version 2.2 · 2026-10-24 · [Business](../)
 
 ## Overview
 
@@ -340,19 +340,23 @@ A booking — one master, one client, one or more services, at a specific time.
 
 ### Schema
 
-| Column        | Type          | Nullable | Default             | Constraint | Description                                      |
-| ------------- | ------------- | -------- | ------------------- | ---------- | ------------------------------------------------ |
-| `id`          | `uuid`        | NO       | `gen_random_uuid()` | PK         | —                                                |
-| `user_id`     | `uuid`        | NO       | —                   | FK         | FK → `auth.users.id`                             |
-| `client_id`   | `uuid`        | NO       | —                   | FK         | FK → `client.id`; RESTRICT on client delete      |
-| `service_ids` | `uuid[]`      | NO       | `'{}'::uuid[]`      | —          | Denormalized array of `service.id` values        |
-| `start_at`    | `timestamptz` | NO       | —                   | —          | Appointment start time (stored in UTC)           |
-| `duration`    | `integer`     | NO       | —                   | —          | Total duration in minutes                        |
-| `price`       | `numeric`     | YES      | `null`              | —          | Override price; `null` means use sum of services |
-| `status`      | `text`        | NO       | `'pending'`         | enum check | See status values below                          |
-| `notes`       | `text`        | YES      | `null`              | —          | Master's notes for this appointment              |
-| `created_at`  | `timestamptz` | NO       | `now()`             | —          | —                                                |
-| `updated_at`  | `timestamptz` | NO       | `now()`             | —          | Application-maintained                           |
+| Column             | Type          | Nullable | Default             | Constraint | Description                                                           |
+| ------------------ | ------------- | -------- | ------------------- | ---------- | --------------------------------------------------------------------- |
+| `id`               | `uuid`        | NO       | `gen_random_uuid()` | PK         | —                                                                     |
+| `user_id`          | `uuid`        | NO       | —                   | FK         | FK → `auth.users.id`                                                  |
+| `client_id`        | `uuid`        | NO       | —                   | FK         | FK → `client.id`; RESTRICT on client delete                           |
+| `service_ids`      | `uuid[]`      | NO       | `'{}'::uuid[]`      | —          | Denormalized array of `service.id` values                             |
+| `start_at`         | `timestamptz` | NO       | —                   | —          | Appointment start time (stored in UTC)                                |
+| `duration`         | `integer`     | NO       | —                   | —          | Total duration in minutes                                             |
+| `price`            | `numeric`     | YES      | `null`              | —          | Override price; `null` means use sum of services                      |
+| `status`           | `text`        | NO       | `'pending'`         | enum check | See status values below                                               |
+| `notes`            | `text`        | YES      | `null`              | —          | Master's notes for this appointment                                   |
+| `cancelled_at`     | `timestamptz` | YES      | `null`              | —          | When it was cancelled                                                 |
+| `cancelled_by`     | `text`        | YES      | `null`              | check      | `client` (by link) or `master`; `null` on older rows                  |
+| `cancel_reason`    | `text`        | YES      | `null`              | ≤ 200      | Optional reason the client typed                                      |
+| `rescheduled_from` | `uuid`        | YES      | `null`              | FK         | The appointment this one replaced (client moved it by link); SET NULL |
+| `created_at`       | `timestamptz` | NO       | `now()`             | —          | —                                                                     |
+| `updated_at`       | `timestamptz` | NO       | `now()`             | —          | Application-maintained                                                |
 
 ### `status` values
 
@@ -391,6 +395,25 @@ CREATE POLICY "Master manages own appointments"
   ON public.appointments FOR ALL
   USING (auth.uid() = user_id);
 ```
+
+### Personal link: `booking_link`
+
+The confirmation and the reminder carry a personal link `/c/<token>` that opens one appointment
+without signing in, to cancel or move it. Server-only table (RLS on, no policies).
+
+| Column           | Type          | Description                                                     |
+| ---------------- | ------------- | --------------------------------------------------------------- |
+| `appointment_id` | `uuid`        | FK → `appointments.id`, cascade                                 |
+| `token_hash`     | `text`        | SHA-256 of the 256-bit random token (unique); never the token   |
+| `expires_at`     | `timestamptz` | Visit start + 24 h; after that the page says "visit has passed" |
+
+One appointment can have several links (confirmation, reminder, a repeated tap). Functions:
+
+- `cancel_appointment_by_link(token_hash, reason)` cancels while `master_settings.cancel_window_hours`
+  (12 by default) has not started; raises `link_not_found`, `cancel_window_closed`, `not_cancellable`.
+- `create_appointment_from_booking(…, p_link_hash, p_replaces_hash)` saves the new link and, for a
+  move, cancels the old appointment after creating the new one, in one transaction
+  (`reschedule_unavailable` if the old one is not hers or can no longer be cancelled).
 
 ---
 

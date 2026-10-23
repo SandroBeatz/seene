@@ -136,7 +136,9 @@
         "noUpcomingSlots": "Fully booked for the next {days} days",
         "changeServices": "Change services: {price}, {duration}",
         "otherService": "Choose another service",
-        "loading": "Loading free times"
+        "loading": "Loading free times",
+        "rescheduleFrom": "Moving your booking from {when}",
+        "rescheduleNote": "The old booking is cancelled once you book the new time."
       },
       "confirm": {
         "phoneTitle": "Your phone number",
@@ -172,7 +174,8 @@
         "cancelDayBefore": "until {time} the day before",
         "cancelSameDay": "until {time} on the day",
         "cancelOn": "until {time}, {day}",
-        "calendarTitle": "Booking with {master}"
+        "calendarTitle": "Booking with {master}",
+        "rescheduledTitle": "Booking moved"
       }
     },
     "code": {
@@ -223,7 +226,8 @@
       "phoneInvalid": "Enter a valid phone number",
       "nameRequired": "Enter your name",
       "limit": "You already have 2 upcoming bookings with this master. To book more, message the master.",
-      "refused": "Online booking with this master is not available. Please contact the master directly."
+      "refused": "Online booking with this master is not available. Please contact the master directly.",
+      "rescheduleUnavailable": "This booking can no longer be moved online. Please message the master."
     }
   }
 }
