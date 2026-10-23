@@ -136,9 +136,7 @@
         "noUpcomingSlots": "Fully booked for the next {days} days",
         "changeServices": "Change services: {price}, {duration}",
         "otherService": "Choose another service",
-        "loading": "Loading free times",
-        "rescheduleFrom": "Moving your booking from {when}",
-        "rescheduleNote": "The old booking is cancelled once you book the new time."
+        "loading": "Loading free times"
       },
       "confirm": {
         "phoneTitle": "Your phone number",
@@ -174,8 +172,7 @@
         "cancelDayBefore": "until {time} the day before",
         "cancelSameDay": "until {time} on the day",
         "cancelOn": "until {time}, {day}",
-        "calendarTitle": "Booking with {master}",
-        "rescheduledTitle": "Booking moved"
+        "calendarTitle": "Booking with {master}"
       }
     },
     "code": {
@@ -226,8 +223,58 @@
       "phoneInvalid": "Enter a valid phone number",
       "nameRequired": "Enter your name",
       "limit": "You already have 2 upcoming bookings with this master. To book more, message the master.",
-      "refused": "Online booking with this master is not available. Please contact the master directly.",
-      "rescheduleUnavailable": "This booking can no longer be moved online. Please message the master."
+      "refused": "Online booking with this master is not available. Please contact the master directly."
+    }
+  },
+  "cancel": {
+    "title": "Your booking",
+    "titleCancelled": "Booking cancelled",
+    "titlePast": "This visit has passed",
+    "status": {
+      "confirmed": "Confirmed",
+      "pending": "Awaiting confirmation",
+      "cancelled": "Cancelled"
+    },
+    "rows": {
+      "service": "Service",
+      "when": "When",
+      "address": "Address",
+      "price": "Price"
+    },
+    "move": "Move to another time",
+    "cancel": "Cancel booking",
+    "cancelUntil": "You can cancel online until {when}",
+    "late": "The visit is less than {hours} h away, so online cancellation is closed. Message the master: {name} will offer another time.",
+    "whatsapp": "Message on WhatsApp",
+    "whatsappText": "Hello! I am booked with you on {when}, but I cannot make it.",
+    "cancelledNote": "The slot is free for someone else now. Thank you for letting us know in advance.",
+    "bookAgain": "Book again",
+    "pastNote": "This link no longer opens the booking. You can book again on the master’s page.",
+    "toProfile": "Go to the master’s page",
+    "sheet": {
+      "title": "Cancel the booking?",
+      "description": "{when}. The slot will be freed right away.",
+      "reason": "Reason, if you like",
+      "reasonPlaceholder": "For example: I am ill",
+      "confirm": "Yes, cancel",
+      "keep": "No, keep it"
+    },
+    "errors": {
+      "cancelFailed": "Could not cancel the booking, please try again",
+      "windowClosed": "Online cancellation is closed. Please message the master."
+    },
+    "seo": {
+      "title": "Your booking · Seene"
+    },
+    "reschedule": {
+      "from": "Moving your booking from {when}",
+      "note": "The old booking is cancelled as soon as you confirm the new time.",
+      "action": "Move",
+      "close": "Close",
+      "done": "Booking moved",
+      "doneNote": "The old booking is cancelled and its slot is free.",
+      "unavailable": "This booking can no longer be moved online. Please message the master.",
+      "failed": "Could not move the booking, please try again"
     }
   }
 }

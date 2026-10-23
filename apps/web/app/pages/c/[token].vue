@@ -145,7 +145,7 @@ const whatsappUrl = computed(() =>
     : null
 )
 
-// --- Move and book again: the booking flow over the master's page ---
+// --- Move and book again ---
 
 /** The booked services the master still takes online. */
 const bookableServiceIds = computed(() => {
@@ -155,16 +155,40 @@ const bookableServiceIds = computed(() => {
   return (booking.value?.services ?? []).map((s) => s.id).filter((id) => online.has(id))
 })
 
-function openBooking(reschedule: boolean) {
+// Moving keeps the same services, so every one of them must still be bookable.
+const canMove = computed(
+  () =>
+    !!master.value?.settings.online_booking_enabled &&
+    !!booking.value?.services.length &&
+    bookableServiceIds.value.length === booking.value.services.length
+)
+
+const rescheduleOpen = ref(false)
+// Survives the switch to the new booking's link, to say it was moved.
+const movedNotice = useState('booking-link-moved', () => false)
+const justMoved = ref(movedNotice.value)
+movedNotice.value = false
+
+async function onMoved(newToken: string) {
+  movedNotice.value = true
+  await navigateTo($localePath(`/c/${newToken}`), { replace: true })
+  rescheduleOpen.value = false
+}
+
+async function onMoveUnavailable() {
+  rescheduleOpen.value = false
+  await refetchLink()
+}
+
+/** "Book again": the booking flow over the master's page, on the time step. */
+function bookAgain() {
   if (!username.value) return
   const bookingState = useBookingState(username.value)
   const serviceIds = bookableServiceIds.value
 
   bookingState.value = createBookingState({
     phone: bookingState.value.phone,
-    selectedServiceIds: serviceIds,
-    reschedule:
-      reschedule && booking.value ? { token: token.value, startsAt: booking.value.starts_at } : null
+    selectedServiceIds: serviceIds
   })
 
   return navigateTo({
@@ -243,6 +267,16 @@ async function confirmCancel() {
         </span>
       </NuxtLink>
 
+      <UAlert
+        v-if="justMoved && state === 'open'"
+        color="success"
+        variant="subtle"
+        icon="i-lucide-calendar-check"
+        class="rounded-[14px]"
+        :title="$ts('cancel.reschedule.done')"
+        :description="$ts('cancel.reschedule.doneNote')"
+      />
+
       <div class="flex flex-col items-start gap-2.5">
         <UBadge
           v-if="booking"
@@ -291,13 +325,14 @@ async function confirmCancel() {
 
       <div v-if="state === 'open'" class="flex flex-col gap-2.5">
         <UButton
+          v-if="canMove"
           color="neutral"
           variant="outline"
           size="xl"
           block
           :label="$ts('cancel.move')"
           class="justify-center rounded-[16px] py-3.5 text-[15px] font-semibold"
-          @click="openBooking(true)"
+          @click="rescheduleOpen = true"
         />
         <UButton
           color="error"
@@ -343,7 +378,7 @@ async function confirmCancel() {
           block
           :label="$ts('cancel.bookAgain')"
           class="justify-center rounded-[16px] py-4 text-base font-semibold"
-          @click="openBooking(false)"
+          @click="bookAgain()"
         />
       </div>
 
@@ -358,6 +393,17 @@ async function confirmCancel() {
         />
       </div>
     </section>
+
+    <BookingReschedule
+      v-if="master && booking && canMove"
+      v-model:open="rescheduleOpen"
+      :data="master"
+      :token="token"
+      :starts-at="booking.starts_at"
+      :service-ids="bookableServiceIds"
+      @moved="onMoved"
+      @unavailable="onMoveUnavailable"
+    />
 
     <UDrawer
       v-model:open="sheetOpen"
