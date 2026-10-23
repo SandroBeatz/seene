@@ -19,7 +19,14 @@ interface PhoneCheck {
   firstName?: string
 }
 
-type Screen = 'loading' | 'phone' | 'known' | 'new' | 'otp'
+/**
+ * phone   → number and code channel (a trusted browser jumps to `known`)
+ * known   → this browser is trusted for the number: book without a code
+ * otp     → the code
+ * welcome → after the code: the master already has this number
+ * first   → after the code: a new client, asks only the name
+ */
+type Screen = 'phone' | 'known' | 'otp' | 'welcome' | 'first'
 type CodeChannel = 'whatsapp' | 'telegram'
 
 const props = defineProps<{
@@ -40,7 +47,7 @@ const savedPhone = useSavedPhone()
 const summary = useBookingSummary(() => props.data)
 const { formatTime } = useMasterFormat(() => props.data.settings, () => props.data.timezone)
 
-const screen = ref<Screen>('loading')
+const screen = ref<Screen>('phone')
 const error = ref('')
 
 // --- Slot hold: nobody else can take her time while she fills this in ---
@@ -75,19 +82,16 @@ async function holdSlot() {
   }
 }
 
-onMounted(async () => {
+onMounted(() => {
   void holdSlot()
-
-  // A number remembered on this device: a trusted device goes straight to "Welcome back".
-  const phone = bookingState.value.phone || savedPhone.read()
-  bookingState.value.phone = phone
-  const check = phone ? await checkPhone(phone) : null
-  screen.value = check?.recognized && check.firstName ? 'known' : 'phone'
+  // The phone screen shows at once; a remembered number is checked in the background.
+  if (!bookingState.value.phone) bookingState.value.phone = savedPhone.read()
 })
 
 onBeforeUnmount(() => {
   if (holdTimer) clearTimeout(holdTimer)
   if (countdownTimer) clearInterval(countdownTimer)
+  if (checkTimer) clearTimeout(checkTimer)
   // Left without booking: let the time go for others right away.
   if (!booked) {
     $fetch(`/api/master/${username.value}/hold`, { method: 'DELETE' }).catch(() => {})
@@ -108,11 +112,18 @@ const whenShort = computed(() => {
   return `${day}, ${formatTime(slot)}`
 })
 
-// --- Phone ---
+// --- Phone: checked as soon as it is a valid number ---
 
 const phoneTouched = ref(false)
 const check = ref<PhoneCheck | null>(null)
 const checking = ref(false)
+let checkTimer: ReturnType<typeof setTimeout> | null = null
+
+const phoneStatus = computed(() => {
+  const phone = bookingState.value.phone
+  if (!phone) return null
+  return checking.value || check.value?.phone !== phone ? 'checking' : 'ready'
+})
 
 async function checkPhone(phone: string): Promise<PhoneCheck | null> {
   if (check.value?.phone === phone) return check.value
@@ -121,29 +132,36 @@ async function checkPhone(phone: string): Promise<PhoneCheck | null> {
     const result = await $fetch<Omit<PhoneCheck, 'phone'>>('/api/auth/phone/check', {
       query: { phone, username: username.value }
     })
+    // An answer for a number that was edited meanwhile is stale.
+    if (bookingState.value.phone !== phone) return null
     check.value = { phone, ...result }
     return check.value
   } catch {
-    return null
+    // Unknown is the safe answer: she just gets a code.
+    if (bookingState.value.phone === phone) check.value = { phone, recognized: false }
+    return check.value
   } finally {
     checking.value = false
   }
 }
 
-async function submitPhone() {
-  phoneTouched.value = true
-  error.value = ''
-  const phone = bookingState.value.phone
-  if (!phone) return
-
-  savedPhone.save(phone)
-  const result = await checkPhone(phone)
-  if (!result) {
-    error.value = $ts('booking.errors.checkFailed')
-    return
-  }
-  screen.value = result.recognized && result.firstName ? 'known' : 'new'
-}
+watch(
+  () => bookingState.value.phone,
+  (phone) => {
+    error.value = ''
+    if (checkTimer) clearTimeout(checkTimer)
+    if (!phone) return
+    savedPhone.save(phone)
+    checkTimer = setTimeout(async () => {
+      const result = await checkPhone(phone)
+      // A trusted browser books without a code.
+      if (result?.recognized && result.firstName && screen.value === 'phone') {
+        screen.value = 'known'
+      }
+    }, 250)
+  },
+  { immediate: true }
+)
 
 const phoneDisplay = computed(() => formatPhone(bookingState.value.phone))
 
@@ -167,12 +185,13 @@ async function forgetDevice() {
   screen.value = 'phone'
 }
 
-// --- New number: name and where to send the code ---
+// --- Code ---
 
-const firstName = ref('')
-const nameTouched = ref(false)
 const channel = ref<CodeChannel>('whatsapp')
 const CHANNELS: CodeChannel[] = ['whatsapp', 'telegram']
+const otherChannel = computed<CodeChannel>(() =>
+  channel.value === 'whatsapp' ? 'telegram' : 'whatsapp'
+)
 
 const sending = ref(false)
 const devCode = ref('')
@@ -228,27 +247,23 @@ async function sendCode() {
 }
 
 function requestCode() {
-  nameTouched.value = true
-  if (!firstName.value.trim()) return
+  phoneTouched.value = true
+  if (!bookingState.value.phone || phoneStatus.value === 'checking') return
   void sendCode()
 }
-
-const otherChannel = computed<CodeChannel>(() =>
-  channel.value === 'whatsapp' ? 'telegram' : 'whatsapp'
-)
 
 function switchChannel() {
   channel.value = otherChannel.value
   void sendCode()
 }
 
-// --- Code ---
-
 const otp = ref<number[]>([])
 const verifying = ref(false)
+const otpToken = ref('')
+const knownName = ref('')
 
 async function confirmCode() {
-  if (verifying.value || bookingLoading.value) return
+  if (verifying.value) return
   const code = otp.value.join('')
   if (code.length !== 4) {
     error.value = $ts('booking.code.enterCode')
@@ -258,13 +273,26 @@ async function confirmCode() {
   verifying.value = true
   error.value = ''
   try {
-    const result = await $fetch<{ success: boolean; token?: string; error?: string }>(
-      '/api/auth/phone/verify',
-      { method: 'POST', body: { phone: bookingState.value.phone, code, username: username.value } }
-    )
+    const result = await $fetch<{
+      success: boolean
+      token?: string
+      error?: string
+      clientExists?: boolean
+      firstName?: string
+    }>('/api/auth/phone/verify', {
+      method: 'POST',
+      body: { phone: bookingState.value.phone, code, username: username.value }
+    })
 
     if (result.success && result.token) {
-      await createBooking(result.token)
+      otpToken.value = result.token
+      // Only now, with the code, may we say whether the master knows this number.
+      if (result.clientExists && result.firstName) {
+        knownName.value = result.firstName
+        screen.value = 'welcome'
+      } else {
+        screen.value = 'first'
+      }
     } else {
       error.value = codeError(result.error)
       otp.value = []
@@ -288,12 +316,22 @@ function codeError(code?: string) {
   }
 }
 
+// --- New client: only the name ---
+
+const firstName = ref('')
+const nameTouched = ref(false)
+
 // --- Booking ---
 
 const bookingLoading = ref(false)
 
-async function createBooking(otpToken?: string) {
+async function createBooking() {
   if (bookingLoading.value) return
+  if (screen.value === 'first') {
+    nameTouched.value = true
+    if (!firstName.value.trim()) return
+  }
+
   bookingLoading.value = true
   error.value = ''
 
@@ -304,7 +342,8 @@ async function createBooking(otpToken?: string) {
         service_ids: bookingState.value.selectedServiceIds,
         starts_at: bookingState.value.selectedSlot,
         phone: bookingState.value.phone,
-        ...(otpToken ? { otp_token: otpToken, first_name: firstName.value.trim() } : {}),
+        ...(otpToken.value ? { otp_token: otpToken.value } : {}),
+        ...(screen.value === 'first' ? { first_name: firstName.value.trim() } : {}),
         reminders_consent: bookingState.value.remindersConsent,
         marketing_consent: bookingState.value.marketingConsent
       }
@@ -334,9 +373,10 @@ async function createBooking(otpToken?: string) {
       queryCache.invalidateQueries({ key: ['booking-availability', username.value] })
       emit('slotTaken')
     } else if (statusCode === 401) {
-      // The device is not trusted after all: confirm the number with a code.
+      // The device or the code is no longer valid: confirm the number again.
       check.value = null
-      screen.value = 'new'
+      otpToken.value = ''
+      screen.value = 'phone'
     } else {
       error.value = $ts('booking.errors.bookingFailed')
     }
@@ -351,49 +391,35 @@ const footer = computed(() => {
   switch (screen.value) {
     case 'phone':
       return {
-        label: $ts('booking.steps.confirm.continue'),
-        loading: checking.value,
-        disabled: !bookingState.value.phone,
-        policy: false,
-        action: submitPhone
-      }
-    case 'known':
-      return {
-        label: $ts('booking.footer.book'),
-        loading: bookingLoading.value,
-        disabled: false,
-        policy: true,
-        action: () => createBooking()
-      }
-    case 'new':
-      return {
         label: $ts('booking.code.get'),
         loading: sending.value,
-        disabled: false,
+        disabled: phoneStatus.value === 'checking',
         policy: false,
         action: requestCode
       }
     case 'otp':
       return {
         label: $ts('booking.code.confirm'),
-        loading: verifying.value || bookingLoading.value,
+        loading: verifying.value,
         disabled: false,
-        policy: true,
+        policy: false,
         action: confirmCode
       }
     default:
-      return null
+      return {
+        label: $ts('booking.footer.book'),
+        loading: bookingLoading.value,
+        disabled: false,
+        policy: true,
+        action: createBooking
+      }
   }
 })
 
 /** Back inside this step; false when the sheet should go to the previous step. */
 function back() {
   error.value = ''
-  if (screen.value === 'otp') {
-    screen.value = 'new'
-    return true
-  }
-  if (screen.value === 'new') {
+  if (screen.value === 'otp' || screen.value === 'welcome' || screen.value === 'first') {
     screen.value = 'phone'
     return true
   }
@@ -405,14 +431,8 @@ defineExpose({ back })
 
 <template>
   <section class="flex flex-1 flex-col">
-    <div v-if="screen === 'loading'" class="flex flex-col gap-3 px-5 pt-2" aria-hidden="true">
-      <USkeleton class="h-8 w-56" />
-      <USkeleton class="h-5 w-full" />
-      <USkeleton class="mt-3 h-16 w-full rounded-[16px]" />
-    </div>
-
-    <!-- Phone -->
-    <div v-else-if="screen === 'phone'" key="phone" class="seene-reveal flex flex-col gap-4.5 px-5 pt-2">
+    <!-- Phone and code channel -->
+    <div v-if="screen === 'phone'" key="phone" class="seene-reveal flex flex-col gap-4.5 px-5 pt-2">
       <div class="flex flex-col gap-2">
         <h1 class="font-display text-[26px] font-bold tracking-[-0.03em] text-highlighted">
           {{ $ts('booking.steps.confirm.phoneTitle') }}
@@ -429,33 +449,67 @@ defineExpose({ back })
           v-model="bookingState.phone"
           :default-country="data.profile.country"
           :invalid="phoneTouched && !bookingState.phone"
-          @submit="submitPhone"
+          :status="phoneStatus"
+          @submit="requestCode"
         />
         <p v-if="phoneTouched && !bookingState.phone" class="text-[13px] text-error">
           {{ $ts('booking.errors.phoneInvalid') }}
         </p>
       </div>
-      <div class="flex items-start gap-2.5 rounded-[14px] bg-muted p-3.5 text-[13px] leading-normal text-muted">
+      <div class="flex flex-col gap-2">
+        <p id="booking-channel" class="text-[13px] font-semibold text-highlighted">
+          {{ $ts('booking.code.channelTitle') }}
+        </p>
+        <div
+          role="group"
+          aria-labelledby="booking-channel"
+          class="grid grid-cols-2 gap-1 rounded-[14px] bg-muted p-1"
+        >
+          <button
+            v-for="item in CHANNELS"
+            :key="item"
+            type="button"
+            :aria-pressed="channel === item"
+            class="rounded-[10px] p-2.75 text-sm font-semibold text-highlighted transition-colors focus-visible:outline-2 focus-visible:outline-primary"
+            :class="channel === item ? 'bg-elevated shadow-sm' : ''"
+            @click="channel = item"
+          >
+            {{ $ts(`booking.code.channels.${item}`) }}
+          </button>
+        </div>
+      </div>
+      <div
+        class="flex items-start gap-2.5 rounded-[14px] bg-muted p-3.5 text-[13px] leading-normal text-muted"
+      >
         <UIcon name="i-lucide-lock" class="mt-0.5 size-4 shrink-0" />
         <span>{{ $ts('booking.steps.confirm.privacyNote', { name: data.profile.first_name }) }}</span>
       </div>
     </div>
 
-    <!-- Known: this device is trusted for the number -->
-    <div v-else-if="screen === 'known'" key="known" class="seene-reveal flex flex-col gap-4.5 px-5 pt-2">
+    <!-- Trusted browser, or after the code with a number the master knows -->
+    <div
+      v-else-if="screen === 'known' || screen === 'welcome'"
+      :key="screen"
+      class="seene-reveal flex flex-col gap-4.5 px-5 pt-2"
+    >
       <div class="flex flex-col items-start gap-3.5">
         <span
           class="flex size-14 items-center justify-center rounded-full bg-(--seene-accent-soft) font-display text-[22px] font-bold text-(--seene-accent-text)"
           aria-hidden="true"
         >
-          {{ check?.firstName?.charAt(0).toUpperCase() }}
+          {{ (screen === 'known' ? check?.firstName : knownName)?.charAt(0).toUpperCase() }}
         </span>
         <h1 class="font-display text-[26px] font-bold tracking-[-0.03em] text-highlighted">
-          {{ $ts('booking.steps.confirm.welcome', { name: check?.firstName ?? '' }) }}
+          {{
+            $ts('booking.steps.confirm.welcome', {
+              name: (screen === 'known' ? check?.firstName : knownName) ?? ''
+            })
+          }}
         </h1>
         <div class="flex items-center gap-2.5 text-[15px] text-muted">
           {{ phoneDisplay }}
           <UButton
+            v-if="screen === 'known'"
             variant="link"
             :label="$ts('booking.steps.confirm.notYou')"
             :loading="forgetting"
@@ -484,31 +538,21 @@ defineExpose({ back })
           <dd class="font-semibold text-highlighted">{{ summary.priceLabel.value }}</dd>
         </div>
       </dl>
-      <p class="text-[13px] leading-normal text-muted">
+      <p v-if="screen === 'known'" class="text-[13px] leading-normal text-muted">
         {{ $ts('booking.steps.confirm.knownHint') }}
       </p>
+      <BookingReminderSwitch v-else v-model="bookingState.remindersConsent" />
     </div>
 
-    <!-- New number (or one this device does not know): name and code channel -->
-    <div v-else-if="screen === 'new'" key="new" class="seene-reveal flex flex-col gap-4.5 px-5 pt-2">
+    <!-- After the code: a new client -->
+    <div v-else-if="screen === 'first'" key="first" class="seene-reveal flex flex-col gap-4.5 px-5 pt-2">
       <div class="flex flex-col gap-2">
         <h1 class="font-display text-[26px] font-bold tracking-[-0.03em] text-highlighted">
-          {{ $ts('booking.steps.confirm.newTitle') }}
+          {{ $ts('booking.steps.confirm.firstTitle') }}
         </h1>
         <p class="text-[15px] leading-normal text-muted">
-          {{ $ts('booking.steps.confirm.newHint') }}
+          {{ $ts('booking.steps.confirm.firstHint', { name: data.profile.first_name }) }}
         </p>
-      </div>
-      <div
-        class="flex items-center justify-between gap-3 rounded-[16px] bg-muted px-4 py-3.5 text-base font-medium text-highlighted"
-      >
-        {{ phoneDisplay }}
-        <UButton
-          variant="link"
-          :label="$ts('booking.steps.slots.change')"
-          class="p-0 text-sm font-semibold text-(--seene-accent-text) hover:text-(--seene-accent-text)"
-          @click="back()"
-        />
       </div>
       <div class="flex flex-col gap-2">
         <label for="booking-name" class="text-[13px] font-semibold text-highlighted">
@@ -518,58 +562,32 @@ defineExpose({ back })
           id="booking-name"
           v-model="firstName"
           autocomplete="given-name"
+          autofocus
           variant="none"
+          :placeholder="$ts('booking.steps.confirm.namePlaceholder')"
           :aria-invalid="nameTouched && !firstName.trim()"
           :ui="{
             root: 'w-full',
             base: [
-              'rounded-[16px] border-2 bg-elevated px-3.5 py-3.5 text-[17px] font-medium text-highlighted',
+              'rounded-[16px] border-2 bg-elevated px-3.5 py-3.5 text-[17px] font-medium text-highlighted md:text-[17px] focus:ring-4 focus:ring-(--seene-accent-soft)',
               nameTouched && !firstName.trim() ? 'border-error' : 'border-primary'
             ].join(' ')
           }"
-          @keydown.enter.prevent="requestCode"
+          @keydown.enter.prevent="createBooking"
         />
         <p v-if="nameTouched && !firstName.trim()" class="text-[13px] text-error">
           {{ $ts('booking.errors.nameRequired') }}
         </p>
       </div>
-      <div class="flex flex-col gap-2">
-        <p id="booking-channel" class="text-[13px] font-semibold text-highlighted">
-          {{ $ts('booking.code.channelTitle') }}
-        </p>
-        <div
-          role="group"
-          aria-labelledby="booking-channel"
-          class="grid grid-cols-2 gap-1 rounded-[14px] bg-muted p-1"
-        >
-          <button
-            v-for="item in CHANNELS"
-            :key="item"
-            type="button"
-            :aria-pressed="channel === item"
-            class="rounded-[10px] p-2.75 text-sm font-semibold text-highlighted transition-colors focus-visible:outline-2 focus-visible:outline-primary"
-            :class="channel === item ? 'bg-elevated shadow-sm' : ''"
-            @click="channel = item"
-          >
-            {{ $ts(`booking.code.channels.${item}`) }}
-          </button>
-        </div>
-      </div>
-      <label
-        class="flex cursor-pointer items-center justify-between gap-3.5 rounded-[16px] border border-default px-4 py-3.5"
-      >
-        <span class="flex flex-col gap-0.5">
-          <span class="text-[15px] font-semibold text-highlighted">
-            {{ $ts('booking.steps.confirm.reminders') }}
-          </span>
-          <span class="text-[13px] text-muted">{{ $ts('booking.steps.confirm.remindersHint') }}</span>
-        </span>
-        <USwitch v-model="bookingState.remindersConsent" size="lg" />
-      </label>
+      <BookingReminderSwitch v-model="bookingState.remindersConsent" />
       <UCheckbox
         v-model="bookingState.marketingConsent"
         :label="$ts('booking.steps.confirm.marketing', { name: data.profile.first_name })"
-        :ui="{ label: 'text-[13px] font-normal text-muted' }"
+        :ui="{
+          root: 'items-start gap-3',
+          base: 'size-5.5 rounded-[7px]',
+          label: 'text-sm leading-[1.45] font-normal text-highlighted'
+        }"
       />
     </div>
 
@@ -629,17 +647,20 @@ defineExpose({ back })
           variant="link"
           :label="$ts('booking.code.changePhone')"
           class="p-0 text-sm font-semibold text-(--seene-accent-text) hover:text-(--seene-accent-text)"
-          @click="screen = 'phone'"
+          @click="back()"
         />
       </div>
     </div>
 
-    <p v-if="error" class="mx-5 mt-4 rounded-[14px] bg-error/10 p-3.5 text-[13px] text-error" role="alert">
+    <p
+      v-if="error"
+      class="mx-5 mt-4 rounded-[14px] bg-error/10 p-3.5 text-[13px] text-error"
+      role="alert"
+    >
       {{ error }}
     </p>
 
     <BookingFooter
-      v-if="footer"
       :label="footer.label"
       :loading="footer.loading"
       :disabled="footer.disabled"
