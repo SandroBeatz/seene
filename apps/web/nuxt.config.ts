@@ -1,6 +1,13 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ['@nuxt/eslint', '@nuxt/ui', 'nuxt-i18n-micro', '@pinia/nuxt', '@pinia/colada-nuxt', '@nuxt/content'],
+  modules: [
+    '@nuxt/eslint',
+    '@nuxt/ui',
+    'nuxt-i18n-micro',
+    '@pinia/nuxt',
+    '@pinia/colada-nuxt',
+    '@nuxt/content'
+  ],
 
   devtools: {
     enabled: true
@@ -30,7 +37,11 @@ export default defineNuxtConfig({
     // Only for test environments while no message provider is wired.
     otpExposeCode: false,
     public: {
-      dashboardUrl: import.meta.env.NUXT_PUBLIC_DASHBOARD_URL || 'https://master-seene.vercel.app'
+      dashboardUrl: import.meta.env.NUXT_PUBLIC_DASHBOARD_URL || 'https://master-seene.vercel.app',
+      // Store pages of the master app; empty until it is published, then the
+      // download buttons lead to the founders form instead.
+      appStoreUrl: '',
+      googlePlayUrl: ''
     }
   },
 

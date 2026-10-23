@@ -1,20 +1,23 @@
 {
   "nav": {
-    "cta": "Start for Free",
     "home": "Home",
-    "about": "About",
-    "privacy": "Privacy",
-    "terms": "Terms",
-    "sections": {
-      "home": "Home",
-      "audience": "For whom",
-      "steps": "How it works",
-      "features": "Features",
-      "pricing": "Pricing",
-      "faq": "FAQ"
-    }
+    "main": "Main menu",
+    "homeAria": "Seene, home",
+    "features": "Features",
+    "pricing": "Pricing",
+    "tools": "Tools",
+    "download": "Download"
   },
   "footer": {
-    "copyright": "© Seene"
+    "tagline": "A pocket front desk for beauty pros who work on their own.",
+    "product": "Product",
+    "tools": "Tools",
+    "founders": "Founding masters",
+    "calculator": "No-show calculator",
+    "language": "Site language",
+    "copyright": "© 2026 Seene",
+    "privacy": "Privacy policy",
+    "terms": "Terms of use",
+    "support": "Support"
   }
 }

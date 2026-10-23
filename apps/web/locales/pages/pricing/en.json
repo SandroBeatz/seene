@@ -1,0 +1,71 @@
+{
+  "seo": {
+    "title": "Seene pricing — Free and Pro, no commission",
+    "description": "Calendar, clients and WhatsApp reminders are free. Pro helps you earn more and costs less than one visit a month. 0% commission on clients."
+  },
+  "eyebrow": "Pricing",
+  "title": "Simple pricing. No commission.",
+  "description": "Everything that replaces your notebook is free. Pro helps you earn more and costs less than one visit a month.",
+  "market": {
+    "label": "Where you work",
+    "kg": "Bishkek",
+    "ca": "Canada"
+  },
+  "currency": {
+    "kg": "som",
+    "ca": "CAD"
+  },
+  "free": {
+    "title": "Free",
+    "period": "forever",
+    "note": "Say goodbye to your paper notebook",
+    "cta": "Start for free",
+    "f1": "Unlimited calendar and bookings",
+    "f2": "Clients, visit history, work photos",
+    "f3": "WhatsApp reminders in one tap",
+    "f4": "Booking page with a “made with Seene” mark",
+    "f5": "iPhone and Android"
+  },
+  "pro": {
+    "title": "Pro",
+    "badge": "Free forever for founders",
+    "period": "per month",
+    "noteKg": "Less than half of one manicure",
+    "noteCa": "Cheaper than GlossGenius and Booksy",
+    "cta": "Try Pro",
+    "includes": "Everything in Free, plus:",
+    "f1": "“Time to invite”: who is due for a fill",
+    "f2": "Money: expenses and net for the month",
+    "f3": "Month in review — a card for your Stories",
+    "f4": "Booking page without the Seene logo",
+    "f5": "Automatic reminders",
+    "soon": "soon"
+  },
+  "disclaimer": "The Pro price is preliminary and will be set after testing with beauty pros.",
+  "payback": {
+    "title": "One returning client pays for a month of Pro.",
+    "pro": "Pro per month",
+    "visit": "One visit, example",
+    "commission": "Commission per client:",
+    "commissionRest": "Marketplaces take 20–30% per new client."
+  },
+  "faq": {
+    "title": "Billing questions",
+    "trial": {
+      "q": "Is there a free trial?",
+      "a": "Yes, you can try Pro after signing up, no card needed. Founding masters get Pro free forever."
+    },
+    "cancel": {
+      "q": "How do I cancel?",
+      "a": "In your App Store or Google Play settings, any time. No calls, no emails."
+    },
+    "stop": {
+      "q": "What happens to my clients if I stop paying?",
+      "a": "Nothing is lost. Bookings and clients stay; only the Pro features turn off."
+    },
+    "clients": {
+      "q": "Do clients pay anything to book?",
+      "a": "No. No fees for clients and no cut of your services."
+    }
+  }
+}

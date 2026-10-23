@@ -1,172 +1,233 @@
 {
+  "seo": {
+    "title": "Seene — tes clientes viennent à l’heure et reviennent",
+    "description": "Seene rappelle leurs rendez-vous à tes clientes sur WhatsApp, te dit qui doit revenir pour un remplissage et calcule ce que tu as gagné. Pour les pros des ongles, sourcils et cils. Gratuit, sans commission."
+  },
   "hero": {
-    "title": "Réservation en ligne et gestion des clients pour les professionnels de la beauté",
-    "description": "Seene donne aux professionnels une page de réservation personnelle, un calendrier pratique et une base clients. Les clients prennent rendez-vous via votre lien Instagram — sans appels ni messages.",
-    "cta": "Commencer gratuitement",
-    "ctaSecondary": "Voir un exemple de page",
-    "microtext": "Sans paiement en ligne. Sans configuration complexe. Juste ce dont vous avez besoin chaque jour.",
-    "badge": "Pour les professionnels de la beauté",
-    "imageAlt": "Tableau de bord Seene — réservation en ligne pour professionnels de la beauté"
+    "new": "Nouveau",
+    "badge": "Nous cherchons 20 pros fondatrices",
+    "titleStart": "Tes clientes viennent à l’heure et",
+    "titleAccent": "reviennent",
+    "description": "Seene leur rappelle le rendez-vous sur WhatsApp, te dit qui doit revenir pour un remplissage et calcule ce que tu as gagné.",
+    "cta": "Je veux essayer",
+    "ctaSecondary": "Combien je perds",
+    "audience": "Pour les pros des ongles, sourcils et cils.",
+    "free": "Gratuit, sans commission.",
+    "imageAlt": "Prothésiste ongulaire avec un téléphone à son poste de travail",
+    "waLabel": "WhatsApp · depuis ton numéro",
+    "waMessage": "Coucou Aigul ! Je t’attends demain à 10h00 pour ta manucure. C’est toujours bon ?",
+    "waReply": "Oui, j’y serai !",
+    "waConfirmed": "La cliente a confirmé",
+    "netLabel": "Net en octobre",
+    "netCurrency": "som",
+    "netGrowth": "+12 % par rapport à septembre",
+    "recall": "À relancer"
   },
   "audience": {
-    "title": "Conçu pour les professionnels de la beauté indépendants",
-    "cards": {
-      "nails": {
-        "title": "Prothésistes ongulaires",
-        "description": "Réservation en ligne et planning pour prothésistes ongulaires"
-      },
-      "brows": {
-        "title": "Artistes sourcils & poseurs de cils",
-        "description": "Gestion facile des rendez-vous pour les professionnels de la beauté"
-      },
-      "makeup": {
-        "title": "Maquilleurs",
-        "description": "Gérez les réservations sans applications de messagerie"
-      },
-      "pmu": {
-        "title": "Maîtres PMU & spécialistes du soin",
-        "description": "Votre page personnelle et réservation en ligne en un clic"
-      }
+    "eyebrow": "Pour qui",
+    "title": "Pour les pros qui travaillent seules",
+    "description": "À la maison, dans un cabinet loué ou à domicile — sans secrétariat ni système compliqué.",
+    "soon": "bientôt",
+    "manicure": {
+      "label": "Ongles",
+      "alt": "Une pro applique un vernis laiteux"
+    },
+    "lashes": {
+      "label": "Cils",
+      "alt": "Extension de cils à la pince"
+    },
+    "brows": {
+      "label": "Sourcils",
+      "alt": "Restructuration des sourcils"
+    },
+    "pedicure": {
+      "label": "Pédicure",
+      "alt": "Pédicure avec un vernis nude"
+    },
+    "depilation": {
+      "label": "Épilation",
+      "alt": "Une pro prépare la pâte à sucre"
+    },
+    "haircut": {
+      "label": "Coupe",
+      "alt": "Coupe des pointes"
+    },
+    "massage": {
+      "label": "Massage",
+      "alt": "Massage du dos dans une pièce lumineuse"
     }
   },
-  "pain": {
-    "title": "Arrêtez de perdre des réservations dans vos DMs",
-    "description": "Les professionnels perdent des heures chaque jour à envoyer des messages aux clients — confirmer les horaires, envoyer des rappels, attendre les réponses. Seene s'en charge pour vous.",
-    "bubbles": {
-      "time": "Ainura : à quelle heure demain ?",
-      "direct": "Nouveau message dans Direct",
-      "reminder": "N'oubliez pas votre rendez-vous à 14:00"
-    }
-  },
-  "steps": {
-    "title": "Les clients réservent eux-mêmes — vous voyez tout dans votre tableau de bord",
-    "step1": {
-      "title": "Créez votre profil Seene",
-      "description": "Ajoutez votre photo, vos services et votre planning en quelques minutes"
+  "money": {
+    "eyebrow": "Pourquoi c’est important",
+    "title": "L’argent ne part pas dans le matériel. Il part dans les créneaux vides.",
+    "noShow": {
+      "value": "−800 som",
+      "title": "Un rendez-vous manqué",
+      "text": "La cliente a oublié. Le créneau est vide, la soirée est perdue, et tu l’as appris à 10h05.",
+      "note": "Exemple pour une manucure à 800 som"
     },
-    "step2": {
-      "title": "Ajoutez le lien à votre Instagram",
-      "description": "Un seul lien dans votre bio — les clients peuvent réserver eux-mêmes"
+    "silence": {
+      "value": "5 semaines",
+      "title": "Le silence d’une habituée",
+      "text": "Elle n’est pas partie chez une autre pro. Elle a juste oublié de réserver. Un carnet ne te le montre pas."
     },
-    "step3": {
-      "title": "Le client ouvre votre page et choisit un créneau",
-      "description": "Il choisit un service, sélectionne un horaire et confirme — sans appels"
-    },
-    "step4": {
-      "title": "La réservation apparaît dans votre calendrier",
-      "description": "Tous vos rendez-vous en un seul endroit, sans messageries"
+    "net": {
+      "value": "? som",
+      "title": "Net sur le mois",
+      "text": "Loyer, matériel, publicité. À l’œil, difficile de savoir quand augmenter tes prix."
     }
   },
   "features": {
-    "title": "Tout ce dont un professionnel a besoin",
+    "eyebrow": "Fonctionnalités",
+    "title": "Tout ce que fait un secrétariat. Rien de superflu.",
     "booking": {
       "title": "Réservation en ligne",
-      "description": "Les clients réservent eux-mêmes via votre lien Instagram"
+      "p1": "Tes clientes réservent même quand tu es occupée",
+      "p2": "Photos et descriptions vendent mieux que les mots",
+      "p3": "Seuls les créneaux que tu as ouverts sont visibles",
+      "p4": "C’est toi qui confirmes chaque demande"
     },
     "calendar": {
-      "title": "Calendrier",
-      "description": "Tous vos rendez-vous dans un planning clair et simple"
-    },
-    "services": {
-      "title": "Services",
-      "description": "Listez vos services avec prix et durées pour vos clients"
+      "title": "Agenda",
+      "p1": "Planning de travail et rendez-vous perso",
+      "p2": "Tes prochains créneaux libres, trouvés pour toi",
+      "p3": "Tes créneaux en story en un geste",
+      "p4": "Un modèle de semaine pour ne pas tout refaire"
     },
     "clients": {
-      "title": "Base clients",
-      "description": "Historique des réservations et coordonnées de tous vos clients"
+      "title": "Clientes",
+      "p1": "Fichier clientes et historique des visites",
+      "p2": "Triées toutes seules : habituées, nouvelles, perdues de vue",
+      "p3": "Photos de tes réalisations et notes sur chaque fiche",
+      "p4": "Import depuis les contacts du téléphone"
     },
-    "reminders": {
-      "title": "Rappels",
-      "description": "Rappels automatiques envoyés aux clients avant leur visite"
-    },
-    "stats": {
-      "title": "Statistiques",
-      "description": "Suivez vos revenus et le taux d'occupation de votre planning"
+    "assistant": {
+      "title": "Assistant",
+      "p1": "Alertes pour les demandes venues de ta page",
+      "p2": "Rappels et liste « à relancer »",
+      "p3": "WhatsApp, Telegram ou copier le texte",
+      "p4": "Prénom, heure et prestation remplis pour toi"
     }
   },
-  "personalPage": {
-    "title": "Une belle page pour vos réservations clients",
-    "description": "Une page professionnelle avec votre nom, portfolio et réservation en ligne. Partagez le lien — les clients réservent eux-mêmes.",
-    "features": {
-      "avatar": "Photo de profil et nom",
-      "services": "Liste des services avec prix",
-      "booking": "Réservation en ligne pour des créneaux précis",
-      "contacts": "Coordonnées et liens sociaux"
-    },
-    "mockup": {
-      "name": "Alina",
-      "role": "prothésiste ongulaire",
-      "services": {
-        "manicure": { "name": "Manucure", "price": "30 €", "duration": "60 min" },
-        "gel": { "name": "Pose de vernis gel", "price": "40 €", "duration": "90 min" },
-        "pedicure": { "name": "Pédicure", "price": "45 €", "duration": "75 min" }
-      }
-    },
-    "mockupCta": "Réserver"
-  },
-  "comparison": {
-    "title": "Pas un CRM surchargé — un outil simple pour les professionnels",
-    "crmHeader": "CRM classiques",
-    "rows": {
-      "setup": { "crm": "Configuration complexe", "seene": "Prêt en 5 minutes" },
-      "payment": { "crm": "Payer pour chaque fonctionnalité", "seene": "Tout inclus" },
-      "manager": { "crm": "Nécessite un gestionnaire", "seene": "Vous gérez vous-même" },
-      "interface": { "crm": "Interface surchargée", "seene": "Seulement l'essentiel" },
-      "price": { "crm": "Trop cher pour un indépendant", "seene": "Démarrage gratuit" }
+  "recall": {
+    "eyebrow": "À relancer",
+    "title": "Les nouvelles clientes, c’est bien. Celles qui reviennent coûtent moins et sont plus fiables.",
+    "description": "Seene sait à quelle fréquence vient chaque cliente et liste celles qui doivent revenir pour un remplissage. Il ne reste qu’à choisir un créneau et appuyer sur « Relancer ».",
+    "p1": "Un rythme propre à chaque cliente, sans réglage",
+    "p2": "Textes prêts : remplissage, anniversaire, créneau libre",
+    "p3": "En fin de mois, tu vois combien de clientes sont revenues et pour quel montant",
+    "imageAlt": "Une pro sur son téléphone entre deux clientes",
+    "cycleLabel": "Le rythme de Zhanara",
+    "cycleStart": "Vient toutes les 3 semaines.",
+    "cyclePassed": "Ça fait 5",
+    "cycleEnd": "— à relancer",
+    "replyLabel": "Zhanara a répondu",
+    "reply": "Ah oui ! Jeudi à 11h00, ça te va ?",
+    "returnedLabel": "Revenues en octobre",
+    "returned": "9 clientes · 7 200 som",
+    "phone": {
+      "label": "Écran de l’app Seene : la liste « à relancer » et un message prêt pour Zhanara",
+      "title": "Clientes",
+      "all": "Toutes · 86",
+      "due": "À relancer · 7",
+      "call": "Relancer",
+      "zhanaraName": "Zhanara B.",
+      "sezimName": "Sezim A.",
+      "oliviaName": "Olivia M.",
+      "zhanara": "il y a 5 semaines · d’habitude toutes les 3",
+      "sezim": "il y a 4 semaines · d’habitude toutes les 3",
+      "olivia": "il y a 6 semaines · message en EN",
+      "sheetTitle": "Message pour Zhanara",
+      "message": "Coucou Zhanara ! Ça fait 5 semaines depuis ta dernière manucure. J’ai des créneaux jeudi à 11h00 et vendredi à 16h00. Je te réserve ?",
+      "correction": "Remplissage",
+      "birthday": "Anniversaire",
+      "custom": "Mon texte",
+      "open": "Ouvrir dans WhatsApp"
     }
   },
-  "pricing": {
-    "title": "Tarifs simples et transparents",
-    "free": {
-      "name": "Gratuit",
-      "price": "0 €",
-      "cta": "Commencer gratuitement",
-      "feature1": "Page de réservation personnelle",
-      "feature2": "Réservations en ligne des clients",
-      "feature3": "Calendrier des rendez-vous",
-      "feature4": "Jusqu'à 50 clients en base"
+  "commission": {
+    "title": "0 % de commission.",
+    "titleEnd": "Toujours.",
+    "text": "Les plateformes prennent un pourcentage sur chaque nouvelle cliente. Seene ne prend rien : tes clientes, ton argent. L’essentiel est gratuit, et Pro coûte moins qu’une manucure par mois.",
+    "cta": "Voir les tarifs",
+    "seene": "Seene",
+    "marketplaces": "Plateformes, par nouvelle cliente"
+  },
+  "founders": {
+    "eyebrow": "Pros fondatrices",
+    "title": "Fais partie des 20 premières.",
+    "text": "Nous lançons Seene à Bichkek, Toronto et Vancouver avec des pros de la beauté. En échange d’un avis honnête, tu reçois ce que les autres n’auront pas.",
+    "perk1": {
+      "bold": "Pro gratuit pour toujours",
+      "rest": ", pas juste un mois d’essai"
     },
-    "pro": {
-      "name": "Pro",
-      "badge": "Populaire",
-      "price": "9 €",
-      "period": "/mois",
-      "cta": "Démarrer avec Pro",
-      "feature1": "Tout du plan gratuit",
-      "feature2": "Base clients illimitée",
-      "feature3": "Rappels automatiques",
-      "feature4": "Statistiques et analytique",
-      "feature5": "Support prioritaire",
-      "feature6": "Domaine personnalisé"
+    "perk2": {
+      "bold": "Nous transférons tes clientes de ton carnet",
+      "rest": " : photographie simplement les pages"
     },
-    "notice": "Seene ne prend jamais de commission sur vos paiements"
+    "perk3": {
+      "bold": "Un contact direct avec le fondateur",
+      "rest": " sur WhatsApp ou Telegram"
+    },
+    "form": {
+      "title": "Candidature fondatrice",
+      "name": "Ton prénom",
+      "namePlaceholder": "Aigul",
+      "contact": "Instagram ou WhatsApp",
+      "contactPlaceholder": "@aigul.nails",
+      "city": "Ville",
+      "cities": {
+        "bishkek": "Bichkek",
+        "toronto": "Toronto",
+        "vancouver": "Vancouver",
+        "other": "Une autre ville"
+      },
+      "specialty": "Ta spécialité",
+      "specialties": {
+        "manicure": "Ongles",
+        "pedicure": "Pédicure",
+        "brows": "Sourcils",
+        "lashes": "Cils",
+        "other": "Autre"
+      },
+      "submit": "Je veux être fondatrice",
+      "note": "Nous te répondons sous deux jours. En appuyant sur le bouton, tu acceptes la",
+      "privacy": "politique de confidentialité",
+      "nameRequired": "Indique ton prénom",
+      "contactRequired": "Laisse ton Instagram ou WhatsApp",
+      "specialtyRequired": "Choisis au moins une option",
+      "failed": "L’envoi a échoué. Réessaie dans une minute.",
+      "tooMany": "Trop de candidatures depuis cet appareil. Réessaie plus tard.",
+      "doneTitle": "Merci !",
+      "doneText": "Nous te répondons sous 2 jours."
+    }
   },
   "faq": {
-    "title": "Questions fréquentes",
-    "q1": {
-      "question": "Comment les clients pourront-ils réserver avec moi ?",
-      "answer": "Vous recevez un lien personnel (ex. seene.app/votre-nom). Ajoutez-le à votre bio Instagram — les clients peuvent choisir un créneau et réserver eux-mêmes."
+    "eyebrow": "Questions",
+    "title": "L’essentiel en bref",
+    "install": {
+      "q": "Mes clientes doivent-elles installer quelque chose ?",
+      "a": "Non. Les rappels arrivent dans leur WhatsApp habituel, et la réservation s’ouvre depuis un lien dans le navigateur."
     },
-    "q2": {
-      "question": "Les clients doivent-ils installer une application ?",
-      "answer": "Non. Seene fonctionne dans le navigateur — pour vous et vos clients. Rien à installer."
+    "robot": {
+      "q": "Les messages sont-ils écrits par un robot ?",
+      "a": "Non. Seene prépare le texte, et c’est toi qui l’envoies depuis ton numéro. Tu peux modifier chaque mot."
     },
-    "q3": {
-      "question": "Puis-je l'utiliser gratuitement ?",
-      "answer": "Oui, le plan gratuit inclut tout l'essentiel : votre page de réservation, la prise de rendez-vous en ligne et un calendrier. Le plan Pro ajoute des fonctionnalités avancées."
+    "price": {
+      "q": "Combien ça coûte ?",
+      "a": "Agenda, clientes et rappels sont gratuits. Pro, avec « à relancer » et le suivi de l’argent, coûte moins qu’une manucure par mois."
     },
-    "q4": {
-      "question": "Comment configurer mon planning ?",
-      "answer": "Dans votre tableau de bord Seene, vous définissez vos jours et heures de travail ainsi que vos pauses. Les clients ne voient que les créneaux disponibles."
-    },
-    "q5": {
-      "question": "Que se passe-t-il avec mes données si je supprime mon compte ?",
-      "answer": "Vous pouvez exporter toutes vos données (clients, historique) avant de supprimer votre compte. Après suppression, toutes les données sont définitivement effacées de nos serveurs."
+    "data": {
+      "q": "Qui voit les données de mes clientes ?",
+      "a": "Toi seule. Nous ne vendons pas les données et n’écrivons pas à tes clientes. Tu peux supprimer tout ton compte dans les réglages.",
+      "more": "En savoir plus"
     }
   },
-  "finalCta": {
-    "title": "Créez votre page et commencez à accepter des réservations dès aujourd'hui",
-    "button": "Créer ma page professionnelle",
-    "microtext": "Gratuit. Sans carte. Votre page est prête en 5 minutes."
+  "final": {
+    "title": "Moins de messages. Plus de clientes.",
+    "storePrefix": "Télécharger sur",
+    "appStore": "App Store",
+    "googlePlay": "Google Play",
+    "note": "Gratuit. Sans carte. Sans commission."
   }
 }

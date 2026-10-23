@@ -1,20 +1,23 @@
 {
   "nav": {
-    "cta": "Commencer gratuitement",
     "home": "Accueil",
-    "about": "À propos",
-    "privacy": "Confidentialité",
-    "terms": "Conditions",
-    "sections": {
-      "home": "Accueil",
-      "audience": "Pour qui",
-      "steps": "Fonctionnement",
-      "features": "Fonctions",
-      "pricing": "Tarifs",
-      "faq": "FAQ"
-    }
+    "main": "Menu principal",
+    "homeAria": "Seene, accueil",
+    "features": "Fonctionnalités",
+    "pricing": "Tarifs",
+    "tools": "Outils",
+    "download": "Télécharger"
   },
   "footer": {
-    "copyright": "© Seene"
+    "tagline": "Un assistant de poche pour les pros de la beauté qui travaillent seuls.",
+    "product": "Produit",
+    "tools": "Outils",
+    "founders": "Pros fondatrices",
+    "calculator": "Calculateur de rendez-vous manqués",
+    "language": "Langue du site",
+    "copyright": "© 2026 Seene",
+    "privacy": "Politique de confidentialité",
+    "terms": "Conditions d’utilisation",
+    "support": "Assistance"
   }
 }

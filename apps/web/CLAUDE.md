@@ -54,7 +54,11 @@ Design tokens from the site design live in `@theme` in `main.css`: `font-sans` (
 
 **Messages to clients** go through `sendMessage()` in `server/utils/messaging.ts` (codes, booking confirmation with the link). No provider is wired yet: the `log` provider writes the full text to the server log in dev or with `NUXT_OTP_EXPOSE_CODE=true`, otherwise only the template and the last 4 digits. A failed confirmation never undoes a booking.
 
-The header is styled floating/rounded via `app.config.ts` slot overrides — do not add a `border` or sticky class directly on `UHeader` or it will conflict.
+**Marketing pages** (`/`, `/pricing`, `/calculator`) follow the "Главная", "Цены" and "Калькулятор" artboards of the site design. They use the `default` layout: `components/Site/SiteHeader.vue` (sticky `UHeader`, "Download" leads to `/#join` until the app is in the stores) and `SiteFooter.vue` (black, links only to pages that exist). Homepage sections are `components/Home/Home*.vue`. Type helpers `site-container`, `site-eyebrow`, `site-h2` and colors `brand`, `blush`, `paper`, `wa` are in `main.css`. Motion follows the animation spec: `v-reveal` (`plugins/reveal.ts`) raises a block 12 px when 20% of it is on screen, `v-reveal="i"` staggers cards by 60 ms, `v-reveal:sheet` slides a phone's bottom sheet; the hero uses `site-rise`, `site-arrive`, `site-float`. Nothing is hidden without JavaScript or with reduced motion.
+
+**Pictures** from the image spec go through `<SiteImage name="h-01-hero" id="H-01">`: put `app/assets/images/site/<name>.webp` (≤ 250 KB, optional `<name>-mobile.webp` crop) and the next build uses it; until then a tinted placeholder shows the ID.
+
+**Founders waitlist**: the form in `#join` posts to `POST /api/waitlist` (table `waitlist`, rules in `shared/utils/waitlist.ts`). A hidden `website` field and a fill time under 2.5 s are answered "ok" without saving; more than 5 applications per IP per hour get 429; the same contact again keeps the first row. Store links for the download buttons come from `NUXT_PUBLIC_APP_STORE_URL` and `NUXT_PUBLIC_GOOGLE_PLAY_URL`.
 
 ## Phone Numbers — strict format rule
 
