@@ -1,0 +1,35 @@
+{
+  "seo": {
+    "title": "Calculateur de rendez-vous manqués — combien tu perds par an | Seene",
+    "description": "Calcule ce qu’une pro perd à cause des rendez-vous manqués, des annulations tardives et des habituées perdues de vue. Trois curseurs, un chiffre annuel."
+  },
+  "eyebrow": "Outils · Calculateur",
+  "title": "Combien te coûtent les rendez-vous manqués et les clientes oubliées ?",
+  "description": "Bouge les curseurs. Nous comptons seulement les pertes directes : créneaux vides et visites qui n’ont pas eu lieu.",
+  "currency": "som",
+  "price": "Prix moyen d’une prestation",
+  "noShows": "Rendez-vous manqués et annulations tardives par mois",
+  "lost": "Habituées « disparues » ce mois-ci",
+  "lostNote": "Une cliente « disparue » venait régulièrement et n’a pas repris rendez-vous. On suppose qu’elle viendrait une fois par mois.",
+  "yearly": "Tu perds par an",
+  "noShowMonth": "Rendez-vous manqués par mois",
+  "lostMonth": "Habituées perdues par mois",
+  "payback": "Pro est rentabilisé si tu récupères",
+  "paybackValue": "1 visite par mois",
+  "cta": "Récupérer cet argent",
+  "how": {
+    "title": "Comment Seene récupère cet argent",
+    "remind": {
+      "title": "Un rappel la veille",
+      "text": "Le soir : les clientes du lendemain et un bouton pour leur rappeler sur WhatsApp."
+    },
+    "confirm": {
+      "title": "Confirmation",
+      "text": "Tu vois qui a confirmé et qui ne répond pas. Tu peux donner le créneau à une autre cliente à temps."
+    },
+    "recall": {
+      "title": "« À relancer »",
+      "text": "Les clientes qui ne sont pas venues depuis longtemps, avec un message prêt et tes créneaux libres."
+    }
+  }
+}

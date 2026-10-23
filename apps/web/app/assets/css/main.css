@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Cormorant+Garamond:ital,wght@1,500&display=swap');
 @import 'tailwindcss';
 @import '@nuxt/ui';
 
@@ -10,11 +10,25 @@
   --font-display: 'Inter Tight', 'Inter', system-ui, sans-serif;
   /* Prices, times, codes */
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  /* The one italic accent word in the homepage headline */
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
 
   --color-ink: #0b0b0c;
   --color-ink-muted: #5c5c63;
   --color-line: #e7e7e4;
   --color-surface: #f6f6f4;
+  /* Light section background */
+  --color-paper: #fafaf8;
+  /* Homepage hero background and its border */
+  --color-blush: #fbf5f2;
+  --color-blush-line: #efe4df;
+  /* Pink accent: numbers that matter, one accent word */
+  --color-brand: #d63f6e;
+  --color-brand-soft: #fdebf0;
+  --color-brand-ink: #9e2449;
+  /* WhatsApp only */
+  --color-wa: #0e7a3f;
+  --color-wa-soft: #e7f8ec;
 }
 
 :root {
@@ -126,4 +140,125 @@ textarea {
   .seene-skeleton {
     animation: none;
   }
+}
+
+/*
+ * Marketing pages motion (animation spec): 150 ms hover, 400 ms blocks,
+ * 600 ms hero and the phone sheet; 8-12 px rise; one curve. `v-reveal` hides
+ * a block only once JavaScript runs, so the page reads fine without it.
+ */
+.site-reveal {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.site-reveal-sheet {
+  transform: translateY(110%);
+}
+
+.site-reveal.is-revealed,
+.site-reveal-sheet.is-revealed {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.site-reveal-sheet.is-revealed {
+  transition-duration: 600ms;
+}
+
+/* Hero: lines rise one after another, product cards arrive and then drift. */
+@keyframes site-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes site-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.site-rise {
+  animation: site-rise 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.site-float {
+  animation: site-float 6s ease-in-out infinite;
+}
+
+/* Arrives after its delay (--arrive), then floats */
+.site-arrive {
+  animation:
+    site-rise 400ms cubic-bezier(0.22, 1, 0.36, 1) var(--arrive, 0ms) both,
+    site-float 6s ease-in-out calc(var(--arrive, 0ms) + 400ms) infinite;
+}
+
+.site-appear {
+  animation: site-rise 400ms cubic-bezier(0.22, 1, 0.36, 1) var(--arrive, 0ms) both;
+}
+
+/* Success check that draws itself */
+@keyframes site-draw {
+  from {
+    stroke-dashoffset: 30;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.site-draw {
+  stroke-dasharray: 30;
+  animation: site-draw 500ms cubic-bezier(0.22, 1, 0.36, 1) 150ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-reveal,
+  .site-reveal-sheet {
+    opacity: 1;
+    transform: none;
+  }
+
+  .site-rise,
+  .site-float,
+  .site-arrive,
+  .site-appear,
+  .site-draw {
+    animation: none;
+  }
+}
+
+/* Marketing pages type, from the site design */
+/* The design's 1200 px is the content width; the 24 px gutters come on top. */
+@utility site-container {
+  margin-inline: auto;
+  max-width: 1248px;
+  padding-inline: 24px;
+}
+
+@utility site-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
+
+@utility site-h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(28px, 3vw, 40px);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
 }

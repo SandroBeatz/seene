@@ -1,172 +1,234 @@
 {
+  "seo": {
+    "title": "Seene — clients show up on time and come back",
+    "description": "Seene reminds your clients about their bookings on WhatsApp, tells you who is due for a fill, and counts what you earned. For nail, brow and lash artists. Free, no commission."
+  },
   "hero": {
-    "title": "Online booking and client management for beauty professionals",
-    "description": "Seene gives beauty professionals a personal booking page, a convenient calendar and a client database. Clients book via your Instagram link — no calls, no back-and-forth.",
-    "cta": "Start for Free",
-    "ctaSecondary": "See a profile example",
-    "microtext": "No online payments. No extra setup. Just what you need every day.",
-    "badge": "For beauty professionals",
-    "imageAlt": "Seene dashboard — online booking for beauty professionals"
+    "new": "New",
+    "badge": "Looking for 20 founding masters",
+    "titleStart": "Clients show up on time and",
+    "titleAccent": "come back",
+    "description": "Seene reminds them about their booking on WhatsApp, tells you who is due for a fill, and counts what you earned.",
+    "cta": "I want to try it",
+    "ctaSecondary": "How much am I losing",
+    "audience": "For nail, brow and lash artists.",
+    "free": "Free, no commission.",
+    "imageAlt": "Nail artist with a phone at her desk",
+    "waLabel": "WhatsApp · from your number",
+    "waMessage": "Hi Aigul! See you tomorrow at 10:00 for your manicure. Still on?",
+    "waReply": "Yes, see you!",
+    "waConfirmed": "The client confirmed",
+    "netLabel": "Net in October",
+    "netCurrency": "som",
+    "netGrowth": "+12% vs September",
+    "recall": "Time to invite"
   },
   "audience": {
-    "title": "Built for independent beauty professionals",
-    "cards": {
-      "nails": {
-        "title": "Nail technicians",
-        "description": "Online booking and scheduling for nail techs and nail salons"
-      },
-      "brows": {
-        "title": "Brow artists & lash makers",
-        "description": "Easy appointment management for beauty professionals"
-      },
-      "makeup": {
-        "title": "Makeup artists",
-        "description": "Manage client bookings without messaging apps or calls"
-      },
-      "pmu": {
-        "title": "PMU masters & care specialists",
-        "description": "Your personal page and online booking in one click"
-      }
+    "eyebrow": "Who it’s for",
+    "title": "For beauty pros who work on their own",
+    "description": "At home, in a rented room or on the go — no front desk and no complicated systems.",
+    "soon": "soon",
+    "manicure": {
+      "label": "Nails",
+      "alt": "Artist applying milky gel polish"
+    },
+    "lashes": {
+      "label": "Lashes",
+      "alt": "Eyelash extension with tweezers"
+    },
+    "brows": {
+      "label": "Brows",
+      "alt": "Brow shaping session"
+    },
+    "pedicure": {
+      "label": "Pedicure",
+      "alt": "Pedicure with nude polish"
+    },
+    "depilation": {
+      "label": "Waxing",
+      "alt": "Artist preparing sugaring paste"
+    },
+    "haircut": {
+      "label": "Haircuts",
+      "alt": "Trimming hair ends"
+    },
+    "massage": {
+      "label": "Massage",
+      "alt": "Back massage in a bright room"
     }
   },
-  "pain": {
-    "title": "Stop losing bookings in DMs and messengers",
-    "description": "Professionals waste hours every day messaging clients — confirming times, sending reminders, chasing replies. Seene handles all of that for you.",
-    "bubbles": {
-      "time": "Ainura: what time tomorrow?",
-      "direct": "New message in Direct",
-      "reminder": "Don't forget your 2:00 PM appointment"
-    }
-  },
-  "steps": {
-    "title": "Clients book themselves — you see everything in your dashboard",
-    "step1": {
-      "title": "Create your Seene profile",
-      "description": "Add your photo, services and schedule in just a few minutes"
+  "money": {
+    "eyebrow": "Why it matters",
+    "title": "Money isn’t lost on supplies. It’s lost on empty slots.",
+    "noShow": {
+      "value": "−800 som",
+      "title": "One no-show",
+      "text": "The client forgot. The slot is empty, the evening is gone, and you found out at 10:05.",
+      "note": "Example for an 800 som manicure"
     },
-    "step2": {
-      "title": "Add the link to your Instagram",
-      "description": "One link in your bio — clients can book themselves"
+    "silence": {
+      "value": "5 weeks",
+      "title": "Silence from a regular",
+      "text": "She didn’t leave for another artist. She just forgot to book. A paper notebook won’t show you that."
     },
-    "step3": {
-      "title": "Client opens your page and picks a time",
-      "description": "They choose a service, pick a slot and confirm — no calls needed"
-    },
-    "step4": {
-      "title": "Booking appears in your calendar",
-      "description": "See all your appointments in one place, without messaging apps"
+    "net": {
+      "value": "? som",
+      "title": "Net for the month",
+      "text": "Rent, supplies, ads. If you count by eye, it’s hard to tell when to raise your prices."
     }
   },
   "features": {
-    "title": "Everything a professional needs to run their business",
+    "eyebrow": "Features",
+    "title": "Everything a front desk does. Nothing extra.",
     "booking": {
       "title": "Online booking",
-      "description": "Clients book themselves via your Instagram link"
+      "p1": "Clients book even when you’re busy",
+      "p2": "Photos and descriptions sell your services better than words",
+      "p3": "Only the slots you opened are shown",
+      "p4": "You confirm every request"
     },
     "calendar": {
       "title": "Calendar",
-      "description": "All your appointments in one clean schedule view"
-    },
-    "services": {
-      "title": "Services",
-      "description": "List your services with prices and durations for clients"
+      "p1": "Work schedule and personal plans",
+      "p2": "Your next free slots, found for you",
+      "p3": "Free slots to your Stories in one tap",
+      "p4": "A week template, so you set it up once"
     },
     "clients": {
-      "title": "Client database",
-      "description": "Booking history and contact info for all your clients"
+      "title": "Clients",
+      "p1": "Client list and visit history",
+      "p2": "Sorted into regulars, new and lapsed on their own",
+      "p3": "Work photos and notes on each card",
+      "p4": "Import from your phone contacts"
     },
-    "reminders": {
-      "title": "Reminders",
-      "description": "Automatic reminders sent to clients before their visit"
-    },
-    "stats": {
-      "title": "Statistics",
-      "description": "Track your revenue and schedule occupancy"
+    "assistant": {
+      "title": "Assistant",
+      "p1": "Alerts about requests from your page",
+      "p2": "Reminders and a “time to invite” list",
+      "p3": "WhatsApp, Telegram or copy the text",
+      "p4": "Name, time and service filled in for you"
     }
   },
-  "personalPage": {
-    "title": "A beautiful page for client bookings",
-    "description": "A professional page with your name, portfolio and online booking. Share the link — clients book themselves.",
-    "features": {
-      "avatar": "Profile photo and name",
-      "services": "Service list with prices",
-      "booking": "Online booking for specific times",
-      "contacts": "Contact details and social links"
-    },
-    "mockup": {
-      "name": "Alina",
-      "role": "nail technician",
-      "services": {
-        "manicure": { "name": "Manicure", "price": "$30", "duration": "60 min" },
-        "gel": { "name": "Gel polish", "price": "$40", "duration": "90 min" },
-        "pedicure": { "name": "Pedicure", "price": "$45", "duration": "75 min" }
-      }
-    },
-    "mockupCta": "Book now"
-  },
-  "comparison": {
-    "title": "Not a bloated CRM — a simple tool built for professionals",
-    "crmHeader": "Typical CRMs",
-    "rows": {
-      "setup": { "crm": "Complex setup", "seene": "Ready in 5 minutes" },
-      "payment": { "crm": "Pay for every feature", "seene": "Everything included" },
-      "manager": { "crm": "Requires a manager", "seene": "You're in control" },
-      "interface": { "crm": "Overwhelming interface", "seene": "Only what you need" },
-      "price": { "crm": "Too expensive for one person", "seene": "Free to start" }
+  "recall": {
+    "eyebrow": "Time to invite",
+    "title": "New clients are nice. Returning ones cost less and are more reliable.",
+    "description": "Seene knows how often each client comes and lists those who are due for a fill. All that’s left is to pick a slot and tap “Invite”.",
+    "p1": "Each client’s own cycle, no manual setup",
+    "p2": "Ready texts: fill, birthday, free slot",
+    "p3": "At the end of the month you see how many clients came back and for how much",
+    "imageAlt": "Artist on her phone between clients",
+    "cycleLabel": "Zhanara’s cycle",
+    "cycleStart": "Comes every 3 weeks.",
+    "cyclePassed": "It’s been 5",
+    "cycleEnd": "— time to invite",
+    "replyLabel": "Zhanara replied",
+    "reply": "Oh, right! How about Thursday at 11:00?",
+    "returnedLabel": "Came back in October",
+    "returned": "9 clients · 7,200 som",
+    "phone": {
+      "label": "Seene app screen: the “time to invite” list and a ready message for Zhanara",
+      "title": "Clients",
+      "all": "All · 86",
+      "due": "Time to invite · 7",
+      "call": "Invite",
+      "zhanaraName": "Zhanara B.",
+      "sezimName": "Sezim A.",
+      "oliviaName": "Olivia M.",
+      "zhanara": "5 weeks ago · usually every 3",
+      "sezim": "4 weeks ago · usually every 3",
+      "olivia": "6 weeks ago · message in EN",
+      "sheetTitle": "Message for Zhanara",
+      "message": "Hi Zhanara! It’s been 5 weeks since your last manicure. I have slots on Thursday at 11:00 and Friday at 16:00. Shall I book you in?",
+      "correction": "Fill",
+      "birthday": "Birthday",
+      "custom": "Own text",
+      "open": "Open in WhatsApp"
     }
   },
-  "pricing": {
-    "title": "Simple, transparent pricing",
-    "free": {
-      "name": "Free",
-      "price": "$0",
-      "cta": "Start for Free",
-      "feature1": "Personal booking page",
-      "feature2": "Online booking from clients",
-      "feature3": "Appointment calendar",
-      "feature4": "Up to 50 clients in database"
+  "commission": {
+    "title": "0% commission.",
+    "titleEnd": "Always.",
+    "text": "Marketplaces take a cut of every new client. Seene takes nothing: your clients, your money. The basics are free, and Pro costs less than one manicure a month.",
+    "cta": "See pricing",
+    "seene": "Seene",
+    "marketplaces": "Marketplaces, per new client"
+  },
+  "founders": {
+    "eyebrow": "Founding masters",
+    "title": "Be one of the first 20.",
+    "text": "We’re launching in Bishkek, Toronto and Vancouver together with beauty pros. In return for honest feedback, you get what nobody else will.",
+    "imageAlt": "Two beauty artists laughing at a phone",
+    "perk1": {
+      "bold": "Pro free forever",
+      "rest": ", not just a trial month"
     },
-    "pro": {
-      "name": "Pro",
-      "badge": "Popular",
-      "price": "$9",
-      "period": "/month",
-      "cta": "Start with Pro",
-      "feature1": "Everything in Free",
-      "feature2": "Unlimited client database",
-      "feature3": "Automatic reminders",
-      "feature4": "Statistics & analytics",
-      "feature5": "Priority support",
-      "feature6": "Custom domain"
+    "perk2": {
+      "bold": "We move your clients from your notebook for you",
+      "rest": ": just photograph the pages"
     },
-    "notice": "Seene never takes a cut from your payments"
+    "perk3": {
+      "bold": "A direct line to the founder",
+      "rest": " on WhatsApp or Telegram"
+    },
+    "form": {
+      "title": "Apply to be a founder",
+      "name": "Your name",
+      "namePlaceholder": "Aigul",
+      "contact": "Instagram or WhatsApp",
+      "contactPlaceholder": "@aigul.nails",
+      "city": "City",
+      "cities": {
+        "bishkek": "Bishkek",
+        "toronto": "Toronto",
+        "vancouver": "Vancouver",
+        "other": "Another city"
+      },
+      "specialty": "What you do",
+      "specialties": {
+        "manicure": "Nails",
+        "pedicure": "Pedicure",
+        "brows": "Brows",
+        "lashes": "Lashes",
+        "other": "Other"
+      },
+      "submit": "I want to be a founder",
+      "note": "We’ll get back to you within two days. By tapping the button, you agree to the",
+      "privacy": "privacy policy",
+      "nameRequired": "Tell us your name",
+      "contactRequired": "Leave your Instagram or WhatsApp",
+      "specialtyRequired": "Pick at least one",
+      "failed": "Couldn’t send it. Please try again in a minute.",
+      "tooMany": "Too many applications from this device. Please try later.",
+      "doneTitle": "Thank you!",
+      "doneText": "We’ll get back to you within 2 days."
+    }
   },
   "faq": {
-    "title": "Frequently asked questions",
-    "q1": {
-      "question": "How will clients book with me?",
-      "answer": "You get a personal link (e.g. seene.app/your-name). Add it to your Instagram bio — clients can pick a time and book themselves."
+    "eyebrow": "Questions",
+    "title": "The short version",
+    "install": {
+      "q": "Do my clients need to install anything?",
+      "a": "No. Reminders arrive in their regular WhatsApp, and booking opens from a link in the browser."
     },
-    "q2": {
-      "question": "Do clients need to install an app?",
-      "answer": "No. Seene works in the browser — for you and your clients. Nothing to install."
+    "robot": {
+      "q": "Are the messages written by a bot?",
+      "a": "No. Seene drafts the text, and you send it from your own number. You can change any word."
     },
-    "q3": {
-      "question": "Can I use it for free?",
-      "answer": "Yes, the free plan includes all the essentials: your booking page, online scheduling and a calendar. The Pro plan adds advanced features."
+    "price": {
+      "q": "How much does it cost?",
+      "a": "Calendar, clients and reminders are free. Pro with “time to invite” and money tracking costs less than one manicure a month."
     },
-    "q4": {
-      "question": "How do I set up my schedule?",
-      "answer": "In your Seene dashboard you set your working days, hours and breaks. Clients only see the slots that are available."
-    },
-    "q5": {
-      "question": "What happens to my data if I delete my account?",
-      "answer": "You can export all your data (clients, booking history) before deleting your account. After deletion, all data is permanently removed from our servers."
+    "data": {
+      "q": "Who sees my clients’ data?",
+      "a": "Only you. We don’t sell data and we don’t message your clients. You can delete your whole account in settings.",
+      "more": "Learn more"
     }
   },
-  "finalCta": {
-    "title": "Create your page and start accepting bookings today",
-    "button": "Create your professional page",
-    "microtext": "Free. No card required. Your page is ready in 5 minutes."
+  "final": {
+    "title": "Less texting. More clients.",
+    "storePrefix": "Download on",
+    "appStore": "App Store",
+    "googlePlay": "Google Play",
+    "note": "Free. No card. No commission."
   }
 }

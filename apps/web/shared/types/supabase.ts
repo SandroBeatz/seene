@@ -843,6 +843,39 @@ export type Database = {
         }
         Relationships: []
       }
+      waitlist: {
+        Row: {
+          city: string
+          contact: string
+          created_at: string
+          id: string
+          ip_hash: string | null
+          locale: string
+          name: string
+          specialties: string[]
+        }
+        Insert: {
+          city: string
+          contact: string
+          created_at?: string
+          id?: string
+          ip_hash?: string | null
+          locale?: string
+          name: string
+          specialties: string[]
+        }
+        Update: {
+          city?: string
+          contact?: string
+          created_at?: string
+          id?: string
+          ip_hash?: string | null
+          locale?: string
+          name?: string
+          specialties?: string[]
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

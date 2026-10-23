@@ -1,22 +1,24 @@
 <script setup>
+const { getLocale } = useI18n()
+const config = useRuntimeConfig()
+const siteUrl = config.public.siteUrl || useRequestURL().origin
+
 useHead({
+  title: 'Seene',
   meta: [{ name: 'viewport', content: 'width=device-width, initial-scale=1' }],
   link: [{ rel: 'icon', href: '/favicon.ico' }],
+  // The page's language, so search engines and screen readers read it right.
   htmlAttrs: {
-    lang: 'en'
+    lang: () => getLocale()
   }
 })
 
-const title = 'Seene — онлайн-запись для beauty-мастеров'
-const description =
-  'Создай личную страницу, добавь в Instagram и принимай записи автоматически. Для nail-мастеров, бровистов, лэшмейкеров и визажистов.'
-
+// OG-01: the link preview in WhatsApp and Telegram (JPG: not every messenger shows WebP)
 useSeoMeta({
-  title,
-  description,
-  ogTitle: title,
-  ogDescription: description,
-  ogImage: 'https://ui.nuxt.com/assets/templates/nuxt/starter-light.png',
+  ogSiteName: 'Seene',
+  ogImage: `${siteUrl}/og-01-share.jpg`,
+  ogImageWidth: 1200,
+  ogImageHeight: 630,
   twitterCard: 'summary_large_image'
 })
 </script>

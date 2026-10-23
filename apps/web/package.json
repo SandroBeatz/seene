@@ -11,6 +11,7 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "images": "bash scripts/site-images.sh",
     "typecheck": "nuxt typecheck",
     "test": "vitest run",
     "test:watch": "vitest"

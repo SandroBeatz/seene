@@ -1,0 +1,35 @@
+{
+  "seo": {
+    "title": "No-show calculator — how much you lose a year | Seene",
+    "description": "Work out how much a beauty pro loses to no-shows, late cancellations and regulars who drifted away. Three sliders, one yearly figure."
+  },
+  "eyebrow": "Tools · Calculator",
+  "title": "How much do no-shows and forgotten clients cost you?",
+  "description": "Move the sliders. We count only direct losses: empty slots and visits that never happened.",
+  "currency": "som",
+  "price": "Average service price",
+  "noShows": "No-shows and late cancellations a month",
+  "lost": "Regulars who “disappeared” this month",
+  "lostNote": "A “disappeared” client came regularly and didn’t book again. We assume she would have come once a month.",
+  "yearly": "You lose a year",
+  "noShowMonth": "No-shows a month",
+  "lostMonth": "Lost regulars a month",
+  "payback": "Pro pays for itself if you win back",
+  "paybackValue": "1 visit a month",
+  "cta": "Win this money back",
+  "how": {
+    "title": "How Seene wins this money back",
+    "remind": {
+      "title": "A reminder the day before",
+      "text": "In the evening: tomorrow’s clients and one button to remind them on WhatsApp."
+    },
+    "confirm": {
+      "title": "Confirmation",
+      "text": "See who confirmed and who is silent. You can give the slot to someone else in time."
+    },
+    "recall": {
+      "title": "“Time to invite”",
+      "text": "Clients who haven’t been in a while, with a ready message and your free slots."
+    }
+  }
+}

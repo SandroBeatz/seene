@@ -1,0 +1,71 @@
+{
+  "seo": {
+    "title": "Tarifs Seene — Gratuit et Pro, sans commission",
+    "description": "Agenda, clientes et rappels WhatsApp sont gratuits. Pro t’aide à gagner plus et coûte moins qu’une visite par mois. 0 % de commission sur tes clientes."
+  },
+  "eyebrow": "Tarifs",
+  "title": "Un prix simple. Sans commission.",
+  "description": "Tout ce qui remplace ton carnet est gratuit. Pro t’aide à gagner plus et coûte moins qu’une visite par mois.",
+  "market": {
+    "label": "Où tu travailles",
+    "kg": "Bichkek",
+    "ca": "Canada"
+  },
+  "currency": {
+    "kg": "som",
+    "ca": "CAD"
+  },
+  "free": {
+    "title": "Gratuit",
+    "period": "pour toujours",
+    "note": "Pour oublier le carnet pour de bon",
+    "cta": "Commencer gratuitement",
+    "f1": "Agenda et rendez-vous illimités",
+    "f2": "Clientes, historique des visites, photos",
+    "f3": "Rappels WhatsApp en un geste",
+    "f4": "Page de réservation avec la mention « fait avec Seene »",
+    "f5": "iPhone et Android"
+  },
+  "pro": {
+    "title": "Pro",
+    "badge": "Gratuit à vie pour les fondatrices",
+    "period": "par mois",
+    "noteKg": "Moins de la moitié d’une manucure",
+    "noteCa": "Moins cher que GlossGenius et Booksy",
+    "cta": "Essayer Pro",
+    "includes": "Tout le gratuit, plus :",
+    "f1": "« À relancer » : qui doit revenir",
+    "f2": "Argent : dépenses et net du mois",
+    "f3": "Bilan du mois — une carte pour tes stories",
+    "f4": "Page de réservation sans le logo Seene",
+    "f5": "Rappels automatiques",
+    "soon": "bientôt"
+  },
+  "disclaimer": "Le prix de Pro est provisoire et sera fixé après le test avec les pros.",
+  "payback": {
+    "title": "Une cliente qui revient paie un mois de Pro.",
+    "pro": "Pro par mois",
+    "visit": "Une visite, exemple",
+    "commission": "Commission par cliente :",
+    "commissionRest": "Les plateformes prennent 20–30 % par nouvelle cliente."
+  },
+  "faq": {
+    "title": "Questions sur le paiement",
+    "trial": {
+      "q": "Y a-t-il une période d’essai ?",
+      "a": "Oui, tu peux essayer Pro après l’inscription, sans carte. Les pros fondatrices ont Pro gratuit à vie."
+    },
+    "cancel": {
+      "q": "Comment résilier ?",
+      "a": "Dans les réglages de l’App Store ou de Google Play, à tout moment. Sans appel ni e-mail."
+    },
+    "stop": {
+      "q": "Que deviennent mes clientes si j’arrête de payer ?",
+      "a": "Rien ne se perd. Rendez-vous et clientes restent, seules les fonctions Pro s’éteignent."
+    },
+    "clients": {
+      "q": "Les clientes paient-elles pour réserver ?",
+      "a": "Non. Aucun frais pour les clientes et aucun pourcentage sur tes prestations."
+    }
+  }
+}

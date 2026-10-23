@@ -1,12 +1,12 @@
 ---
-version: 2.2
+version: 2.3
 date: 2026-10-24
 category: business
 ---
 
 # Data Model
 
-> Version 2.2 · 2026-10-24 · [Business](../)
+> Version 2.3 · 2026-10-24 · [Business](../)
 
 ## Overview
 
@@ -451,6 +451,37 @@ CREATE POLICY "Master manages own time blocks"
   ON public.time_block FOR ALL
   USING (auth.uid() = user_id);
 ```
+
+---
+
+## `waitlist`
+
+Applications from the founding masters form on the homepage (`#join`). Not linked to a master account: these are people who do not use Seene yet. Written only by `POST /api/waitlist` with the service role.
+
+### Schema
+
+| Column        | Type          | Nullable | Default             | Description                                                    |
+| ------------- | ------------- | -------- | ------------------- | -------------------------------------------------------------- |
+| `id`          | `uuid`        | NO       | `gen_random_uuid()` | Primary key                                                    |
+| `name`        | `text`        | NO       | —                   | Her name, 1–60 characters                                      |
+| `contact`     | `text`        | NO       | —                   | Instagram handle or WhatsApp number as typed, 2–100 characters |
+| `city`        | `text`        | NO       | —                   | `bishkek`, `toronto`, `vancouver` or `other`                   |
+| `specialties` | `text[]`      | NO       | —                   | 1–5 of `manicure`, `pedicure`, `brows`, `lashes`, `other`      |
+| `locale`      | `text`        | NO       | `'en'`              | Site language she applied in (`en`, `fr`, `ru`)                |
+| `ip_hash`     | `text`        | YES      | `null`              | SHA-256 of the IP with the server secret, for the hourly limit |
+| `created_at`  | `timestamptz` | NO       | `now()`             | —                                                              |
+
+### Constraints & indexes
+
+| Name                      | Type         | Columns                 | Notes                                      |
+| ------------------------- | ------------ | ----------------------- | ------------------------------------------ |
+| `waitlist_pkey`           | PRIMARY KEY  | `id`                    | —                                          |
+| `waitlist_contact_unique` | UNIQUE INDEX | `lower(btrim(contact))` | A repeated application keeps the first row |
+| `waitlist_ip_created_idx` | INDEX        | `ip_hash, created_at`   | At most 5 applications per IP per hour     |
+
+### Row-Level Security
+
+RLS enabled, no policies, `anon` and `authenticated` revoked: only the server reads and writes it. Spam protection is in the route: a hidden field, a minimum fill time and the IP limit.
 
 ---
 
