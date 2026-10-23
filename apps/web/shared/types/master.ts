@@ -1,4 +1,5 @@
 import type { MasterPageTheme } from '../utils/masterTheme'
+import type { WorkingHoursRange } from '../utils/masterPage'
 
 export interface MasterProfile {
   id: string
@@ -114,9 +115,23 @@ export interface MasterPageData {
   services: MasterService[]
   payment_types: MasterPaymentType[]
   portfolio: PortfolioItem[]
+  /** Weekly hours, consecutive days with equal hours merged */
+  working_hours: WorkingHoursRange[]
+  /** IANA time zone of the master's schedule */
+  timezone: string
+  /** Past visits, or null when the master hides the counter */
+  visits_count: number | null
 }
 
 export interface MasterServiceGroup {
   category: ServiceCategory | null
   items: MasterService[]
+}
+
+/** GET /api/master/[username]/nearest */
+export interface NearestSlot {
+  /** Start of the nearest free slot (ISO, UTC), or null if none within the horizon */
+  start_at: string | null
+  /** Master's time zone, to show the time as the master's local time */
+  timezone: string
 }

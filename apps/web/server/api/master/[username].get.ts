@@ -1,4 +1,10 @@
-import type { MasterPaymentType, MasterSettings, PaymentTypeKind } from '#shared/types/master'
+import type {
+  MasterPageData,
+  MasterPaymentType,
+  MasterSettings,
+  PaymentTypeKind
+} from '#shared/types/master'
+import { getProfileSchedule } from '../../utils/slots'
 
 const PAYMENT_KINDS = new Set<PaymentTypeKind>(['cash', 'card', 'custom'])
 
@@ -82,7 +88,7 @@ export default defineEventHandler(async (event) => {
   const { data: profile, error: profileError } = await supabase
     .from('master_profile')
     .select(
-      'id, user_id, first_name, last_name, username, specializations, city, address, house_number, zip_code, country, works_at_place, can_travel, avatar_url, bio, whatsapp, telegram, instagram, tiktok, contact_email, cover_url, experience_years, show_visits_count, map_url, is_verified'
+      'id, user_id, first_name, last_name, username, specializations, city, address, house_number, zip_code, country, works_at_place, can_travel, avatar_url, bio, whatsapp, telegram, instagram, tiktok, contact_email, cover_url, experience_years, show_visits_count, map_url, is_verified, schedule'
     )
     .eq('username', username)
     .single()
@@ -90,6 +96,9 @@ export default defineEventHandler(async (event) => {
   if (profileError || !profile) {
     throw createError({ statusCode: 404, message: 'Master not found' })
   }
+
+  const { schedule, ...publicProfile } = profile
+  const parsedSchedule = getProfileSchedule(schedule)
 
   // master_settings has no public read policy (owner-only RLS), so it must be
   // read with the service-role client. Profile/services are public-readable.
@@ -100,7 +109,8 @@ export default defineEventHandler(async (event) => {
     { data: services },
     { data: settingsRow },
     { data: paymentRows },
-    { data: portfolio }
+    { data: portfolio },
+    { count: visitsCount }
   ] = await Promise.all([
     supabase
       .from('service_category')
@@ -133,7 +143,16 @@ export default defineEventHandler(async (event) => {
       .from('portfolio_item')
       .select('id, photo_url, service_id, sort_order')
       .eq('user_id', profile.user_id)
-      .order('sort_order')
+      .order('sort_order'),
+    // Past visits that happened: shown only when the master turned the counter on.
+    profile.show_visits_count
+      ? serviceSupabase
+          .from('appointments')
+          .select('id', { count: 'exact', head: true })
+          .eq('user_id', profile.user_id)
+          .in('status', ['confirmed', 'completed'])
+          .lt('start_at', new Date().toISOString())
+      : Promise.resolve({ count: null })
   ])
 
   const paymentTypes: MasterPaymentType[] = (paymentRows ?? []).map((row) => ({
@@ -144,11 +163,14 @@ export default defineEventHandler(async (event) => {
   }))
 
   return {
-    profile,
+    profile: publicProfile,
     settings: resolveSettings(settingsRow),
     categories: categories ?? [],
     services: services ?? [],
     payment_types: paymentTypes,
-    portfolio: portfolio ?? []
-  }
+    portfolio: portfolio ?? [],
+    working_hours: summarizeWorkingHours(parsedSchedule?.days),
+    timezone: parsedSchedule?.timezone ?? 'UTC',
+    visits_count: profile.show_visits_count ? (visitsCount ?? 0) : null
+  } satisfies MasterPageData
 })

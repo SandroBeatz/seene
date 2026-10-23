@@ -44,7 +44,9 @@ Use Nuxt UI semantic classes such as `text-muted`, `bg-elevated`, `bg-inverted`,
 
 Design tokens from the site design live in `@theme` in `main.css`: `font-sans` (Inter), `font-display` (Inter Tight, headings and large numbers), `font-mono` (JetBrains Mono, prices and times) and the neutrals `ink`, `ink-muted`, `line`, `surface`.
 
-**Master pages are themed per master.** `/[username]` and its booking use the `master` and `booking` layouts, which set `--ui-*` variables on their wrapper (not `:root`) from `useMasterTheme()`: light or dark theme and the master's accent as `primary`, with button text picked for ≥ 4.5:1 contrast (`shared/utils/masterTheme.ts`). Inside those layouts never hard-code `bg-white`, `zinc-*` or other fixed colors — use semantic classes so the dark theme and the accent work.
+**Master pages are themed per master.** `/[username]` and its booking use the `master` and `booking` layouts, which call `useMasterThemeRoot()`: it puts the `--ui-*` variables from `useMasterTheme()` as an inline style on `<html>` while the layout is mounted (so modals and drawers teleported to `<body>` follow the theme), and Unhead removes them on leaving. Light or dark theme and the master's accent as `primary`, with button text picked for ≥ 4.5:1 contrast (`shared/utils/masterTheme.ts`); `--seene-accent-soft` and `--seene-accent-text` are the tinted background and the readable link color. Inside those layouts never hard-code `bg-white`, `zinc-*` or other fixed colors — use semantic classes so the dark theme and the accent work.
+
+**Master page** (`app/pages/[username]/index.vue`) is one scroll of `components/Master/*` blocks in the spec's order: `Hero` (poster, avatar, verified badge, stats), `About` (bio with "More"), `Contacts` (≤ 5), `Works`, `Services`, `Footer`, and the sticky `BookBar` with the nearest free slot from `GET /api/master/[username]/nearest`. Empty blocks are not rendered. Times are shown in the master's time zone (`useMasterPageFormat`).
 
 The header is styled floating/rounded via `app.config.ts` slot overrides — do not add a `border` or sticky class directly on `UHeader` or it will conflict.
 

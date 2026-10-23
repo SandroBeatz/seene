@@ -1,60 +1,88 @@
 {
   "master": {
-    "tabs": {
-      "home": "Home",
-      "services": "Services",
-      "portfolio": "Portfolio",
-      "about": "About",
-      "navigationAria": "Profile sections"
+    "share": {
+      "aria": "Share page",
+      "copied": "Link copied"
     },
-    "profile": {
-      "certifiedExpert": "Certified Expert"
+    "poster": {
+      "alt": "Cover of {name}"
     },
-    "home": {
-      "book": "Book Online",
+    "verified": {
+      "label": "Verified pro",
+      "hint": "Verified pro: Seene checked the phone number and profile"
+    },
+    "stats": {
+      "years": {
+        "one": "{count} year",
+        "few": "{count} years",
+        "many": "{count} years",
+        "other": "{count} years"
+      },
+      "experience": "of experience",
+      "visits": {
+        "one": "visit",
+        "few": "visits",
+        "many": "visits",
+        "other": "visits"
+      },
+      "hoursVary": "hours in description"
+    },
+    "about": {
+      "more": "More",
+      "less": "Less",
+      "address": "Address",
+      "hours": "Hours",
+      "format": "Format",
+      "worksAtPlace": "At my studio",
+      "canTravel": "Home visits"
+    },
+    "contacts": {
+      "aria": "Contact the pro",
       "whatsapp": "WhatsApp",
-      "telegram": "Telegram"
+      "instagram": "Instagram",
+      "telegram": "Telegram",
+      "map": "Map",
+      "tiktok": "TikTok",
+      "email": "Email"
+    },
+    "works": {
+      "title": "Work",
+      "all": "All {count}",
+      "collapse": "Show less",
+      "alt": "Work photo {index}",
+      "altService": "Work: {service}",
+      "open": "Open photo {index}",
+      "viewer": "Work photos",
+      "close": "Close",
+      "counter": "{index} of {total}"
     },
     "services": {
       "title": "Services",
-      "duration": "min",
-      "currency_rub": "₽",
-      "empty": "No services listed yet.",
-      "select": "Choose",
-      "selected": "Selected",
-      "summary": {
-        "selectedCount": "{count} selected",
-        "book": "Choose date"
-      },
-      "details": {
-        "open": "Details",
-        "descriptionFallback": "A careful service with preparation, work at a comfortable pace, and finishing recommendations after the visit.",
-        "galleryTitle": "Work gallery",
-        "galleryAlt1": "Finished nail work with a soft glossy manicure",
-        "galleryAlt2": "Close-up of detailed nail care",
-        "galleryAlt3": "Minimal manicure result in a natural tone",
-        "galleryAlt4": "Beauty studio work process",
-        "galleryAlt5": "Polished nail design detail"
-      }
+      "book": "Book",
+      "bookAria": "Book: {name}",
+      "priceFrom": "from {price}",
+      "other": "Other"
     },
-    "portfolio": {
-      "title": "Portfolio",
-      "empty": "No photos yet.",
-      "close": "Close photo"
+    "duration": {
+      "hours": "{count} h",
+      "minutes": "{count} min"
     },
-    "about": {
-      "title": "About Me",
-      "experience": "Experience",
-      "location": "Location",
-      "socials": "Social Media",
-      "whatsappAria": "WhatsApp",
-      "telegramAria": "Telegram",
-      "instagramAria": "Instagram",
-      "tiktokAria": "TikTok",
-      "emailAria": "Email",
-      "workFormat": "Work format",
-      "worksAtPlace": "Accepts clients at own location",
-      "canTravel": "Travels to client"
+    "book": {
+      "cta": "Book",
+      "nearest": "Next available: {when}",
+      "noSlots": "Pick a time that suits you",
+      "whatsapp": "Message on WhatsApp",
+      "whatsappHint": "{name} takes bookings personally on WhatsApp",
+      "whatsappText": "Hi {name}! I'd like to book an appointment.",
+      "vacation": "On vacation until {date}"
+    },
+    "footer": {
+      "madeWith": "Made with Seene",
+      "privacy": "Privacy"
+    },
+    "seo": {
+      "description": "Book {name} online: {services}. Work, prices and free slots.",
+      "descriptionShort": "Book {name} online. Work, prices and free slots."
     }
   },
   "specializations": {
