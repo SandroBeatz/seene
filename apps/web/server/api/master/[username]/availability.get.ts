@@ -1,34 +1,27 @@
-import { DATE_RE, isValidDate, parseServiceIdsQuery } from '../../../utils/slots'
+import {
+  DATE_RE,
+  addDays,
+  getProfileTimezone,
+  isValidDate,
+  parseServiceIdsQuery
+} from '../../../utils/slots'
 
 const MAX_RANGE_DAYS = 60
 
 /**
  * Free slots for every day in [from, to], computed in one pass so the booking
  * calendar can mark free/busy days and switch days without another request.
+ * Without from/to: the master's booking horizon, from today in her time zone.
+ * The caller's own slot hold stays free for her.
  */
 export default defineEventHandler(async (event) => {
   const username = getRouterParam(event, 'username')
   const query = getQuery(event)
-  const from = parseDateParam(query.from, 'from')
-  const to = parseDateParam(query.to, 'to')
   const serviceIds = parseServiceIdsQuery(query.service_ids)
   const supabase = useServiceSupabase()
 
   if (!username) {
     throw createError({ statusCode: 400, message: 'Username is required' })
-  }
-
-  if (from > to) {
-    throw createError({ statusCode: 400, message: 'from must be <= to' })
-  }
-
-  const dates = buildDateRange(from, to)
-
-  if (dates.length > MAX_RANGE_DAYS) {
-    throw createError({
-      statusCode: 400,
-      message: `Range must not exceed ${MAX_RANGE_DAYS} days`
-    })
   }
 
   const { data: profile, error: profileError } = await supabase
@@ -47,11 +40,12 @@ export default defineEventHandler(async (event) => {
       .select('id, duration')
       .eq('user_id', profile.user_id)
       .eq('is_active', true)
+      .eq('show_online', true)
       .in('id', serviceIds),
     supabase
       .from('master_settings')
       .select(
-        'online_booking_enabled, calendar_slot_step_minutes, booking_buffer_minutes, booking_min_notice_minutes, vacation_from, vacation_until'
+        'online_booking_enabled, calendar_slot_step_minutes, booking_buffer_minutes, booking_min_notice_minutes, booking_horizon_days, vacation_from, vacation_until'
       )
       .eq('user_id', profile.user_id)
       .maybeSingle()
@@ -69,12 +63,37 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, message: 'One or more services are unavailable' })
   }
 
+  const today = todayIn(getProfileTimezone(profile.schedule))
+  const from =
+    query.from === undefined ? today : parseDateParam(query.from, 'from')
+  const to =
+    query.to === undefined
+      ? addDays(today, settingsRow.booking_horizon_days - 1)
+      : parseDateParam(query.to, 'to')
+
+  if (from > to) {
+    throw createError({ statusCode: 400, message: 'from must be <= to' })
+  }
+
+  const dates = buildDateRange(from, to)
+
+  if (dates.length > MAX_RANGE_DAYS) {
+    throw createError({
+      statusCode: 400,
+      message: `Range must not exceed ${MAX_RANGE_DAYS} days`
+    })
+  }
+
+  // Depends on the caller's hold cookie: never cache it in a shared cache.
+  setResponseHeader(event, 'Cache-Control', 'private, no-store')
+
   return loadDailySlots({
     supabase,
     profile,
     settings: settingsRow,
     dates,
-    durationMinutes: services.reduce((total, service) => total + service.duration, 0)
+    durationMinutes: services.reduce((total, service) => total + service.duration, 0),
+    holderHash: readHolderHash(event)
   })
 })
 

@@ -18,12 +18,14 @@ export interface BookingResult {
   id: string
   startsAt: string
   endsAt: string
+  /** 'confirmed' when the master confirms online bookings automatically. */
+  status: 'pending' | 'confirmed'
   services: BookingService[]
   master: BookingMaster
 }
 
 export interface BookingState {
-  step: 1 | 2 | 3 | 4
+  /** One service per booking; an array to match the API. */
   selectedServiceIds: string[]
   selectedDate: string | null
   selectedSlot: string | null
@@ -33,17 +35,22 @@ export interface BookingState {
    * so a returning client does not retype it.
    */
   phone: string
+  /** Service messages about this booking (on by default, per the spec). */
+  remindersConsent: boolean
+  /** News and offers from the master (off unless she ticks it). */
+  marketingConsent: boolean
   booking: BookingResult | null
 }
 
 export function createBookingState(overrides: Partial<BookingState> = {}): BookingState {
   return {
-    step: 1,
     selectedServiceIds: [],
     selectedDate: null,
     selectedSlot: null,
     note: '',
     phone: '',
+    remindersConsent: true,
+    marketingConsent: false,
     booking: null,
     ...overrides
   }

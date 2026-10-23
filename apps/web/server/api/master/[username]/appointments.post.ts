@@ -1,18 +1,11 @@
 import type { Json } from '#shared/types/supabase'
-import {
-  type AppointmentRow,
-  type TimeBlockRow,
-  addDays,
-  buildFreeSlots,
-  getProfileSchedule,
-  getProfileTimezone,
-  getScheduleDay,
-  utcMsToLocalDate,
-  zonedTimeToUtc
-} from '../../../utils/slots'
+import { getProfileTimezone, utcMsToLocalDate } from '../../../utils/slots'
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 const ISO_DATETIME_WITH_ZONE_RE = /^\d{4}-\d{2}-\d{2}T.+(?:Z|[+-]\d{2}:\d{2})$/
+
+/** Future online bookings one phone may have with one master. */
+const FUTURE_BOOKINGS_LIMIT = 2
 
 type AppointmentRequestBody = {
   service_ids?: unknown
@@ -22,6 +15,8 @@ type AppointmentRequestBody = {
   last_name?: unknown
   note?: unknown
   otp_token?: unknown
+  reminders_consent?: unknown
+  marketing_consent?: unknown
 }
 
 type BookingResponse = {
@@ -29,6 +24,7 @@ type BookingResponse = {
     id: string
     starts_at: string
     ends_at: string
+    status: 'pending' | 'confirmed'
     services: MasterService[]
     master: {
       first_name: string
@@ -62,6 +58,8 @@ export default defineEventHandler(async (event) => {
   const firstName = parseName(body.first_name, 'first_name')
   const lastName = parseName(body.last_name, 'last_name')
   const note = parseNote(body.note)
+  const remindersConsent = parseConsent(body.reminders_consent, 'reminders_consent')
+  const marketingConsent = parseConsent(body.marketing_consent, 'marketing_consent')
 
   const supabase = useServiceSupabase()
 
@@ -82,27 +80,15 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 401, message: 'Phone verification is required' })
   }
 
+  const holderHash = readHolderHash(event)
+
   // If master not found, let the RPC return master_not_found
   if (profile) {
-    const startsAtMs = new Date(startsAt).getTime()
-    const nowMs = Date.now()
-    const timezone = getProfileTimezone(profile.schedule)
-    const localDate = utcMsToLocalDate(startsAtMs, timezone)
-    const dayStart = zonedTimeToUtc(localDate, '00:00:00', timezone)
-    const dayEnd = zonedTimeToUtc(addDays(localDate, 1), '00:00:00', timezone)
-
-    // Step 2: load settings + services + day's busy intervals in parallel
-    const [
-      { data: settingsRow },
-      { data: services },
-      { data: appointments },
-      { data: timeBlocks },
-      { data: bookings }
-    ] = await Promise.all([
+    const [{ data: settingsRow }, { data: services }] = await Promise.all([
       supabase
         .from('master_settings')
         .select(
-          'online_booking_enabled, booking_min_notice_minutes, booking_buffer_minutes, calendar_slot_step_minutes'
+          'online_booking_enabled, booking_min_notice_minutes, booking_buffer_minutes, calendar_slot_step_minutes, vacation_from, vacation_until'
         )
         .eq('user_id', profile.user_id)
         .maybeSingle(),
@@ -111,74 +97,29 @@ export default defineEventHandler(async (event) => {
         .select('id, duration')
         .eq('user_id', profile.user_id)
         .eq('is_active', true)
-        .in('id', serviceIds),
-      supabase
-        .from('appointments')
-        .select('start_at, duration')
-        .eq('user_id', profile.user_id)
-        .neq('status', 'cancelled')
-        .lt('start_at', dayEnd.toISOString())
-        .gte('start_at', dayStart.toISOString()),
-      supabase
-        .from('time_block')
-        .select('start_at, end_at, all_day')
-        .eq('user_id', profile.user_id)
-        .lt('start_at', dayEnd.toISOString())
-        .gt('end_at', dayStart.toISOString()),
-      supabase
-        .from('bookings')
-        .select('starts_at, ends_at')
-        .eq('master_id', profile.id)
-        .neq('status', 'cancelled')
-        .lt('starts_at', dayEnd.toISOString())
-        .gt('ends_at', dayStart.toISOString())
+        .eq('show_online', true)
+        .in('id', serviceIds)
     ])
 
-    // Gate: online_booking_enabled
     if (!settingsRow || !settingsRow.online_booking_enabled) {
       throw createError({ statusCode: 403, message: 'Online booking is disabled' })
     }
 
-    const minNoticeMinutes = settingsRow.booking_min_notice_minutes ?? 0
-    const bufferMinutes = settingsRow.booking_buffer_minutes ?? 0
-    const slotStepMinutes = settingsRow.calendar_slot_step_minutes ?? 15
-
-    // Gate: min_notice — slot must start at least minNotice minutes from now
-    if (startsAtMs < nowMs + minNoticeMinutes * 60_000) {
-      throw createError({ statusCode: 409, message: 'Slot is unavailable' })
-    }
-
-    // Gate: slot availability — reuse buildFreeSlots as single source of truth
-    const schedule = getProfileSchedule(profile.schedule)
-    if (schedule && services && services.length === serviceIds.length) {
-      const scheduleDay = getScheduleDay(schedule, localDate)
-
-      if (!scheduleDay?.enabled) {
-        throw createError({ statusCode: 409, message: 'Slot is unavailable' })
-      }
-
-      const serviceDuration = services.reduce((total, s) => total + s.duration, 0)
-      const bookingRows: AppointmentRow[] = (bookings ?? []).map((b) => ({
-        start_at: b.starts_at,
-        duration: Math.round(
-          (new Date(b.ends_at).getTime() - new Date(b.starts_at).getTime()) / 60_000
-        )
-      }))
-
-      const freeSlots = buildFreeSlots({
-        date: localDate,
-        scheduleDay,
-        appointments: [...(appointments ?? []), ...bookingRows] as AppointmentRow[],
-        timeBlocks: (timeBlocks ?? []) as TimeBlockRow[],
-        serviceDuration,
-        timezone,
-        slotStepMinutes,
-        bufferMinutes,
-        minNoticeMinutes,
-        nowMs
+    // Gate: the slot is one she could have been shown (schedule, breaks, step,
+    // notice, vacation, other clients' holds). The RPC repeats the conflict
+    // checks under the master's lock.
+    if (services && services.length === serviceIds.length) {
+      const startsAtMs = new Date(startsAt).getTime()
+      const [day] = await loadDailySlots({
+        supabase,
+        profile,
+        settings: settingsRow,
+        dates: [utcMsToLocalDate(startsAtMs, getProfileTimezone(profile.schedule))],
+        durationMinutes: services.reduce((total, s) => total + s.duration, 0),
+        holderHash
       })
 
-      if (!freeSlots.includes(startsAt)) {
+      if (!day?.slots.includes(startsAt) && !(await isOwnRecentBooking(profile.user_id))) {
         throw createError({ statusCode: 409, message: 'Slot is unavailable' })
       }
     }
@@ -191,7 +132,11 @@ export default defineEventHandler(async (event) => {
     p_phone: phone,
     p_first_name: firstName ?? undefined,
     p_last_name: lastName ?? undefined,
-    p_note: note ?? undefined
+    p_note: note ?? undefined,
+    p_holder_hash: holderHash ?? undefined,
+    p_reminders_consent: remindersConsent ?? undefined,
+    p_marketing_consent: marketingConsent ?? undefined,
+    p_future_limit: FUTURE_BOOKINGS_LIMIT
   })
 
   if (error) {
@@ -199,6 +144,25 @@ export default defineEventHandler(async (event) => {
   }
 
   return parseBookingResponse(data)
+
+  /**
+   * A repeated tap after the booking went through: her own appointment now
+   * occupies the slot. Let the RPC answer with that booking instead of a 409.
+   */
+  async function isOwnRecentBooking(masterUserId: string) {
+    const { data: rows } = await supabase
+      .from('appointments')
+      .select('id, client!inner(phone)')
+      .eq('user_id', masterUserId)
+      .eq('start_at', startsAt)
+      .eq('source', 'online_booking')
+      .neq('status', 'cancelled')
+      .eq('client.phone', phone)
+      .gt('created_at', new Date(Date.now() - 10 * 60_000).toISOString())
+      .limit(1)
+
+    return Boolean(rows?.length)
+  }
 })
 
 function parseServiceIds(value: unknown) {
@@ -213,6 +177,11 @@ function parseServiceIds(value: unknown) {
     serviceIds.some((id) => typeof id !== 'string' || !UUID_RE.test(id))
   ) {
     throw createError({ statusCode: 400, message: 'service_ids must contain UUIDs' })
+  }
+
+  // One service per online booking (spec); the array keeps the API stable.
+  if (serviceIds.length > 1) {
+    throw createError({ statusCode: 400, message: 'Only one service per booking' })
   }
 
   return serviceIds as string[]
@@ -244,6 +213,18 @@ function parseName(value: unknown, field: string) {
   return value.trim() || null
 }
 
+function parseConsent(value: unknown, field: string) {
+  if (value === undefined || value === null) {
+    return null
+  }
+
+  if (typeof value !== 'boolean') {
+    throw createError({ statusCode: 400, message: `${field} must be a boolean` })
+  }
+
+  return value
+}
+
 function parseNote(value: unknown) {
   if (value === undefined || value === null) {
     return null
@@ -259,6 +240,23 @@ function parseNote(value: unknown) {
 function mapCreateAppointmentError(message: string) {
   if (message.includes('master_not_found')) {
     return createError({ statusCode: 404, message: 'Master not found' })
+  }
+
+  // Blacklisted by the master: refused without saying why.
+  if (message.includes('booking_refused')) {
+    return createError({
+      statusCode: 403,
+      message: 'Booking is not available',
+      data: { code: 'booking_refused' }
+    })
+  }
+
+  if (message.includes('booking_limit')) {
+    return createError({
+      statusCode: 409,
+      message: 'Too many upcoming bookings',
+      data: { code: 'booking_limit', limit: FUTURE_BOOKINGS_LIMIT }
+    })
   }
 
   if (message.includes('slot_unavailable')) {

@@ -21,11 +21,21 @@ export function priceToNumber(price: number | string): number {
   return Number.isFinite(parsed) ? parsed : 0
 }
 
-/** Apply a token-based date pattern (DD/MM/YYYY/YY) to a date. */
-function applyDateFormat(date: Date, pattern: string): string {
-  const dd = String(date.getDate()).padStart(2, '0')
-  const mm = String(date.getMonth() + 1).padStart(2, '0')
-  const yyyy = String(date.getFullYear())
+/** Apply a token-based date pattern (DD/MM/YYYY/YY) to a date, in `timeZone`. */
+function applyDateFormat(date: Date, pattern: string, timeZone?: string): string {
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat('en-US', {
+      timeZone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    })
+      .formatToParts(date)
+      .map((part) => [part.type, part.value])
+  )
+  const dd = parts.day ?? ''
+  const mm = parts.month ?? ''
+  const yyyy = parts.year ?? ''
 
   return pattern
     .replace(/YYYY/g, yyyy)
@@ -43,8 +53,13 @@ function toDate(value: Date | string): Date {
  * numeric date pattern). The active i18n locale is the master's language (the
  * master-locale override middleware guarantees this on public routes), so
  * Intl-driven parts (currency symbol, weekday name) come out in that language.
+ * Dates and times are shown in `timeZone` (the master's) when given, else in
+ * the browser's.
  */
-export function useMasterFormat(settings: MaybeRefOrGetter<FormatSettings | undefined>) {
+export function useMasterFormat(
+  settings: MaybeRefOrGetter<FormatSettings | undefined>,
+  timeZone?: MaybeRefOrGetter<string | undefined>
+) {
   const { getLocale } = useI18n()
 
   const resolved = computed(() => {
@@ -80,6 +95,7 @@ export function useMasterFormat(settings: MaybeRefOrGetter<FormatSettings | unde
 
   function formatTime(value: Date | string): string {
     return new Intl.DateTimeFormat(getLocale(), {
+      timeZone: toValue(timeZone),
       hour: '2-digit',
       minute: '2-digit',
       hour12: resolved.value.time_format === 12
@@ -88,13 +104,16 @@ export function useMasterFormat(settings: MaybeRefOrGetter<FormatSettings | unde
 
   /** Numeric date following the master's date_format (e.g. 05.06.2026). */
   function formatDate(value: Date | string): string {
-    return applyDateFormat(toDate(value), resolved.value.date_format)
+    return applyDateFormat(toDate(value), resolved.value.date_format, toValue(timeZone))
   }
 
   /** Localized weekday + numeric date (e.g. "Monday, 05.06.2026"). */
   function formatWeekdayDate(value: Date | string): string {
     const date = toDate(value)
-    const weekday = new Intl.DateTimeFormat(getLocale(), { weekday: 'long' }).format(date)
+    const weekday = new Intl.DateTimeFormat(getLocale(), {
+      weekday: 'long',
+      timeZone: toValue(timeZone)
+    }).format(date)
     return `${weekday}, ${formatDate(date)}`
   }
 

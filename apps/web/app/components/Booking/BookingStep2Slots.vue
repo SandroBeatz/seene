@@ -16,13 +16,31 @@ interface SlotGroup {
 
 const props = defineProps<{
   username: string
+  /** The slot she had picked was taken while she was filling in her details. */
+  slotTaken?: boolean
 }>()
 
 const { $ts, getLocale } = useI18n()
 const bookingState = useBookingState(props.username)
 
 const { data: masterData } = useMasterData(() => props.username)
-const { formatTime, formatWeekdayDate } = useMasterFormat(() => masterData.value?.settings)
+const timezone = computed(() => masterData.value?.timezone)
+// Days are plain dates already in the master's time zone; times are instants
+// shown in her time zone.
+const { formatWeekdayDate } = useMasterFormat(() => masterData.value?.settings)
+const { formatTime } = useMasterFormat(() => masterData.value?.settings, timezone)
+
+const hourFormatter = computed(
+  () => new Intl.DateTimeFormat('en-US', { hour: 'numeric', hourCycle: 'h23', timeZone: timezone.value })
+)
+
+// "Time in Bishkek": her city, or the zone's own name when the city is not set.
+const timezonePlace = computed(() => {
+  const city = masterData.value?.profile.city
+  if (city) return city
+  const zone = timezone.value
+  return zone ? (zone.split('/').at(-1) ?? zone).replace(/_/g, ' ') : ''
+})
 
 const {
   data: availability,
@@ -66,7 +84,7 @@ const slotGroups = computed<SlotGroup[]>(() => {
   ]
 
   for (const slot of selectedDay.value?.slots ?? []) {
-    const hour = new Date(slot).getHours()
+    const hour = Number(hourFormatter.value.format(new Date(slot)))
     groups[hour < 12 ? 0 : hour < 17 ? 1 : 2]!.slots.push(slot)
   }
 
@@ -160,8 +178,17 @@ function slotCountLabel(count: number) {
 
 <template>
   <section class="flex flex-col gap-5">
-    <p class="text-xs text-muted">
-      {{ $ts('booking.steps.slots.description') }}
+    <UAlert
+      v-if="slotTaken"
+      color="warning"
+      variant="subtle"
+      icon="i-lucide-clock-alert"
+      :title="$ts('booking.steps.slots.taken')"
+    />
+
+    <p v-if="timezonePlace" class="flex items-center gap-1.5 text-xs text-muted">
+      <UIcon name="i-lucide-globe" class="size-3.5 shrink-0" />
+      {{ $ts('booking.steps.slots.timezone', { place: timezonePlace }) }}
     </p>
 
     <UAlert
@@ -202,7 +229,11 @@ function slotCountLabel(count: number) {
       v-else-if="!hasAnyFreeDay"
       icon="i-lucide-calendar-x"
       :title="$ts('booking.steps.slots.noSlots')"
-      :description="$ts('booking.steps.slots.noUpcomingSlots')"
+      :description="
+        $ts('booking.steps.slots.noUpcomingSlots', {
+          days: masterData?.settings.booking_horizon_days ?? 14
+        })
+      "
       variant="naked"
     />
 
