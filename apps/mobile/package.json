@@ -1,5 +1,5 @@
 {
-  "name": "app.master.seene",
+  "name": "@seene/mobile",
   "main": "index.js",
   "version": "1.0.0",
   "dependencies": {
@@ -94,8 +94,5 @@
       ]
     }
   },
-  "private": true,
-  "patchedDependencies": {
-    "expo-modules-jsi@57.0.5": "patches/expo-modules-jsi@57.0.5.patch"
-  }
+  "private": true
 }

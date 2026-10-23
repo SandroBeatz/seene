@@ -1,0 +1,12 @@
+{
+  "name": "seene",
+  "private": true,
+  "packageManager": "pnpm@10.33.0",
+  "scripts": {
+    "web": "pnpm --filter @seene/web",
+    "mobile": "pnpm --filter @seene/mobile",
+    "lint": "pnpm -r --parallel lint",
+    "typecheck": "pnpm -r --parallel typecheck",
+    "test": "pnpm -r --parallel test"
+  }
+}
