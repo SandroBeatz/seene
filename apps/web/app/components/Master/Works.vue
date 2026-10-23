@@ -64,7 +64,7 @@ watch(
       />
     </div>
 
-    <ul class="grid grid-cols-3 gap-1 overflow-hidden rounded-2xl">
+    <ul class="grid grid-cols-3 gap-1 overflow-hidden rounded-[16px]">
       <li v-for="(photo, i) in visible" :key="photo.id" class="aspect-square bg-muted">
         <button
           type="button"

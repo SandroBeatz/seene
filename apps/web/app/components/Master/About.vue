@@ -75,7 +75,7 @@ onBeforeUnmount(() => window.removeEventListener('resize', measure))
     <dl
       v-if="open && details.length"
       id="master-about-details"
-      class="seene-reveal mt-1.5 flex flex-col gap-2 rounded-2xl bg-muted p-3.5 text-sm"
+      class="seene-reveal mt-1.5 flex flex-col gap-2 rounded-[14px] bg-muted p-3.5 text-sm"
     >
       <div v-for="row in details" :key="row.label" class="flex gap-2.5">
         <dt class="w-16 shrink-0 text-muted">{{ row.label }}</dt>
