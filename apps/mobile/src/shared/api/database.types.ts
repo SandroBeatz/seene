@@ -19,12 +19,16 @@ export type Database = {
     Tables: {
       appointments: {
         Row: {
+          cancel_reason: string | null
+          cancelled_at: string | null
+          cancelled_by: string | null
           client_id: string
           created_at: string
           duration: number
           id: string
           notes: string | null
           price: number | null
+          rescheduled_from: string | null
           service_ids: string[]
           source: string
           start_at: string
@@ -33,12 +37,16 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          cancel_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
           client_id: string
           created_at?: string
           duration: number
           id?: string
           notes?: string | null
           price?: number | null
+          rescheduled_from?: string | null
           service_ids?: string[]
           source?: string
           start_at: string
@@ -47,12 +55,16 @@ export type Database = {
           user_id: string
         }
         Update: {
+          cancel_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
           client_id?: string
           created_at?: string
           duration?: number
           id?: string
           notes?: string | null
           price?: number | null
+          rescheduled_from?: string | null
           service_ids?: string[]
           source?: string
           start_at?: string
@@ -66,6 +78,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "client"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointments_rescheduled_from_fkey"
+            columns: ["rescheduled_from"]
+            isOneToOne: false
+            referencedRelation: "appointments"
             referencedColumns: ["id"]
           },
         ]
@@ -104,6 +123,38 @@ export type Database = {
             columns: ["master_id"]
             isOneToOne: false
             referencedRelation: "master_profile"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      booking_link: {
+        Row: {
+          appointment_id: string
+          created_at: string
+          expires_at: string
+          id: string
+          token_hash: string
+        }
+        Insert: {
+          appointment_id: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          token_hash: string
+        }
+        Update: {
+          appointment_id?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          token_hash?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booking_link_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
             referencedColumns: ["id"]
           },
         ]
@@ -158,6 +209,7 @@ export type Database = {
       client: {
         Row: {
           birthday: string | null
+          blocked: boolean
           created_at: string
           email: string | null
           emoji: string | null
@@ -165,14 +217,17 @@ export type Database = {
           id: string
           is_favorite: boolean
           last_name: string | null
+          marketing_consent: boolean
           notes: string | null
           phone: string
+          reminders_consent: boolean
           source: string
           updated_at: string
           user_id: string
         }
         Insert: {
           birthday?: string | null
+          blocked?: boolean
           created_at?: string
           email?: string | null
           emoji?: string | null
@@ -180,14 +235,17 @@ export type Database = {
           id?: string
           is_favorite?: boolean
           last_name?: string | null
+          marketing_consent?: boolean
           notes?: string | null
           phone: string
+          reminders_consent?: boolean
           source?: string
           updated_at?: string
           user_id: string
         }
         Update: {
           birthday?: string | null
+          blocked?: boolean
           created_at?: string
           email?: string | null
           emoji?: string | null
@@ -195,11 +253,43 @@ export type Database = {
           id?: string
           is_favorite?: boolean
           last_name?: string | null
+          marketing_consent?: boolean
           notes?: string | null
           phone?: string
+          reminders_consent?: boolean
           source?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      client_device_token: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          master_user_id: string
+          phone: string
+          revoked_at: string | null
+          token_hash: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          id?: string
+          master_user_id: string
+          phone: string
+          revoked_at?: string | null
+          token_hash: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          master_user_id?: string
+          phone?: string
+          revoked_at?: string | null
+          token_hash?: string
         }
         Relationships: []
       }
@@ -212,16 +302,21 @@ export type Database = {
           city: string | null
           contact_email: string | null
           country: string
+          cover_url: string | null
           created_at: string
           deactivated_at: string | null
+          experience_years: number | null
           first_name: string
           house_number: string | null
           id: string
           instagram: string | null
+          is_verified: boolean
           last_name: string
+          map_url: string | null
           phone: string
           place_id: string | null
           schedule: Json
+          show_visits_count: boolean
           specializations: string[]
           telegram: string | null
           tiktok: string | null
@@ -239,16 +334,21 @@ export type Database = {
           city?: string | null
           contact_email?: string | null
           country?: string
+          cover_url?: string | null
           created_at?: string
           deactivated_at?: string | null
+          experience_years?: number | null
           first_name: string
           house_number?: string | null
           id?: string
           instagram?: string | null
+          is_verified?: boolean
           last_name: string
+          map_url?: string | null
           phone: string
           place_id?: string | null
           schedule: Json
+          show_visits_count?: boolean
           specializations: string[]
           telegram?: string | null
           tiktok?: string | null
@@ -266,16 +366,21 @@ export type Database = {
           city?: string | null
           contact_email?: string | null
           country?: string
+          cover_url?: string | null
           created_at?: string
           deactivated_at?: string | null
+          experience_years?: number | null
           first_name?: string
           house_number?: string | null
           id?: string
           instagram?: string | null
+          is_verified?: boolean
           last_name?: string
+          map_url?: string | null
           phone?: string
           place_id?: string | null
           schedule?: Json
+          show_visits_count?: boolean
           specializations?: string[]
           telegram?: string | null
           tiktok?: string | null
@@ -296,9 +401,11 @@ export type Database = {
           alert_upcoming_offset_minutes: number
           booking_buffer_minutes: number
           booking_default_status: string
+          booking_horizon_days: number
           booking_min_notice_minutes: number
           calendar_first_day: number
           calendar_slot_step_minutes: number
+          cancel_window_hours: number
           client_reminder_offsets_minutes: number[]
           client_reminder_whatsapp_enabled: boolean
           created_at: string
@@ -308,10 +415,14 @@ export type Database = {
           id: string
           language: string
           online_booking_enabled: boolean
+          page_accent: string
+          page_theme: string
           theme: string
           time_format: number
           updated_at: string
           user_id: string
+          vacation_from: string | null
+          vacation_until: string | null
         }
         Insert: {
           alert_awaiting_confirmation_enabled?: boolean
@@ -321,9 +432,11 @@ export type Database = {
           alert_upcoming_offset_minutes?: number
           booking_buffer_minutes?: number
           booking_default_status?: string
+          booking_horizon_days?: number
           booking_min_notice_minutes?: number
           calendar_first_day?: number
           calendar_slot_step_minutes?: number
+          cancel_window_hours?: number
           client_reminder_offsets_minutes?: number[]
           client_reminder_whatsapp_enabled?: boolean
           created_at?: string
@@ -333,10 +446,14 @@ export type Database = {
           id?: string
           language?: string
           online_booking_enabled?: boolean
+          page_accent?: string
+          page_theme?: string
           theme?: string
           time_format?: number
           updated_at?: string
           user_id: string
+          vacation_from?: string | null
+          vacation_until?: string | null
         }
         Update: {
           alert_awaiting_confirmation_enabled?: boolean
@@ -346,9 +463,11 @@ export type Database = {
           alert_upcoming_offset_minutes?: number
           booking_buffer_minutes?: number
           booking_default_status?: string
+          booking_horizon_days?: number
           booking_min_notice_minutes?: number
           calendar_first_day?: number
           calendar_slot_step_minutes?: number
+          cancel_window_hours?: number
           client_reminder_offsets_minutes?: number[]
           client_reminder_whatsapp_enabled?: boolean
           created_at?: string
@@ -358,38 +477,48 @@ export type Database = {
           id?: string
           language?: string
           online_booking_enabled?: boolean
+          page_accent?: string
+          page_theme?: string
           theme?: string
           time_format?: number
           updated_at?: string
           user_id?: string
+          vacation_from?: string | null
+          vacation_until?: string | null
         }
         Relationships: []
       }
       otp_codes: {
         Row: {
           attempts: number
+          channel: string | null
           code: string
           created_at: string
           expires_at: string
           id: string
+          ip_hash: string | null
           phone: string
           used: boolean
         }
         Insert: {
           attempts?: number
+          channel?: string | null
           code: string
           created_at?: string
           expires_at: string
           id?: string
+          ip_hash?: string | null
           phone: string
           used?: boolean
         }
         Update: {
           attempts?: number
+          channel?: string | null
           code?: string
           created_at?: string
           expires_at?: string
           id?: string
+          ip_hash?: string | null
           phone?: string
           used?: boolean
         }
@@ -433,6 +562,56 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      phone_verification: {
+        Row: {
+          phone: string
+          verified_at: string
+        }
+        Insert: {
+          phone: string
+          verified_at?: string
+        }
+        Update: {
+          phone?: string
+          verified_at?: string
+        }
+        Relationships: []
+      }
+      portfolio_item: {
+        Row: {
+          created_at: string
+          id: string
+          photo_url: string
+          service_id: string | null
+          sort_order: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          photo_url: string
+          service_id?: string | null
+          sort_order?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          photo_url?: string
+          service_id?: string | null
+          sort_order?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portfolio_item_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "service"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       sale: {
         Row: {
@@ -531,7 +710,10 @@ export type Database = {
           id: string
           is_active: boolean
           name: string
+          photo_url: string | null
           price: number
+          price_from: boolean
+          show_online: boolean
           sort_order: number
           updated_at: string
           user_id: string
@@ -545,7 +727,10 @@ export type Database = {
           id?: string
           is_active?: boolean
           name: string
+          photo_url?: string | null
           price: number
+          price_from?: boolean
+          show_online?: boolean
           sort_order?: number
           updated_at?: string
           user_id: string
@@ -559,7 +744,10 @@ export type Database = {
           id?: string
           is_active?: boolean
           name?: string
+          photo_url?: string | null
           price?: number
+          price_from?: boolean
+          show_online?: boolean
           sort_order?: number
           updated_at?: string
           user_id?: string
@@ -598,6 +786,36 @@ export type Database = {
           sort_order?: number
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      slot_hold: {
+        Row: {
+          created_at: string
+          end_at: string
+          expires_at: string
+          holder_hash: string
+          id: string
+          master_user_id: string
+          start_at: string
+        }
+        Insert: {
+          created_at?: string
+          end_at: string
+          expires_at: string
+          holder_hash: string
+          id?: string
+          master_user_id: string
+          start_at: string
+        }
+        Update: {
+          created_at?: string
+          end_at?: string
+          expires_at?: string
+          holder_hash?: string
+          id?: string
+          master_user_id?: string
+          start_at?: string
         }
         Relationships: []
       }
@@ -650,6 +868,10 @@ export type Database = {
           day: string
         }[]
       }
+      cancel_appointment_by_link: {
+        Args: { p_reason?: string; p_token_hash: string }
+        Returns: Json
+      }
       check_username_available: {
         Args: { p_username: string }
         Returns: boolean
@@ -666,9 +888,15 @@ export type Database = {
       create_appointment_from_booking: {
         Args: {
           p_first_name?: string
+          p_future_limit?: number
+          p_holder_hash?: string
           p_last_name?: string
+          p_link_hash?: string
+          p_marketing_consent?: boolean
           p_note?: string
           p_phone: string
+          p_reminders_consent?: boolean
+          p_replaces_hash?: string
           p_service_ids: string[]
           p_starts_at: string
           p_username: string
@@ -708,6 +936,20 @@ export type Database = {
         }
         Returns: Json
       }
+      hold_booking_slot: {
+        Args: {
+          p_duration: number
+          p_holder_hash: string
+          p_starts_at: string
+          p_ttl_minutes?: number
+          p_username: string
+        }
+        Returns: string
+      }
+      update_sale_details: {
+        Args: { p_amount: number; p_items: Json; p_sale_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
@@ -726,12 +968,12 @@ export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -755,11 +997,11 @@ export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -780,11 +1022,11 @@ export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -805,11 +1047,11 @@ export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -822,11 +1064,11 @@ export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
+    : never) = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }

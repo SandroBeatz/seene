@@ -10,12 +10,16 @@ export type Database = {
     Tables: {
       appointments: {
         Row: {
+          cancel_reason: string | null
+          cancelled_at: string | null
+          cancelled_by: string | null
           client_id: string
           created_at: string
           duration: number
           id: string
           notes: string | null
           price: number | null
+          rescheduled_from: string | null
           service_ids: string[]
           source: string
           start_at: string
@@ -24,12 +28,16 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          cancel_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
           client_id: string
           created_at?: string
           duration: number
           id?: string
           notes?: string | null
           price?: number | null
+          rescheduled_from?: string | null
           service_ids?: string[]
           source?: string
           start_at: string
@@ -38,12 +46,16 @@ export type Database = {
           user_id: string
         }
         Update: {
+          cancel_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
           client_id?: string
           created_at?: string
           duration?: number
           id?: string
           notes?: string | null
           price?: number | null
+          rescheduled_from?: string | null
           service_ids?: string[]
           source?: string
           start_at?: string
@@ -57,6 +69,13 @@ export type Database = {
             columns: ['client_id']
             isOneToOne: false
             referencedRelation: 'client'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'appointments_rescheduled_from_fkey'
+            columns: ['rescheduled_from']
+            isOneToOne: false
+            referencedRelation: 'appointments'
             referencedColumns: ['id']
           }
         ]
@@ -95,6 +114,38 @@ export type Database = {
             columns: ['master_id']
             isOneToOne: false
             referencedRelation: 'master_profile'
+            referencedColumns: ['id']
+          }
+        ]
+      }
+      booking_link: {
+        Row: {
+          appointment_id: string
+          created_at: string
+          expires_at: string
+          id: string
+          token_hash: string
+        }
+        Insert: {
+          appointment_id: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          token_hash: string
+        }
+        Update: {
+          appointment_id?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          token_hash?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'booking_link_appointment_id_fkey'
+            columns: ['appointment_id']
+            isOneToOne: false
+            referencedRelation: 'appointments'
             referencedColumns: ['id']
           }
         ]
@@ -808,6 +859,10 @@ export type Database = {
           day: string
         }[]
       }
+      cancel_appointment_by_link: {
+        Args: { p_reason?: string; p_token_hash: string }
+        Returns: Json
+      }
       check_username_available: {
         Args: { p_username: string }
         Returns: boolean
@@ -827,10 +882,12 @@ export type Database = {
           p_future_limit?: number
           p_holder_hash?: string
           p_last_name?: string
+          p_link_hash?: string
           p_marketing_consent?: boolean
           p_note?: string
           p_phone: string
           p_reminders_consent?: boolean
+          p_replaces_hash?: string
           p_service_ids: string[]
           p_starts_at: string
           p_username: string

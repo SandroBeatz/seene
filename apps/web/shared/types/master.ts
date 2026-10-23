@@ -1,4 +1,5 @@
 import type { MasterPageTheme } from '../utils/masterTheme'
+import type { BookingLinkState } from '../utils/bookingLink'
 import type { WorkingHoursRange } from '../utils/masterPage'
 
 export interface MasterProfile {
@@ -134,4 +135,32 @@ export interface NearestSlot {
   start_at: string | null
   /** Master's time zone, to show the time as the master's local time */
   timezone: string
+}
+
+/** A service as the booking link shows it (it may be hidden from the page since). */
+export interface BookingLinkService {
+  id: string
+  name: string
+  duration: number
+  price: string | number
+  price_from: boolean
+  photo_url: string | null
+  color: string
+}
+
+/** GET /api/c/[token] */
+export interface BookingLinkData {
+  state: BookingLinkState
+  /** The master's page, for "Book again" and the theme */
+  username: string
+  /** Absent when the visit has passed: the link no longer shows the booking */
+  booking: {
+    starts_at: string
+    ends_at: string
+    status: string
+    price: number | null
+    services: BookingLinkService[]
+    /** Last moment to cancel or move online (ISO) */
+    cancel_until: string
+  } | null
 }

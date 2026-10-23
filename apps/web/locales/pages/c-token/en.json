@@ -1,0 +1,69 @@
+{
+  "master": {
+    "verified": {
+      "label": "Verified pro",
+      "hint": "Verified pro: Seene checked the phone number and profile"
+    },
+    "duration": {
+      "hours": "{count} h",
+      "minutes": "{count} min"
+    }
+  },
+  "specializations": {
+    "makeup": "Make-up",
+    "hair": "Hair",
+    "nails": "Nails",
+    "barber": "Barber",
+    "massage": "Massage",
+    "tattoo_piercing": "Tattoo and piercing",
+    "depilation": "Depilation",
+    "cosmetology": "Cosmetology",
+    "brows_lashes": "Brows and eyelashes"
+  },
+  "booking": {
+    "service": {
+      "priceFrom": "from {price}"
+    }
+  },
+  "cancel": {
+    "title": "Your booking",
+    "titleCancelled": "Booking cancelled",
+    "titlePast": "This visit has passed",
+    "status": {
+      "confirmed": "Confirmed",
+      "pending": "Awaiting confirmation",
+      "cancelled": "Cancelled"
+    },
+    "rows": {
+      "service": "Service",
+      "when": "When",
+      "address": "Address",
+      "price": "Price"
+    },
+    "move": "Move to another time",
+    "cancel": "Cancel booking",
+    "cancelUntil": "You can cancel online until {when}",
+    "late": "The visit is less than {hours} h away, so online cancellation is closed. Message the master: {name} will offer another time.",
+    "whatsapp": "Message on WhatsApp",
+    "whatsappText": "Hello! I am booked with you on {when}, but I cannot make it.",
+    "cancelledNote": "The slot is free for someone else now. Thank you for letting us know in advance.",
+    "bookAgain": "Book again",
+    "pastNote": "This link no longer opens the booking. You can book again on the master’s page.",
+    "toProfile": "Go to the master’s page",
+    "sheet": {
+      "title": "Cancel the booking?",
+      "description": "{when}. The slot will be freed right away.",
+      "reason": "Reason, if you like",
+      "reasonPlaceholder": "For example: I am ill",
+      "confirm": "Yes, cancel",
+      "keep": "No, keep it"
+    },
+    "errors": {
+      "cancelFailed": "Could not cancel the booking, please try again",
+      "windowClosed": "Online cancellation is closed. Please message the master."
+    },
+    "seo": {
+      "title": "Your booking · Seene"
+    }
+  }
+}
