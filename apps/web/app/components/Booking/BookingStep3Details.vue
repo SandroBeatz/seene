@@ -345,10 +345,7 @@ async function createBooking() {
         ...(otpToken.value ? { otp_token: otpToken.value } : {}),
         ...(screen.value === 'first' ? { first_name: firstName.value.trim() } : {}),
         reminders_consent: bookingState.value.remindersConsent,
-        marketing_consent: bookingState.value.marketingConsent,
-        ...(bookingState.value.reschedule
-          ? { reschedule_token: bookingState.value.reschedule.token }
-          : {})
+        marketing_consent: bookingState.value.marketingConsent
       }
     })
 
@@ -372,8 +369,6 @@ async function createBooking() {
       error.value = $ts('booking.errors.limit')
     } else if (code === 'booking_refused') {
       error.value = $ts('booking.errors.refused')
-    } else if (code === 'reschedule_unavailable') {
-      error.value = $ts('booking.errors.rescheduleUnavailable')
     } else if (statusCode === 409) {
       queryCache.invalidateQueries({ key: ['booking-availability', username.value] })
       emit('slotTaken')

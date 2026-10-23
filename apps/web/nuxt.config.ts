@@ -63,6 +63,9 @@ export default defineNuxtConfig({
     ],
     defaultLocale: 'en',
     translationDir: 'locales',
+    // The booking link page (/c/[token]) shows the master's card and the time
+    // step, so it reads the master page's translations.
+    routesLocaleLinks: { 'c-token': 'username' },
     meta: true,
     // Locale is owned explicitly: the master's configured language on
     // `/[username]` pages (see `app/middleware/master-locale.ts`) and the URL

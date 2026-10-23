@@ -13,6 +13,12 @@ const props = defineProps<{
   data: MasterPageData
   /** The slot she had picked was taken while she was filling in her details. */
   slotTaken?: boolean
+  /** Button label before the picked time; "Next" by default. */
+  action?: string
+  /** The button is busy (e.g. moving a booking). */
+  loading?: boolean
+  /** The services cannot be changed here: the total in the footer is not a button. */
+  fixedServices?: boolean
 }>()
 
 defineEmits<{
@@ -26,19 +32,6 @@ const bookingState = useBookingState(username.value)
 const summary = useBookingSummary(() => props.data)
 const timezone = computed(() => props.data.timezone)
 const { formatTime } = useMasterFormat(() => props.data.settings, timezone)
-
-/** "Fri, 24 Oct, 11:30": the booking being moved, while she picks a new time. */
-const rescheduleFrom = computed(() => {
-  const from = bookingState.value.reschedule?.startsAt
-  if (!from) return ''
-  const day = new Intl.DateTimeFormat(getLocale(), {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'short',
-    timeZone: timezone.value
-  }).format(new Date(from))
-  return `${day}, ${formatTime(from)}`
-})
 
 const {
   data: availability,
@@ -181,7 +174,8 @@ function selectDate(day: DayOption) {
 
 const nextLabel = computed(() => {
   const slot = bookingState.value.selectedSlot
-  if (!slot) return $ts('booking.header.next')
+  const action = props.action ?? $ts('booking.header.next')
+  if (!slot) return action
   const day = new Intl.DateTimeFormat(getLocale(), {
     weekday: 'short',
     day: 'numeric',
@@ -189,7 +183,7 @@ const nextLabel = computed(() => {
   })
     .format(new Date(slot))
     .replace(/[.,]/g, '')
-  return `${$ts('booking.header.next')} · ${day.charAt(0).toUpperCase()}${day.slice(1)}, ${formatTime(slot)}`
+  return `${action} · ${day.charAt(0).toUpperCase()}${day.slice(1)}, ${formatTime(slot)}`
 })
 
 // Variant B of the design: the total sits in the footer; tapping it changes the services.
@@ -212,15 +206,7 @@ const isEmpty = computed(() => !isPending.value && !error.value && !hasAnyFreeDa
         {{ $ts('booking.steps.slots.title') }}
       </h1>
 
-      <UAlert
-        v-if="rescheduleFrom"
-        color="neutral"
-        variant="subtle"
-        icon="i-lucide-calendar-sync"
-        class="rounded-[14px]"
-        :title="$ts('booking.steps.slots.rescheduleFrom', { when: rescheduleFrom })"
-        :description="$ts('booking.steps.slots.rescheduleNote')"
-      />
+      <slot name="notice" />
 
       <UAlert
         v-if="slotTaken"
@@ -363,8 +349,9 @@ const isEmpty = computed(() => !isPending.value && !error.value && !hasAnyFreeDa
       v-if="!isEmpty"
       :label="nextLabel"
       :disabled="!bookingState.selectedSlot"
+      :loading="loading"
       :summary="footerSummary"
-      summary-tap
+      :summary-tap="!fixedServices"
       @click="$emit('next')"
       @summary="$emit('changeServices')"
     />

@@ -20,7 +20,6 @@ const { formatDuration } = useMasterPageFormat(() => props.data.settings)
 const booking = computed(() => bookingState.value.booking)
 const profile = computed(() => props.data.profile)
 const confirmed = computed(() => booking.value?.status === 'confirmed')
-const rescheduled = computed(() => !!bookingState.value.reschedule)
 const masterName = computed(() => `${profile.value.first_name} ${profile.value.last_name}`.trim())
 
 // Services as the master's page shows them (photo, "from" price).
@@ -160,11 +159,7 @@ function escapeIcsText(value: string) {
         </span>
         <h1 class="font-display text-[28px] font-bold tracking-[-0.03em] text-highlighted">
           {{
-            rescheduled
-              ? $ts('booking.steps.success.rescheduledTitle')
-              : confirmed
-                ? $ts('booking.steps.success.title')
-                : $ts('booking.steps.success.pendingTitle')
+            confirmed ? $ts('booking.steps.success.title') : $ts('booking.steps.success.pendingTitle')
           }}
         </h1>
         <p class="text-[15px] leading-normal text-muted">{{ subtitle }}</p>

@@ -1,11 +1,7 @@
-import type { Json } from '#shared/types/supabase'
 import { getProfileTimezone, utcMsToLocalDate } from '../../../utils/slots'
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 const ISO_DATETIME_WITH_ZONE_RE = /^\d{4}-\d{2}-\d{2}T.+(?:Z|[+-]\d{2}:\d{2})$/
-
-/** Future online bookings one phone may have with one master. */
-const FUTURE_BOOKINGS_LIMIT = 2
 
 type AppointmentRequestBody = {
   service_ids?: unknown
@@ -17,35 +13,12 @@ type AppointmentRequestBody = {
   otp_token?: unknown
   reminders_consent?: unknown
   marketing_consent?: unknown
-  /** Token of the booking being moved (from its personal link) */
-  reschedule_token?: unknown
 }
 
 type BookingResponse = {
   /** Personal link to cancel or move this booking */
   link: string
-  booking: {
-    id: string
-    starts_at: string
-    ends_at: string
-    status: 'pending' | 'confirmed'
-    services: MasterService[]
-    master: {
-      first_name: string
-      last_name: string
-    }
-  }
-}
-
-type MasterService = {
-  id: string
-  category_id: string | null
-  name: string
-  description: string | null
-  duration: number
-  price: number
-  color: string
-  sort_order: number
+  booking: OnlineBooking
 }
 
 export default defineEventHandler(async (event) => {
@@ -64,7 +37,6 @@ export default defineEventHandler(async (event) => {
   const note = parseNote(body.note)
   const remindersConsent = parseConsent(body.reminders_consent, 'reminders_consent')
   const marketingConsent = parseConsent(body.marketing_consent, 'marketing_consent')
-  const rescheduleToken = parseRescheduleToken(body.reschedule_token)
 
   const supabase = useServiceSupabase()
 
@@ -146,40 +118,26 @@ export default defineEventHandler(async (event) => {
     p_reminders_consent: remindersConsent ?? undefined,
     p_marketing_consent: marketingConsent ?? undefined,
     p_future_limit: FUTURE_BOOKINGS_LIMIT,
-    p_link_hash: link.hash,
-    p_replaces_hash: rescheduleToken ? hashBookingLinkToken(rescheduleToken) : undefined
+    p_link_hash: link.hash
   })
 
   if (error) {
     throw mapCreateAppointmentError(error.message)
   }
 
-  const { created, booking } = parseBookingResponse(data)
-  const locale = messageLocale(messageSettings?.language)
-  const linkUrl = bookingLinkUrl(event, link.token, locale)
+  const { created, booking } = parseBookingRpcResult(data)
 
-  // The confirmation goes once, for the booking just made (not on a repeated
-  // tap). A failed message does not undo the booking.
-  if (created && profile) {
-    try {
-      await sendMessage(
-        { phone, channel: 'whatsapp' },
-        {
-          template: booking.status === 'confirmed' ? 'booking_confirmed' : 'booking_pending',
-          master: `${profile.first_name} ${profile.last_name}`.trim(),
-          when: formatVisitTime(booking.starts_at, {
-            locale,
-            timezone: getProfileTimezone(profile.schedule),
-            hour12: messageSettings?.time_format === 12
-          }),
-          link: linkUrl
-        },
-        locale
-      )
-    } catch (sendError) {
-      console.error('[booking] confirmation not sent', sendError)
-    }
-  }
+  // The confirmation goes once, for the booking just made (not on a repeated tap).
+  const linkUrl =
+    created && profile
+      ? await sendBookingConfirmation(event, {
+          phone,
+          profile,
+          settings: messageSettings,
+          booking,
+          linkToken: link.token
+        })
+      : bookingLinkUrl(event, link.token, messageLocale(messageSettings?.language))
 
   return { link: linkUrl, booking } satisfies BookingResponse
 
@@ -234,19 +192,6 @@ function parseStartsAt(value: unknown) {
   return startsAt.toISOString()
 }
 
-function parseRescheduleToken(value: unknown) {
-  if (value === undefined || value === null) {
-    return null
-  }
-
-  const token = parseBookingLinkToken(value)
-  if (!token) {
-    throw createError({ statusCode: 400, message: 'reschedule_token is invalid' })
-  }
-
-  return token
-}
-
 function parseName(value: unknown, field: string) {
   if (value === undefined || value === null) {
     return null
@@ -281,75 +226,4 @@ function parseNote(value: unknown) {
   }
 
   return value.trim() || null
-}
-
-function mapCreateAppointmentError(message: string) {
-  if (message.includes('master_not_found')) {
-    return createError({ statusCode: 404, message: 'Master not found' })
-  }
-
-  // Blacklisted by the master: refused without saying why.
-  if (message.includes('booking_refused')) {
-    return createError({
-      statusCode: 403,
-      message: 'Booking is not available',
-      data: { code: 'booking_refused' }
-    })
-  }
-
-  if (message.includes('booking_limit')) {
-    return createError({
-      statusCode: 409,
-      message: 'Too many upcoming bookings',
-      data: { code: 'booking_limit', limit: FUTURE_BOOKINGS_LIMIT }
-    })
-  }
-
-  // The booking being moved can no longer be cancelled (window closed,
-  // cancelled already, or not hers).
-  if (message.includes('reschedule_unavailable')) {
-    return createError({
-      statusCode: 409,
-      message: 'The booking can no longer be moved',
-      data: { code: 'reschedule_unavailable' }
-    })
-  }
-
-  if (message.includes('slot_unavailable')) {
-    return createError({ statusCode: 409, message: 'Slot is unavailable' })
-  }
-
-  if (message.includes('services_unavailable')) {
-    return createError({ statusCode: 400, message: 'One or more services are unavailable' })
-  }
-
-  if (message.includes('client_name_required')) {
-    return createError({ statusCode: 400, message: 'First name is required for new clients' })
-  }
-
-  if (
-    message.includes('username_required') ||
-    message.includes('services_required') ||
-    message.includes('starts_at_required') ||
-    message.includes('phone_required')
-  ) {
-    return createError({ statusCode: 400, message: 'Appointment request is invalid' })
-  }
-
-  return createError({ statusCode: 500, message: 'Failed to create appointment' })
-}
-
-function parseBookingResponse(value: Json | null) {
-  if (!isRecord(value) || !isRecord(value.booking)) {
-    throw createError({ statusCode: 500, message: 'Appointment response is invalid' })
-  }
-
-  return {
-    created: value.created !== false,
-    booking: value.booking as unknown as BookingResponse['booking']
-  }
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return Boolean(value && typeof value === 'object' && !Array.isArray(value))
 }
