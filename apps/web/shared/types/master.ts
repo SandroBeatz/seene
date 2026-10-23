@@ -150,7 +150,8 @@ export interface BookingLinkService {
 
 /** GET /api/c/[token] */
 export interface BookingLinkData {
-  state: BookingLinkState
+  /** `moved`: the client moved this booking; `booking` is the new one */
+  state: BookingLinkState | 'moved'
   /** The master's page, for "Book again" and the theme */
   username: string
   /** Absent when the visit has passed: the link no longer shows the booking */

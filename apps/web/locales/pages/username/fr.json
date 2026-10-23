@@ -136,9 +136,7 @@
         "noUpcomingSlots": "Tout est réservé pour les {days} prochains jours",
         "changeServices": "Modifier les prestations : {price}, {duration}",
         "otherService": "Choisir une autre prestation",
-        "loading": "Chargement des créneaux",
-        "rescheduleFrom": "Déplacement du rendez-vous du {when}",
-        "rescheduleNote": "L’ancien rendez-vous sera annulé une fois le nouvel horaire réservé."
+        "loading": "Chargement des créneaux"
       },
       "confirm": {
         "phoneTitle": "Votre numéro de téléphone",
@@ -174,8 +172,7 @@
         "cancelDayBefore": "jusqu’à {time} la veille",
         "cancelSameDay": "jusqu’à {time} le jour même",
         "cancelOn": "jusqu’à {time}, {day}",
-        "calendarTitle": "Rendez-vous avec {master}",
-        "rescheduledTitle": "Rendez-vous déplacé"
+        "calendarTitle": "Rendez-vous avec {master}"
       }
     },
     "code": {
@@ -226,8 +223,60 @@
       "phoneInvalid": "Saisissez un numéro valide",
       "nameRequired": "Saisissez votre prénom",
       "limit": "Vous avez déjà 2 rendez-vous à venir avec cette professionnelle. Pour en prendre un autre, écrivez-lui.",
-      "refused": "La réservation en ligne n’est pas disponible. Contactez directement la professionnelle.",
-      "rescheduleUnavailable": "Ce rendez-vous ne peut plus être déplacé en ligne. Écrivez au professionnel."
+      "refused": "La réservation en ligne n’est pas disponible. Contactez directement la professionnelle."
+    }
+  },
+  "cancel": {
+    "title": "Votre rendez-vous",
+    "titleCancelled": "Rendez-vous annulé",
+    "titleMoved": "Rendez-vous déplacé",
+    "titlePast": "Ce rendez-vous est passé",
+    "status": {
+      "confirmed": "Confirmé",
+      "pending": "En attente de confirmation",
+      "cancelled": "Annulé"
+    },
+    "rows": {
+      "service": "Prestation",
+      "when": "Quand",
+      "address": "Adresse",
+      "price": "Prix"
+    },
+    "move": "Choisir un autre horaire",
+    "cancel": "Annuler le rendez-vous",
+    "cancelUntil": "Annulation en ligne possible jusqu’au {when}",
+    "late": "Le rendez-vous est dans moins de {hours} h : l’annulation en ligne est fermée. Écrivez au professionnel : {name} vous proposera un autre horaire.",
+    "whatsapp": "Écrire sur WhatsApp",
+    "whatsappText": "Bonjour ! J’ai rendez-vous avec vous le {when}, mais je ne pourrai pas venir.",
+    "cancelledNote": "Le créneau est de nouveau libre. Merci d’avoir prévenu à l’avance.",
+    "movedNote": "La carte indique le nouvel horaire. La confirmation avec le lien du nouveau rendez-vous a été envoyée sur WhatsApp : utilisez-le pour l’annuler ou le déplacer à nouveau.",
+    "bookAgain": "Reprendre rendez-vous",
+    "pastNote": "Ce lien n’ouvre plus le rendez-vous. Vous pouvez en reprendre un sur la page du professionnel.",
+    "toProfile": "Voir la page du professionnel",
+    "sheet": {
+      "title": "Annuler le rendez-vous ?",
+      "description": "{when}. Le créneau sera libéré tout de suite.",
+      "reason": "Motif, si vous le souhaitez",
+      "reasonPlaceholder": "Par exemple : je suis malade",
+      "confirm": "Oui, annuler",
+      "keep": "Non, le garder"
+    },
+    "errors": {
+      "cancelFailed": "Impossible d’annuler le rendez-vous, réessayez",
+      "windowClosed": "L’annulation en ligne est fermée. Écrivez au professionnel."
+    },
+    "seo": {
+      "title": "Votre rendez-vous · Seene"
+    },
+    "reschedule": {
+      "from": "Déplacement du rendez-vous du {when}",
+      "note": "L’ancien rendez-vous est annulé dès que vous confirmez le nouvel horaire.",
+      "action": "Déplacer",
+      "close": "Fermer",
+      "done": "Rendez-vous déplacé",
+      "doneNote": "L’ancien rendez-vous est annulé, le créneau est libéré.",
+      "unavailable": "Ce rendez-vous ne peut plus être déplacé en ligne. Écrivez au professionnel.",
+      "failed": "Impossible de déplacer le rendez-vous, réessayez"
     }
   }
 }
