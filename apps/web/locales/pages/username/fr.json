@@ -1,60 +1,88 @@
 {
   "master": {
-    "tabs": {
-      "home": "Accueil",
-      "services": "Services",
-      "portfolio": "Portfolio",
-      "about": "À propos",
-      "navigationAria": "Sections du profil"
+    "share": {
+      "aria": "Partager la page",
+      "copied": "Lien copié"
     },
-    "profile": {
-      "certifiedExpert": "Expert certifié"
+    "poster": {
+      "alt": "Couverture de {name}"
     },
-    "home": {
-      "book": "Réserver en ligne",
-      "whatsapp": "WhatsApp",
-      "telegram": "Telegram"
+    "verified": {
+      "label": "Pro vérifiée",
+      "hint": "Pro vérifiée : Seene a vérifié le numéro et le profil"
     },
-    "services": {
-      "title": "Services",
-      "duration": "min",
-      "currency_rub": "₽",
-      "empty": "Aucun service ajouté pour l'instant.",
-      "select": "Choisir",
-      "selected": "Choisi",
-      "summary": {
-        "selectedCount": "{count} choisi(s)",
-        "book": "Choisir une date"
+    "stats": {
+      "years": {
+        "one": "{count} an",
+        "few": "{count} ans",
+        "many": "{count} ans",
+        "other": "{count} ans"
       },
-      "details": {
-        "open": "Détails",
-        "descriptionFallback": "Un service soigné avec préparation, travail à un rythme confortable et conseils de finition après le rendez-vous.",
-        "galleryTitle": "Galerie de travaux",
-        "galleryAlt1": "Manucure brillante terminée dans un style doux",
-        "galleryAlt2": "Gros plan sur un soin détaillé des ongles",
-        "galleryAlt3": "Résultat de manucure minimaliste dans un ton naturel",
-        "galleryAlt4": "Processus de travail en studio beauté",
-        "galleryAlt5": "Détail d'un design d'ongles poli"
-      }
-    },
-    "portfolio": {
-      "title": "Portfolio",
-      "empty": "Pas encore de photos.",
-      "close": "Fermer la photo"
+      "experience": "d’expérience",
+      "visits": {
+        "one": "visite",
+        "few": "visites",
+        "many": "visites",
+        "other": "visites"
+      },
+      "hoursVary": "horaires ci-dessous"
     },
     "about": {
-      "title": "À propos de moi",
-      "experience": "Expérience",
-      "location": "Ville",
-      "socials": "Réseaux sociaux",
-      "whatsappAria": "WhatsApp",
-      "telegramAria": "Telegram",
-      "instagramAria": "Instagram",
-      "tiktokAria": "TikTok",
-      "emailAria": "E-mail",
-      "workFormat": "Format de travail",
-      "worksAtPlace": "Reçoit les clients à son adresse",
-      "canTravel": "Se déplace chez le client"
+      "more": "Plus",
+      "less": "Moins",
+      "address": "Adresse",
+      "hours": "Horaires",
+      "format": "Format",
+      "worksAtPlace": "Dans mon studio",
+      "canTravel": "À domicile"
+    },
+    "contacts": {
+      "aria": "Contacter la pro",
+      "whatsapp": "WhatsApp",
+      "instagram": "Instagram",
+      "telegram": "Telegram",
+      "map": "Carte",
+      "tiktok": "TikTok",
+      "email": "E-mail"
+    },
+    "works": {
+      "title": "Réalisations",
+      "all": "Toutes ({count})",
+      "collapse": "Réduire",
+      "alt": "Réalisation, photo {index}",
+      "altService": "Réalisation : {service}",
+      "open": "Ouvrir la photo {index}",
+      "viewer": "Réalisations",
+      "close": "Fermer",
+      "counter": "{index} sur {total}"
+    },
+    "services": {
+      "title": "Prestations",
+      "book": "Réserver",
+      "bookAria": "Réserver : {name}",
+      "priceFrom": "dès {price}",
+      "other": "Autres"
+    },
+    "duration": {
+      "hours": "{count} h",
+      "minutes": "{count} min"
+    },
+    "book": {
+      "cta": "Réserver",
+      "nearest": "Prochain créneau : {when}",
+      "noSlots": "Choisissez un créneau",
+      "whatsapp": "Écrire sur WhatsApp",
+      "whatsappHint": "{name} prend les rendez-vous sur WhatsApp",
+      "whatsappText": "Bonjour {name} ! Je voudrais prendre rendez-vous.",
+      "vacation": "En congé jusqu’au {date}"
+    },
+    "footer": {
+      "madeWith": "Fait avec Seene",
+      "privacy": "Confidentialité"
+    },
+    "seo": {
+      "description": "Réservez en ligne chez {name} : {services}. Réalisations, tarifs et créneaux libres.",
+      "descriptionShort": "Réservez en ligne chez {name}. Réalisations, tarifs et créneaux libres."
     }
   },
   "specializations": {

@@ -63,3 +63,37 @@ textarea {
   transition-duration: 0.15s;
   transition-timing-function: ease;
 }
+
+/*
+ * Master page motion (animation spec): only transform and opacity, the spec's
+ * ease-out curve, 400 ms for blocks appearing, 600 ms for the Book bar rising.
+ * Nothing moves for visitors who ask for reduced motion.
+ */
+@keyframes seene-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes seene-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+.seene-reveal {
+  animation: seene-reveal 400ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.seene-rise {
+  animation: seene-rise 600ms cubic-bezier(0.22, 1, 0.36, 1) 150ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .seene-reveal,
+  .seene-rise {
+    animation: none;
+  }
+}

@@ -10,8 +10,7 @@ interface MasterThemeConfig {
 /**
  * Shared master theme state.
  * The master's pages call setTheme() with the master's settings; the master and
- * booking layouts read cssVars reactively. The variables are set on the layout
- * wrapper, not on :root, so the marketing site keeps its own theme.
+ * booking layouts apply the variables through useMasterThemeRoot().
  */
 export function useMasterTheme() {
   const config = useState<MasterThemeConfig>('masterTheme', () => ({
@@ -51,24 +50,12 @@ export function useMasterTheme() {
     }
   })
 
-  // UTheme `ui` prop — component-level slot class overrides (extend as needed)
-  const themeUi = computed(() => ({
-    main: {
-      base: 'bg-default'
-    },
-    avatar: {
-      root: 'size-24 bg-primary',
-      fallback: 'text-3xl text-inverted'
-    },
-    button: {
-      base: 'rounded-sm'
-    },
-    tabs: {
-      list: 'p-0 bg-transparent gap-2',
-      trigger: 'cursor-pointer border border-primary data-[state=inactive]:text-highlighted',
-      indicator: 'h-full top-0 bg-primary transition-[translate,width] duration-300 ease-out'
-    }
-  }))
+  // The same variables as an inline style string, for <html> (see useMasterThemeRoot).
+  const cssText = computed(() =>
+    Object.entries(cssVars.value)
+      .map(([name, value]) => `${name}:${value}`)
+      .join(';')
+  )
 
   function setTheme(next: Partial<MasterThemeConfig>) {
     config.value = { ...config.value, ...next }
@@ -79,5 +66,20 @@ export function useMasterTheme() {
     setTheme({ theme: settings.page_theme, accent: settings.page_accent })
   }
 
-  return { cssVars, palette, themeUi, setTheme, setMasterSettings }
+  return { cssVars, cssText, palette, setTheme, setMasterSettings }
+}
+
+/**
+ * Applies the master theme to <html> while the calling layout is mounted, so
+ * overlays teleported to <body> (modals, drawers, toasts) and the overscroll
+ * area follow it too. Unhead removes the style when the layout unmounts, so the
+ * marketing site keeps its own theme.
+ */
+export function useMasterThemeRoot() {
+  const { cssText, palette } = useMasterTheme()
+
+  useHead({
+    htmlAttrs: { style: cssText },
+    meta: [{ name: 'theme-color', content: () => palette.value.bg }]
+  })
 }
