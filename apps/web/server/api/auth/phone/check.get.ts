@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
     .from('client')
     .select('first_name')
     .eq('user_id', masterUserId)
-    .in('phone', phoneLookupKeys(phone))
+    .eq('phone', phone)
     .limit(1)
     .maybeSingle()
 
