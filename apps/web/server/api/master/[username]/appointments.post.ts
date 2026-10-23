@@ -179,11 +179,6 @@ function parseServiceIds(value: unknown) {
     throw createError({ statusCode: 400, message: 'service_ids must contain UUIDs' })
   }
 
-  // One service per online booking (spec); the array keeps the API stable.
-  if (serviceIds.length > 1) {
-    throw createError({ statusCode: 400, message: 'Only one service per booking' })
-  }
-
   return serviceIds as string[]
 }
 
