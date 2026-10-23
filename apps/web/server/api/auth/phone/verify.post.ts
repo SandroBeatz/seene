@@ -1,10 +1,14 @@
-const MAX_OTP_ATTEMPTS = 3
-
+/**
+ * Checks a one-time code. On success the device becomes trusted for this phone
+ * and master (see `server/utils/deviceToken.ts`), and only now — after the code —
+ * the client's name and whether they are a client of the master are returned.
+ */
 export default defineEventHandler(async (event) => {
-  const body = await readBody<{ phone?: string; code?: string }>(event)
+  const body = await readBody<{ phone?: string; code?: string; username?: string }>(event)
   const phone = normalizePhone(body.phone)
   const code = normalizeCode(body.code)
   const supabase = useServiceSupabase()
+  const masterUserId = await getMasterUserId(supabase, body.username)
 
   const { data: otp, error: otpError } = await supabase
     .from('otp_codes')
@@ -27,7 +31,7 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  if (otp.attempts >= MAX_OTP_ATTEMPTS) {
+  if (otp.attempts >= OTP_MAX_ATTEMPTS) {
     return {
       success: false,
       error: 'too_many_attempts'
@@ -47,24 +51,50 @@ export default defineEventHandler(async (event) => {
 
     return {
       success: false,
-      error: attempts >= MAX_OTP_ATTEMPTS ? 'too_many_attempts' : 'invalid_code'
+      error: attempts >= OTP_MAX_ATTEMPTS ? 'too_many_attempts' : 'invalid_code'
     }
   }
 
-  const { error: updateError } = await supabase
+  // Only the request that flips `used` wins: a parallel request with the same
+  // code finds nothing to update and fails.
+  const { data: claimed, error: updateError } = await supabase
     .from('otp_codes')
     .update({ used: true })
     .eq('id', otp.id)
+    .eq('used', false)
+    .select('id')
 
   if (updateError) {
     throw createError({ statusCode: 500, message: 'Failed to mark OTP code as used' })
   }
 
-  await markPhoneVerified(supabase, phone)
+  if (!claimed?.length) {
+    return {
+      success: false,
+      error: 'expired_code'
+    }
+  }
+
+  const [{ data: client, error: clientError }] = await Promise.all([
+    supabase
+      .from('client')
+      .select('first_name')
+      .eq('user_id', masterUserId)
+      .in('phone', phoneLookupKeys(phone))
+      .limit(1)
+      .maybeSingle(),
+    issueDeviceToken(event, supabase, { phone, masterUserId })
+  ])
+
+  if (clientError) {
+    throw createError({ statusCode: 500, message: 'Failed to check client' })
+  }
 
   return {
     success: true,
-    token: createPhoneVerificationToken(phone)
+    token: createPhoneVerificationToken(phone),
+    clientExists: Boolean(client),
+    ...(client?.first_name ? { firstName: client.first_name } : {})
   }
 })
 

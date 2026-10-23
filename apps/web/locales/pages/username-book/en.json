@@ -46,15 +46,15 @@
         "cancel": "Cancel",
         "phone": "Phone number",
         "welcome": "Great to see you again, {name}!",
-        "newClientHint": "Next, we'll ask for your name and send a confirmation code via WhatsApp or Telegram. It takes less than a minute and you only do it once.",
         "firstName": "First name",
         "creatingBooking": "Creating your booking...",
         "changeTime": "Change time",
         "checkingPhone": "Checking your number…",
         "welcomeAnonymous": "Great to see you again!",
         "verifiedHint": "Your number is already verified — just tap “Book now”.",
-        "unverifiedHint": "We'll send a quick code via WhatsApp or Telegram to confirm your number. You only need to do this once.",
-        "newClientTitle": "First time here? Welcome!"
+        "notYou": "Not you?",
+        "codeTitle": "Let's confirm your number",
+        "codeHint": "We'll send a short code via WhatsApp or Telegram. You won't need a code again to book this master on this device."
       },
       "success": {
         "title": "Booking confirmed!",
@@ -83,6 +83,7 @@
       "invalidCode": "Invalid code, please try again",
       "expiredCode": "Code has expired, please request a new one",
       "tooManyAttempts": "Too many attempts, please request a new code",
+      "tooManyRequests": "Too many code requests. Please try again later",
       "sendFailed": "Couldn't send the code, please try again"
     },
     "errors": {
@@ -108,7 +109,6 @@
     "verify": {
       "detailsTitle": "Nice to meet you!",
       "detailsDescription": "Tell the master how to address you.",
-      "getCode": "Get SMS code",
       "sendingCode": "Sending the code…",
       "checkingCode": "Checking the code…",
       "changePhone": "Change number",

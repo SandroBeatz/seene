@@ -326,31 +326,67 @@ export type Database = {
         }
         Relationships: []
       }
+      client_device_token: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          master_user_id: string
+          phone: string
+          revoked_at: string | null
+          token_hash: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          id?: string
+          master_user_id: string
+          phone: string
+          revoked_at?: string | null
+          token_hash: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          master_user_id?: string
+          phone?: string
+          revoked_at?: string | null
+          token_hash?: string
+        }
+        Relationships: []
+      }
       otp_codes: {
         Row: {
           attempts: number
+          channel: string | null
           code: string
           created_at: string
           expires_at: string
           id: string
+          ip_hash: string | null
           phone: string
           used: boolean
         }
         Insert: {
           attempts?: number
+          channel?: string | null
           code: string
           created_at?: string
           expires_at: string
           id?: string
+          ip_hash?: string | null
           phone: string
           used?: boolean
         }
         Update: {
           attempts?: number
+          channel?: string | null
           code?: string
           created_at?: string
           expires_at?: string
           id?: string
+          ip_hash?: string | null
           phone?: string
           used?: boolean
         }

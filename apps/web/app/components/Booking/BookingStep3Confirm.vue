@@ -12,10 +12,10 @@ interface BookingResponse {
   }
 }
 
+/** Without this device's token every number gets the same answer: a code is needed. */
 interface PhoneCheck {
   phone: string
-  clientExists: boolean
-  verified: boolean
+  recognized: boolean
   firstName?: string
 }
 
@@ -138,6 +138,25 @@ onMounted(() => {
   if (!bookingState.value.phone) bookingState.value.phone = savedPhone.read()
 })
 
+// "Not you?": this device stops being trusted for the master and forgets the number.
+const forgetting = ref(false)
+
+async function forgetDevice() {
+  if (forgetting.value) return
+  forgetting.value = true
+  try {
+    await $fetch('/api/auth/phone/forget', { method: 'POST', body: { username: props.username } })
+  } catch {
+    // The device token stays valid on the server; the form is cleared anyway.
+  } finally {
+    forgetting.value = false
+  }
+  savedPhone.clear()
+  phoneCheck.value = null
+  phoneTouched.value = false
+  bookingState.value.phone = ''
+}
+
 // --- Submit ---
 
 const showVerifyDrawer = ref(false)
@@ -156,7 +175,7 @@ async function submit() {
     return
   }
 
-  if (check.clientExists && check.verified) {
+  if (check.recognized && check.firstName) {
     await createBooking()
   } else {
     showVerifyDrawer.value = true
@@ -204,8 +223,8 @@ async function createBooking(details?: VerifyResult) {
       bookingError.value = 'slotUnavailable'
       queryCache.invalidateQueries({ key: ['booking-availability', props.username] })
     } else if (statusCode === 401 && phoneCheck.value) {
-      // The phone is not confirmed after all — ask for the code.
-      phoneCheck.value = { ...phoneCheck.value, verified: false }
+      // The device is not trusted after all — ask for the code.
+      phoneCheck.value = { phone: phoneCheck.value.phone, recognized: false }
       showVerifyDrawer.value = true
     } else {
       bookingError.value = 'bookingFailed'
@@ -311,32 +330,37 @@ const errorTitle = computed(() => {
         {{ $ts('booking.steps.confirm.checkingPhone') }}
       </p>
       <UAlert
-        v-else-if="currentCheck?.clientExists"
+        v-else-if="currentCheck?.recognized"
         key="known"
         color="success"
         variant="subtle"
-        :icon="currentCheck.verified ? 'i-lucide-badge-check' : 'i-lucide-message-square-text'"
+        icon="i-lucide-badge-check"
         class="-mt-2"
         :title="
           currentCheck.firstName
             ? $ts('booking.steps.confirm.welcome', { name: currentCheck.firstName })
             : $ts('booking.steps.confirm.welcomeAnonymous')
         "
-        :description="
-          currentCheck.verified
-            ? $ts('booking.steps.confirm.verifiedHint')
-            : $ts('booking.steps.confirm.unverifiedHint')
-        "
+        :description="$ts('booking.steps.confirm.verifiedHint')"
+        :actions="[
+          {
+            label: $ts('booking.steps.confirm.notYou'),
+            color: 'neutral',
+            variant: 'link',
+            loading: forgetting,
+            onClick: forgetDevice
+          }
+        ]"
       />
       <UAlert
         v-else-if="currentCheck"
-        key="new"
+        key="code"
         color="neutral"
         variant="subtle"
-        icon="i-lucide-sparkles"
+        icon="i-lucide-message-square-text"
         class="-mt-2"
-        :title="$ts('booking.steps.confirm.newClientTitle')"
-        :description="$ts('booking.steps.confirm.newClientHint')"
+        :title="$ts('booking.steps.confirm.codeTitle')"
+        :description="$ts('booking.steps.confirm.codeHint')"
       />
     </Transition>
 
@@ -427,8 +451,8 @@ const errorTitle = computed(() => {
     <BookingVerifyDrawer
       v-model:open="showVerifyDrawer"
       :phone="bookingState.phone"
-      :needs-details="!currentCheck?.clientExists"
-      :needs-code="!currentCheck?.verified"
+      :username="username"
+      :needs-code="!currentCheck?.recognized"
       :submitting="bookingLoading"
       @done="onVerified"
     />

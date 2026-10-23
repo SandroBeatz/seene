@@ -64,18 +64,19 @@ export default defineEventHandler(async (event) => {
   const note = parseNote(body.note)
 
   const supabase = useServiceSupabase()
-  const hasFreshToken = verifyPhoneVerificationToken(body.otp_token, phone)
 
-  // Step 1: load master profile (schedule needed for slot validation). A phone
-  // confirmed on an earlier booking needs no OTP token.
-  const [{ data: profile }, phoneVerified] = await Promise.all([
-    supabase
-      .from('master_profile')
-      .select('id, user_id, schedule')
-      .eq('username', username)
-      .maybeSingle(),
-    hasFreshToken ? true : isPhoneVerified(supabase, phone)
-  ])
+  // Step 1: load master profile (schedule needed for slot validation)
+  const { data: profile } = await supabase
+    .from('master_profile')
+    .select('id, user_id, schedule')
+    .eq('username', username)
+    .maybeSingle()
+
+  // The phone is proven either by a code entered just now (otp_token) or by
+  // this device, trusted for this phone with this master after an earlier code.
+  const phoneVerified =
+    verifyPhoneVerificationToken(body.otp_token, phone) ||
+    (profile ? (await readDevicePhone(event, supabase, profile.user_id)) === phone : false)
 
   if (!phoneVerified) {
     throw createError({ statusCode: 401, message: 'Phone verification is required' })

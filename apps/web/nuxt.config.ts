@@ -26,6 +26,9 @@ export default defineNuxtConfig({
     supabasePublishableKey: '',
     supabaseServiceRoleKey: '',
     phoneVerificationTokenSecret: '',
+    // Return the one-time code in the API response (NUXT_OTP_EXPOSE_CODE=true).
+    // Only for test environments while no message provider is wired.
+    otpExposeCode: false,
     public: {
       dashboardUrl: import.meta.env.NUXT_PUBLIC_DASHBOARD_URL || 'https://master-seene.vercel.app'
     }

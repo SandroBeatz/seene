@@ -7,9 +7,12 @@ export interface VerifyResult {
 const props = defineProps<{
   /** Canonical phone being confirmed (digits only, e.g. '996555123456'). */
   phone: string
-  /** New client: ask for a name first. */
-  needsDetails: boolean
-  /** Phone not confirmed yet: ask for a one-time code. */
+  /** Master's username: a correct code trusts this device for this master. */
+  username: string
+  /**
+   * Device not trusted for this phone: ask for a one-time code first. The name
+   * is asked only after the code, and only if the master has no such client.
+   */
   needsCode: boolean
   /** The booking itself is being created after this modal finished. */
   submitting: boolean
@@ -44,14 +47,15 @@ watch(open, (isOpen) => {
     channelPickerOpen.value = false
     return
   }
-  stage.value = props.needsDetails ? 'details' : 'code'
+  stage.value = props.needsCode ? 'code' : 'details'
+  firstName.value = ''
   nameTouched.value = false
   otpToken.value = ''
   channel.value = null
   devCode.value = ''
   otpError.value = ''
   otpValue.value = []
-  // Known client with an unconfirmed number goes straight to the channel choice.
+  // The code comes first: go straight to the channel choice.
   if (stage.value === 'code') channelPickerOpen.value = true
 })
 
@@ -60,12 +64,7 @@ watch(open, (isOpen) => {
 function submitDetails() {
   nameTouched.value = true
   if (nameMissing.value) return
-
-  if (props.needsCode) {
-    channelPickerOpen.value = true
-  } else {
-    finish()
-  }
+  finish()
 }
 
 // --- Channel choice (WhatsApp / Telegram) ---
@@ -85,11 +84,10 @@ function chooseChannel(id: CodeChannel) {
   sendCode()
 }
 
-// The code step needs a channel: closing the picker without one steps back.
+// The code step needs a channel: closing the picker without one closes the drawer.
 watch(channelPickerOpen, (isOpen) => {
   if (isOpen || channel.value || stage.value !== 'code') return
-  if (props.needsDetails) stage.value = 'details'
-  else open.value = false
+  open.value = false
 })
 
 // --- One-time code ---
@@ -116,15 +114,21 @@ async function sendCode() {
     })
     devCode.value = result.code ?? ''
     startCountdown()
-  } catch {
-    otpError.value = 'sendFailed'
+  } catch (e: unknown) {
+    const error = e as { statusCode?: number; data?: { data?: { retryAfterSeconds?: number } } }
+    if (error.statusCode === 429) {
+      otpError.value = 'too_many_requests'
+      startCountdown(error.data?.data?.retryAfterSeconds)
+    } else {
+      otpError.value = 'sendFailed'
+    }
   } finally {
     sending.value = false
   }
 }
 
-function startCountdown() {
-  resendCountdown.value = 59
+function startCountdown(seconds = 59) {
+  resendCountdown.value = seconds
   if (countdownInterval) clearInterval(countdownInterval)
   countdownInterval = setInterval(() => {
     resendCountdown.value--
@@ -141,14 +145,22 @@ async function onOtpComplete(value: number[]) {
   otpError.value = ''
 
   try {
-    const result = await $fetch<{ success: boolean; token?: string; error?: string }>(
-      '/api/auth/phone/verify',
-      { method: 'POST', body: { phone: props.phone, code: value.join('') } }
-    )
+    const result = await $fetch<{
+      success: boolean
+      token?: string
+      error?: string
+      clientExists?: boolean
+      firstName?: string
+    }>('/api/auth/phone/verify', {
+      method: 'POST',
+      body: { phone: props.phone, code: value.join(''), username: props.username }
+    })
 
     if (result.success && result.token) {
       otpToken.value = result.token
-      finish()
+      // A known client books right away; a new one tells us their name first.
+      if (result.clientExists && result.firstName) finish()
+      else stage.value = 'details'
     } else {
       otpError.value = result.error ?? 'invalid_code'
       otpValue.value = []
@@ -169,6 +181,8 @@ function otpErrorMessage(code: string) {
       return $ts('booking.sms.expiredCode')
     case 'too_many_attempts':
       return $ts('booking.sms.tooManyAttempts')
+    case 'too_many_requests':
+      return $ts('booking.sms.tooManyRequests')
     default:
       return $ts('booking.sms.sendFailed')
   }
@@ -315,10 +329,8 @@ onUnmounted(() => {
         size="xl"
         block
         color="primary"
-        :loading="busy || sending"
-        :label="needsCode ? $ts('booking.verify.getCode') : $ts('booking.footer.book')"
-        :trailing-icon="needsCode ? 'i-lucide-arrow-right' : undefined"
-        :ui="{ trailingIcon: 'ms-0' }"
+        :loading="busy"
+        :label="$ts('booking.footer.book')"
         @click="submitDetails"
       />
       <UButton
