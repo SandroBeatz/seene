@@ -37,11 +37,22 @@ pnpm test             # tests in every app
 - Never commit `bun.lock` or `package-lock.json`; `pnpm-lock.yaml` at the root is the
   only lockfile.
 
+## Environments
+
+| Environment | Branch    | Hosting    | Domain                 | Supabase                                  |
+| ----------- | --------- | ---------- | ---------------------- | ----------------------------------------- |
+| Staging     | `develop` | Vercel     | `seene-six.vercel.app` | `foxqkomqtpbxyeqqwzpm` (ap-southeast-1)   |
+| Production  | `main`    | Cloudflare | `getseene.app`         | not created yet                           |
+
+- Open feature and fix PRs against `develop`. Merging `develop` into `main` is a
+  production release.
+- Production is not set up yet: no Cloudflare deployment, no Supabase project.
+  Until it is, nothing anywhere is production data.
+
 ## Database
 
-One Supabase project per environment. Today there is one: `foxqkomqtpbxyeqqwzpm`
-(ap-southeast-1). **It is the test database.** A separate production project will be
-created later; until then nothing here is production data.
+One Supabase project per environment (see "Environments"). Today only staging exists:
+`foxqkomqtpbxyeqqwzpm`.
 
 Rules:
 
