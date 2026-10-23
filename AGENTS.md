@@ -1,60 +1,65 @@
-# Repository Guidelines
+# Seene monorepo
 
-## Project Structure & Module Organization
+Seene is an online booking platform for solo beauty professionals. This repository holds
+every part of the product that ships, plus the single source of truth for the database.
 
-This is a Nuxt 4 application using Nuxt UI, Tailwind CSS, and `nuxt-i18n-micro`.
-Application code lives in `app/`: pages in `app/pages`, layouts in `app/layouts`,
-shared Vue components in `app/components`, composables in `app/composables`, and global
-styles/assets in `app/assets`. Static public files belong in `public/`. Localized copy is
-stored under `locales/`, with page-specific files such as `locales/pages/about/en.json`.
-Project documentation lives in `docs/`.
+## Layout
 
-## Build, Test, and Development Commands
+| Path            | What                                                                 | Details                    |
+| --------------- | -------------------------------------------------------------------- | -------------------------- |
+| `apps/web`      | Nuxt 4 site: landing, pricing, master public page, online booking    | `apps/web/CLAUDE.md`       |
+| `apps/mobile`   | Expo / React Native app for masters (replaces the old `master.seene`) | `apps/mobile/AGENTS.md`    |
+| `supabase`      | Supabase config and **all** database migrations                      | this file, "Database"      |
 
-Use `pnpm` as the package manager; the repo declares `pnpm@10.33.0`.
+The old Vue dashboard (`SandroBeatz/master.seene`) is not part of this repo and is no
+longer developed. Its migration files were copied into `supabase/migrations`.
 
-- `pnpm install`: install dependencies and run Nuxt preparation.
-- `pnpm dev`: start the local Nuxt dev server.
-- `pnpm build`: build the production application.
-- `pnpm preview`: serve the production build locally after `pnpm build`.
-- `pnpm lint`: run ESLint across the repository.
-- `pnpm lint:fix`: apply safe ESLint fixes.
-- `pnpm format:check`: check Prettier formatting.
-- `pnpm format`: format files with Prettier.
-- `pnpm typecheck`: run Nuxt/Vue TypeScript checks.
+Each app keeps its own `CLAUDE.md` / `AGENTS.md`; read the one for the app you touch.
 
-## Coding Style & Naming Conventions
+## Commands
 
-Follow the existing Vue single-file component style and Nuxt conventions. Use PascalCase
-for components, for example `ProfileHeader.vue`, and camelCase for composables, for
-example `useMasterTheme.ts`. Prettier is configured for no semicolons, single quotes, no
-trailing commas, and a 100-character line width. Prefer Nuxt auto-imports and local
-framework patterns over adding new abstractions.
+pnpm workspaces (`pnpm@10.33.0`). Install once from the root: `pnpm install`.
 
-## Internationalization
+```bash
+pnpm web dev          # any apps/web script: pnpm web <script>
+pnpm mobile start     # any apps/mobile script: pnpm mobile <script>
+pnpm lint             # lint every app
+pnpm typecheck        # typecheck every app
+pnpm test             # tests in every app
+```
 
-Visible user-facing text should be localized in all supported languages: `en`, `fr`, and
-`ru`. When adding a page or route-specific string, update the matching files under
-`locales/pages/...`; shared navigation or app-wide copy belongs in `locales/en.json`,
-`locales/fr.json`, and `locales/ru.json`.
+- `.npmrc` sets `node-linker=hoisted`: Expo/Metro needs a flat `node_modules`.
+- Add Expo packages with `npx expo install <pkg>` from `apps/mobile`; add web packages
+  with `pnpm --filter @seene/web add <pkg>`.
+- `pnpm-workspace.yaml` pins the Expo SDK 57 native set (`overrides`) to the versions
+  the app shipped with before the move to pnpm, and applies `patchedDependencies`.
+  Remove those pins on the next `npx expo install --fix` SDK upgrade.
+- Never commit `bun.lock` or `package-lock.json`; `pnpm-lock.yaml` at the root is the
+  only lockfile.
 
-## Phone Numbers
+## Database
 
-Strict rule: a phone is stored, sent to the API and returned by the API as E.164 digits
-only — country code + national number, no `+`, no spaces, no punctuation (`996555123456`).
-Formatting such as `+996 555 123 456` is display-only (`resolvePhoneInput` while typing,
-`formatPhone` for read-only UI). The server validates with `normalizePhone()` and rejects
-any other format. Use the helpers in `shared/utils/phone.ts`; do not hand-roll parsing.
+One Supabase project per environment. Today there is one: `foxqkomqtpbxyeqqwzpm`
+(ap-southeast-1). **It is the test database.** A separate production project will be
+created later; until then nothing here is production data.
 
-## Testing Guidelines
+Rules:
 
-There is no committed test suite yet. For now, validate changes with `pnpm lint`,
-`pnpm typecheck`, and `pnpm build`. If adding tests, keep them close to the feature they
-cover and use clear names that describe behavior, such as `ProfileHeader.spec.ts`.
+- Every schema change is a SQL file in `supabase/migrations/`, named
+  `YYYYMMDDHHMMSS_snake_case.sql` (UTC). No other folder holds migrations.
+- Apply migrations with the Supabase CLI from the repo root: `supabase db push`
+  (after `supabase link --project-ref <ref>`). Do not change the schema with ad-hoc
+  `execute_sql`, the dashboard SQL editor, or the MCP `apply_migration` tool.
+- Commit the migration together with the code that depends on it, in one PR.
+- After a schema change, regenerate types for every app that reads the table.
+- There is no local database; `supabase start` is not used.
 
-## Commit & Pull Request Guidelines
+## Phone numbers
 
-Recent history uses short, imperative commits, often with Conventional Commit prefixes
-such as `feat:`, `fix:`, and `refactor:`. Keep commits focused and descriptive. Pull
-requests should include a brief summary, validation steps run, linked issues when
-applicable, and screenshots for visual or responsive UI changes.
+Canonical format everywhere (client, API, database): E.164 digits only, no `+`
+(`996555123456`). Formatting is display-only. See `apps/web/shared/utils/phone.ts`.
+
+## Commits
+
+Short imperative messages with Conventional Commit prefixes (`feat:`, `fix:`,
+`chore:`); scope by app when useful (`feat(web): …`, `fix(mobile): …`).
