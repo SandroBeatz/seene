@@ -1,0 +1,20 @@
+{
+  "nav": {
+    "cta": "Commencer gratuitement",
+    "home": "Accueil",
+    "about": "À propos",
+    "privacy": "Confidentialité",
+    "terms": "Conditions",
+    "sections": {
+      "home": "Accueil",
+      "audience": "Pour qui",
+      "steps": "Fonctionnement",
+      "features": "Fonctions",
+      "pricing": "Tarifs",
+      "faq": "FAQ"
+    }
+  },
+  "footer": {
+    "copyright": "© Seene"
+  }
+}

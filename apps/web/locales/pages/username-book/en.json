@@ -1,0 +1,130 @@
+{
+  "booking": {
+    "header": {
+      "back": "Back",
+      "next": "Next",
+      "progressLabel": "Step {step} of {total}"
+    },
+    "steps": {
+      "services": {
+        "title": "Choose services",
+        "description": "Select one or more services for your visit.",
+        "empty": "No services are available for booking yet.",
+        "allCategories": "All",
+        "otherCategory": "Other services",
+        "toggleService": "Select {service}"
+      },
+      "slots": {
+        "title": "Choose date and time",
+        "description": "Pick an available day and time for your visit.",
+        "noSlots": "No available times",
+        "noUpcomingSlots": "There are no available times in the next 30 days.",
+        "loading": "Looking for free times…",
+        "loadFailed": "Couldn't load free times",
+        "retry": "Try again",
+        "legendFree": "Free",
+        "legendBusy": "Full",
+        "dayFull": "no free times",
+        "slotCount": "Free slots: {count}",
+        "groups": {
+          "morning": "Morning",
+          "afternoon": "Afternoon",
+          "evening": "Evening"
+        },
+        "calendarTitle": "Choose a day",
+        "openCalendar": "Open calendar"
+      },
+      "confirm": {
+        "title": "Confirm booking",
+        "description": "Review your booking and enter your phone number.",
+        "total": "Total",
+        "addNote": "Add a note",
+        "editNote": "Edit note",
+        "noteModalTitle": "Add a note",
+        "notePlaceholder": "E.g.: gel allergy, prefer natural style...",
+        "saveNote": "Save",
+        "cancel": "Cancel",
+        "phone": "Phone number",
+        "welcome": "Great to see you again, {name}!",
+        "newClientHint": "Next, we'll ask for your name and send a confirmation code via WhatsApp or Telegram. It takes less than a minute and you only do it once.",
+        "firstName": "First name",
+        "creatingBooking": "Creating your booking...",
+        "changeTime": "Change time",
+        "checkingPhone": "Checking your number…",
+        "welcomeAnonymous": "Great to see you again!",
+        "verifiedHint": "Your number is already verified — just tap “Book now”.",
+        "unverifiedHint": "We'll send a quick code via WhatsApp or Telegram to confirm your number. You only need to do this once.",
+        "newClientTitle": "First time here? Welcome!"
+      },
+      "success": {
+        "title": "Booking confirmed!",
+        "description": "Your appointment has been created.",
+        "master": "Master",
+        "services": "Services",
+        "dateTime": "Date and time",
+        "address": "Address",
+        "returnToProfile": "Return to master's profile",
+        "closeAria": "Close booking and return to profile",
+        "masterAvatarAlt": "{master} avatar",
+        "calendarTitle": "Appointment with {master}"
+      }
+    },
+    "addToCalendar": "Add to calendar",
+    "service": {
+      "duration": "{duration} min",
+      "price": "{price} ₽"
+    },
+    "sms": {
+      "title": "Enter the code",
+      "codeSentTo": "Code sent via {channel} to {phone}",
+      "resendIn": "Resend in {countdown}",
+      "resend": "Resend code",
+      "devCode": "Test code: {code}",
+      "invalidCode": "Invalid code, please try again",
+      "expiredCode": "Code has expired, please request a new one",
+      "tooManyAttempts": "Too many attempts, please request a new code",
+      "sendFailed": "Couldn't send the code, please try again"
+    },
+    "errors": {
+      "bookingFailed": "Failed to create booking, please try again",
+      "slotUnavailable": "This time slot is no longer available, please choose another",
+      "nameRequired": "First name is required",
+      "checkFailed": "Couldn't check the number, please try again",
+      "phoneInvalid": "Enter a valid phone number"
+    },
+    "disabled": {
+      "title": "Online booking unavailable",
+      "description": "This master is not currently accepting online bookings.",
+      "backToProfile": "Back to profile"
+    },
+    "footer": {
+      "book": "Book now",
+      "nothingSelected": "No services selected"
+    },
+    "phone": {
+      "country": "Country",
+      "searchCountry": "Search country…"
+    },
+    "verify": {
+      "detailsTitle": "Nice to meet you!",
+      "detailsDescription": "Tell the master how to address you.",
+      "getCode": "Get SMS code",
+      "sendingCode": "Sending the code…",
+      "checkingCode": "Checking the code…",
+      "changePhone": "Change number",
+      "channelTitle": "Where should we send the code?",
+      "channelDescription": "Pick a messenger — we'll send a 4-digit code for {phone}.",
+      "otherChannel": "Get it another way",
+      "channels": {
+        "whatsapp": {
+          "name": "WhatsApp",
+          "action": "Get it on WhatsApp"
+        },
+        "telegram": {
+          "name": "Telegram",
+          "action": "Get it on Telegram"
+        }
+      }
+    }
+  }
+}

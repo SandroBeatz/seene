@@ -1,0 +1,130 @@
+{
+  "booking": {
+    "header": {
+      "back": "Retour",
+      "next": "Suivant",
+      "progressLabel": "Étape {step} sur {total}"
+    },
+    "steps": {
+      "services": {
+        "title": "Choisir les services",
+        "description": "Sélectionnez un ou plusieurs services pour votre visite.",
+        "empty": "Aucun service n'est encore disponible à la réservation.",
+        "allCategories": "Tout",
+        "otherCategory": "Autres services",
+        "toggleService": "Sélectionner {service}"
+      },
+      "slots": {
+        "title": "Choisir la date et l'heure",
+        "description": "Choisissez un jour et une heure disponibles pour votre visite.",
+        "noSlots": "Aucun créneau disponible",
+        "noUpcomingSlots": "Aucun créneau disponible dans les 30 prochains jours.",
+        "loading": "Recherche des créneaux libres…",
+        "loadFailed": "Impossible de charger les créneaux",
+        "retry": "Réessayer",
+        "legendFree": "Libre",
+        "legendBusy": "Complet",
+        "dayFull": "aucun créneau libre",
+        "slotCount": "Créneaux libres : {count}",
+        "groups": {
+          "morning": "Matin",
+          "afternoon": "Après-midi",
+          "evening": "Soir"
+        },
+        "calendarTitle": "Choisissez un jour",
+        "openCalendar": "Ouvrir le calendrier"
+      },
+      "confirm": {
+        "title": "Confirmer la réservation",
+        "description": "Vérifiez les détails et entrez votre numéro de téléphone.",
+        "total": "Total",
+        "addNote": "Ajouter une note",
+        "editNote": "Modifier la note",
+        "noteModalTitle": "Ajouter une note",
+        "notePlaceholder": "Ex. : allergie au gel, préfère le style naturel...",
+        "saveNote": "Enregistrer",
+        "cancel": "Annuler",
+        "phone": "Numéro de téléphone",
+        "welcome": "Ravis de vous revoir, {name} !",
+        "newClientHint": "À l’étape suivante, nous vous demanderons votre prénom et enverrons un code de confirmation via WhatsApp ou Telegram. Cela prend moins d’une minute, une seule fois.",
+        "firstName": "Prénom",
+        "creatingBooking": "Création de votre réservation...",
+        "changeTime": "Changer l'heure",
+        "checkingPhone": "Vérification du numéro…",
+        "welcomeAnonymous": "Ravis de vous revoir !",
+        "verifiedHint": "Votre numéro est déjà confirmé — il ne reste qu’à appuyer sur « Réserver ».",
+        "unverifiedHint": "Nous vous enverrons un court code via WhatsApp ou Telegram pour confirmer votre numéro. Une seule fois suffit.",
+        "newClientTitle": "Première visite ? Bienvenue !"
+      },
+      "success": {
+        "title": "Réservation confirmée !",
+        "description": "Votre rendez-vous a été créé.",
+        "master": "Spécialiste",
+        "services": "Services",
+        "dateTime": "Date et heure",
+        "address": "Adresse",
+        "returnToProfile": "Retourner au profil",
+        "closeAria": "Fermer la réservation et retourner au profil",
+        "masterAvatarAlt": "Avatar de {master}",
+        "calendarTitle": "Rendez-vous avec {master}"
+      }
+    },
+    "addToCalendar": "Ajouter au calendrier",
+    "service": {
+      "duration": "{duration} min",
+      "price": "{price} ₽"
+    },
+    "sms": {
+      "title": "Saisissez le code",
+      "codeSentTo": "Code envoyé via {channel} au {phone}",
+      "resendIn": "Renvoyer dans {countdown}",
+      "resend": "Renvoyer le code",
+      "devCode": "Code de test : {code}",
+      "invalidCode": "Code invalide, veuillez réessayer",
+      "expiredCode": "Le code a expiré, veuillez en demander un nouveau",
+      "tooManyAttempts": "Trop de tentatives, veuillez demander un nouveau code",
+      "sendFailed": "Impossible d’envoyer le code, réessayez"
+    },
+    "errors": {
+      "bookingFailed": "Impossible de créer la réservation, veuillez réessayer",
+      "slotUnavailable": "Ce créneau n'est plus disponible, veuillez en choisir un autre",
+      "nameRequired": "Le prénom est requis",
+      "checkFailed": "Impossible de vérifier le numéro, réessayez",
+      "phoneInvalid": "Saisissez un numéro valide"
+    },
+    "disabled": {
+      "title": "Réservation en ligne indisponible",
+      "description": "Ce spécialiste n'accepte pas les réservations en ligne pour le moment.",
+      "backToProfile": "Retour au profil"
+    },
+    "footer": {
+      "book": "Réserver",
+      "nothingSelected": "Aucune prestation choisie"
+    },
+    "phone": {
+      "country": "Pays",
+      "searchCountry": "Rechercher un pays…"
+    },
+    "verify": {
+      "detailsTitle": "Ravi de vous rencontrer !",
+      "detailsDescription": "Dites au maître comment vous appeler.",
+      "getCode": "Recevoir le code SMS",
+      "sendingCode": "Envoi du code…",
+      "checkingCode": "Vérification du code…",
+      "changePhone": "Changer de numéro",
+      "channelTitle": "Où envoyer le code ?",
+      "channelDescription": "Choisissez une messagerie — nous enverrons un code à 4 chiffres pour le {phone}.",
+      "otherChannel": "Recevoir autrement",
+      "channels": {
+        "whatsapp": {
+          "name": "WhatsApp",
+          "action": "Recevoir sur WhatsApp"
+        },
+        "telegram": {
+          "name": "Telegram",
+          "action": "Recevoir sur Telegram"
+        }
+      }
+    }
+  }
+}

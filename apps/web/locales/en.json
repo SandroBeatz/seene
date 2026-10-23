@@ -1,0 +1,20 @@
+{
+  "nav": {
+    "cta": "Start for Free",
+    "home": "Home",
+    "about": "About",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "sections": {
+      "home": "Home",
+      "audience": "For whom",
+      "steps": "How it works",
+      "features": "Features",
+      "pricing": "Pricing",
+      "faq": "FAQ"
+    }
+  },
+  "footer": {
+    "copyright": "© Seene"
+  }
+}
