@@ -155,7 +155,15 @@ beforeAll(() => {
 beforeEach(() => {
   db = {
     master_profile: [MASTER, OTHER_MASTER],
-    client: [{ user_id: MASTER.user_id, phone: KNOWN, first_name: 'Айгерим' }],
+    // Stored as the master app types it; phone_digits is what Postgres generates.
+    client: [
+      {
+        user_id: MASTER.user_id,
+        phone: '+996 555 123 456',
+        phone_digits: KNOWN,
+        first_name: 'Айгерим'
+      }
+    ],
     client_device_token: [],
     otp_codes: []
   }

@@ -30,14 +30,6 @@ export function normalizePhone(phone: unknown) {
   return canonical
 }
 
-/**
- * Lookup keys for a canonical phone. Rows written before the digits-only rule
- * may still hold '+996…'; match both until that data is migrated.
- */
-export function phoneLookupKeys(canonical: string) {
-  return [canonical, `+${canonical}`]
-}
-
 export function createPhoneVerificationToken(phone: string) {
   const payload: PhoneVerificationPayload = {
     phone,
