@@ -69,6 +69,8 @@ Rules:
 
 Canonical format everywhere (client, API, database): E.164 digits only, no `+`
 (`996555123456`). Formatting is display-only. See `apps/web/shared/utils/phone.ts`.
+The database enforces it on `client.phone` (CHECK `client_phone_canonical`): an app
+that sends `+996 555 123 456` gets an error, so normalize before saving.
 
 ## Commits
 

@@ -160,7 +160,6 @@ export type Database = {
           marketing_consent: boolean
           notes: string | null
           phone: string
-          phone_digits: string | null
           reminders_consent: boolean
           source: string
           updated_at: string
@@ -179,7 +178,6 @@ export type Database = {
           marketing_consent?: boolean
           notes?: string | null
           phone: string
-          phone_digits?: never
           reminders_consent?: boolean
           source?: string
           updated_at?: string
@@ -198,7 +196,6 @@ export type Database = {
           marketing_consent?: boolean
           notes?: string | null
           phone?: string
-          phone_digits?: never
           reminders_consent?: boolean
           source?: string
           updated_at?: string
