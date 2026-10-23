@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
   const { data: link } = await supabase
     .from('booking_link')
     .select(
-      'expires_at, appointment:appointments!inner(user_id, service_ids, status, start_at, client:client!inner(phone))'
+      'expires_at, appointment:appointments!inner(user_id, service_ids, status, start_at, notes, client:client!inner(phone))'
     )
     .eq('token_hash', hashBookingLinkToken(token))
     .gt('expires_at', new Date().toISOString())
@@ -99,6 +99,8 @@ export default defineEventHandler(async (event) => {
     p_service_ids: serviceIds,
     p_starts_at: startsAt,
     p_phone: client.phone,
+    // Her note to the master moves with the booking.
+    p_note: link.appointment.notes ?? undefined,
     p_holder_hash: readHolderHash(event) ?? undefined,
     p_future_limit: FUTURE_BOOKINGS_LIMIT,
     p_link_hash: newLink.hash,
