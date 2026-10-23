@@ -40,6 +40,14 @@ export default defineNuxtConfig({
       dashboardUrl: import.meta.env.NUXT_PUBLIC_DASHBOARD_URL || 'https://master-seene.vercel.app',
       // Store pages of the master app; empty until it is published, then the
       // download buttons lead to the founders form instead.
+      // Absolute site address for link previews (og:image). Prerendered pages
+      // have no request address, so it is fixed at build: NUXT_PUBLIC_SITE_URL,
+      // or the project's address on Vercel.
+      siteUrl:
+        import.meta.env.NUXT_PUBLIC_SITE_URL ||
+        (process.env.VERCEL_PROJECT_PRODUCTION_URL
+          ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+          : ''),
       appStoreUrl: '',
       googlePlayUrl: ''
     }

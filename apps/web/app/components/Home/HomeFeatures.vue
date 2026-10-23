@@ -19,7 +19,7 @@ const points = ['p1', 'p2', 'p3', 'p4'] as const
           v-reveal="i"
           class="flex flex-col gap-3.5 border-t-2 border-ink pt-5"
         >
-          <h3 class="m-0 text-xl font-semibold tracking-[-0.02em] text-ink">
+          <h3 class="m-0 text-[20px] font-semibold tracking-[-0.02em] text-ink">
             {{ $ts(`features.${group}.title`) }}
           </h3>
           <ul class="m-0 flex list-none flex-col gap-3.5 p-0">

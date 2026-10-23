@@ -62,14 +62,14 @@ const points = ['p1', 'p2', 'p3'] as const
             <UIcon name="i-lucide-message-circle" class="size-3.5" />
             {{ $ts('recall.replyLabel') }}
           </div>
-          <div class="text-sm leading-[1.4] text-ink">{{ $ts('recall.reply') }}</div>
+          <div class="text-[14px] leading-[1.4] text-ink">{{ $ts('recall.reply') }}</div>
         </div>
 
         <div
           class="site-float absolute bottom-9 left-7 flex flex-col gap-0.5 rounded-[18px] bg-ink px-4.5 py-3.5 text-white shadow-[0_18px_40px_rgba(40,20,15,0.3)] [animation-delay:-4s]"
         >
-          <div class="text-xs text-[#A6A6AD]">{{ $ts('recall.returnedLabel') }}</div>
-          <div class="font-display text-2xl font-semibold tracking-[-0.02em]">
+          <div class="text-[12px] text-[#A6A6AD]">{{ $ts('recall.returnedLabel') }}</div>
+          <div class="font-display text-[24px] font-semibold tracking-[-0.02em]">
             {{ $ts('recall.returned') }}
           </div>
         </div>
@@ -78,10 +78,10 @@ const points = ['p1', 'p2', 'p3'] as const
       <div v-reveal class="flex min-w-0 flex-[1_1_460px] flex-col gap-6">
         <div class="site-eyebrow">{{ $ts('recall.eyebrow') }}</div>
         <h2 class="site-h2 text-ink">{{ $ts('recall.title') }}</h2>
-        <p class="m-0 text-[17px] leading-relaxed text-ink-muted">
+        <p class="m-0 text-[17px] leading-[1.6] text-ink-muted">
           {{ $ts('recall.description') }}
         </p>
-        <ul class="m-0 flex list-none flex-col gap-3.5 p-0 text-base text-ink">
+        <ul class="m-0 flex list-none flex-col gap-3.5 p-0 text-[16px] text-ink">
           <li v-for="point in points" :key="point" class="flex items-start gap-3">
             <UIcon name="i-lucide-check" class="mt-0.5 size-5 shrink-0" />
             {{ $ts(`recall.${point}`) }}

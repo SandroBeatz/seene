@@ -12,7 +12,7 @@ const items = ['noShow', 'silence', 'net'] as const
       </div>
 
       <div
-        class="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] overflow-hidden rounded-3xl border border-line"
+        class="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] overflow-hidden rounded-[24px] border border-line"
       >
         <div
           v-for="(item, i) in items"
@@ -21,15 +21,15 @@ const items = ['noShow', 'silence', 'net'] as const
           class="-mt-px -mr-px flex flex-col gap-3.5 border-t border-r border-line p-8"
         >
           <div
-            class="font-display text-[56px] leading-none font-semibold tracking-[-0.04em] whitespace-nowrap text-brand"
+            class="font-display text-[56px] font-semibold tracking-[-0.04em] whitespace-nowrap text-brand"
           >
             {{ $ts(`money.${item}.value`) }}
           </div>
-          <div class="text-lg font-semibold text-ink">{{ $ts(`money.${item}.title`) }}</div>
+          <div class="text-[18px] font-semibold text-ink">{{ $ts(`money.${item}.title`) }}</div>
           <p class="m-0 text-[15px] leading-[1.55] text-ink-muted">
             {{ $ts(`money.${item}.text`) }}
           </p>
-          <div v-if="item === 'noShow'" class="mt-auto text-xs text-[#6B6B72]">
+          <div v-if="item === 'noShow'" class="mt-auto text-[12px] text-[#6B6B72]">
             {{ $ts('money.noShow.note') }}
           </div>
         </div>

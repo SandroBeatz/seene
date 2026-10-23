@@ -9,10 +9,13 @@ const uiLocale = computed(() => ({ en, fr, ru })[getLocale() as 'en' | 'fr' | 'r
 
 <template>
   <UApp :locale="uiLocale">
-    <SiteHeader />
-    <UMain>
-      <slot />
-    </UMain>
-    <SiteFooter />
+    <!-- The design sets no line height where it does not say one: browser normal. -->
+    <div class="leading-[normal]">
+      <SiteHeader />
+      <UMain>
+        <slot />
+      </UMain>
+      <SiteFooter />
+    </div>
   </UApp>
 </template>

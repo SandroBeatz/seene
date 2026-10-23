@@ -31,18 +31,18 @@ const stores = computed(() => [
           :target="store.to.startsWith('http') ? '_blank' : undefined"
           color="primary"
           leading-icon="i-lucide-download"
-          class="gap-2.5 rounded-[14px] px-5.5 py-3.5 text-left hover:bg-ink/85 active:scale-[0.98]"
-          :ui="{ leadingIcon: 'size-5.5' }"
+          class="leading-[normal] gap-2.5 rounded-[14px] px-5.5 py-3.5 text-left hover:bg-ink/85 active:scale-[0.98]"
+          :ui="{ label: 'leading-[normal]', leadingIcon: 'size-5.5' }"
         >
           <span class="flex flex-col">
             <span class="text-[11px] font-normal text-[#B8B8BE]">{{
               $ts('final.storePrefix')
             }}</span>
-            <span class="text-base font-semibold">{{ $ts(`final.${store.key}`) }}</span>
+            <span class="text-[16px] font-semibold">{{ $ts(`final.${store.key}`) }}</span>
           </span>
         </UButton>
       </div>
-      <p class="m-0 text-sm text-ink-muted">{{ $ts('final.note') }}</p>
+      <p class="m-0 text-[14px] text-ink-muted">{{ $ts('final.note') }}</p>
     </div>
   </section>
 </template>

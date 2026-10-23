@@ -65,7 +65,7 @@ useSeoMeta({
           >
             {{ $ts('title') }}
           </h1>
-          <p class="m-0 text-lg leading-[1.55] text-ink-muted">{{ $ts('description') }}</p>
+          <p class="m-0 text-[18px] leading-[1.55] text-ink-muted">{{ $ts('description') }}</p>
         </div>
 
         <div class="flex flex-wrap gap-4">
@@ -120,11 +120,12 @@ useSeoMeta({
               </div>
             </dl>
             <UButton
+              :ui="{ label: 'leading-[normal]' }"
               :to="`${$localePath('/')}#join`"
               :label="$ts('cta')"
               color="neutral"
               block
-              class="mt-auto rounded-full bg-white p-4 text-base font-semibold text-ink hover:bg-white/90 active:scale-[0.98]"
+              class="leading-[normal] mt-auto rounded-full bg-white p-4 text-[16px] font-semibold text-ink hover:bg-white/90 active:scale-[0.98]"
             />
           </div>
         </div>
@@ -133,15 +134,20 @@ useSeoMeta({
 
     <section class="border-b border-line bg-paper">
       <div class="site-container flex flex-col gap-10 py-22">
-        <h2 v-reveal class="site-h2 max-w-[720px] text-ink">{{ $ts('how.title') }}</h2>
+        <h2
+          v-reveal
+          class="site-h2 max-w-[720px] text-[clamp(26px,2.8vw,36px)] tracking-[-0.025em] text-ink"
+        >
+          {{ $ts('how.title') }}
+        </h2>
         <div class="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-4">
           <div
             v-for="(way, i) in ways"
             :key="way"
             v-reveal="i"
-            class="flex flex-col gap-2.5 rounded-3xl border border-line bg-white p-7"
+            class="flex flex-col gap-2.5 rounded-[24px] border border-line bg-white p-7"
           >
-            <h3 class="m-0 text-lg font-semibold text-ink">{{ $ts(`how.${way}.title`) }}</h3>
+            <h3 class="m-0 text-[18px] font-semibold text-ink">{{ $ts(`how.${way}.title`) }}</h3>
             <p class="m-0 text-[15px] leading-[1.55] text-ink-muted">
               {{ $ts(`how.${way}.text`) }}
             </p>

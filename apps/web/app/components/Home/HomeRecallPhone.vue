@@ -24,7 +24,7 @@ const rows = [
         <div class="font-display text-[28px] font-bold tracking-[-0.03em]">
           {{ $ts('recall.phone.title') }}
         </div>
-        <div class="flex rounded-xl bg-[#F1F1EE] p-[3px] text-xs font-semibold">
+        <div class="flex rounded-[12px] bg-[#F1F1EE] p-[3px] text-[12px] font-semibold">
           <div class="flex-1 py-[7px] text-center text-ink-muted">
             {{ $ts('recall.phone.all') }}
           </div>
@@ -64,7 +64,7 @@ const rows = [
         v-reveal:sheet
         class="mx-2.5 mt-auto mb-2.5 flex flex-col gap-3 rounded-[26px] border border-line bg-white p-4 shadow-[0_-8px_30px_rgba(0,0,0,0.08)]"
       >
-        <div class="h-1 w-9 self-center rounded-sm bg-[#DADAD6]" />
+        <div class="h-1 w-9 self-center rounded-[2px] bg-[#DADAD6]" />
         <div class="text-[13px] font-semibold">{{ $ts('recall.phone.sheetTitle') }}</div>
         <div
           class="rounded-[14px_14px_14px_4px] bg-wa-soft px-3 py-2.5 text-[12.5px] leading-[1.45]"
@@ -83,7 +83,7 @@ const rows = [
           </div>
         </div>
         <div
-          class="flex items-center justify-center gap-2 rounded-[14px] bg-wa p-[13px] text-sm font-semibold text-white"
+          class="flex items-center justify-center gap-2 rounded-[14px] bg-wa p-[13px] text-[14px] font-semibold text-white"
         >
           <UIcon name="i-lucide-message-circle" class="size-4" />
           {{ $ts('recall.phone.open') }}

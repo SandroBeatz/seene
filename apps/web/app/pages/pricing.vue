@@ -42,7 +42,7 @@ useSeoMeta({
           >
             {{ $ts('title') }}
           </h1>
-          <p class="m-0 text-lg leading-[1.55] text-ink-muted">{{ $ts('description') }}</p>
+          <p class="m-0 text-[18px] leading-[1.55] text-ink-muted">{{ $ts('description') }}</p>
         </div>
 
         <div
@@ -53,11 +53,12 @@ useSeoMeta({
           <UButton
             v-for="item in markets"
             :key="item"
+            :ui="{ label: 'leading-[normal]' }"
             :label="$ts(`market.${item}`)"
             :aria-pressed="market === item"
             :color="market === item ? 'primary' : 'neutral'"
             :variant="market === item ? 'solid' : 'ghost'"
-            class="rounded-full px-5.5 py-2.5 text-[15px] font-semibold"
+            class="leading-[normal] rounded-full px-5.5 py-2.5 text-[15px] font-semibold"
             :class="market === item ? '' : 'text-ink-muted hover:bg-transparent hover:text-ink'"
             @click="market = item"
           />
@@ -68,10 +69,9 @@ useSeoMeta({
         >
           <div v-reveal class="flex flex-col gap-7 rounded-[28px] border border-line p-7 sm:p-9">
             <div class="flex flex-col gap-2.5">
-              <h2 class="m-0 text-xl font-semibold text-ink">{{ $ts('free.title') }}</h2>
+              <h2 class="m-0 text-[20px] font-semibold text-ink">{{ $ts('free.title') }}</h2>
               <div class="flex items-baseline gap-2">
-                <span
-                  class="font-display text-[56px] leading-none font-semibold tracking-[-0.04em] text-ink"
+                <span class="font-display text-[56px] font-semibold tracking-[-0.04em] text-ink"
                   >0</span
                 >
                 <Transition
@@ -81,7 +81,7 @@ useSeoMeta({
                   enter-from-class="opacity-0 translate-y-1"
                   leave-to-class="opacity-0 -translate-y-1"
                 >
-                  <span :key="market" class="text-base text-ink-muted">
+                  <span :key="market" class="text-[16px] text-ink-muted">
                     {{ currency }} {{ $ts('free.period') }}
                   </span>
                 </Transition>
@@ -89,12 +89,13 @@ useSeoMeta({
               <p class="m-0 text-[15px] text-ink-muted">{{ $ts('free.note') }}</p>
             </div>
             <UButton
+              :ui="{ label: 'leading-[normal]' }"
               :to="join"
               :label="$ts('free.cta')"
               color="neutral"
               variant="outline"
               block
-              class="rounded-full p-3.5 text-base font-semibold text-ink ring-[#D6D6D2] active:scale-[0.98]"
+              class="leading-[normal] rounded-full p-3.5 text-[16px] font-semibold text-ink ring-[#D6D6D2] active:scale-[0.98]"
             />
             <ul class="m-0 flex list-none flex-col gap-3.5 p-0 text-[15px] text-ink">
               <li v-for="feature in freeFeatures" :key="feature" class="flex gap-2.5">
@@ -110,9 +111,9 @@ useSeoMeta({
           >
             <div class="flex flex-col gap-2.5">
               <div class="flex flex-wrap items-center justify-between gap-3">
-                <h2 class="m-0 text-xl font-semibold">{{ $ts('pro.title') }}</h2>
+                <h2 class="m-0 text-[20px] font-semibold">{{ $ts('pro.title') }}</h2>
                 <span
-                  class="rounded-full bg-brand-soft px-2.5 py-1.5 text-xs font-semibold text-[#6E1D38]"
+                  class="rounded-full bg-brand-soft px-2.5 py-1.5 text-[12px] font-semibold text-[#6E1D38]"
                 >
                   {{ $ts('pro.badge') }}
                 </span>
@@ -126,12 +127,10 @@ useSeoMeta({
               >
                 <div :key="market" class="flex flex-col gap-2.5">
                   <div class="flex items-baseline gap-2">
-                    <span
-                      class="font-display text-[56px] leading-none font-semibold tracking-[-0.04em]"
-                    >
+                    <span class="font-display text-[56px] font-semibold tracking-[-0.04em]">
                       {{ price.pro }}
                     </span>
-                    <span class="text-base text-[#B8B8BE]"
+                    <span class="text-[16px] text-[#B8B8BE]"
                       >{{ currency }} {{ $ts('pro.period') }}</span
                     >
                   </div>
@@ -142,12 +141,13 @@ useSeoMeta({
               </Transition>
             </div>
             <UButton
+              :ui="{ label: 'leading-[normal]' }"
               :to="join"
               :label="$ts('pro.cta')"
               color="neutral"
               variant="solid"
               block
-              class="rounded-full bg-white p-3.5 text-base font-semibold text-ink hover:bg-white/90 active:scale-[0.98]"
+              class="leading-[normal] rounded-full bg-white p-3.5 text-[16px] font-semibold text-ink hover:bg-white/90 active:scale-[0.98]"
             />
             <ul class="m-0 flex list-none flex-col gap-3.5 p-0 text-[15px]">
               <li class="text-[#B8B8BE]">{{ $ts('pro.includes') }}</li>
@@ -173,10 +173,10 @@ useSeoMeta({
         <h2 v-reveal class="site-h2 flex-[1_1_460px] text-ink">{{ $ts('payback.title') }}</h2>
         <div
           v-reveal="1"
-          class="grid flex-[1_1_420px] grid-cols-2 overflow-hidden rounded-3xl border border-line bg-white"
+          class="grid flex-[1_1_420px] grid-cols-2 overflow-hidden rounded-[24px] border border-line bg-white"
         >
           <div class="flex flex-col gap-1.5 border-r border-line p-5 sm:p-7">
-            <div class="text-sm text-ink-muted">{{ $ts('payback.pro') }}</div>
+            <div class="text-[14px] text-ink-muted">{{ $ts('payback.pro') }}</div>
             <div
               class="font-display text-[clamp(28px,3vw,36px)] font-semibold tracking-[-0.03em] text-ink"
             >
@@ -184,14 +184,16 @@ useSeoMeta({
             </div>
           </div>
           <div class="flex flex-col gap-1.5 p-5 sm:p-7">
-            <div class="text-sm text-ink-muted">{{ $ts('payback.visit') }}</div>
+            <div class="text-[14px] text-ink-muted">{{ $ts('payback.visit') }}</div>
             <div
               class="font-display text-[clamp(28px,3vw,36px)] font-semibold tracking-[-0.03em] text-brand"
             >
               {{ price.visit }} {{ currency }}
             </div>
           </div>
-          <p class="col-span-2 m-0 border-t border-line px-5 py-5 text-sm text-ink-muted sm:px-7">
+          <p
+            class="col-span-2 m-0 border-t border-line px-5 py-5 text-[14px] text-ink-muted sm:px-7"
+          >
             {{ $ts('payback.commission') }} <b class="text-ink">0%</b>.
             {{ $ts('payback.commissionRest') }}
           </p>

@@ -238,16 +238,16 @@ textarea {
 }
 
 /* Marketing pages type, from the site design */
+/* The design's 1200 px is the content width; the 24 px gutters come on top. */
 @utility site-container {
   margin-inline: auto;
-  max-width: 1200px;
+  max-width: 1248px;
   padding-inline: 24px;
 }
 
 @utility site-eyebrow {
   font-family: var(--font-mono);
   font-size: 12px;
-  line-height: 1.4;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--color-ink-muted);

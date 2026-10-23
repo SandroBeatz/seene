@@ -25,7 +25,7 @@ const items = computed<NavigationMenuItem[]>(() => [
     mode="drawer"
     :ui="{
       root: 'border-line',
-      container: 'max-w-[1200px] px-6 sm:px-6 lg:px-6',
+      container: 'max-w-[1248px] px-6 sm:px-6 lg:px-6',
       center: 'lg:flex',
       toggle: 'text-ink'
     }"
@@ -42,17 +42,18 @@ const items = computed<NavigationMenuItem[]>(() => [
       :aria-label="$ts('nav.main')"
       :ui="{
         list: 'gap-7',
-        link: 'px-0 py-2 text-sm font-medium text-ink hover:text-ink-muted before:hidden data-active:underline data-active:underline-offset-[6px]',
+        link: 'px-0 py-2 text-[14px] font-medium text-ink hover:text-ink-muted before:hidden data-active:underline data-active:underline-offset-[6px]',
         linkLabel: 'overflow-visible'
       }"
     />
 
     <template #right>
       <UButton
+        :ui="{ label: 'leading-[normal]' }"
         :to="`${homePath}#join`"
         :label="$ts('nav.download')"
         color="primary"
-        class="rounded-full px-4.5 py-2.5 text-sm font-semibold active:scale-[0.98] hover:bg-ink/85"
+        class="leading-[normal] rounded-full px-4.5 py-2.5 text-[14px] font-semibold active:scale-[0.98] hover:bg-ink/85"
       />
     </template>
 
@@ -61,7 +62,7 @@ const items = computed<NavigationMenuItem[]>(() => [
         :items="items"
         orientation="vertical"
         variant="link"
-        :ui="{ link: 'py-3 text-base font-medium text-ink before:hidden' }"
+        :ui="{ link: 'py-3 text-[16px] font-medium text-ink before:hidden' }"
         class="-mx-2.5"
       />
     </template>

@@ -36,7 +36,7 @@ const shapeClass = {
           <div class="site-eyebrow">{{ $ts('audience.eyebrow') }}</div>
           <h2 class="site-h2 text-ink">{{ $ts('audience.title') }}</h2>
         </div>
-        <p class="m-0 max-w-[360px] text-base leading-normal text-ink-muted">
+        <p class="m-0 max-w-[360px] text-[16px] leading-normal text-ink-muted">
           {{ $ts('audience.description') }}
         </p>
       </div>
@@ -46,7 +46,7 @@ const shapeClass = {
           v-for="(tile, i) in tiles"
           :key="tile.key"
           v-reveal="i"
-          class="group relative overflow-hidden rounded-3xl"
+          class="group relative overflow-hidden rounded-[24px]"
           :class="tile.shape ? shapeClass[tile.shape] : ''"
         >
           <div
@@ -66,13 +66,13 @@ const shapeClass = {
           />
           <span
             v-if="tile.soon"
-            class="absolute top-3.5 right-3.5 rounded-full bg-white/90 px-2.5 py-1 text-xs font-semibold text-ink"
+            class="absolute top-3.5 right-3.5 rounded-full bg-white/90 px-2.5 py-1 text-[12px] font-semibold text-ink"
           >
             {{ $ts('audience.soon') }}
           </span>
           <span
             class="absolute bottom-4 left-4.5 font-semibold tracking-[-0.02em] text-white"
-            :class="tile.shape === 'big' ? 'text-[26px]' : 'text-xl'"
+            :class="tile.shape === 'big' ? 'text-[26px]' : 'text-[20px]'"
           >
             {{ $ts(`audience.${tile.key}.label`) }}
           </span>

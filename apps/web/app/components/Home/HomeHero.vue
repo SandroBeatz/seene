@@ -60,7 +60,7 @@ const lineDelay = (i: number) => ({ animationDelay: `${i * 80}ms` })
         </NuxtLink>
 
         <h1
-          class="site-rise m-0 max-w-[560px] font-display text-[clamp(38px,4.4vw,60px)] leading-[1.08] font-medium tracking-[-0.03em] text-balance text-ink"
+          class="site-rise m-0 max-w-[560px] font-display text-[clamp(38px,4.4vw,60px)] leading-[1.08] font-semibold tracking-[-0.03em] text-balance text-ink"
           :style="lineDelay(1)"
         >
           {{ $ts('hero.titleStart') }}&#160;<span
@@ -78,17 +78,19 @@ const lineDelay = (i: number) => ({ animationDelay: `${i * 80}ms` })
 
         <div class="site-rise flex flex-wrap gap-3" :style="lineDelay(3)">
           <UButton
+            :ui="{ label: 'leading-[normal]' }"
             :to="`${$localePath('/')}#join`"
             :label="$ts('hero.cta')"
             color="primary"
-            class="rounded-full px-6.5 py-4 text-base font-semibold hover:bg-ink/85 active:scale-[0.98]"
+            class="leading-[normal] rounded-full px-6.5 py-4 text-[16px] font-semibold hover:bg-ink/85 active:scale-[0.98]"
           />
           <UButton
+            :ui="{ label: 'leading-[normal]' }"
             :to="$localePath('/calculator')"
             :label="$ts('hero.ctaSecondary')"
             color="neutral"
             variant="outline"
-            class="rounded-full bg-white px-6.5 py-4 text-base font-semibold text-ink ring-[#E5D8D2] hover:bg-white/70 active:scale-[0.98]"
+            class="leading-[normal] rounded-full bg-white px-6.5 py-4 text-[16px] font-semibold text-ink ring-[#E5D8D2] hover:bg-white/70 active:scale-[0.98]"
           />
         </div>
 
@@ -98,14 +100,14 @@ const lineDelay = (i: number) => ({ animationDelay: `${i * 80}ms` })
             <span class="-ml-2.5 size-9 rounded-full border-2 border-blush bg-[#D9C3BA]" />
             <span class="-ml-2.5 size-9 rounded-full border-2 border-blush bg-[#F3E1DA]" />
           </div>
-          <p class="m-0 text-sm leading-[1.4] text-ink-muted">
+          <p class="m-0 text-[14px] leading-[1.4] text-ink-muted">
             {{ $ts('hero.audience') }}<br />{{ $ts('hero.free') }}
           </p>
         </div>
       </div>
 
       <div class="relative min-w-0 flex-[1_1_440px] pb-7 pl-7">
-        <div class="aspect-[4/5] overflow-hidden rounded-[32px]">
+        <div class="aspect-square overflow-hidden rounded-[32px] md:aspect-[4/5]">
           <SiteImage
             id="H-01"
             name="h-01-hero"
@@ -147,20 +149,20 @@ const lineDelay = (i: number) => ({ animationDelay: `${i * 80}ms` })
           class="site-arrive absolute right-[-8px] bottom-0 flex w-[210px] flex-col gap-1 rounded-[20px] bg-white p-4 shadow-[0_18px_50px_rgba(80,40,30,0.14)]"
           :style="{ '--arrive': `${NET_AT - 400}ms` }"
         >
-          <div class="text-xs text-ink-muted">{{ $ts('hero.netLabel') }}</div>
+          <div class="text-[12px] text-ink-muted">{{ $ts('hero.netLabel') }}</div>
           <div
-            class="font-display text-[28px] leading-tight font-semibold tracking-[-0.03em] text-ink tabular-nums"
+            class="font-display text-[28px] font-semibold tracking-[-0.03em] text-ink tabular-nums"
           >
             {{ formatNumber(net) }} {{ $ts('hero.netCurrency') }}
           </div>
-          <div class="text-xs font-semibold text-wa">{{ $ts('hero.netGrowth') }}</div>
+          <div class="text-[12px] font-semibold text-wa">{{ $ts('hero.netGrowth') }}</div>
         </div>
 
         <div
           class="site-float absolute top-6 right-6 flex items-center gap-2 rounded-full bg-white py-2 pr-3.5 pl-2 text-[13px] font-semibold text-ink shadow-[0_12px_30px_rgba(80,40,30,0.12)] [animation-delay:-1.5s]"
         >
           <span
-            class="flex size-6.5 items-center justify-center rounded-full bg-brand-soft text-xs text-brand-ink"
+            class="flex size-6.5 items-center justify-center rounded-full bg-brand-soft text-[12px] text-brand-ink"
           >
             7
           </span>

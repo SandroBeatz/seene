@@ -78,9 +78,12 @@ async function submit() {
 
 const fieldUi = {
   root: 'w-full',
-  base: 'rounded-[14px] bg-white px-4 py-3.5 text-base text-ink ring-[#D6D6D2] placeholder:text-dimmed'
+  base: 'rounded-[14px] bg-white px-4 py-3.5 text-[16px] text-ink ring-[#D6D6D2] placeholder:text-dimmed'
 }
-const labelUi = { label: 'text-[13px] font-semibold text-ink', error: 'text-[13px]' }
+const labelUi = {
+  label: 'text-[13px] leading-[normal] font-semibold text-ink',
+  error: 'text-[13px]'
+}
 </script>
 
 <template>
@@ -103,10 +106,10 @@ const labelUi = { label: 'text-[13px] font-semibold text-ink', error: 'text-[13p
         <circle cx="24" cy="24" r="22" class="text-line" stroke="currentColor" />
         <path d="M15 24.5l6 6 12-13" class="site-draw" />
       </svg>
-      <div class="text-xl font-semibold tracking-[-0.02em] text-ink">
+      <div class="text-[20px] font-semibold tracking-[-0.02em] text-ink">
         {{ $ts('founders.form.doneTitle') }}
       </div>
-      <p class="m-0 text-base text-ink-muted">{{ $ts('founders.form.doneText') }}</p>
+      <p class="m-0 text-[16px] text-ink-muted">{{ $ts('founders.form.doneText') }}</p>
     </div>
 
     <UForm
@@ -117,7 +120,7 @@ const labelUi = { label: 'text-[13px] font-semibold text-ink', error: 'text-[13p
       class="relative flex flex-col gap-4.5"
       @submit="submit"
     >
-      <div class="text-xl font-semibold tracking-[-0.02em] text-ink">
+      <div class="text-[20px] font-semibold tracking-[-0.02em] text-ink">
         {{ $ts('founders.form.title') }}
       </div>
 
@@ -146,7 +149,13 @@ const labelUi = { label: 'text-[13px] font-semibold text-ink', error: 'text-[13p
           v-model="state.city"
           :items="cities"
           class="w-full"
-          :ui="{ ...fieldUi, base: `${fieldUi.base} pe-10` }"
+          :ui="{
+            ...fieldUi,
+            base: `${fieldUi.base} pe-10`,
+            value: 'text-[16px] leading-[normal]',
+            item: 'text-[16px] leading-[normal]',
+            itemLabel: 'text-[16px]'
+          }"
         />
       </UFormField>
 
@@ -159,11 +168,12 @@ const labelUi = { label: 'text-[13px] font-semibold text-ink', error: 'text-[13p
             <UButton
               v-for="specialty in WAITLIST_SPECIALTIES"
               :key="specialty"
+              :ui="{ label: 'leading-[normal]' }"
               :label="$ts(`founders.form.specialties.${specialty}`)"
               :aria-pressed="state.specialties.includes(specialty)"
               :color="state.specialties.includes(specialty) ? 'primary' : 'neutral'"
               :variant="state.specialties.includes(specialty) ? 'solid' : 'outline'"
-              class="rounded-full px-4.5 py-2.5 text-sm"
+              class="leading-[normal] rounded-full px-4.5 py-2.5 text-[14px]"
               :class="
                 state.specialties.includes(specialty)
                   ? 'font-semibold'
@@ -187,17 +197,18 @@ const labelUi = { label: 'text-[13px] font-semibold text-ink', error: 'text-[13p
       />
 
       <UButton
+        :ui="{ label: 'leading-[normal]' }"
         type="submit"
         :label="$ts('founders.form.submit')"
         :loading="sending"
         color="primary"
         block
-        class="rounded-full p-4 text-base font-semibold hover:bg-ink/85 active:scale-[0.98]"
+        class="leading-[normal] rounded-full p-4 text-[16px] font-semibold hover:bg-ink/85 active:scale-[0.98]"
       />
 
-      <p v-if="failure" class="m-0 text-sm text-error" role="alert">{{ failure }}</p>
+      <p v-if="failure" class="m-0 text-[14px] text-error" role="alert">{{ failure }}</p>
 
-      <p class="m-0 text-xs leading-normal text-ink-muted">
+      <p class="m-0 text-[12px] leading-normal text-ink-muted">
         {{ $ts('founders.form.note') }}
         <NuxtLink :to="$localePath('/privacy')" class="underline hover:text-ink">
           {{ $ts('founders.form.privacy') }}</NuxtLink

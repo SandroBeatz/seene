@@ -9,18 +9,24 @@ const perks = ['perk1', 'perk2', 'perk3'] as const
       <div v-reveal class="flex min-w-0 flex-[1_1_460px] flex-col gap-6">
         <div class="site-eyebrow">{{ $ts('founders.eyebrow') }}</div>
         <h2 class="site-h2 text-ink">{{ $ts('founders.title') }}</h2>
-        <p class="m-0 text-[17px] leading-relaxed text-ink-muted">{{ $ts('founders.text') }}</p>
+        <p class="m-0 text-[17px] leading-[1.6] text-ink-muted">{{ $ts('founders.text') }}</p>
+        <div class="aspect-[4/5] overflow-hidden rounded-[24px] md:aspect-[3/2]">
+          <SiteImage
+            id="B-01"
+            name="b-01-founders"
+            :alt="$ts('founders.imageAlt')"
+            sizes="(max-width: 767px) 100vw, 600px"
+          />
+        </div>
         <ol class="m-0 flex list-none flex-col border-t border-line p-0">
           <li
             v-for="(perk, i) in perks"
             :key="perk"
-            class="flex gap-4 border-b border-line py-4.5 text-base text-ink"
+            class="flex gap-4 border-b border-line py-4.5 text-[16px] text-ink"
           >
-            <span class="w-7 shrink-0 font-mono text-[13px] leading-6 text-ink-muted">
-              0{{ i + 1 }}
-            </span>
+            <span class="w-7 shrink-0 font-mono text-[13px] text-ink-muted"> 0{{ i + 1 }} </span>
             <span>
-              <b class="font-semibold">{{ $ts(`founders.${perk}.bold`) }}</b
+              <b class="font-bold">{{ $ts(`founders.${perk}.bold`) }}</b
               >{{ $ts(`founders.${perk}.rest`) }}
             </span>
           </li>

@@ -1,5 +1,7 @@
 <script setup>
 const { getLocale } = useI18n()
+const config = useRuntimeConfig()
+const siteUrl = config.public.siteUrl || useRequestURL().origin
 
 useHead({
   title: 'Seene',
@@ -11,8 +13,12 @@ useHead({
   }
 })
 
+// OG-01: the link preview in WhatsApp and Telegram (JPG: not every messenger shows WebP)
 useSeoMeta({
   ogSiteName: 'Seene',
+  ogImage: `${siteUrl}/og-01-share.jpg`,
+  ogImageWidth: 1200,
+  ogImageHeight: 630,
   twitterCard: 'summary_large_image'
 })
 </script>
