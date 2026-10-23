@@ -176,8 +176,20 @@ const nextLabel = computed(() => {
   })
     .format(new Date(slot))
     .replace(/[.,]/g, '')
-  return `${$ts('booking.header.next')} · ${day}, ${formatTime(slot)}`
+  return `${$ts('booking.header.next')} · ${day.charAt(0).toUpperCase()}${day.slice(1)}, ${formatTime(slot)}`
 })
+
+// Variant B of the design: the total sits in the footer; tapping it changes the services.
+const footerSummary = computed(() => ({
+  price: summary.priceLabel.value,
+  details: summary.durationLabel.value,
+  aria: $ts('booking.steps.slots.changeServices', {
+    price: summary.priceLabel.value,
+    duration: summary.durationLabel.value
+  })
+}))
+
+const isEmpty = computed(() => !isPending.value && !error.value && !hasAnyFreeDay.value)
 </script>
 
 <template>
@@ -186,24 +198,6 @@ const nextLabel = computed(() => {
       <h1 class="mx-1 font-display text-[26px] font-bold tracking-[-0.03em] text-highlighted">
         {{ $ts('booking.steps.slots.title') }}
       </h1>
-
-      <div class="flex items-center gap-3 rounded-[16px] bg-muted px-3.5 py-3">
-        <BookingThumb
-          v-if="summary.services.value[0]"
-          :service="summary.services.value[0]"
-          class="size-10 rounded-[10px] text-sm"
-        />
-        <div class="flex min-w-0 flex-1 flex-col gap-0.5">
-          <p class="text-sm font-semibold text-highlighted">{{ summary.name.value }}</p>
-          <p class="text-[13px] text-muted">{{ summary.details.value }}</p>
-        </div>
-        <UButton
-          variant="link"
-          :label="$ts('booking.steps.slots.change')"
-          class="shrink-0 p-1 text-sm font-semibold text-(--seene-accent-text) hover:text-(--seene-accent-text)"
-          @click="$emit('changeServices')"
-        />
-      </div>
 
       <UAlert
         v-if="slotTaken"
@@ -231,24 +225,48 @@ const nextLabel = computed(() => {
         ]"
       />
 
-      <template v-else-if="isPending">
-        <div class="-mx-4 flex gap-1.5 overflow-hidden px-4" aria-hidden="true">
-          <USkeleton v-for="index in 7" :key="index" class="h-18 w-13 shrink-0 rounded-[16px]" />
+      <div
+        v-else-if="isPending"
+        role="status"
+        aria-busy="true"
+        :aria-label="$ts('booking.steps.slots.loading')"
+        class="flex flex-col gap-4.5"
+      >
+        <div class="flex flex-col gap-2.5">
+          <div class="flex h-5.5 items-center justify-between px-1">
+            <span class="seene-skeleton h-4 w-33 rounded-md" />
+            <span class="seene-skeleton h-3 w-26 rounded-md" />
+          </div>
+          <div class="-mx-4 flex gap-1.5 overflow-hidden px-4">
+            <span v-for="index in 7" :key="index" class="seene-skeleton h-18 w-13 shrink-0 rounded-[16px]" />
+          </div>
         </div>
-        <div class="grid grid-cols-4 gap-1.5" aria-hidden="true">
-          <USkeleton v-for="index in 6" :key="index" class="h-11 rounded-[12px]" />
+        <div v-for="(count, row) in [8, 4]" :key="row" class="flex flex-col gap-2">
+          <span class="seene-skeleton mx-1 my-0.75 h-3 rounded-md" :class="row ? 'w-14' : 'w-11'" />
+          <div class="grid grid-cols-4 gap-1.5">
+            <span v-for="index in count" :key="index" class="seene-skeleton h-11 rounded-[12px]" />
+          </div>
         </div>
-      </template>
+      </div>
 
-      <UEmpty
-        v-else-if="!hasAnyFreeDay"
-        icon="i-lucide-calendar-x"
-        :title="$ts('booking.steps.slots.noSlots')"
-        :description="
-          $ts('booking.steps.slots.noUpcomingSlots', { days: data.settings.booking_horizon_days })
-        "
-        variant="naked"
-      />
+      <div v-else-if="isEmpty" class="flex flex-col items-center gap-2.5 px-4 pt-16 text-center">
+        <span class="flex size-16 items-center justify-center rounded-full bg-muted text-muted">
+          <UIcon name="i-lucide-calendar-x" class="size-7" />
+        </span>
+        <h2 class="mt-2 font-display text-xl font-bold tracking-[-0.02em] text-highlighted">
+          {{ $ts('booking.steps.slots.noSlots') }}
+        </h2>
+        <p class="text-[15px] leading-normal text-muted">
+          {{
+            $ts('booking.steps.slots.noUpcomingSlots', { days: data.settings.booking_horizon_days })
+          }}
+        </p>
+        <UButton
+          :label="$ts('booking.steps.slots.otherService')"
+          class="mt-3.5 rounded-[16px] px-6 py-3.75 text-[15px] font-semibold"
+          @click="$emit('changeServices')"
+        />
+      </div>
 
       <template v-else>
         <div class="flex flex-col gap-2.5">
@@ -319,9 +337,13 @@ const nextLabel = computed(() => {
     </div>
 
     <BookingFooter
+      v-if="!isEmpty"
       :label="nextLabel"
       :disabled="!bookingState.selectedSlot"
+      :summary="footerSummary"
+      summary-tap
       @click="$emit('next')"
+      @summary="$emit('changeServices')"
     />
   </section>
 </template>

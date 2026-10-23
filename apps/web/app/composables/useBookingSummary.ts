@@ -2,7 +2,7 @@ import type { MasterPageData } from '#shared/types/master'
 
 /** The services picked for this booking, with their total time and price, as shown on every step. */
 export function useBookingSummary(data: MaybeRefOrGetter<MasterPageData>) {
-  const { $ts } = useI18n()
+  const { $ts, getLocale } = useI18n()
   const page = computed(() => toValue(data))
   const bookingState = useBookingState(page.value.profile.username)
   const { formatPrice } = useMasterFormat(() => page.value.settings)
@@ -26,5 +26,15 @@ export function useBookingSummary(data: MaybeRefOrGetter<MasterPageData>) {
   /** "2 h · 800 som" */
   const details = computed(() => `${formatDuration(duration.value)} · ${priceLabel.value}`)
 
-  return { services, duration, name, priceLabel, details }
+  /** "1 h 30 min · 2 services" */
+  const count = computed(() => {
+    const n = services.value.length
+    const category = new Intl.PluralRules(getLocale()).select(n)
+    const key = ['one', 'few', 'many'].includes(category) ? category : 'other'
+    return $ts(`booking.service.count.${key}`, { count: n })
+  })
+  const meta = computed(() => `${formatDuration(duration.value)} · ${count.value}`)
+  const durationLabel = computed(() => formatDuration(duration.value))
+
+  return { services, duration, durationLabel, name, priceLabel, details, meta }
 }

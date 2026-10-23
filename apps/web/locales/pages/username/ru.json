@@ -107,7 +107,8 @@
     "steps": {
       "services": {
         "title": "Выберите услугу",
-        "empty": "Пока нет услуг, доступных для записи."
+        "empty": "Пока нет услуг, доступных для записи.",
+        "hint": "Можно выбрать несколько"
       },
       "slots": {
         "title": "Когда удобно?",
@@ -132,7 +133,10 @@
         "loadFailed": "Не удалось загрузить свободное время",
         "retry": "Повторить",
         "noSlots": "Нет свободного времени",
-        "noUpcomingSlots": "В ближайшие {days} дн. нет свободных окон."
+        "noUpcomingSlots": "В ближайшие {days} дн. всё занято",
+        "changeServices": "Изменить услуги: {price}, {duration}",
+        "otherService": "Выбрать другую услугу",
+        "loading": "Загружаем свободное время"
       },
       "confirm": {
         "phoneTitle": "Ваш номер телефона",
@@ -151,7 +155,8 @@
         "firstName": "Как вас зовут",
         "reminders": "Напомнить о записи",
         "remindersHint": "в WhatsApp за день до визита",
-        "marketing": "Сообщать о свободных окнах и акциях {name}"
+        "marketing": "Сообщать о свободных окнах и акциях {name}",
+        "services": "Услуги"
       },
       "success": {
         "title": "Вы записаны",
@@ -192,7 +197,13 @@
     },
     "addToCalendar": "В календарь",
     "service": {
-      "priceFrom": "от {price}"
+      "priceFrom": "от {price}",
+      "count": {
+        "one": "{count} услуга",
+        "few": "{count} услуги",
+        "many": "{count} услуг",
+        "other": "{count} услуги"
+      }
     },
     "footer": {
       "book": "Записаться",
