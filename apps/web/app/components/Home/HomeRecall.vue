@@ -11,7 +11,7 @@ const points = ['p1', 'p2', 'p3'] as const
   <section class="border-b border-line bg-paper">
     <div class="site-container flex flex-wrap-reverse items-center gap-16 py-24">
       <div
-        class="relative h-[760px] min-w-0 flex-[1_1_520px] overflow-hidden rounded-[32px] bg-linear-160 from-[#6E514B] via-[#A47D74] via-55% to-[#D7BFB6]"
+        class="relative h-[660px] min-w-0 sm:h-[760px] flex-[1_1_520px] overflow-hidden rounded-[32px] bg-linear-160 from-[#6E514B] via-[#A47D74] via-55% to-[#D7BFB6]"
       >
         <div class="absolute inset-0">
           <SiteImage
@@ -25,7 +25,7 @@ const points = ['p1', 'p2', 'p3'] as const
         </div>
 
         <div
-          class="absolute top-[50px] left-1/2 -translate-x-1/2 drop-shadow-[0_30px_50px_rgba(40,20,15,0.35)]"
+          class="absolute top-[50px] left-1/2 origin-top -translate-x-1/2 scale-[0.82] drop-shadow-[0_30px_50px_rgba(40,20,15,0.35)] sm:scale-100"
         >
           <HomeRecallPhone />
         </div>

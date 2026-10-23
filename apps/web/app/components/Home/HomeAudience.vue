@@ -24,7 +24,8 @@ const tiles: Tile[] = [
 const shapeClass = {
   big: 'col-span-2 md:row-span-2',
   tall: 'md:row-span-2',
-  wide: 'col-span-2'
+  // On phones the wide tile takes one column, so 7 tiles close the 2-column grid
+  wide: 'md:col-span-2'
 }
 </script>
 

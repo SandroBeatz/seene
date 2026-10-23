@@ -175,7 +175,7 @@ useSeoMeta({
           v-reveal="1"
           class="grid flex-[1_1_420px] grid-cols-2 overflow-hidden rounded-[24px] border border-line bg-white"
         >
-          <div class="flex flex-col gap-1.5 border-r border-line p-5 sm:p-7">
+          <div class="flex flex-col justify-between gap-1.5 border-r border-line p-5 sm:p-7">
             <div class="text-[14px] text-ink-muted">{{ $ts('payback.pro') }}</div>
             <div
               class="font-display text-[clamp(28px,3vw,36px)] font-semibold tracking-[-0.03em] text-ink"
@@ -183,7 +183,7 @@ useSeoMeta({
               {{ price.pro }} {{ currency }}
             </div>
           </div>
-          <div class="flex flex-col gap-1.5 p-5 sm:p-7">
+          <div class="flex flex-col justify-between gap-1.5 p-5 sm:p-7">
             <div class="text-[14px] text-ink-muted">{{ $ts('payback.visit') }}</div>
             <div
               class="font-display text-[clamp(28px,3vw,36px)] font-semibold tracking-[-0.03em] text-brand"

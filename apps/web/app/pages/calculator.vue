@@ -108,11 +108,13 @@ useSeoMeta({
             <dl class="m-0 flex flex-col border-t border-[#2A2A2F] text-[15px]">
               <div class="flex justify-between gap-4 border-b border-[#2A2A2F] py-3.5">
                 <dt class="text-[#B8B8BE]">{{ $ts('noShowMonth') }}</dt>
-                <dd class="m-0 font-bold tabular-nums">{{ money(noShowMonth) }}</dd>
+                <dd class="m-0 font-bold whitespace-nowrap tabular-nums">
+                  {{ money(noShowMonth) }}
+                </dd>
               </div>
               <div class="flex justify-between gap-4 border-b border-[#2A2A2F] py-3.5">
                 <dt class="text-[#B8B8BE]">{{ $ts('lostMonth') }}</dt>
-                <dd class="m-0 font-bold tabular-nums">{{ money(lostMonth) }}</dd>
+                <dd class="m-0 font-bold whitespace-nowrap tabular-nums">{{ money(lostMonth) }}</dd>
               </div>
               <div class="flex justify-between gap-4 py-3.5">
                 <dt class="text-[#B8B8BE]">{{ $ts('payback') }}</dt>

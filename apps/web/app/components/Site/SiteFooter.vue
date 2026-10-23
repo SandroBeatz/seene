@@ -36,10 +36,12 @@ const languages = ['ru', 'en', 'fr'] as const
   <UFooter
     :ui="{
       root: 'bg-ink text-white',
-      top: 'py-0',
-      container: 'max-w-[1248px] px-6 sm:px-6 lg:px-6 pt-6 pb-10 lg:py-0 lg:pt-6 lg:pb-10',
-      left: 'text-[13px] text-[#A6A6AD]',
-      right: 'text-[13px]'
+      top: 'py-0 lg:py-0',
+      container:
+        'flex max-w-[1248px] flex-col items-start gap-4 px-6 pt-6 pb-10 sm:px-6 lg:flex-row lg:items-center lg:px-6 lg:py-0 lg:pt-6 lg:pb-10',
+      left: 'order-first mt-0 justify-start text-[13px] text-[#A6A6AD] lg:order-1 lg:mt-0',
+      center: 'hidden',
+      right: 'mt-0 justify-start text-[13px] lg:mt-0 lg:justify-end'
     }"
   >
     <template #top>
