@@ -97,135 +97,119 @@
     "brows_lashes": "Sourcils & Cils"
   },
   "booking": {
+    "title": "Réservation avec {name}",
     "header": {
       "back": "Retour",
+      "close": "Fermer la réservation",
       "next": "Suivant",
-      "progressLabel": "Étape {step} sur {total}",
-      "close": "Fermer la réservation"
+      "progressLabel": "Étape {step} sur {total}"
     },
     "steps": {
       "services": {
         "title": "Choisissez une prestation",
-        "empty": "Aucun service n'est encore disponible à la réservation.",
-        "allCategories": "Tout",
-        "otherCategory": "Autres services"
+        "empty": "Aucune prestation disponible pour le moment."
       },
       "slots": {
-        "title": "Choisir la date et l'heure",
-        "description": "Choisissez un jour et une heure disponibles pour votre visite.",
-        "noSlots": "Aucun créneau disponible",
-        "noUpcomingSlots": "Aucun créneau libre dans les {days} prochains jours.",
-        "loading": "Recherche des créneaux libres…",
-        "loadFailed": "Impossible de charger les créneaux",
-        "retry": "Réessayer",
-        "legendFree": "Libre",
-        "legendBusy": "Complet",
-        "dayFull": "aucun créneau libre",
-        "slotCount": "Créneaux libres : {count}",
+        "title": "Quand vous convient-il ?",
+        "change": "Modifier",
+        "timezone": "heure de la professionnelle · {place}",
+        "zones": {
+          "bishkek": "heure de Bichkek",
+          "almaty": "heure d’Almaty",
+          "toronto": "heure de Toronto",
+          "vancouver": "heure de Vancouver",
+          "edmonton": "heure d’Edmonton",
+          "winnipeg": "heure de Winnipeg",
+          "halifax": "heure d’Halifax"
+        },
         "groups": {
           "morning": "Matin",
           "afternoon": "Après-midi",
           "evening": "Soir"
         },
-        "calendarTitle": "Choisissez un jour",
-        "openCalendar": "Ouvrir le calendrier",
-        "taken": "Ce créneau vient d’être pris. Voici les créneaux libres les plus proches.",
-        "timezone": "Heure de la professionnelle · {place}"
+        "dayFull": "aucun créneau libre",
+        "taken": "Ce créneau vient d’être pris. Choisissez-en un autre.",
+        "loadFailed": "Impossible de charger les créneaux",
+        "retry": "Réessayer",
+        "noSlots": "Aucun créneau libre",
+        "noUpcomingSlots": "Aucun créneau libre dans les {days} prochains jours."
       },
       "confirm": {
-        "title": "Vos coordonnées",
-        "total": "Total",
-        "addNote": "Ajouter une note",
-        "editNote": "Modifier la note",
-        "noteModalTitle": "Ajouter une note",
-        "notePlaceholder": "Ex. : allergie au gel, préfère le style naturel...",
-        "saveNote": "Enregistrer",
-        "cancel": "Annuler",
+        "phoneTitle": "Votre numéro de téléphone",
+        "phoneHint": "Nous enverrons une confirmation et un lien pour annuler. Sans mot de passe ni inscription.",
         "phone": "Numéro de téléphone",
-        "welcome": "Ravis de vous revoir, {name} !",
-        "firstName": "Prénom",
-        "creatingBooking": "Création de votre réservation...",
-        "changeTime": "Changer l'heure",
-        "checkingPhone": "Vérification du numéro…",
-        "welcomeAnonymous": "Ravis de vous revoir !",
-        "verifiedHint": "Votre numéro est déjà confirmé — il ne reste qu’à appuyer sur « Réserver ».",
+        "privacyNote": "Seule {name} voit votre numéro. Pas de publicité, et nous ne le partageons pas avec d’autres professionnelles.",
+        "continue": "Continuer",
+        "welcome": "Bon retour, {name} !",
         "notYou": "Ce n’est pas vous ?",
-        "codeTitle": "Confirmons votre numéro",
-        "codeHint": "Nous vous enverrons un court code via WhatsApp ou Telegram. Sur cet appareil, plus besoin de code pour réserver chez ce professionnel.",
+        "service": "Prestation",
+        "when": "Quand",
+        "price": "Prix",
+        "knownHint": "Votre numéro est déjà confirmé sur ce téléphone, pas besoin de code. Un rappel arrivera sur WhatsApp la veille.",
+        "newTitle": "Presque terminé",
+        "newHint": "Nous confirmons votre numéro par un code pour que la réservation soit bien la vôtre.",
+        "firstName": "Votre prénom",
         "reminders": "Me rappeler le rendez-vous",
-        "remindersHint": "Un message la veille, avec un lien pour annuler.",
-        "marketing": "M’informer des créneaux libres et des offres"
+        "remindersHint": "sur WhatsApp la veille",
+        "marketing": "M’informer des créneaux libres et des offres de {name}"
       },
       "success": {
         "title": "Rendez-vous confirmé",
-        "description": "{name} vous attend.",
-        "master": "Spécialiste",
-        "services": "Services",
-        "dateTime": "Date et heure",
-        "address": "Adresse",
-        "calendarTitle": "Rendez-vous avec {master}",
-        "heading": "Terminé",
+        "description": "{name} vous attend le {day} à {time}",
         "pendingTitle": "Demande envoyée",
-        "pendingDescription": "{name} confirmera le rendez-vous très bientôt.",
+        "pendingDescription": "{name} confirmera votre rendez-vous du {day} à {time}",
         "directions": "Itinéraire",
-        "done": "Terminé"
+        "toProfile": "Retour à la page",
+        "messageNote": "La confirmation et le lien d’annulation arriveront sur WhatsApp. Annulation en ligne possible {until}.",
+        "cancelDayBefore": "jusqu’à {time} la veille",
+        "cancelSameDay": "jusqu’à {time} le jour même",
+        "cancelOn": "jusqu’à {time}, {day}",
+        "calendarTitle": "Rendez-vous avec {master}"
       }
     },
-    "addToCalendar": "Ajouter au calendrier",
-    "service": {
-      "duration": "{duration} min",
-      "price": "{price} ₽",
-      "priceFrom": "à partir de {price}"
-    },
-    "sms": {
+    "code": {
       "title": "Saisissez le code",
-      "codeSentTo": "Code envoyé via {channel} au {phone}",
-      "resendIn": "Renvoyer dans {countdown}",
-      "resend": "Renvoyer le code",
+      "sentTo": "Nous avons envoyé 4 chiffres via {channel} au {phone}",
+      "aria": "Code à 4 chiffres",
+      "resendIn": "Renvoyer dans {time}",
+      "resend": "Renvoyer",
+      "otherChannel": "Pas reçu ? Envoyer via {channel}",
+      "changePhone": "Changer de numéro",
+      "get": "Recevoir le code",
+      "confirm": "Confirmer et réserver",
+      "channelTitle": "Où envoyer le code",
+      "channels": {
+        "whatsapp": "WhatsApp",
+        "telegram": "Telegram"
+      },
       "devCode": "Code de test : {code}",
-      "invalidCode": "Code invalide, veuillez réessayer",
-      "expiredCode": "Le code a expiré, veuillez en demander un nouveau",
-      "tooManyAttempts": "Trop de tentatives, veuillez demander un nouveau code",
+      "enterCode": "Saisissez le code à 4 chiffres",
+      "invalid": "Code incorrect, réessayez",
+      "expired": "Le code a expiré, demandez-en un nouveau",
+      "tooManyAttempts": "Trop de tentatives, demandez un nouveau code",
       "tooManyRequests": "Trop de demandes de code. Réessayez plus tard",
       "sendFailed": "Impossible d’envoyer le code, réessayez"
     },
-    "errors": {
-      "bookingFailed": "Impossible de créer la réservation, veuillez réessayer",
-      "slotUnavailable": "Ce créneau n'est plus disponible, veuillez en choisir un autre",
-      "nameRequired": "Le prénom est requis",
-      "checkFailed": "Impossible de vérifier le numéro, réessayez",
-      "phoneInvalid": "Saisissez un numéro valide",
-      "limit": "Vous avez déjà 2 rendez-vous à venir avec cette professionnelle. Pour en prendre un autre, écrivez-lui.",
-      "refused": "La réservation en ligne n’est pas disponible. Contactez directement la professionnelle."
+    "addToCalendar": "Ajouter au calendrier",
+    "service": {
+      "priceFrom": "à partir de {price}"
     },
     "footer": {
       "book": "Réserver",
-      "policy": "En appuyant sur « Réserver », vous acceptez la {link}.",
+      "policy": "En continuant, vous acceptez la {link}",
       "policyLink": "politique de confidentialité"
     },
     "phone": {
       "country": "Pays",
       "searchCountry": "Rechercher un pays…"
     },
-    "verify": {
-      "detailsTitle": "Ravi de vous rencontrer !",
-      "detailsDescription": "Dites au maître comment vous appeler.",
-      "sendingCode": "Envoi du code…",
-      "checkingCode": "Vérification du code…",
-      "changePhone": "Changer de numéro",
-      "channelTitle": "Où envoyer le code ?",
-      "channelDescription": "Choisissez une messagerie — nous enverrons un code à 4 chiffres pour le {phone}.",
-      "otherChannel": "Recevoir autrement",
-      "channels": {
-        "whatsapp": {
-          "name": "WhatsApp",
-          "action": "Recevoir sur WhatsApp"
-        },
-        "telegram": {
-          "name": "Telegram",
-          "action": "Recevoir sur Telegram"
-        }
-      }
+    "errors": {
+      "bookingFailed": "Impossible de créer la réservation, réessayez",
+      "checkFailed": "Impossible de vérifier le numéro, réessayez",
+      "phoneInvalid": "Saisissez un numéro valide",
+      "nameRequired": "Saisissez votre prénom",
+      "limit": "Vous avez déjà 2 rendez-vous à venir avec cette professionnelle. Pour en prendre un autre, écrivez-lui.",
+      "refused": "La réservation en ligne n’est pas disponible. Contactez directement la professionnelle."
     }
   }
 }
