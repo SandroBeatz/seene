@@ -1,12 +1,12 @@
 ---
-version: 2.3
+version: 2.4
 date: 2026-10-24
 category: business
 ---
 
 # Data Model
 
-> Version 2.3 · 2026-10-24 · [Business](../)
+> Version 2.4 · 2026-10-24 · [Business](../)
 
 ## Overview
 
@@ -460,16 +460,16 @@ Applications from the founding masters form on the homepage (`#join`). Not linke
 
 ### Schema
 
-| Column        | Type          | Nullable | Default             | Description                                                    |
-| ------------- | ------------- | -------- | ------------------- | -------------------------------------------------------------- |
-| `id`          | `uuid`        | NO       | `gen_random_uuid()` | Primary key                                                    |
-| `name`        | `text`        | NO       | —                   | Her name, 1–60 characters                                      |
-| `contact`     | `text`        | NO       | —                   | Instagram handle or WhatsApp number as typed, 2–100 characters |
-| `city`        | `text`        | NO       | —                   | `bishkek`, `toronto`, `vancouver` or `other`                   |
-| `specialties` | `text[]`      | NO       | —                   | 1–5 of `manicure`, `pedicure`, `brows`, `lashes`, `other`      |
-| `locale`      | `text`        | NO       | `'en'`              | Site language she applied in (`en`, `fr`, `ru`)                |
-| `ip_hash`     | `text`        | YES      | `null`              | SHA-256 of the IP with the server secret, for the hourly limit |
-| `created_at`  | `timestamptz` | NO       | `now()`             | —                                                              |
+| Column       | Type          | Nullable | Default             | Description                                                    |
+| ------------ | ------------- | -------- | ------------------- | -------------------------------------------------------------- |
+| `id`         | `uuid`        | NO       | `gen_random_uuid()` | Primary key                                                    |
+| `name`       | `text`        | NO       | —                   | Her name, 1–60 characters                                      |
+| `contact`    | `text`        | NO       | —                   | Instagram handle or WhatsApp number as typed, 2–100 characters |
+| `city`       | `text`        | NO       | —                   | `bishkek`, `toronto`, `vancouver` or `other`                   |
+| `specialty`  | `text`        | NO       | —                   | What she does, as typed ("nails, brows"), 2–100 characters     |
+| `locale`     | `text`        | NO       | `'en'`              | Site language she applied in (`en`, `fr`, `ru`)                |
+| `ip_hash`    | `text`        | YES      | `null`              | SHA-256 of the IP with the server secret, for the hourly limit |
+| `created_at` | `timestamptz` | NO       | `now()`             | —                                                              |
 
 ### Constraints & indexes
 

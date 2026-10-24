@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
     name?: unknown
     contact?: unknown
     city?: unknown
-    specialties?: unknown
+    specialty?: unknown
     locale?: unknown
     website?: unknown
     shown_at?: unknown
@@ -51,7 +51,7 @@ export default defineEventHandler(async (event) => {
     name: input.name,
     contact: input.contact,
     city: input.city,
-    specialties: input.specialties,
+    specialty: input.specialty,
     locale,
     ip_hash: ipHash
   })

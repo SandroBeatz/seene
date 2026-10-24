@@ -852,7 +852,7 @@ export type Database = {
           ip_hash: string | null
           locale: string
           name: string
-          specialties: string[]
+          specialty: string
         }
         Insert: {
           city: string
@@ -862,7 +862,7 @@ export type Database = {
           ip_hash?: string | null
           locale?: string
           name: string
-          specialties: string[]
+          specialty: string
         }
         Update: {
           city?: string
@@ -872,7 +872,7 @@ export type Database = {
           ip_hash?: string | null
           locale?: string
           name?: string
-          specialties?: string[]
+          specialty?: string
         }
         Relationships: []
       }

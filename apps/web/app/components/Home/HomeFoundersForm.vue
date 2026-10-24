@@ -4,9 +4,8 @@ import {
   WAITLIST_CITIES,
   WAITLIST_CONTACT_MAX,
   WAITLIST_NAME_MAX,
-  WAITLIST_SPECIALTIES,
-  type WaitlistCity,
-  type WaitlistSpecialty
+  WAITLIST_SPECIALTY_MAX,
+  type WaitlistCity
 } from '#shared/utils/waitlist'
 
 /**
@@ -20,7 +19,7 @@ const state = reactive({
   name: '',
   contact: '',
   city: 'bishkek' as WaitlistCity,
-  specialties: ['manicure'] as WaitlistSpecialty[]
+  specialty: ''
 })
 const website = ref('')
 const shownAt = ref(0)
@@ -36,20 +35,14 @@ const cities = computed(() =>
   WAITLIST_CITIES.map((value) => ({ value, label: $ts(`founders.form.cities.${value}`) }))
 )
 
-function toggle(specialty: WaitlistSpecialty) {
-  state.specialties = state.specialties.includes(specialty)
-    ? state.specialties.filter((item) => item !== specialty)
-    : [...state.specialties, specialty]
-}
-
 function validate(): FormError[] {
   const errors: FormError[] = []
   if (!state.name.trim()) errors.push({ name: 'name', message: $ts('founders.form.nameRequired') })
   if (state.contact.trim().length < 2) {
     errors.push({ name: 'contact', message: $ts('founders.form.contactRequired') })
   }
-  if (!state.specialties.length) {
-    errors.push({ name: 'specialties', message: $ts('founders.form.specialtyRequired') })
+  if (state.specialty.trim().length < 2) {
+    errors.push({ name: 'specialty', message: $ts('founders.form.specialtyRequired') })
   }
   return errors
 }
@@ -159,31 +152,15 @@ const labelUi = {
         />
       </UFormField>
 
-      <div role="group" aria-labelledby="founders-specialty" class="flex flex-col gap-2">
-        <div id="founders-specialty" class="text-[13px] font-semibold text-ink">
-          {{ $ts('founders.form.specialty') }}
-        </div>
-        <UFormField name="specialties" :ui="labelUi">
-          <div class="flex flex-wrap gap-2">
-            <UButton
-              v-for="specialty in WAITLIST_SPECIALTIES"
-              :key="specialty"
-              :ui="{ label: 'leading-[normal]' }"
-              :label="$ts(`founders.form.specialties.${specialty}`)"
-              :aria-pressed="state.specialties.includes(specialty)"
-              :color="state.specialties.includes(specialty) ? 'primary' : 'neutral'"
-              :variant="state.specialties.includes(specialty) ? 'solid' : 'outline'"
-              class="leading-[normal] rounded-full px-4.5 py-2.5 text-[14px]"
-              :class="
-                state.specialties.includes(specialty)
-                  ? 'font-semibold'
-                  : 'bg-white font-medium text-ink ring-[#D6D6D2] hover:bg-white/70'
-              "
-              @click="toggle(specialty)"
-            />
-          </div>
-        </UFormField>
-      </div>
+      <UFormField name="specialty" :label="$ts('founders.form.specialty')" :ui="labelUi">
+        <UInput
+          v-model="state.specialty"
+          :placeholder="$ts('founders.form.specialtyPlaceholder')"
+          :maxlength="WAITLIST_SPECIALTY_MAX"
+          autocomplete="off"
+          :ui="fieldUi"
+        />
+      </UFormField>
 
       <!-- Trap for bots: hidden from people and screen readers -->
       <input

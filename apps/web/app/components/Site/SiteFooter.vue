@@ -1,7 +1,8 @@
 <script setup lang="ts">
 /**
  * Black site footer from the design. Columns link only to pages that exist:
- * the design's "For masters" and "Comparisons" columns wait for their pages.
+ * the city pages ("Bishkek · Toronto · Vancouver"), the other tools and the
+ * "Comparisons" column wait for their pages.
  */
 const { $ts, $localePath, $switchLocalePath, getLocale } = useI18n()
 
@@ -15,6 +16,14 @@ const columns = computed(() => [
       { label: $ts('nav.pricing'), to: $localePath('/pricing') },
       { label: $ts('footer.founders'), to: `${homePath.value}#join` },
       { label: $ts('nav.download'), to: `${homePath.value}#join` }
+    ]
+  },
+  {
+    title: $ts('footer.forMasters'),
+    links: [
+      { label: $ts('footer.bookingPage'), to: `${homePath.value}#booking` },
+      { label: $ts('footer.reminders'), to: `${homePath.value}#features` },
+      { label: $ts('footer.income'), to: `${homePath.value}#features` }
     ]
   },
   {

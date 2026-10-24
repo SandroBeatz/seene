@@ -2,10 +2,10 @@
 import type { NavigationMenuItem } from '@nuxt/ui'
 
 /**
- * Site header from the "Главная" artboard: logo, Features · Pricing · Tools, and
- * "Download", which leads to the founders form until the app is in the stores.
- * Sticky, translucent with a blur (animation spec: the main action stays at hand).
- * "For masters" and "Blog" from the design have no pages yet and are left out.
+ * Site header from the "Главная" artboard: logo, Features · Master page · Pricing ·
+ * Tools, and "Download", which leads to the founders form until the app is in the
+ * stores. Sticky, translucent with a blur (animation spec: the main action stays at
+ * hand). "Blog" from the design has no page yet and is left out.
  */
 const route = useRoute()
 const { $ts, $localePath } = useI18n()
@@ -15,6 +15,7 @@ const isActive = (path: string) => route.path === $localePath(path)
 
 const items = computed<NavigationMenuItem[]>(() => [
   { label: $ts('nav.features'), to: `${homePath.value}#features`, active: false },
+  { label: $ts('nav.booking'), to: `${homePath.value}#booking`, active: false },
   { label: $ts('nav.pricing'), to: $localePath('/pricing'), active: isActive('/pricing') },
   { label: $ts('nav.tools'), to: $localePath('/calculator'), active: isActive('/calculator') }
 ])
