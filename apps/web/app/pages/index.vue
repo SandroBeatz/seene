@@ -12,11 +12,10 @@ useSeoMeta({
 <template>
   <div>
     <HomeHero />
-    <HomeAudience />
-    <HomeMoney />
     <HomeFeatures />
-    <HomeRecall />
-    <HomeCommission />
+    <HomeBooking />
+    <HomeAudience />
+    <HomeWhy />
     <HomeFounders />
     <HomeFaq />
     <HomeFinal />

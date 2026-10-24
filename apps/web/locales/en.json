@@ -4,6 +4,7 @@
     "main": "Main menu",
     "homeAria": "Seene, home",
     "features": "Features",
+    "booking": "Your page",
     "pricing": "Pricing",
     "tools": "Tools",
     "download": "Download"
@@ -11,6 +12,10 @@
   "footer": {
     "tagline": "A pocket front desk for beauty pros who work on their own.",
     "product": "Product",
+    "forMasters": "For beauty pros",
+    "bookingPage": "Online booking page",
+    "reminders": "Client reminders",
+    "income": "Income tracking",
     "tools": "Tools",
     "founders": "Founding masters",
     "calculator": "No-show calculator",

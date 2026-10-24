@@ -1,6 +1,6 @@
 <script setup lang="ts">
-/** "Вопросы": four short answers, all open (no accordion in the design). */
-const questions = ['install', 'robot', 'price', 'data'] as const
+/** "Вопросы": six short answers, all open (no accordion in the design). */
+const questions = ['notebook', 'install', 'reminders', 'price', 'platforms', 'data'] as const
 </script>
 
 <template>

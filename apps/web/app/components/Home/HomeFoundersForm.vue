@@ -1,26 +1,31 @@
 <script setup lang="ts">
-import type { FormError } from '@nuxt/ui'
+import type { DropdownMenuItem, FormError } from '@nuxt/ui'
+import { MARKETS, MARKET_CITIES } from '#shared/utils/market'
 import {
-  WAITLIST_CITIES,
   WAITLIST_CONTACT_MAX,
   WAITLIST_NAME_MAX,
-  WAITLIST_SPECIALTIES,
-  type WaitlistCity,
-  type WaitlistSpecialty
+  WAITLIST_PLACE_MAX,
+  WAITLIST_SPECIALTY_MAX
 } from '#shared/utils/waitlist'
 
 /**
  * The founders application (POST /api/waitlist). After sending, the form is
  * replaced by "Thank you! We'll write within 2 days" with a check that draws
  * itself (animation spec). `website` is a trap field people never see.
+ *
+ * The country is the visitor's market (`useMarket`: IP country or her own
+ * choice, changed with "Change"). Kyrgyzstan and Canada pick a city from their
+ * list; another country types "country and city" as text.
  */
 const { $ts, $localePath, getLocale } = useI18n()
+const { market, source, choose } = useMarket()
 
 const state = reactive({
   name: '',
   contact: '',
-  city: 'bishkek' as WaitlistCity,
-  specialties: ['manicure'] as WaitlistSpecialty[]
+  city: '' as string,
+  place: '',
+  specialty: ''
 })
 const website = ref('')
 const shownAt = ref(0)
@@ -32,15 +37,37 @@ onMounted(() => {
   shownAt.value = Date.now()
 })
 
-const cities = computed(() =>
-  WAITLIST_CITIES.map((value) => ({ value, label: $ts(`founders.form.cities.${value}`) }))
+// A new country starts with its first city (Bishkek, Toronto)
+watch(
+  market,
+  (value) => {
+    state.city = value === 'other' ? '' : MARKET_CITIES[value][0]
+  },
+  { immediate: true }
 )
 
-function toggle(specialty: WaitlistSpecialty) {
-  state.specialties = state.specialties.includes(specialty)
-    ? state.specialties.filter((item) => item !== specialty)
-    : [...state.specialties, specialty]
-}
+const cities = computed<{ value: string; label: string }[]>(() =>
+  market.value === 'other'
+    ? []
+    : MARKET_CITIES[market.value].map((value: string) => ({
+        value,
+        label: $ts(`founders.form.cities.${market.value}.${value}`)
+      }))
+)
+
+const countries = computed<DropdownMenuItem[]>(() =>
+  MARKETS.map((value) => ({
+    label: $ts(`founders.form.countries.${value}`),
+    type: 'checkbox' as const,
+    checked: market.value === value,
+    onSelect: () => choose(value)
+  }))
+)
+
+const countryHint = computed(() => {
+  if (market.value === 'other') return $ts('founders.form.hintOther')
+  return source.value === 'ip' ? $ts('founders.form.hintDetected') : ''
+})
 
 function validate(): FormError[] {
   const errors: FormError[] = []
@@ -48,8 +75,11 @@ function validate(): FormError[] {
   if (state.contact.trim().length < 2) {
     errors.push({ name: 'contact', message: $ts('founders.form.contactRequired') })
   }
-  if (!state.specialties.length) {
-    errors.push({ name: 'specialties', message: $ts('founders.form.specialtyRequired') })
+  if (market.value === 'other' && state.place.trim().length < 2) {
+    errors.push({ name: 'place', message: $ts('founders.form.placeRequired') })
+  }
+  if (state.specialty.trim().length < 2) {
+    errors.push({ name: 'specialty', message: $ts('founders.form.specialtyRequired') })
   }
   return errors
 }
@@ -61,7 +91,12 @@ async function submit() {
     await $fetch('/api/waitlist', {
       method: 'POST',
       body: {
-        ...state,
+        name: state.name,
+        contact: state.contact,
+        specialty: state.specialty,
+        country: market.value,
+        city: market.value === 'other' ? null : state.city,
+        place: market.value === 'other' ? state.place : null,
         locale: getLocale(),
         website: website.value,
         shown_at: shownAt.value
@@ -144,7 +179,37 @@ const labelUi = {
         />
       </UFormField>
 
-      <UFormField name="city" :label="$ts('founders.form.city')" :ui="labelUi">
+      <div role="group" aria-labelledby="founders-country" class="flex flex-col gap-1.5">
+        <div id="founders-country" class="text-[13px] font-semibold text-ink">
+          {{ $ts('founders.form.country') }}
+        </div>
+        <div
+          class="flex items-center gap-3 rounded-[14px] border border-[#D6D6D2] bg-white py-2.5 pr-3 pl-3.5"
+        >
+          <UIcon name="i-lucide-map-pin" class="size-4.5 shrink-0 text-ink-muted" />
+          <div class="flex min-w-0 flex-1 flex-col gap-px">
+            <span class="text-[16px] text-ink">{{ $ts(`founders.form.countries.${market}`) }}</span>
+            <span v-if="countryHint" class="text-[12px] text-ink-muted">{{ countryHint }}</span>
+          </div>
+          <UDropdownMenu :items="countries" :content="{ align: 'end' }">
+            <UButton
+              :ui="{ label: 'leading-[normal]' }"
+              :label="$ts('founders.form.change')"
+              :aria-label="$ts('founders.form.changeAria')"
+              color="neutral"
+              variant="soft"
+              class="h-9 shrink-0 rounded-full bg-[#F1F1EE] px-3 text-[13px] leading-[normal] font-semibold text-ink hover:bg-[#E7E7E4]"
+            />
+          </UDropdownMenu>
+        </div>
+      </div>
+
+      <UFormField
+        v-if="market !== 'other'"
+        name="city"
+        :label="$ts('founders.form.city')"
+        :ui="labelUi"
+      >
         <USelect
           v-model="state.city"
           :items="cities"
@@ -159,31 +224,30 @@ const labelUi = {
         />
       </UFormField>
 
-      <div role="group" aria-labelledby="founders-specialty" class="flex flex-col gap-2">
-        <div id="founders-specialty" class="text-[13px] font-semibold text-ink">
-          {{ $ts('founders.form.specialty') }}
-        </div>
-        <UFormField name="specialties" :ui="labelUi">
-          <div class="flex flex-wrap gap-2">
-            <UButton
-              v-for="specialty in WAITLIST_SPECIALTIES"
-              :key="specialty"
-              :ui="{ label: 'leading-[normal]' }"
-              :label="$ts(`founders.form.specialties.${specialty}`)"
-              :aria-pressed="state.specialties.includes(specialty)"
-              :color="state.specialties.includes(specialty) ? 'primary' : 'neutral'"
-              :variant="state.specialties.includes(specialty) ? 'solid' : 'outline'"
-              class="leading-[normal] rounded-full px-4.5 py-2.5 text-[14px]"
-              :class="
-                state.specialties.includes(specialty)
-                  ? 'font-semibold'
-                  : 'bg-white font-medium text-ink ring-[#D6D6D2] hover:bg-white/70'
-              "
-              @click="toggle(specialty)"
-            />
-          </div>
+      <template v-else>
+        <UFormField name="place" :label="$ts('founders.form.place')" :ui="labelUi">
+          <UInput
+            v-model="state.place"
+            :placeholder="$ts('founders.form.placePlaceholder')"
+            :maxlength="WAITLIST_PLACE_MAX"
+            autocomplete="off"
+            :ui="fieldUi"
+          />
         </UFormField>
-      </div>
+        <p class="-mt-2 mb-0 text-[13px] leading-normal text-ink-muted">
+          {{ $ts('founders.form.placeNote') }}
+        </p>
+      </template>
+
+      <UFormField name="specialty" :label="$ts('founders.form.specialty')" :ui="labelUi">
+        <UInput
+          v-model="state.specialty"
+          :placeholder="$ts('founders.form.specialtyPlaceholder')"
+          :maxlength="WAITLIST_SPECIALTY_MAX"
+          autocomplete="off"
+          :ui="fieldUi"
+        />
+      </UFormField>
 
       <!-- Trap for bots: hidden from people and screen readers -->
       <input

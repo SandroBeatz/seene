@@ -91,7 +91,7 @@ const mobile = computed(() =>
     :style="{ backgroundColor: tint }"
   >
     <span
-      class="rounded-[8px] bg-white/70 px-2.5 py-1.5 font-mono text-[12px] text-[#6B5A53]"
+      class="rounded-[8px] bg-white/70 px-2.5 py-1.5 text-[12px] font-semibold tabular-nums text-[#6B5A53]"
       aria-hidden="true"
     >
       {{ id }}

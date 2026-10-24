@@ -1,7 +1,8 @@
 <script setup lang="ts">
 /**
  * Black site footer from the design. Columns link only to pages that exist:
- * the design's "For masters" and "Comparisons" columns wait for their pages.
+ * the city pages ("Bishkek · Toronto · Vancouver"), the other tools and the
+ * "Comparisons" column wait for their pages.
  */
 const { $ts, $localePath, $switchLocalePath, getLocale } = useI18n()
 
@@ -15,6 +16,14 @@ const columns = computed(() => [
       { label: $ts('nav.pricing'), to: $localePath('/pricing') },
       { label: $ts('footer.founders'), to: `${homePath.value}#join` },
       { label: $ts('nav.download'), to: `${homePath.value}#join` }
+    ]
+  },
+  {
+    title: $ts('footer.forMasters'),
+    links: [
+      { label: $ts('footer.bookingPage'), to: `${homePath.value}#booking` },
+      { label: $ts('footer.reminders'), to: `${homePath.value}#features` },
+      { label: $ts('footer.income'), to: `${homePath.value}#features` }
     ]
   },
   {
@@ -58,7 +67,9 @@ const languages = ['ru', 'en', 'fr'] as const
           :aria-label="column.title"
           class="flex flex-[0_1_180px] flex-col gap-3 text-[14px]"
         >
-          <div class="font-mono text-[12px] tracking-[0.08em] text-[#A6A6AD] uppercase">
+          <div
+            class="text-[12px] font-semibold tabular-nums tracking-[0.08em] text-[#A6A6AD] uppercase"
+          >
             {{ column.title }}
           </div>
           <NuxtLink
@@ -81,7 +92,7 @@ const languages = ['ru', 'en', 'fr'] as const
         <span>{{ $ts('footer.copyright') }}</span>
         <nav
           :aria-label="$ts('footer.language')"
-          class="flex rounded-full border border-[#2A2A2F] p-0.5 font-mono text-[12px]"
+          class="flex rounded-full border border-[#2A2A2F] p-0.5 text-[12px] font-semibold tabular-nums"
         >
           <NuxtLink
             v-for="code in languages"

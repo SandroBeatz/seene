@@ -1,15 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Cormorant+Garamond:ital,wght@1,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@1,500&display=swap');
 @import 'tailwindcss';
 @import '@nuxt/ui';
 
 /* Design tokens from the site design ("Seene: дизайн сайта"). Google Fonts serve
-   the Cyrillic subsets of all three families on demand (unicode-range). */
+   the Cyrillic subsets of every family on demand (unicode-range). No monospace
+   font: labels and figures are Inter 600 with tabular numbers (sitemap). */
 @theme {
   --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   /* Headings and large numbers */
   --font-display: 'Inter Tight', 'Inter', system-ui, sans-serif;
-  /* Prices, times, codes */
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
   /* The one italic accent word in the homepage headline */
   --font-serif: 'Cormorant Garamond', Georgia, serif;
 
@@ -246,7 +245,9 @@ textarea {
 }
 
 @utility site-eyebrow {
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
   font-size: 12px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
