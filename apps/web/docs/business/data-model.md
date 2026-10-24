@@ -1,12 +1,12 @@
 ---
-version: 2.4
+version: 2.5
 date: 2026-10-24
 category: business
 ---
 
 # Data Model
 
-> Version 2.4 · 2026-10-24 · [Business](../)
+> Version 2.5 · 2026-10-24 · [Business](../)
 
 ## Overview
 
@@ -465,19 +465,26 @@ Applications from the founding masters form on the homepage (`#join`). Not linke
 | `id`         | `uuid`        | NO       | `gen_random_uuid()` | Primary key                                                    |
 | `name`       | `text`        | NO       | —                   | Her name, 1–60 characters                                      |
 | `contact`    | `text`        | NO       | —                   | Instagram handle or WhatsApp number as typed, 2–100 characters |
-| `city`       | `text`        | NO       | —                   | `bishkek`, `toronto`, `vancouver` or `other`                   |
+| `country`    | `text`        | NO       | —                   | `kg`, `ca` or `other`: the visitor's market (IP or her choice) |
+| `city`       | `text`        | YES      | `null`              | A city of the country's list for `kg` / `ca` (see below)       |
+| `place`      | `text`        | YES      | `null`              | "Country and city" as typed for `other`, 2–100 characters      |
 | `specialty`  | `text`        | NO       | —                   | What she does, as typed ("nails, brows"), 2–100 characters     |
 | `locale`     | `text`        | NO       | `'en'`              | Site language she applied in (`en`, `fr`, `ru`)                |
 | `ip_hash`    | `text`        | YES      | `null`              | SHA-256 of the IP with the server secret, for the hourly limit |
+| `ip_country` | `text`        | YES      | `null`              | Two-letter country from the CDN header, for statistics         |
 | `created_at` | `timestamptz` | NO       | `now()`             | —                                                              |
 
 ### Constraints & indexes
 
-| Name                      | Type         | Columns                 | Notes                                      |
-| ------------------------- | ------------ | ----------------------- | ------------------------------------------ |
-| `waitlist_pkey`           | PRIMARY KEY  | `id`                    | —                                          |
-| `waitlist_contact_unique` | UNIQUE INDEX | `lower(btrim(contact))` | A repeated application keeps the first row |
-| `waitlist_ip_created_idx` | INDEX        | `ip_hash, created_at`   | At most 5 applications per IP per hour     |
+| Name                       | Type         | Columns                 | Notes                                           |
+| -------------------------- | ------------ | ----------------------- | ----------------------------------------------- |
+| `waitlist_pkey`            | PRIMARY KEY  | `id`                    | —                                               |
+| `waitlist_contact_unique`  | UNIQUE INDEX | `lower(btrim(contact))` | A repeated application keeps the first row      |
+| `waitlist_ip_created_idx`  | INDEX        | `ip_hash, created_at`   | At most 5 applications per IP per hour          |
+| `waitlist_country_check`   | CHECK        | `country`               | `kg`, `ca`, `other`                             |
+| `waitlist_city_by_country` | CHECK        | `country, city, place`  | City list per country; `place` only for `other` |
+
+Cities: `kg` — `bishkek`, `osh`, `jalal-abad`, `karakol`, `tokmok`, `kara-balta`, `other`; `ca` — `toronto`, `vancouver`, `montreal`, `calgary`, `ottawa`, `edmonton`, `mississauga`, `other` (`shared/utils/market.ts`).
 
 ### Row-Level Security
 

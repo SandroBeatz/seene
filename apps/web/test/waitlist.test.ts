@@ -1,19 +1,23 @@
 import { describe, it, expect } from 'vitest'
 import { parseWaitlistInput } from '../shared/utils/waitlist'
+import { marketOfCountry, marketOfLocale } from '../shared/utils/market'
 
 const valid = {
-  name: ' Karina ',
-  contact: ' @karina.nails ',
-  city: 'bishkek',
+  name: ' Vika ',
+  contact: ' @vika.nails ',
+  country: 'kg',
+  city: 'osh',
   specialty: ' nails, brows '
 }
 
 describe('parseWaitlistInput', () => {
   it('trims a valid application', () => {
     expect(parseWaitlistInput(valid)).toEqual({
-      name: 'Karina',
-      contact: '@karina.nails',
-      city: 'bishkek',
+      name: 'Vika',
+      contact: '@vika.nails',
+      country: 'kg',
+      city: 'osh',
+      place: null,
       specialty: 'nails, brows'
     })
   })
@@ -33,7 +37,33 @@ describe('parseWaitlistInput', () => {
     expect(parseWaitlistInput({ ...valid, specialty: ['nails'] })).toBeNull()
   })
 
-  it('rejects an unknown city', () => {
-    expect(parseWaitlistInput({ ...valid, city: 'moscow' })).toBeNull()
+  it("takes only the country's own cities", () => {
+    expect(parseWaitlistInput({ ...valid, country: 'ca', city: 'montreal' })?.city).toBe('montreal')
+    expect(parseWaitlistInput({ ...valid, country: 'ca', city: 'osh' })).toBeNull()
+    expect(parseWaitlistInput({ ...valid, country: 'kz', city: 'osh' })).toBeNull()
+    expect(parseWaitlistInput({ ...valid, city: undefined })).toBeNull()
+  })
+
+  it('takes "country and city" as text for another country', () => {
+    expect(
+      parseWaitlistInput({ ...valid, country: 'other', city: 'osh', place: ' Almaty, KZ ' })
+    ).toMatchObject({ country: 'other', city: null, place: 'Almaty, KZ' })
+    expect(parseWaitlistInput({ ...valid, country: 'other', place: 'A' })).toBeNull()
+    expect(parseWaitlistInput({ ...valid, country: 'other', place: 'a'.repeat(101) })).toBeNull()
+  })
+})
+
+describe('markets', () => {
+  it('maps the IP country to a market', () => {
+    expect(marketOfCountry('KG')).toBe('kg')
+    expect(marketOfCountry('ca')).toBe('ca')
+    expect(marketOfCountry('KZ')).toBe('other')
+    expect(marketOfCountry(null)).toBe('other')
+  })
+
+  it('guesses prices from the language until the country is known', () => {
+    expect(marketOfLocale('ru')).toBe('kg')
+    expect(marketOfLocale('en')).toBe('ca')
+    expect(marketOfLocale('fr')).toBe('ca')
   })
 })

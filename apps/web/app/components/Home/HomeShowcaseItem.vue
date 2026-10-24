@@ -9,8 +9,8 @@ defineProps<{
   title: string
   text: string
   active: boolean
-  /** "01" in mono (features) or a round step number (booking) */
-  numbering: 'mono' | 'step'
+  /** "01" (features) or a round step number (booking) */
+  numbering: 'zero' | 'step'
 }>()
 
 defineEmits<{ select: [] }>()
@@ -29,8 +29,8 @@ defineEmits<{ select: [] }>()
         @click="$emit('select')"
       >
         <span
-          v-if="numbering === 'mono'"
-          class="w-6 shrink-0 font-mono text-[12px] font-medium tracking-normal text-ink-muted"
+          v-if="numbering === 'zero'"
+          class="w-6 shrink-0 font-sans text-[12px] font-semibold tracking-normal tabular-nums text-ink-muted"
         >
           0{{ index + 1 }}
         </span>

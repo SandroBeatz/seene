@@ -13,15 +13,11 @@
     "free": "Free",
     "commission": "0% commission",
     "platforms": "iPhone and Android",
-    "imageAlt": "Nail artist with a phone at her desk",
+    "imageAlt": "Nail artist at work in a bright home studio",
     "waLabel": "WhatsApp reminder",
-    "waMessage": "Karina, see you tomorrow at 10:00. Still on?",
+    "waMessage": "Vika, see you tomorrow at 10:00. Still on?",
     "waReply": "Yes, see you!",
-    "waConfirmed": "The client confirmed",
-    "bookingTitle": "New online booking",
-    "bookingMeta": "Fri, 14:00 · 2 services",
-    "netLabel": "Net in October",
-    "netGrowth": "+12% vs September"
+    "waConfirmed": "The client confirmed"
   },
   "app": {
     "currency": "som",
@@ -37,7 +33,7 @@
       "label": "Seene app “Today” screen: what needs attention and the day’s bookings",
       "date": "Thursday, October 23",
       "title": "Today",
-      "avatar": "A",
+      "avatar": "K",
       "attention": "Needs attention",
       "remind": "Remind for tomorrow",
       "remindMeta": "5 clients",
@@ -47,8 +43,8 @@
       "request": "New request from your page",
       "requestMeta": "Fri, 14:00 · Manicure",
       "visits": "Bookings · 3",
-      "karina": "Karina K.",
-      "karinaService": "Manicure + polish",
+      "vika": "Vika K.",
+      "vikaService": "Manicure + polish",
       "mira": "Mira S.",
       "miraService": "Brow touch-up",
       "dina": "Dina T.",
@@ -61,8 +57,8 @@
       "day": "Day",
       "week": "Week",
       "weekdays": "Mo,Tu,We,Th,Fr,Sa,Su",
-      "karina": "Karina K.",
-      "karinaService": "Manicure + gel polish · 2 h",
+      "vika": "Vika K.",
+      "vikaService": "Manicure + gel polish · 2 h",
       "mira": "Mira S.",
       "miraService": "Brow touch-up · 1 h",
       "free": "Free · 1 h",
@@ -92,7 +88,8 @@
       "visit2": "Manicure + nail art",
       "visit2Date": "Sep 11",
       "visit3": "Manicure + gel polish",
-      "visit3Date": "Aug 21"
+      "visit3Date": "Aug 21",
+      "metaCa": "+1 416 555 0134 · regular client"
     },
     "recall": {
       "label": "Seene app screen: the “time to invite” list and a ready message for Zhanara",
@@ -236,7 +233,10 @@
       "addToCalendar": "Add to calendar",
       "route": "Directions",
       "doneNote": "The confirmation and a cancel link are already in WhatsApp. You can cancel online until 23:30 the day before.",
-      "backToPage": "Back to the pro’s page"
+      "backToPage": "Back to the pro’s page",
+      "cityCa": "Toronto, Leslieville",
+      "timezoneCa": "Toronto time",
+      "addressCa": "1120 Queen St E, suite 4"
     }
   },
   "audience": {
@@ -296,8 +296,8 @@
   "founders": {
     "eyebrow": "Founding pros",
     "title": "Be one of the first 20.",
-    "text": "We’re launching in Bishkek, Toronto and Vancouver together with beauty pros. In return for honest feedback, you get what no one else will.",
-    "imageAlt": "Two beauty artists laughing at a phone",
+    "text": "In return for honest feedback, you get what no one else will.",
+    "imageAlt": "Artist writing her clients in a paper notebook",
     "perk1": {
       "bold": "Pro free forever",
       "rest": ", not a one-month trial"
@@ -316,13 +316,41 @@
       "namePlaceholder": "Karina",
       "contact": "Instagram or WhatsApp",
       "contactPlaceholder": "@karina.nails",
+      "country": "Country",
+      "countries": {
+        "kg": "Kyrgyzstan",
+        "ca": "Canada",
+        "other": "Another country"
+      },
+      "change": "Change",
+      "changeAria": "Change country",
+      "hintDetected": "Detected from your location",
+      "hintOther": "Seene works in Kyrgyzstan and Canada for now",
       "city": "City",
       "cities": {
-        "bishkek": "Bishkek",
-        "toronto": "Toronto",
-        "vancouver": "Vancouver",
-        "other": "Another city"
+        "kg": {
+          "bishkek": "Bishkek",
+          "osh": "Osh",
+          "jalal-abad": "Jalal-Abad",
+          "karakol": "Karakol",
+          "tokmok": "Tokmok",
+          "kara-balta": "Kara-Balta",
+          "other": "Another city"
+        },
+        "ca": {
+          "toronto": "Toronto",
+          "vancouver": "Vancouver",
+          "montreal": "Montreal",
+          "calgary": "Calgary",
+          "ottawa": "Ottawa",
+          "edmonton": "Edmonton",
+          "mississauga": "Mississauga",
+          "other": "Another city"
+        }
       },
+      "place": "Country and city",
+      "placePlaceholder": "For example: Almaty, Kazakhstan",
+      "placeNote": "We’re launching in Kyrgyzstan and Canada first. Apply, and we’ll write when we come to your city.",
       "specialty": "What you do",
       "specialtyPlaceholder": "For example: nails, brows, massage",
       "submit": "I want to be a founder",
@@ -331,10 +359,16 @@
       "nameRequired": "Tell us your name",
       "contactRequired": "Leave your Instagram or WhatsApp",
       "specialtyRequired": "Tell us what you do",
+      "placeRequired": "Tell us your country and city",
       "failed": "Couldn’t send it. Try again in a minute.",
       "tooMany": "Too many applications from this device. Try again later.",
       "doneTitle": "Thank you!",
       "doneText": "We’ll get back to you within 2 days."
+    },
+    "launch": {
+      "kg": "We’re launching in Bishkek together with beauty pros.",
+      "ca": "We’re launching in Toronto and Vancouver together with beauty pros.",
+      "other": "Right now we’re launching in Kyrgyzstan and Canada together with beauty pros."
     }
   },
   "faq": {

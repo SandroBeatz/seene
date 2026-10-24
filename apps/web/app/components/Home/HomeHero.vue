@@ -1,52 +1,19 @@
 <script setup lang="ts">
 /**
- * First screen ("Главная" artboard): the master's photo, the app's "Today"
- * screen in a phone over it, and three cards. Motion per the animation spec, one
- * thing at a time: the text rises line by line, at 1 s the WhatsApp reminder
- * arrives, at 2.5 s the client answers, then the online booking card, then the
- * "Net" card counts up once. Cards then drift ±4 px. On phones the cards are
- * hidden, as in the design. Reduced motion shows everything at rest.
+ * First screen ("Главная" artboard, 24 October): the master at work (H-01),
+ * the app's "Today" screen in a phone at the bottom left and one WhatsApp card
+ * at the bottom right. Motion per the animation spec: the text rises line by
+ * line, at 1 s the reminder arrives, 1.5 s later the client answers "Yes" with
+ * two ticks; the card then drifts ±4 px. On phones the card is hidden, as in
+ * the design. Reduced motion shows everything at rest.
  */
 const { $ts } = useI18n()
-const money = useHomeMoney()
 
-const NET = 48_200
 const WA_AT = 1000
 const REPLY_AT = 2500
-const BOOKING_AT = 3000
-const NET_AT = 3600
-const COUNT_MS = 800
-
-const net = ref(NET)
-
-let timer: ReturnType<typeof setTimeout> | undefined
-let frame = 0
-
-onMounted(() => {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-
-  // The card is still hidden (its arrival is delayed), so the reset is not seen.
-  net.value = 0
-  timer = setTimeout(() => {
-    const start = performance.now()
-    const tick = (now: number) => {
-      const progress = Math.min((now - start) / COUNT_MS, 1)
-      const eased = 1 - (1 - progress) ** 3
-      net.value = Math.round((NET * eased) / 100) * 100
-      if (progress < 1) frame = requestAnimationFrame(tick)
-    }
-    frame = requestAnimationFrame(tick)
-  }, NET_AT)
-})
-
-onUnmounted(() => {
-  clearTimeout(timer)
-  cancelAnimationFrame(frame)
-})
 
 const lineDelay = (i: number) => ({ animationDelay: `${i * 80}ms` })
 const checks = computed(() => [$ts('hero.free'), $ts('hero.commission'), $ts('hero.platforms')])
-const cardShadow = 'shadow-[0_18px_44px_rgba(80,40,30,0.16)]'
 </script>
 
 <template>
@@ -129,8 +96,7 @@ const cardShadow = 'shadow-[0_18px_44px_rgba(80,40,30,0.16)]'
 
         <!-- The reminder arrives, then the client answers -->
         <div
-          class="site-arrive absolute top-10 right-6 hidden w-[236px] flex-col gap-2 rounded-[20px] bg-white p-3.5 md:flex"
-          :class="cardShadow"
+          class="site-arrive absolute right-7 bottom-9 hidden w-[236px] flex-col gap-2 rounded-[20px] bg-white p-3.5 shadow-[0_18px_44px_rgba(80,40,30,0.16)] md:flex"
           :style="{ '--arrive': `${WA_AT}ms` }"
         >
           <div class="flex items-center gap-1.5 text-[11px] font-semibold text-wa">
@@ -153,34 +119,6 @@ const cardShadow = 'shadow-[0_18px_44px_rgba(80,40,30,0.16)]'
               :aria-label="$ts('hero.waConfirmed')"
             />
           </div>
-        </div>
-
-        <div
-          class="site-arrive absolute top-[300px] -right-2 hidden items-center gap-2.5 rounded-[18px] bg-white py-2.5 pr-3.5 pl-2.5 md:flex"
-          :class="cardShadow"
-          :style="{ '--arrive': `${BOOKING_AT}ms` }"
-        >
-          <span
-            class="flex size-8.5 items-center justify-center rounded-[10px] bg-brand-soft text-brand-ink"
-          >
-            <UIcon name="i-lucide-calendar" class="size-4" />
-          </span>
-          <span class="flex flex-col gap-px">
-            <span class="text-[13px] font-semibold text-ink">{{ $ts('hero.bookingTitle') }}</span>
-            <span class="text-[12px] text-ink-muted">{{ $ts('hero.bookingMeta') }}</span>
-          </span>
-        </div>
-
-        <div
-          class="site-arrive absolute right-10 bottom-8 hidden w-[200px] flex-col gap-1 rounded-[20px] bg-ink p-4 text-white md:flex"
-          :class="cardShadow"
-          :style="{ '--arrive': `${NET_AT - 400}ms` }"
-        >
-          <div class="text-[12px] text-[#A6A6AD]">{{ $ts('hero.netLabel') }}</div>
-          <div class="font-display text-[26px] font-semibold tracking-[-0.03em] tabular-nums">
-            {{ money(net) }}
-          </div>
-          <div class="text-[12px] font-semibold text-[#6FD39A]">{{ $ts('hero.netGrowth') }}</div>
         </div>
       </div>
     </div>

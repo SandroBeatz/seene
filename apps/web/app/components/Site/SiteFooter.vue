@@ -67,7 +67,9 @@ const languages = ['ru', 'en', 'fr'] as const
           :aria-label="column.title"
           class="flex flex-[0_1_180px] flex-col gap-3 text-[14px]"
         >
-          <div class="font-mono text-[12px] tracking-[0.08em] text-[#A6A6AD] uppercase">
+          <div
+            class="text-[12px] font-semibold tabular-nums tracking-[0.08em] text-[#A6A6AD] uppercase"
+          >
             {{ column.title }}
           </div>
           <NuxtLink
@@ -90,7 +92,7 @@ const languages = ['ru', 'en', 'fr'] as const
         <span>{{ $ts('footer.copyright') }}</span>
         <nav
           :aria-label="$ts('footer.language')"
-          class="flex rounded-full border border-[#2A2A2F] p-0.5 font-mono text-[12px]"
+          class="flex rounded-full border border-[#2A2A2F] p-0.5 text-[12px] font-semibold tabular-nums"
         >
           <NuxtLink
             v-for="code in languages"

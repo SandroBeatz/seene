@@ -13,15 +13,11 @@
     "free": "Gratuit",
     "commission": "0 % de commission",
     "platforms": "iPhone et Android",
-    "imageAlt": "Prothésiste ongulaire avec un téléphone à son poste de travail",
+    "imageAlt": "Prothésiste ongulaire au travail dans un studio lumineux",
     "waLabel": "Rappel WhatsApp",
-    "waMessage": "Karina, je t’attends demain à 10h00. C’est toujours bon ?",
+    "waMessage": "Vika, je t’attends demain à 10h00. C’est toujours bon ?",
     "waReply": "Oui, j’y serai !",
-    "waConfirmed": "La cliente a confirmé",
-    "bookingTitle": "Nouvelle réservation en ligne",
-    "bookingMeta": "Ven, 14h00 · 2 prestations",
-    "netLabel": "Net en octobre",
-    "netGrowth": "+12 % par rapport à septembre"
+    "waConfirmed": "La cliente a confirmé"
   },
   "app": {
     "currency": "som",
@@ -37,7 +33,7 @@
       "label": "Écran « Aujourd’hui » de l’app Seene : ce qui demande ton attention et les rendez-vous du jour",
       "date": "Jeudi 23 octobre",
       "title": "Aujourd’hui",
-      "avatar": "A",
+      "avatar": "K",
       "attention": "À traiter",
       "remind": "Rappels pour demain",
       "remindMeta": "5 clientes",
@@ -47,8 +43,8 @@
       "request": "Nouvelle demande depuis ta page",
       "requestMeta": "Ven, 14h00 · Manucure",
       "visits": "Rendez-vous · 3",
-      "karina": "Karina K.",
-      "karinaService": "Manucure + vernis",
+      "vika": "Vika K.",
+      "vikaService": "Manucure + vernis",
       "mira": "Mira S.",
       "miraService": "Retouche",
       "dina": "Dina T.",
@@ -61,8 +57,8 @@
       "day": "Jour",
       "week": "Semaine",
       "weekdays": "Lu,Ma,Me,Je,Ve,Sa,Di",
-      "karina": "Karina K.",
-      "karinaService": "Manucure + semi-permanent · 2 h",
+      "vika": "Vika K.",
+      "vikaService": "Manucure + semi-permanent · 2 h",
       "mira": "Mira S.",
       "miraService": "Retouche sourcils · 1 h",
       "free": "Libre · 1 h",
@@ -92,7 +88,8 @@
       "visit2": "Manucure + nail art",
       "visit2Date": "11 sept",
       "visit3": "Manucure + semi-permanent",
-      "visit3Date": "21 août"
+      "visit3Date": "21 août",
+      "metaCa": "+1 416 555 0134 · cliente fidèle"
     },
     "recall": {
       "label": "Écran de l’app Seene : la liste « à relancer » et un message prêt pour Zhanara",
@@ -236,7 +233,10 @@
       "addToCalendar": "Agenda",
       "route": "Itinéraire",
       "doneNote": "La confirmation et le lien d’annulation sont déjà dans WhatsApp. Annulation en ligne possible jusqu’à 23h30 la veille.",
-      "backToPage": "Retour à la page de la pro"
+      "backToPage": "Retour à la page de la pro",
+      "cityCa": "Toronto, Leslieville",
+      "timezoneCa": "heure de Toronto",
+      "addressCa": "1120, rue Queen Est, bureau 4"
     }
   },
   "audience": {
@@ -296,8 +296,8 @@
   "founders": {
     "eyebrow": "Pros fondatrices",
     "title": "Fais partie des 20 premières.",
-    "text": "Nous lançons Seene à Bichkek, Toronto et Vancouver avec des pros de la beauté. En échange d’un avis honnête, tu reçois ce que les autres n’auront pas.",
-    "imageAlt": "Deux pros de la beauté rient devant un téléphone",
+    "text": "En échange d’un avis honnête, tu reçois ce que les autres n’auront pas.",
+    "imageAlt": "Une pro note ses clientes dans un carnet papier",
     "perk1": {
       "bold": "Pro gratuit pour toujours",
       "rest": ", pas juste un mois d’essai"
@@ -316,13 +316,41 @@
       "namePlaceholder": "Karina",
       "contact": "Instagram ou WhatsApp",
       "contactPlaceholder": "@karina.nails",
+      "country": "Pays",
+      "countries": {
+        "kg": "Kirghizistan",
+        "ca": "Canada",
+        "other": "Un autre pays"
+      },
+      "change": "Modifier",
+      "changeAria": "Modifier le pays",
+      "hintDetected": "Déterminé d’après ta localisation",
+      "hintOther": "Seene fonctionne pour l’instant au Kirghizistan et au Canada",
       "city": "Ville",
       "cities": {
-        "bishkek": "Bichkek",
-        "toronto": "Toronto",
-        "vancouver": "Vancouver",
-        "other": "Une autre ville"
+        "kg": {
+          "bishkek": "Bichkek",
+          "osh": "Och",
+          "jalal-abad": "Djalal-Abad",
+          "karakol": "Karakol",
+          "tokmok": "Tokmok",
+          "kara-balta": "Kara-Balta",
+          "other": "Une autre ville"
+        },
+        "ca": {
+          "toronto": "Toronto",
+          "vancouver": "Vancouver",
+          "montreal": "Montréal",
+          "calgary": "Calgary",
+          "ottawa": "Ottawa",
+          "edmonton": "Edmonton",
+          "mississauga": "Mississauga",
+          "other": "Une autre ville"
+        }
       },
+      "place": "Pays et ville",
+      "placePlaceholder": "Par exemple : Almaty, Kazakhstan",
+      "placeNote": "Nous lançons d’abord au Kirghizistan et au Canada. Envoie ta candidature, et nous t’écrirons quand nous arriverons dans ta ville.",
       "specialty": "Ta spécialité",
       "specialtyPlaceholder": "Par exemple : ongles, sourcils, massage",
       "submit": "Je veux être fondatrice",
@@ -331,10 +359,16 @@
       "nameRequired": "Indique ton prénom",
       "contactRequired": "Laisse ton Instagram ou WhatsApp",
       "specialtyRequired": "Indique ta spécialité",
+      "placeRequired": "Indique ton pays et ta ville",
       "failed": "L’envoi a échoué. Réessaie dans une minute.",
       "tooMany": "Trop de candidatures depuis cet appareil. Réessaie plus tard.",
       "doneTitle": "Merci !",
       "doneText": "Nous te répondons sous 2 jours."
+    },
+    "launch": {
+      "kg": "Nous lançons Seene à Bichkek avec des pros de la beauté.",
+      "ca": "Nous lançons Seene à Toronto et Vancouver avec des pros de la beauté.",
+      "other": "Pour l’instant, nous lançons Seene au Kirghizistan et au Canada avec des pros de la beauté."
     }
   },
   "faq": {

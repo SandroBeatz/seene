@@ -38,7 +38,7 @@ const active = ref(0)
             v-for="(item, i) in items"
             :key="item.key"
             :index="i"
-            numbering="mono"
+            numbering="zero"
             :title="$ts(`features.${item.key}.title`)"
             :text="$ts(`features.${item.key}.text`)"
             :active="active === i"

@@ -1,24 +1,33 @@
 <script setup lang="ts">
 /**
- * Pricing ("Цены" artboard): Free and Pro, with a Bishkek / Canada switch for
- * the currency. Pro prices are the design's preliminary ones (the note under
- * the cards says so). Russian opens on Bishkek, English and French on Canada.
+ * Pricing ("Цены" artboard): Free and Pro in the visitor's currency, with no
+ * switch: the market comes from the country (`useMarket`), and "Another
+ * country?" changes it. Another country sees the language's guess. Pro prices
+ * are the design's preliminary ones (the note under the cards says so).
  */
-const { $ts, $localePath, getLocale } = useI18n()
+import type { DropdownMenuItem } from '@nuxt/ui'
+import type { PriceMarket } from '#shared/utils/market'
 
-type Market = 'kg' | 'ca'
+const { $ts, $localePath } = useI18n()
+const { priceMarket: market, choose } = useMarket()
 
-const PRICES: Record<Market, { pro: number; visit: number }> = {
+const PRICES: Record<PriceMarket, { pro: number; visit: number }> = {
   kg: { pro: 400, visit: 800 },
   ca: { pro: 12, visit: 60 }
 }
 
-const market = ref<Market>(getLocale() === 'ru' ? 'kg' : 'ca')
 const price = computed(() => PRICES[market.value])
 const currency = computed(() => $ts(`currency.${market.value}`))
 const join = computed(() => `${$localePath('/')}#join`)
 
-const markets: Market[] = ['kg', 'ca']
+const markets = computed<DropdownMenuItem[]>(() =>
+  (['kg', 'ca'] as const).map((value) => ({
+    label: $ts(`market.${value}`),
+    type: 'checkbox' as const,
+    checked: market.value === value,
+    onSelect: () => choose(value)
+  }))
+)
 const freeFeatures = ['f1', 'f2', 'f3', 'f4', 'f5'] as const
 const proFeatures = ['f1', 'f2', 'f3', 'f4'] as const
 const questions = ['trial', 'cancel', 'stop', 'clients'] as const
@@ -46,22 +55,18 @@ useSeoMeta({
         </div>
 
         <div
-          role="group"
-          :aria-label="$ts('market.label')"
-          class="flex gap-1 rounded-full border border-line p-1"
+          class="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1.5 text-[14px] text-ink-muted"
         >
-          <UButton
-            v-for="item in markets"
-            :key="item"
-            :ui="{ label: 'leading-[normal]' }"
-            :label="$ts(`market.${item}`)"
-            :aria-pressed="market === item"
-            :color="market === item ? 'primary' : 'neutral'"
-            :variant="market === item ? 'solid' : 'ghost'"
-            class="leading-[normal] rounded-full px-5.5 py-2.5 text-[15px] font-semibold"
-            :class="market === item ? '' : 'text-ink-muted hover:bg-transparent hover:text-ink'"
-            @click="market = item"
-          />
+          <UIcon name="i-lucide-map-pin" class="size-4" />
+          <span>{{ $ts(`market.line.${market}`) }}</span>
+          <UDropdownMenu :items="markets" :content="{ align: 'center' }">
+            <button
+              type="button"
+              class="cursor-pointer border-0 bg-transparent p-0 text-[14px] font-semibold text-ink underline underline-offset-3 hover:text-ink-muted"
+            >
+              {{ $ts('market.change') }}
+            </button>
+          </UDropdownMenu>
         </div>
 
         <div

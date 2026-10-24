@@ -1,13 +1,13 @@
 <script setup lang="ts">
 /** The app's client card with visit history ("AppClient" artboard). */
-const money = useHomeMoney()
+const { money, market } = useHomeMoney()
 
 const works = ['#C9A79B', '#9C7067', '#D4B8AE', '#B5867B']
 const history = [
-  { key: 'visit1', price: 800 },
-  { key: 'visit2', price: 1300 },
-  { key: 'visit3', price: 800 }
-]
+  { key: 'visit1', price: [800, 55] },
+  { key: 'visit2', price: [1300, 90] },
+  { key: 'visit3', price: [800, 55] }
+] as const
 </script>
 
 <template>
@@ -26,7 +26,9 @@ const history = [
         <div class="font-display text-[20px] font-bold tracking-[-0.02em]">
           {{ $ts('app.client.name') }}
         </div>
-        <div class="text-[11.5px] text-ink-muted">{{ $ts('app.client.meta') }}</div>
+        <div class="text-[11.5px] text-ink-muted">
+          {{ $ts(market === 'ca' ? 'app.client.metaCa' : 'app.client.meta') }}
+        </div>
       </div>
     </div>
 
@@ -36,7 +38,7 @@ const history = [
         <span class="text-[10px] text-ink-muted">{{ $ts('app.client.visits') }}</span>
       </div>
       <div class="flex flex-col gap-px border-l border-[#EFEFEC] px-2.5 py-[9px]">
-        <span class="text-[15px] font-bold whitespace-nowrap">{{ money(920) }}</span>
+        <span class="text-[15px] font-bold whitespace-nowrap">{{ money([920, 65]) }}</span>
         <span class="text-[10px] text-ink-muted">{{ $ts('app.client.average') }}</span>
       </div>
       <div class="flex flex-col gap-px border-l border-[#EFEFEC] px-2.5 py-[9px]">

@@ -9,7 +9,9 @@
 const props = defineProps<{ screen: 'page' | 'services' | 'time' | 'done' }>()
 
 const { $ts } = useI18n()
-const money = useHomeMoney()
+const { money, market } = useHomeMoney()
+/** Kyrgyz or Canadian master, to match the currency */
+const local = (key: string) => $ts(`booking.phone.${key}${market.value === 'ca' ? 'Ca' : ''}`)
 
 const ACCENT = '#CF3767'
 const ACCENT_SOFT = '#F9E7ED'
@@ -25,14 +27,18 @@ const minutes = (value: number) => {
     .join(' ')
 }
 
+type Service = { m: number; p: [number, number]; c: string; on?: boolean }
+
 const services = computed(() =>
-  [
-    { m: 60, p: 600, c: '#C9A79B' },
-    { m: 120, p: 800, c: '#B5867B' },
-    { m: 60, p: 1700, c: '#9C7067', on: true },
-    { m: 30, p: 500, c: '#D4B8AE', on: true },
-    { m: 90, p: 1000, c: '#AE8F84' }
-  ].map((service, i) => ({
+  (
+    [
+      { m: 60, p: [600, 45], c: '#C9A79B' },
+      { m: 120, p: [800, 55], c: '#B5867B' },
+      { m: 60, p: [1700, 70], c: '#9C7067', on: true },
+      { m: 30, p: [500, 25], c: '#D4B8AE', on: true },
+      { m: 90, p: [1000, 65], c: '#AE8F84' }
+    ] satisfies Service[] as Service[]
+  ).map((service, i) => ({
     ...service,
     name: $ts(`booking.phone.service${i + 1}`),
     time: minutes(service.m),
@@ -42,7 +48,10 @@ const services = computed(() =>
 
 const picked = computed(() => services.value.filter((service) => service.on))
 const total = computed(() => ({
-  price: money(picked.value.reduce((sum, service) => sum + service.p, 0)),
+  price: money([
+    picked.value.reduce((sum, service) => sum + service.p[0], 0),
+    picked.value.reduce((sum, service) => sum + service.p[1], 0)
+  ]),
   time: minutes(picked.value.reduce((sum, service) => sum + service.m, 0))
 }))
 
@@ -122,7 +131,7 @@ const SEAL =
             <div
               class="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0)_45%,#FFFFFF_100%)]"
             />
-            <div class="absolute top-4 left-5 font-mono text-[11px] text-white/80">
+            <div class="absolute top-4 left-5 font-semibold tabular-nums text-[11px] text-white/80">
               {{ $ts('booking.phone.poster') }}
             </div>
             <div
@@ -134,7 +143,7 @@ const SEAL =
 
           <div class="relative -mt-13 flex flex-col gap-3.5 px-5">
             <div
-              class="flex size-23 items-center justify-center rounded-full border-4 border-white bg-[#A47D74] font-mono text-[10px] text-white/85"
+              class="flex size-23 items-center justify-center rounded-full border-4 border-white bg-[#A47D74] font-semibold tabular-nums text-[10px] text-white/85"
             >
               {{ $ts('booking.phone.photo') }}
             </div>
@@ -164,7 +173,7 @@ const SEAL =
               <div class="text-[15px] text-ink-muted">{{ $ts('booking.phone.specialty') }}</div>
               <div class="flex items-center gap-1.5 text-[14px] text-ink-muted">
                 <UIcon name="i-lucide-map-pin" class="size-3.5" />
-                {{ $ts('booking.phone.city') }}
+                {{ local('city') }}
               </div>
             </div>
 
@@ -223,7 +232,7 @@ const SEAL =
               <div
                 v-for="(color, i) in works"
                 :key="color"
-                class="flex aspect-square items-end p-2 font-mono text-[10px] text-white/85"
+                class="flex aspect-square items-end p-2 font-semibold tabular-nums text-[10px] text-white/85"
                 :style="{ background: color }"
               >
                 {{ workLabels[i] }}
@@ -309,7 +318,9 @@ const SEAL =
                 :style="{ background: bar <= step ? ACCENT : '#E7E7E4' }"
               />
             </div>
-            <div class="font-mono text-[11px] tracking-[0.08em] text-ink-muted uppercase">
+            <div
+              class="font-semibold tabular-nums text-[11px] tracking-[0.08em] text-ink-muted uppercase"
+            >
               {{ $ts('booking.phone.step', { n: step }) }}
             </div>
           </div>
@@ -356,7 +367,7 @@ const SEAL =
           <div class="flex flex-col gap-2.5">
             <div class="flex items-center justify-between px-1">
               <span class="text-[15px] font-semibold">{{ $ts('booking.phone.months') }}</span>
-              <span class="text-[12px] text-ink-muted">{{ $ts('booking.phone.timezone') }}</span>
+              <span class="text-[12px] text-ink-muted">{{ local('timezone') }}</span>
             </div>
             <div class="-mx-4 flex gap-1.5 overflow-hidden px-4">
               <div
@@ -427,7 +438,7 @@ const SEAL =
               </div>
               <div class="flex items-center gap-3 py-3 text-[14px]">
                 <UIcon name="i-lucide-map-pin" class="size-4.5" />
-                <span>{{ $ts('booking.phone.address') }}</span>
+                <span>{{ local('address') }}</span>
               </div>
             </div>
           </div>

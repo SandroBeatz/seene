@@ -10,7 +10,7 @@ const days = computed(() =>
 
 type Kind = 'visit' | 'free' | 'accent' | 'personal'
 const events: { time: string; key: string; kind: Kind; height: number; confirmed?: boolean }[] = [
-  { time: '10:00', key: 'karina', kind: 'visit', height: 64, confirmed: true },
+  { time: '10:00', key: 'vika', kind: 'visit', height: 64, confirmed: true },
   { time: '12:30', key: 'mira', kind: 'visit', height: 52 },
   { time: '14:00', key: 'free', kind: 'free', height: 46 },
   { time: '15:00', key: 'dina', kind: 'accent', height: 52 },

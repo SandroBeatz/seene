@@ -1,10 +1,10 @@
 <script setup lang="ts">
 /** The app's "Today" screen ("AppToday" artboard). */
-const money = useHomeMoney()
+const { money } = useHomeMoney()
 
 const attention = [{ key: 'remind', send: true }, { key: 'recall' }, { key: 'request' }]
 const visits = [
-  { time: '10:00', key: 'karina', confirmed: true },
+  { time: '10:00', key: 'vika', confirmed: true },
   { time: '12:30', key: 'mira', confirmed: true },
   { time: '15:00', key: 'dina', confirmed: false }
 ]
@@ -81,7 +81,7 @@ const visits = [
     <div class="mt-auto flex items-center justify-between px-4 pb-2.5">
       <div class="flex flex-col">
         <div class="text-[11px] text-ink-muted">{{ $ts('app.today.total') }}</div>
-        <div class="text-[17px] font-bold tracking-[-0.02em]">{{ money(3200) }}</div>
+        <div class="text-[17px] font-bold tracking-[-0.02em]">{{ money([3200, 210]) }}</div>
       </div>
       <div class="flex size-13 items-center justify-center rounded-full bg-ink text-white">
         <UIcon name="i-lucide-plus" class="size-5.5" />

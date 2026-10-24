@@ -7,9 +7,13 @@
   "title": "Simple pricing. No commission.",
   "description": "Everything that replaces your notebook is free. Pro helps you earn more and costs less than one visit a month.",
   "market": {
-    "label": "Where you work",
-    "kg": "Bishkek",
-    "ca": "Canada"
+    "kg": "Kyrgyzstan, som",
+    "ca": "Canada, CAD",
+    "line": {
+      "kg": "Prices for Kyrgyzstan, in som",
+      "ca": "Prices for Canada, in Canadian dollars"
+    },
+    "change": "Another country?"
   },
   "currency": {
     "kg": "som",

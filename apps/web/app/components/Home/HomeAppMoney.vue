@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /** The app's "Money" screen: net, income, expenses ("AppMoney" artboard). */
 const { $ts } = useI18n()
-const money = useHomeMoney()
+const { money } = useHomeMoney()
 
 const heights = [62, 78, 70, 92]
 const weeks = computed(() =>
@@ -10,10 +10,10 @@ const weeks = computed(() =>
     .map((label, i) => ({ label, height: heights[i], last: i === heights.length - 1 }))
 )
 const expenses = [
-  { key: 'rent', value: 8000 },
-  { key: 'materials', value: 4700 },
-  { key: 'ads', value: 1500 }
-]
+  { key: 'rent', value: [8000, 700] },
+  { key: 'materials', value: [4700, 350] },
+  { key: 'ads', value: [1500, 150] }
+] as const
 </script>
 
 <template>
@@ -28,18 +28,20 @@ const expenses = [
     </div>
     <div class="flex flex-col gap-0.5 px-4.5 pt-1">
       <div class="text-[12px] text-ink-muted">{{ $ts('app.money.net') }}</div>
-      <div class="font-display text-[34px] font-bold tracking-[-0.03em]">{{ money(48200) }}</div>
+      <div class="font-display text-[34px] font-bold tracking-[-0.03em]">
+        {{ money([48200, 3400]) }}
+      </div>
       <div class="text-[11.5px] font-semibold text-[#146C3A]">{{ $ts('app.money.growth') }}</div>
     </div>
 
     <div class="mx-3.5 mt-3 grid grid-cols-2 gap-1.5">
       <div class="flex flex-col gap-0.5 rounded-[12px] bg-surface px-3 py-2.5">
         <span class="text-[10.5px] text-ink-muted">{{ $ts('app.money.income') }}</span>
-        <span class="text-[15px] font-bold">{{ money(62400) }}</span>
+        <span class="text-[15px] font-bold">{{ money([62400, 4600]) }}</span>
       </div>
       <div class="flex flex-col gap-0.5 rounded-[12px] bg-surface px-3 py-2.5">
         <span class="text-[10.5px] text-ink-muted">{{ $ts('app.money.expenses') }}</span>
-        <span class="text-[15px] font-bold">{{ money(14200) }}</span>
+        <span class="text-[15px] font-bold">{{ money([14200, 1200]) }}</span>
       </div>
     </div>
 

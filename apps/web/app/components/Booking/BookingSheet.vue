@@ -130,7 +130,7 @@ function onBooked() {
                   :class="segment <= stepNumber ? 'bg-primary' : 'bg-accented'"
                 />
               </div>
-              <p class="font-mono text-[11px] tracking-[0.08em] text-muted uppercase">
+              <p class="text-[11px] font-semibold tracking-[0.08em] text-muted tabular-nums uppercase">
                 {{ $ts('booking.header.progressLabel', { step: stepNumber, total: 3 }) }}
               </p>
             </div>
