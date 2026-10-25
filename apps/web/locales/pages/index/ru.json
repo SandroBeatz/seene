@@ -392,7 +392,8 @@
   },
   "final": {
     "title": "Начни вести записи в Seene бесплатно",
-    "storePrefix": "Скачать в",
+    "appStorePrefix": "Загрузите в",
+    "googlePlayPrefix": "Доступно в",
     "appStore": "App Store",
     "googlePlay": "Google Play",
     "note": "Бесплатно. Без карты. Без комиссий."

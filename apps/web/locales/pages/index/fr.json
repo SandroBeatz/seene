@@ -392,7 +392,8 @@
   },
   "final": {
     "title": "Commence à gérer tes rendez-vous dans Seene gratuitement",
-    "storePrefix": "Télécharger sur",
+    "appStorePrefix": "Télécharger dans l’",
+    "googlePlayPrefix": "Disponible sur",
     "appStore": "App Store",
     "googlePlay": "Google Play",
     "note": "Gratuit. Sans carte. Sans commission."

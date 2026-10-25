@@ -392,7 +392,8 @@
   },
   "final": {
     "title": "Start keeping your bookings in Seene for free",
-    "storePrefix": "Download on",
+    "appStorePrefix": "Download on the",
+    "googlePlayPrefix": "Get it on",
     "appStore": "App Store",
     "googlePlay": "Google Play",
     "note": "Free. No card. No commission."
