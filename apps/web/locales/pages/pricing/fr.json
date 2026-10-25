@@ -23,7 +23,7 @@
   },
   "pro": {
     "title": "Pro",
-    "badge": "Gratuit à vie pour les fondatrices",
+    "badge": "Gratuit à vie pour les 20 premières",
     "period": "par mois",
     "noteKg": "Moins de la moitié d’une manucure",
     "noteCa": "Moins cher que GlossGenius et Booksy",
@@ -48,7 +48,7 @@
     "title": "Questions sur le paiement",
     "trial": {
       "q": "Y a-t-il une période d’essai ?",
-      "a": "Oui, tu peux essayer Pro après l’inscription, sans carte. Les pros fondatrices ont Pro gratuit à vie."
+      "a": "Oui, tu peux essayer Pro après l’inscription, sans carte. Les 20 premières pros ont Pro gratuit à vie."
     },
     "cancel": {
       "q": "Comment résilier ?",

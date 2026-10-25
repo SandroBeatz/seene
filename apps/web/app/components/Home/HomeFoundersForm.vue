@@ -92,7 +92,9 @@ const labelUi = {
 </script>
 
 <template>
-  <div class="rounded-[28px] border border-line bg-paper p-6 sm:p-8">
+  <div
+    class="rounded-[28px] border border-blush-line bg-white p-6 shadow-[0_18px_44px_rgba(80,40,30,0.08)] sm:p-8"
+  >
     <div
       v-if="sent"
       class="flex min-h-[420px] flex-col items-center justify-center gap-4 text-center"

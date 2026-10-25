@@ -67,7 +67,6 @@ const tabs = computed(() => items.map((item) => $ts(`features.${item.key}.tab`))
             v-for="(item, i) in items"
             :key="item.key"
             :index="i"
-            numbering="zero"
             :title="$ts(`features.${item.key}.title`)"
             :text="$ts(`features.${item.key}.text`)"
             :active="active === i"
