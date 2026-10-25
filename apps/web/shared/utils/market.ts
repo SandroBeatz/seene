@@ -1,8 +1,8 @@
 /**
  * The visitor's market (sitemap, "Страна посетителя"): Kyrgyzstan (som),
  * Canada (CAD), or another country. It comes from the CDN's IP country
- * (`cf-ipcountry` on Cloudflare, `x-vercel-ip-country` on Vercel), and a
- * visitor's own choice is kept in the `seene_market` cookie.
+ * (`cf-ipcountry` on Cloudflare, `x-vercel-ip-country` on Vercel). The site
+ * neither shows nor switches it.
  */
 
 export const MARKETS = ['kg', 'ca', 'other'] as const
@@ -10,8 +10,6 @@ export type Market = (typeof MARKETS)[number]
 
 /** Markets with their own prices and currency */
 export type PriceMarket = Exclude<Market, 'other'>
-
-export const MARKET_COOKIE = 'seene_market'
 
 /** Cities of the founders form, in the design's order; `other` is last */
 export const MARKET_CITIES = {

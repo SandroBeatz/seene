@@ -6,15 +6,6 @@
   "eyebrow": "Tarifs",
   "title": "Un prix simple. Sans commission.",
   "description": "Tout ce qui remplace ton carnet est gratuit. Pro t’aide à gagner plus et coûte moins qu’une visite par mois.",
-  "market": {
-    "kg": "Kirghizistan, som",
-    "ca": "Canada, CAD",
-    "line": {
-      "kg": "Prix pour le Kirghizistan, en soms",
-      "ca": "Prix pour le Canada, en dollars canadiens"
-    },
-    "change": "Un autre pays ?"
-  },
   "currency": {
     "kg": "som",
     "ca": "CAD"

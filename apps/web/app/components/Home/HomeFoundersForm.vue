@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { DropdownMenuItem, FormError } from '@nuxt/ui'
-import { MARKETS, MARKET_CITIES } from '#shared/utils/market'
+import type { FormError } from '@nuxt/ui'
+import { MARKET_CITIES } from '#shared/utils/market'
 import {
   WAITLIST_CONTACT_MAX,
   WAITLIST_NAME_MAX,
@@ -13,12 +13,12 @@ import {
  * replaced by "Thank you! We'll write within 2 days" with a check that draws
  * itself (animation spec). `website` is a trap field people never see.
  *
- * The country is the visitor's market (`useMarket`: IP country or her own
- * choice, changed with "Change"). Kyrgyzstan and Canada pick a city from their
- * list; another country types "country and city" as text.
+ * The country is not asked: it is the visitor's market (`useMarket`, the IP
+ * country). Kyrgyzstan and Canada pick a city from their list; another country
+ * types "country and city" as text.
  */
 const { $ts, $localePath, getLocale } = useI18n()
-const { market, source, choose } = useMarket()
+const { market } = useMarket()
 
 const state = reactive({
   name: '',
@@ -54,20 +54,6 @@ const cities = computed<{ value: string; label: string }[]>(() =>
         label: $ts(`founders.form.cities.${market.value}.${value}`)
       }))
 )
-
-const countries = computed<DropdownMenuItem[]>(() =>
-  MARKETS.map((value) => ({
-    label: $ts(`founders.form.countries.${value}`),
-    type: 'checkbox' as const,
-    checked: market.value === value,
-    onSelect: () => choose(value)
-  }))
-)
-
-const countryHint = computed(() => {
-  if (market.value === 'other') return $ts('founders.form.hintOther')
-  return source.value === 'ip' ? $ts('founders.form.hintDetected') : ''
-})
 
 function validate(): FormError[] {
   const errors: FormError[] = []
@@ -178,31 +164,6 @@ const labelUi = {
           :ui="fieldUi"
         />
       </UFormField>
-
-      <div role="group" aria-labelledby="founders-country" class="flex flex-col gap-1.5">
-        <div id="founders-country" class="text-[13px] font-semibold text-ink">
-          {{ $ts('founders.form.country') }}
-        </div>
-        <div
-          class="flex items-center gap-3 rounded-[14px] border border-[#D6D6D2] bg-white py-2.5 pr-3 pl-3.5"
-        >
-          <UIcon name="i-lucide-map-pin" class="size-4.5 shrink-0 text-ink-muted" />
-          <div class="flex min-w-0 flex-1 flex-col gap-px">
-            <span class="text-[16px] text-ink">{{ $ts(`founders.form.countries.${market}`) }}</span>
-            <span v-if="countryHint" class="text-[12px] text-ink-muted">{{ countryHint }}</span>
-          </div>
-          <UDropdownMenu :items="countries" :content="{ align: 'end' }">
-            <UButton
-              :ui="{ label: 'leading-[normal]' }"
-              :label="$ts('founders.form.change')"
-              :aria-label="$ts('founders.form.changeAria')"
-              color="neutral"
-              variant="soft"
-              class="h-9 shrink-0 rounded-full bg-[#F1F1EE] px-3 text-[13px] leading-[normal] font-semibold text-ink hover:bg-[#E7E7E4]"
-            />
-          </UDropdownMenu>
-        </div>
-      </div>
 
       <UFormField
         v-if="market !== 'other'"

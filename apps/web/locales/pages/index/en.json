@@ -316,16 +316,6 @@
       "namePlaceholder": "Karina",
       "contact": "Instagram or WhatsApp",
       "contactPlaceholder": "@karina.nails",
-      "country": "Country",
-      "countries": {
-        "kg": "Kyrgyzstan",
-        "ca": "Canada",
-        "other": "Another country"
-      },
-      "change": "Change",
-      "changeAria": "Change country",
-      "hintDetected": "Detected from your location",
-      "hintOther": "Seene works in Kyrgyzstan and Canada for now",
       "city": "City",
       "cities": {
         "kg": {

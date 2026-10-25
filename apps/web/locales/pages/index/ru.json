@@ -316,16 +316,6 @@
       "namePlaceholder": "Карина",
       "contact": "Instagram или WhatsApp",
       "contactPlaceholder": "@karina.nails",
-      "country": "Страна",
-      "countries": {
-        "kg": "Кыргызстан",
-        "ca": "Канада",
-        "other": "Другая страна"
-      },
-      "change": "Изменить",
-      "changeAria": "Изменить страну",
-      "hintDetected": "Определили по твоему местоположению",
-      "hintOther": "Seene пока работает в Кыргызстане и Канаде",
       "city": "Город",
       "cities": {
         "kg": {

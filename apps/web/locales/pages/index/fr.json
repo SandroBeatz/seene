@@ -316,16 +316,6 @@
       "namePlaceholder": "Karina",
       "contact": "Instagram ou WhatsApp",
       "contactPlaceholder": "@karina.nails",
-      "country": "Pays",
-      "countries": {
-        "kg": "Kirghizistan",
-        "ca": "Canada",
-        "other": "Un autre pays"
-      },
-      "change": "Modifier",
-      "changeAria": "Modifier le pays",
-      "hintDetected": "Déterminé d’après ta localisation",
-      "hintOther": "Seene fonctionne pour l’instant au Kirghizistan et au Canada",
       "city": "Ville",
       "cities": {
         "kg": {
