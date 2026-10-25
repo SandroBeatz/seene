@@ -130,6 +130,7 @@
     "eyebrow": "Features",
     "title": "Bookings, clients, reminders and money in one app",
     "calendar": {
+      "tab": "Calendar",
       "title": "Client booking calendar",
       "text": "Every booking for the day and the week on one screen. Free slots show up right away, and a new booking takes three taps.",
       "p1": "Free slots are counted for you",
@@ -137,6 +138,7 @@
       "p3": "A template for your work week"
     },
     "clients": {
+      "tab": "Clients",
       "title": "Client list with visit history",
       "text": "A card for every client: visits, average ticket, photos of your work and notes.",
       "p1": "Visit history and average ticket",
@@ -144,6 +146,7 @@
       "p3": "Import from your phone contacts"
     },
     "reminders": {
+      "tab": "Reminders",
       "title": "WhatsApp reminders for clients",
       "text": "The text with the name, time and service is ready, and you send it from your own number. Clients who haven’t booked in a while go on a “time to invite” list.",
       "p1": "WhatsApp, Telegram or copy the text",
@@ -151,6 +154,7 @@
       "p3": "Each client’s own visit cycle"
     },
     "money": {
+      "tab": "Money",
       "title": "Income and expense tracking",
       "text": "Visits count as income on their own, and an expense takes a second to add. At the end of the month you see what’s left as net.",
       "p1": "Income by day, week and month",
@@ -163,18 +167,22 @@
     "title": "Online booking through your own page",
     "text": "Clients book themselves, even when you’re busy. They don’t need to install anything, and you decide whether to accept requests right away or confirm them by hand.",
     "page": {
+      "tab": "Page",
       "title": "The client opens your page",
       "text": "Photos, work, services and prices at getseene.app/name, from Instagram, WhatsApp or Google Maps."
     },
     "services": {
+      "tab": "Services",
       "title": "Picks services",
       "text": "Several at once if she likes; the total and time add up on their own."
     },
     "time": {
+      "tab": "Time",
       "title": "Picks a day and time",
       "text": "Only the slots you opened in your schedule are shown."
     },
     "done": {
+      "tab": "Booked",
       "title": "Confirms her number, and she’s booked",
       "text": "A code by WhatsApp or Telegram, no sign-up. The booking lands in your calendar right away."
     },
@@ -294,13 +302,13 @@
     }
   },
   "founders": {
-    "eyebrow": "Founding pros",
-    "title": "Be one of the first 20.",
+    "eyebrow": "Special offer",
+    "title": "Pro free forever for the first 20 beauty pros",
     "text": "In return for honest feedback, you get what no one else will.",
     "imageAlt": "Artist writing her clients in a paper notebook",
     "perk1": {
-      "bold": "Pro free forever",
-      "rest": ", not a one-month trial"
+      "bold": "Every Pro feature for free",
+      "rest": ", not just a one-month trial"
     },
     "perk2": {
       "bold": "We’ll move your clients from your notebook",
@@ -311,45 +319,29 @@
       "rest": " on WhatsApp or Telegram"
     },
     "form": {
-      "title": "Apply to be a founder",
+      "title": "Apply for a spot",
       "name": "Your name",
       "namePlaceholder": "Karina",
       "contact": "Instagram or WhatsApp",
       "contactPlaceholder": "@karina.nails",
       "city": "City",
-      "cities": {
-        "kg": {
-          "bishkek": "Bishkek",
-          "osh": "Osh",
-          "jalal-abad": "Jalal-Abad",
-          "karakol": "Karakol",
-          "tokmok": "Tokmok",
-          "kara-balta": "Kara-Balta",
-          "other": "Another city"
-        },
-        "ca": {
-          "toronto": "Toronto",
-          "vancouver": "Vancouver",
-          "montreal": "Montreal",
-          "calgary": "Calgary",
-          "ottawa": "Ottawa",
-          "edmonton": "Edmonton",
-          "mississauga": "Mississauga",
-          "other": "Another city"
-        }
+      "cityPlaceholder": {
+        "kg": "For example: Bishkek",
+        "ca": "For example: Toronto"
       },
       "place": "Country and city",
       "placePlaceholder": "For example: Almaty, Kazakhstan",
       "placeNote": "We’re launching in Kyrgyzstan and Canada first. Apply, and we’ll write when we come to your city.",
       "specialty": "What you do",
       "specialtyPlaceholder": "For example: nails, brows, massage",
-      "submit": "I want to be a founder",
+      "submit": "Claim my spot",
       "note": "We’ll get back to you within two days. By tapping the button, you agree to the",
       "privacy": "privacy policy",
       "nameRequired": "Tell us your name",
       "contactRequired": "Leave your Instagram or WhatsApp",
       "specialtyRequired": "Tell us what you do",
       "placeRequired": "Tell us your country and city",
+      "cityRequired": "Tell us your city",
       "failed": "Couldn’t send it. Try again in a minute.",
       "tooMany": "Too many applications from this device. Try again later.",
       "doneTitle": "Thank you!",
@@ -359,7 +351,8 @@
       "kg": "We’re launching in Bishkek together with beauty pros.",
       "ca": "We’re launching in Toronto and Vancouver together with beauty pros.",
       "other": "Right now we’re launching in Kyrgyzstan and Canada together with beauty pros."
-    }
+    },
+    "spots": "20 spots"
   },
   "faq": {
     "eyebrow": "Questions",

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { FormError } from '@nuxt/ui'
-import { MARKET_CITIES } from '#shared/utils/market'
 import {
   WAITLIST_CONTACT_MAX,
   WAITLIST_NAME_MAX,
@@ -14,8 +13,8 @@ import {
  * itself (animation spec). `website` is a trap field people never see.
  *
  * The country is not asked: it is the visitor's market (`useMarket`, the IP
- * country). Kyrgyzstan and Canada pick a city from their list; another country
- * types "country and city" as text.
+ * country). Kyrgyzstan and Canada type their city; another country types
+ * "country and city".
  */
 const { $ts, $localePath, getLocale } = useI18n()
 const { market } = useMarket()
@@ -23,7 +22,7 @@ const { market } = useMarket()
 const state = reactive({
   name: '',
   contact: '',
-  city: '' as string,
+  city: '',
   place: '',
   specialty: ''
 })
@@ -37,24 +36,6 @@ onMounted(() => {
   shownAt.value = Date.now()
 })
 
-// A new country starts with its first city (Bishkek, Toronto)
-watch(
-  market,
-  (value) => {
-    state.city = value === 'other' ? '' : MARKET_CITIES[value][0]
-  },
-  { immediate: true }
-)
-
-const cities = computed<{ value: string; label: string }[]>(() =>
-  market.value === 'other'
-    ? []
-    : MARKET_CITIES[market.value].map((value: string) => ({
-        value,
-        label: $ts(`founders.form.cities.${market.value}.${value}`)
-      }))
-)
-
 function validate(): FormError[] {
   const errors: FormError[] = []
   if (!state.name.trim()) errors.push({ name: 'name', message: $ts('founders.form.nameRequired') })
@@ -63,6 +44,9 @@ function validate(): FormError[] {
   }
   if (market.value === 'other' && state.place.trim().length < 2) {
     errors.push({ name: 'place', message: $ts('founders.form.placeRequired') })
+  }
+  if (market.value !== 'other' && state.city.trim().length < 2) {
+    errors.push({ name: 'city', message: $ts('founders.form.cityRequired') })
   }
   if (state.specialty.trim().length < 2) {
     errors.push({ name: 'specialty', message: $ts('founders.form.specialtyRequired') })
@@ -108,7 +92,9 @@ const labelUi = {
 </script>
 
 <template>
-  <div class="rounded-[28px] border border-line bg-paper p-6 sm:p-8">
+  <div
+    class="rounded-[28px] border border-blush-line bg-white p-6 shadow-[0_18px_44px_rgba(80,40,30,0.08)] sm:p-8"
+  >
     <div
       v-if="sent"
       class="flex min-h-[420px] flex-col items-center justify-center gap-4 text-center"
@@ -171,17 +157,12 @@ const labelUi = {
         :label="$ts('founders.form.city')"
         :ui="labelUi"
       >
-        <USelect
+        <UInput
           v-model="state.city"
-          :items="cities"
-          class="w-full"
-          :ui="{
-            ...fieldUi,
-            base: `${fieldUi.base} pe-10`,
-            value: 'text-[16px] leading-[normal]',
-            item: 'text-[16px] leading-[normal]',
-            itemLabel: 'text-[16px]'
-          }"
+          :placeholder="$ts(`founders.form.cityPlaceholder.${market}`)"
+          :maxlength="WAITLIST_PLACE_MAX"
+          autocomplete="address-level2"
+          :ui="fieldUi"
         />
       </UFormField>
 

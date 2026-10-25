@@ -1,10 +1,11 @@
 /** The founding masters form: the same rules on the page and on the server. */
 
-import { MARKET_CITIES, isMarket, type Market } from './market'
+import { isMarket, type Market } from './market'
 
 export const WAITLIST_NAME_MAX = 60
 export const WAITLIST_CONTACT_MAX = 100
 export const WAITLIST_SPECIALTY_MAX = 100
+/** City (Kyrgyzstan, Canada) or "country and city" (another country) */
 export const WAITLIST_PLACE_MAX = 100
 /** Applications from one IP per hour */
 export const WAITLIST_MAX_PER_IP_HOUR = 5
@@ -15,7 +16,7 @@ export type WaitlistInput = {
   name: string
   contact: string
   country: Market
-  /** A city from the country's list (Kyrgyzstan, Canada), else null */
+  /** The city as typed, for Kyrgyzstan and Canada, else null */
   city: string | null
   /** "Almaty, Kazakhstan" as typed, for another country, else null */
   place: string | null
@@ -44,13 +45,11 @@ export function parseWaitlistInput(value: {
   if (specialty.length < 2 || specialty.length > WAITLIST_SPECIALTY_MAX) return null
   if (!isMarket(country)) return null
 
-  if (country === 'other') {
-    const place = text(value.place)
-    if (place.length < 2 || place.length > WAITLIST_PLACE_MAX) return null
-    return { name, contact, country, city: null, place, specialty }
-  }
+  // Kyrgyzstan and Canada type a city, another country "country and city"
+  const where = text(country === 'other' ? value.place : value.city)
+  if (where.length < 2 || where.length > WAITLIST_PLACE_MAX) return null
 
-  const cities: readonly string[] = MARKET_CITIES[country]
-  if (!cities.includes(value.city as string)) return null
-  return { name, contact, country, city: value.city as string, place: null, specialty }
+  return country === 'other'
+    ? { name, contact, country, city: null, place: where, specialty }
+    : { name, contact, country, city: where, place: null, specialty }
 }

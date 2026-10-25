@@ -6,7 +6,7 @@ const valid = {
   name: ' Vika ',
   contact: ' @vika.nails ',
   country: 'kg',
-  city: 'osh',
+  city: ' Osh ',
   specialty: ' nails, brows '
 }
 
@@ -16,7 +16,7 @@ describe('parseWaitlistInput', () => {
       name: 'Vika',
       contact: '@vika.nails',
       country: 'kg',
-      city: 'osh',
+      city: 'Osh',
       place: null,
       specialty: 'nails, brows'
     })
@@ -37,11 +37,16 @@ describe('parseWaitlistInput', () => {
     expect(parseWaitlistInput({ ...valid, specialty: ['nails'] })).toBeNull()
   })
 
-  it("takes only the country's own cities", () => {
-    expect(parseWaitlistInput({ ...valid, country: 'ca', city: 'montreal' })?.city).toBe('montreal')
-    expect(parseWaitlistInput({ ...valid, country: 'ca', city: 'osh' })).toBeNull()
-    expect(parseWaitlistInput({ ...valid, country: 'kz', city: 'osh' })).toBeNull()
+  it('takes the city as typed for Kyrgyzstan and Canada', () => {
+    expect(parseWaitlistInput({ ...valid, country: 'ca', city: ' Hamilton ' })).toMatchObject({
+      country: 'ca',
+      city: 'Hamilton',
+      place: null
+    })
+    expect(parseWaitlistInput({ ...valid, city: 'a' })).toBeNull()
+    expect(parseWaitlistInput({ ...valid, city: 'a'.repeat(101) })).toBeNull()
     expect(parseWaitlistInput({ ...valid, city: undefined })).toBeNull()
+    expect(parseWaitlistInput({ ...valid, country: 'kz' })).toBeNull()
   })
 
   it('takes "country and city" as text for another country', () => {
