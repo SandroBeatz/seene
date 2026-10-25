@@ -130,6 +130,7 @@
     "eyebrow": "Fonctionnalités",
     "title": "Rendez-vous, clientes, rappels et argent dans une seule app",
     "calendar": {
+      "tab": "Agenda",
       "title": "Agenda des rendez-vous",
       "text": "Tous les rendez-vous du jour et de la semaine sur un seul écran. Les créneaux libres se voient tout de suite, un nouveau rendez-vous s’ajoute en trois gestes.",
       "p1": "Les créneaux libres se calculent seuls",
@@ -137,6 +138,7 @@
       "p3": "Un modèle de semaine de travail"
     },
     "clients": {
+      "tab": "Clientes",
       "title": "Fichier clientes avec l’historique des visites",
       "text": "Une fiche pour chaque cliente : visites, panier moyen, photos de tes réalisations et notes.",
       "p1": "Historique des visites et panier moyen",
@@ -144,6 +146,7 @@
       "p3": "Import depuis les contacts du téléphone"
     },
     "reminders": {
+      "tab": "Rappels",
       "title": "Rappels WhatsApp pour tes clientes",
       "text": "Le texte avec le prénom, l’heure et la prestation est prêt, tu l’envoies depuis ton numéro. Les clientes qui n’ont pas réservé depuis longtemps arrivent dans la liste « à relancer ».",
       "p1": "WhatsApp, Telegram ou copier le texte",
@@ -151,6 +154,7 @@
       "p3": "Un rythme de visites propre à chaque cliente"
     },
     "money": {
+      "tab": "Argent",
       "title": "Suivi des revenus et des dépenses",
       "text": "Les visites comptent dans les revenus toutes seules, une dépense s’ajoute en une seconde. En fin de mois, tu vois ce qu’il te reste net.",
       "p1": "Revenus par jour, semaine et mois",
@@ -163,18 +167,22 @@
     "title": "La réservation en ligne sur ta propre page",
     "text": "La cliente réserve seule, même quand tu es occupée. Elle n’a rien à installer, et tu choisis d’accepter les demandes tout de suite ou de les confirmer toi-même.",
     "page": {
+      "tab": "Page",
       "title": "La cliente ouvre ta page",
       "text": "Photos, réalisations, prestations et prix sur getseene.app/nom, depuis Instagram, WhatsApp ou Google Maps."
     },
     "services": {
+      "tab": "Prestations",
       "title": "Elle choisit ses prestations",
       "text": "Plusieurs à la fois si elle veut, le total et la durée se calculent seuls."
     },
     "time": {
+      "tab": "Heure",
       "title": "Elle choisit le jour et l’heure",
       "text": "Seuls les créneaux que tu as ouverts dans ton planning s’affichent."
     },
     "done": {
+      "tab": "Réservé",
       "title": "Elle confirme son numéro, et c’est réservé",
       "text": "Un code par WhatsApp ou Telegram, sans inscription. Le rendez-vous arrive tout de suite dans ton agenda."
     },
@@ -317,26 +325,9 @@
       "contact": "Instagram ou WhatsApp",
       "contactPlaceholder": "@karina.nails",
       "city": "Ville",
-      "cities": {
-        "kg": {
-          "bishkek": "Bichkek",
-          "osh": "Och",
-          "jalal-abad": "Djalal-Abad",
-          "karakol": "Karakol",
-          "tokmok": "Tokmok",
-          "kara-balta": "Kara-Balta",
-          "other": "Une autre ville"
-        },
-        "ca": {
-          "toronto": "Toronto",
-          "vancouver": "Vancouver",
-          "montreal": "Montréal",
-          "calgary": "Calgary",
-          "ottawa": "Ottawa",
-          "edmonton": "Edmonton",
-          "mississauga": "Mississauga",
-          "other": "Une autre ville"
-        }
+      "cityPlaceholder": {
+        "kg": "Par exemple : Bichkek",
+        "ca": "Par exemple : Toronto"
       },
       "place": "Pays et ville",
       "placePlaceholder": "Par exemple : Almaty, Kazakhstan",
@@ -350,6 +341,7 @@
       "contactRequired": "Laisse ton Instagram ou WhatsApp",
       "specialtyRequired": "Indique ta spécialité",
       "placeRequired": "Indique ton pays et ta ville",
+      "cityRequired": "Indique ta ville",
       "failed": "L’envoi a échoué. Réessaie dans une minute.",
       "tooMany": "Trop de candidatures depuis cet appareil. Réessaie plus tard.",
       "doneTitle": "Merci !",

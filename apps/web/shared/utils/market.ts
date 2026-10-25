@@ -11,14 +11,6 @@ export type Market = (typeof MARKETS)[number]
 /** Markets with their own prices and currency */
 export type PriceMarket = Exclude<Market, 'other'>
 
-/** Cities of the founders form, in the design's order; `other` is last */
-export const MARKET_CITIES = {
-  kg: ['bishkek', 'osh', 'jalal-abad', 'karakol', 'tokmok', 'kara-balta', 'other'],
-  ca: ['toronto', 'vancouver', 'montreal', 'calgary', 'ottawa', 'edmonton', 'mississauga', 'other']
-} as const satisfies Record<PriceMarket, readonly string[]>
-
-export type MarketCity<M extends PriceMarket = PriceMarket> = (typeof MARKET_CITIES)[M][number]
-
 export function isMarket(value: unknown): value is Market {
   return MARKETS.includes(value as Market)
 }
