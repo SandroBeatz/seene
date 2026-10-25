@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** "Кому подходит": a photo mosaic of specialties; three are marked "soon". */
+/** "Для кого": a photo mosaic of specialties. */
 const { $ts } = useI18n()
 
 type Tile = {
@@ -8,7 +8,6 @@ type Tile = {
   id: string
   tint: string
   shape?: 'big' | 'tall' | 'wide'
-  soon?: boolean
 }
 
 const tiles: Tile[] = [
@@ -16,9 +15,9 @@ const tiles: Tile[] = [
   { key: 'lashes', name: 'c-02-lashes', id: 'C-02', tint: '#7A6058', shape: 'tall' },
   { key: 'brows', name: 'c-03-brows', id: 'C-03', tint: '#9C7B70' },
   { key: 'pedicure', name: 'c-04-pedicure', id: 'C-04', tint: '#85695F' },
-  { key: 'depilation', name: 'c-05-sugaring', id: 'C-05', tint: '#A08A82', soon: true },
-  { key: 'haircut', name: 'c-06-haircut', id: 'C-06', tint: '#94807A', soon: true },
-  { key: 'massage', name: 'c-07-massage', id: 'C-07', tint: '#8B776F', shape: 'wide', soon: true }
+  { key: 'depilation', name: 'c-05-sugaring', id: 'C-05', tint: '#A08A82' },
+  { key: 'haircut', name: 'c-06-haircut', id: 'C-06', tint: '#94807A' },
+  { key: 'massage', name: 'c-07-massage', id: 'C-07', tint: '#8B776F', shape: 'wide' }
 ]
 
 const shapeClass = {
@@ -65,12 +64,6 @@ const shapeClass = {
           <div
             class="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-black/30 to-transparent"
           />
-          <span
-            v-if="tile.soon"
-            class="absolute top-3.5 right-3.5 rounded-full bg-white/90 px-2.5 py-1 text-[12px] font-semibold text-ink"
-          >
-            {{ $ts('audience.soon') }}
-          </span>
           <span
             class="absolute bottom-4 left-4.5 font-semibold tracking-[-0.02em] text-white"
             :class="tile.shape === 'big' ? 'text-[26px]' : 'text-[20px]'"

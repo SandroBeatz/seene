@@ -1,33 +1,248 @@
 {
   "seo": {
-    "title": "Seene — tes clientes viennent à l’heure et reviennent",
-    "description": "Seene rappelle leurs rendez-vous à tes clientes sur WhatsApp, te dit qui doit revenir pour un remplissage et calcule ce que tu as gagné. Pour les pros des ongles, sourcils et cils. Gratuit, sans commission."
+    "title": "Seene — l’app de réservation pour les pros de la beauté",
+    "description": "Agenda, fichier clientes, rappels WhatsApp, suivi des revenus et ta propre page de réservation en ligne. Pour les pros des ongles, sourcils, cils et autres soins. Gratuit, sans commission."
   },
   "hero": {
-    "new": "Nouveau",
-    "badge": "Nous cherchons 20 pros fondatrices",
-    "titleStart": "Tes clientes viennent à l’heure et",
-    "titleAccent": "reviennent",
-    "description": "Seene leur rappelle le rendez-vous sur WhatsApp, te dit qui doit revenir pour un remplissage et calcule ce que tu as gagné.",
+    "badge": "Pour les pros de la beauté à leur compte",
+    "titleStart": "Tout ton travail de pro —",
+    "titleAccent": "dans un seul téléphone",
+    "description": "Seene est une app de réservation : agenda, fichier clientes, rappels WhatsApp, suivi des revenus et ta propre page de réservation en ligne.",
     "cta": "Je veux essayer",
-    "ctaSecondary": "Combien je perds",
-    "audience": "Pour les pros des ongles, sourcils et cils.",
-    "free": "Gratuit, sans commission.",
-    "imageAlt": "Prothésiste ongulaire avec un téléphone à son poste de travail",
-    "waLabel": "WhatsApp · depuis ton numéro",
-    "waMessage": "Coucou Aigul ! Je t’attends demain à 10h00 pour ta manucure. C’est toujours bon ?",
+    "ctaSecondary": "Comment ça marche",
+    "free": "Gratuit",
+    "commission": "0 % de commission",
+    "platforms": "iPhone et Android",
+    "imageAlt": "Prothésiste ongulaire au travail dans un studio lumineux",
+    "waLabel": "Rappel WhatsApp",
+    "waMessage": "Vika, je t’attends demain à 10h00. C’est toujours bon ?",
     "waReply": "Oui, j’y serai !",
-    "waConfirmed": "La cliente a confirmé",
-    "netLabel": "Net en octobre",
-    "netCurrency": "som",
-    "netGrowth": "+12 % par rapport à septembre",
-    "recall": "À relancer"
+    "waConfirmed": "La cliente a confirmé"
+  },
+  "app": {
+    "currency": "som",
+    "tabs": {
+      "today": "Aujourd’hui",
+      "calendar": "Agenda",
+      "clients": "Clientes",
+      "money": "Argent"
+    },
+    "confirmed": "confirmé",
+    "waiting": "en attente",
+    "today": {
+      "label": "Écran « Aujourd’hui » de l’app Seene : ce qui demande ton attention et les rendez-vous du jour",
+      "date": "Jeudi 23 octobre",
+      "title": "Aujourd’hui",
+      "avatar": "K",
+      "attention": "À traiter",
+      "remind": "Rappels pour demain",
+      "remindMeta": "5 clientes",
+      "send": "Envoyer",
+      "recall": "À relancer",
+      "recallMeta": "7 clientes n’ont pas réservé depuis longtemps",
+      "request": "Nouvelle demande depuis ta page",
+      "requestMeta": "Ven, 14h00 · Manucure",
+      "visits": "Rendez-vous · 3",
+      "vika": "Vika K.",
+      "vikaService": "Manucure + vernis",
+      "mira": "Mira S.",
+      "miraService": "Retouche",
+      "dina": "Dina T.",
+      "dinaService": "Manucure",
+      "total": "Aujourd’hui"
+    },
+    "calendar": {
+      "label": "Écran « Agenda » de l’app Seene : rendez-vous, créneau libre et temps perso de la journée",
+      "month": "Octobre",
+      "day": "Jour",
+      "week": "Semaine",
+      "weekdays": "Lu,Ma,Me,Je,Ve,Sa,Di",
+      "vika": "Vika K.",
+      "vikaService": "Manucure + semi-permanent · 2 h",
+      "mira": "Mira S.",
+      "miraService": "Retouche sourcils · 1 h",
+      "free": "Libre · 1 h",
+      "freeHint": "Appuie pour réserver",
+      "dina": "Dina T.",
+      "dinaService": "Renforcement des ongles · 1 h",
+      "personal": "Déjeuner et perso",
+      "personalHint": "Visible par toi seule",
+      "olivia": "Olivia M.",
+      "oliviaService": "Pédicure · 1 h 30 min"
+    },
+    "client": {
+      "label": "Écran de l’app Seene : la fiche d’une cliente avec l’historique des visites",
+      "edit": "Modifier",
+      "name": "Zhanara B.",
+      "meta": "+996 555 12‑34‑56 · cliente fidèle",
+      "visits": "visites",
+      "average": "panier moyen",
+      "cycle": "3 sem",
+      "cycleLabel": "vient toutes les",
+      "noteLabel": "Note :",
+      "note": "aime le nude et les ongles courts, café sans sucre",
+      "works": "Réalisations",
+      "history": "Historique des visites",
+      "visit1": "Manucure + semi-permanent",
+      "visit1Date": "2 oct",
+      "visit2": "Manucure + nail art",
+      "visit2Date": "11 sept",
+      "visit3": "Manucure + semi-permanent",
+      "visit3Date": "21 août",
+      "metaCa": "+1 416 555 0134 · cliente fidèle"
+    },
+    "recall": {
+      "label": "Écran de l’app Seene : la liste « à relancer » et un message prêt pour Zhanara",
+      "title": "Clientes",
+      "all": "Toutes · 86",
+      "due": "À relancer · 7",
+      "call": "Relancer",
+      "zhanaraName": "Zhanara B.",
+      "sezimName": "Sezim A.",
+      "oliviaName": "Olivia M.",
+      "zhanara": "il y a 5 semaines · d’habitude toutes les 3",
+      "sezim": "il y a 4 semaines · d’habitude toutes les 3",
+      "olivia": "il y a 6 semaines · message en EN",
+      "sheetTitle": "Message pour Zhanara",
+      "message": "Coucou Zhanara ! Ça fait 5 semaines depuis ta dernière manucure. J’ai des créneaux jeudi à 11h00 et vendredi à 16h00. Je te réserve ?",
+      "correction": "Remplissage",
+      "birthday": "Anniversaire",
+      "custom": "Mon texte",
+      "open": "Ouvrir dans WhatsApp"
+    },
+    "money": {
+      "label": "Écran « Argent » de l’app Seene : revenus, dépenses et net d’octobre",
+      "title": "Argent",
+      "month": "Octobre",
+      "net": "Net ce mois-ci",
+      "growth": "+12 % par rapport à septembre",
+      "income": "Revenus · 68 visites",
+      "expenses": "Dépenses",
+      "chart": "Revenus par semaine en octobre",
+      "weeks": "1–7,8–14,15–21,22–31",
+      "add": "+ Ajouter",
+      "rent": "Loyer du cabinet",
+      "materials": "Fournitures",
+      "ads": "Publicité"
+    }
+  },
+  "features": {
+    "eyebrow": "Fonctionnalités",
+    "title": "Rendez-vous, clientes, rappels et argent dans une seule app",
+    "calendar": {
+      "title": "Agenda des rendez-vous",
+      "text": "Tous les rendez-vous du jour et de la semaine sur un seul écran. Les créneaux libres se voient tout de suite, un nouveau rendez-vous s’ajoute en trois gestes.",
+      "p1": "Les créneaux libres se calculent seuls",
+      "p2": "Le perso à côté du travail",
+      "p3": "Un modèle de semaine de travail"
+    },
+    "clients": {
+      "title": "Fichier clientes avec l’historique des visites",
+      "text": "Une fiche pour chaque cliente : visites, panier moyen, photos de tes réalisations et notes.",
+      "p1": "Historique des visites et panier moyen",
+      "p2": "Photos et notes",
+      "p3": "Import depuis les contacts du téléphone"
+    },
+    "reminders": {
+      "title": "Rappels WhatsApp pour tes clientes",
+      "text": "Le texte avec le prénom, l’heure et la prestation est prêt, tu l’envoies depuis ton numéro. Les clientes qui n’ont pas réservé depuis longtemps arrivent dans la liste « à relancer ».",
+      "p1": "WhatsApp, Telegram ou copier le texte",
+      "p2": "Le message dans la langue de la cliente",
+      "p3": "Un rythme de visites propre à chaque cliente"
+    },
+    "money": {
+      "title": "Suivi des revenus et des dépenses",
+      "text": "Les visites comptent dans les revenus toutes seules, une dépense s’ajoute en une seconde. En fin de mois, tu vois ce qu’il te reste net.",
+      "p1": "Revenus par jour, semaine et mois",
+      "p2": "Dépenses par catégorie",
+      "p3": "Nouvelles clientes et fidèles"
+    }
+  },
+  "booking": {
+    "eyebrow": "Ta page",
+    "title": "La réservation en ligne sur ta propre page",
+    "text": "La cliente réserve seule, même quand tu es occupée. Elle n’a rien à installer, et tu choisis d’accepter les demandes tout de suite ou de les confirmer toi-même.",
+    "page": {
+      "title": "La cliente ouvre ta page",
+      "text": "Photos, réalisations, prestations et prix sur getseene.app/nom, depuis Instagram, WhatsApp ou Google Maps."
+    },
+    "services": {
+      "title": "Elle choisit ses prestations",
+      "text": "Plusieurs à la fois si elle veut, le total et la durée se calculent seuls."
+    },
+    "time": {
+      "title": "Elle choisit le jour et l’heure",
+      "text": "Seuls les créneaux que tu as ouverts dans ton planning s’affichent."
+    },
+    "done": {
+      "title": "Elle confirme son numéro, et c’est réservé",
+      "text": "Un code par WhatsApp ou Telegram, sans inscription. Le rendez-vous arrive tout de suite dans ton agenda."
+    },
+    "phone": {
+      "labelPage": "La page de Karina Mikhailova sur Seene : prestations, réalisations et bouton « Réserver »",
+      "labelServices": "Réservation en ligne, étape 1 : deux prestations choisies",
+      "labelTime": "Réservation en ligne, étape 2 : choix du jour et de l’heure",
+      "labelDone": "Réservation terminée : la cliente est inscrite vendredi à 11h30",
+      "name": "Karina Mikhailova",
+      "verified": "Pro vérifiée",
+      "specialty": "Manucure et pédicure",
+      "city": "Bichkek, Djal",
+      "poster": "couverture · photo de la pro",
+      "photo": "photo",
+      "experience": "6 ans",
+      "experienceLabel": "de métier",
+      "visits": "1 200+",
+      "visitsLabel": "visites",
+      "days": "Lun–Sam",
+      "hours": "10h00–20h00",
+      "bio": "Je fais des manucures soignées qui tiennent 3 à 4 semaines. Je travaille seule, dans mon cabinet, sans enchaîner : chaque cliente a tout le temps qu’il lui faut. Stérilisation au Poupinel, limes à usage unique. J’aime le nude, le french et le minimalisme, mais je fais aussi des designs colorés.",
+      "more": "Plus",
+      "call": "Appeler",
+      "map": "Carte",
+      "works": "Réalisations",
+      "worksAll": "Toutes (48)",
+      "workLabels": "nude,french,laiteux,bordeaux,design,pédicure",
+      "services": "Prestations",
+      "book": "Réserver",
+      "nearest": "Prochain créneau : demain, 11h30",
+      "madeIn": "Créé avec Seene",
+      "service1": "Manucure sans vernis",
+      "service2": "Manucure + semi-permanent",
+      "service3": "Renforcement des ongles",
+      "service4": "Nail art",
+      "service5": "Pédicure + semi-permanent",
+      "hour": "h",
+      "minutes": "min",
+      "step": "Étape {n} sur 3",
+      "servicesTitle": "Choisissez une prestation",
+      "servicesHint": "Vous pouvez en choisir plusieurs",
+      "next": "Suivant",
+      "count": "2 prestations",
+      "timeTitle": "Quand vous convient-il ?",
+      "months": "Octobre – novembre",
+      "timezone": "heure de Bichkek",
+      "weekdays": "Je,Ve,Sa,Di,Lu,Ma,Me,Je,Ve,Sa",
+      "morning": "Matin",
+      "afternoon": "Après-midi",
+      "evening": "Soir",
+      "timeNext": "Suivant · Ven 24, 11h30",
+      "doneTitle": "C’est réservé",
+      "doneText": "Karina vous attend le vendredi 24 octobre à 11h30",
+      "doneWhen": "Vendredi 24 octobre · 11h30",
+      "address": "125 rue Toktogoul, 2e étage, cab. 4",
+      "addToCalendar": "Agenda",
+      "route": "Itinéraire",
+      "doneNote": "La confirmation et le lien d’annulation sont déjà dans WhatsApp. Annulation en ligne possible jusqu’à 23h30 la veille.",
+      "backToPage": "Retour à la page de la pro",
+      "cityCa": "Toronto, Leslieville",
+      "timezoneCa": "heure de Toronto",
+      "addressCa": "1120, rue Queen Est, bureau 4"
+    }
   },
   "audience": {
     "eyebrow": "Pour qui",
-    "title": "Pour les pros qui travaillent seules",
-    "description": "À la maison, dans un cabinet loué ou à domicile — sans secrétariat ni système compliqué.",
-    "soon": "bientôt",
+    "title": "Pour les pros des ongles, sourcils, cils et autres soins",
+    "description": "Seene convient à toutes celles qui travaillent seules : à la maison, dans leur cabinet ou à domicile. Prestations, prix et durées s’adaptent à chaque spécialité.",
     "manicure": {
       "label": "Ongles",
       "alt": "Une pro applique un vernis laiteux"
@@ -57,107 +272,32 @@
       "alt": "Massage du dos dans une pièce lumineuse"
     }
   },
-  "money": {
-    "eyebrow": "Pourquoi c’est important",
-    "title": "L’argent ne part pas dans le matériel. Il part dans les créneaux vides.",
-    "noShow": {
-      "value": "−800 som",
-      "title": "Un rendez-vous manqué",
-      "text": "La cliente a oublié. Le créneau est vide, la soirée est perdue, et tu l’as appris à 10h05.",
-      "note": "Exemple pour une manucure à 800 som"
+  "why": {
+    "eyebrow": "Avantages",
+    "title": "Pourquoi les pros choisissent Seene",
+    "calculator": "Calculer ce que coûtent les lapins",
+    "noShows": {
+      "title": "Moins de lapins",
+      "text": "Un rappel WhatsApp la veille du rendez-vous. La cliente confirme d’un seul message, et tu es prévenue à l’avance d’un report."
     },
-    "silence": {
-      "value": "5 semaines",
-      "title": "Le silence d’une habituée",
-      "text": "Elle n’est pas partie chez une autre pro. Elle a juste oublié de réserver. Un carnet ne te le montre pas."
+    "return": {
+      "title": "Les clientes reviennent",
+      "text": "L’app te dit qui doit revenir pour un remplissage et prépare un message avec tes créneaux libres."
     },
-    "net": {
-      "value": "? som",
-      "title": "Net sur le mois",
-      "text": "Loyer, matériel, publicité. À l’œil, difficile de savoir quand augmenter tes prix."
+    "commission": {
+      "title": "0 % de commission",
+      "text": "Les clientes et l’argent sont à toi. Agenda, clientes et rappels sont gratuits, et Pro coûte moins qu’une prestation."
+    },
+    "simple": {
+      "title": "Clair dès le premier jour",
+      "text": "Sans formation ni ordinateur : tu prends l’app en main en cinq minutes, et nous transférons tes clientes de ton carnet pour toi."
     }
-  },
-  "features": {
-    "eyebrow": "Fonctionnalités",
-    "title": "Tout ce que fait un secrétariat. Rien de superflu.",
-    "booking": {
-      "title": "Réservation en ligne",
-      "p1": "Tes clientes réservent même quand tu es occupée",
-      "p2": "Photos et descriptions vendent mieux que les mots",
-      "p3": "Seuls les créneaux que tu as ouverts sont visibles",
-      "p4": "C’est toi qui confirmes chaque demande"
-    },
-    "calendar": {
-      "title": "Agenda",
-      "p1": "Planning de travail et rendez-vous perso",
-      "p2": "Tes prochains créneaux libres, trouvés pour toi",
-      "p3": "Tes créneaux en story en un geste",
-      "p4": "Un modèle de semaine pour ne pas tout refaire"
-    },
-    "clients": {
-      "title": "Clientes",
-      "p1": "Fichier clientes et historique des visites",
-      "p2": "Triées toutes seules : habituées, nouvelles, perdues de vue",
-      "p3": "Photos de tes réalisations et notes sur chaque fiche",
-      "p4": "Import depuis les contacts du téléphone"
-    },
-    "assistant": {
-      "title": "Assistant",
-      "p1": "Alertes pour les demandes venues de ta page",
-      "p2": "Rappels et liste « à relancer »",
-      "p3": "WhatsApp, Telegram ou copier le texte",
-      "p4": "Prénom, heure et prestation remplis pour toi"
-    }
-  },
-  "recall": {
-    "eyebrow": "À relancer",
-    "title": "Les nouvelles clientes, c’est bien. Celles qui reviennent coûtent moins et sont plus fiables.",
-    "description": "Seene sait à quelle fréquence vient chaque cliente et liste celles qui doivent revenir pour un remplissage. Il ne reste qu’à choisir un créneau et appuyer sur « Relancer ».",
-    "p1": "Un rythme propre à chaque cliente, sans réglage",
-    "p2": "Textes prêts : remplissage, anniversaire, créneau libre",
-    "p3": "En fin de mois, tu vois combien de clientes sont revenues et pour quel montant",
-    "imageAlt": "Une pro sur son téléphone entre deux clientes",
-    "cycleLabel": "Le rythme de Zhanara",
-    "cycleStart": "Vient toutes les 3 semaines.",
-    "cyclePassed": "Ça fait 5",
-    "cycleEnd": "— à relancer",
-    "replyLabel": "Zhanara a répondu",
-    "reply": "Ah oui ! Jeudi à 11h00, ça te va ?",
-    "returnedLabel": "Revenues en octobre",
-    "returned": "9 clientes · 7 200 som",
-    "phone": {
-      "label": "Écran de l’app Seene : la liste « à relancer » et un message prêt pour Zhanara",
-      "title": "Clientes",
-      "all": "Toutes · 86",
-      "due": "À relancer · 7",
-      "call": "Relancer",
-      "zhanaraName": "Zhanara B.",
-      "sezimName": "Sezim A.",
-      "oliviaName": "Olivia M.",
-      "zhanara": "il y a 5 semaines · d’habitude toutes les 3",
-      "sezim": "il y a 4 semaines · d’habitude toutes les 3",
-      "olivia": "il y a 6 semaines · message en EN",
-      "sheetTitle": "Message pour Zhanara",
-      "message": "Coucou Zhanara ! Ça fait 5 semaines depuis ta dernière manucure. J’ai des créneaux jeudi à 11h00 et vendredi à 16h00. Je te réserve ?",
-      "correction": "Remplissage",
-      "birthday": "Anniversaire",
-      "custom": "Mon texte",
-      "open": "Ouvrir dans WhatsApp"
-    }
-  },
-  "commission": {
-    "title": "0 % de commission.",
-    "titleEnd": "Toujours.",
-    "text": "Les plateformes prennent un pourcentage sur chaque nouvelle cliente. Seene ne prend rien : tes clientes, ton argent. L’essentiel est gratuit, et Pro coûte moins qu’une manucure par mois.",
-    "cta": "Voir les tarifs",
-    "seene": "Seene",
-    "marketplaces": "Plateformes, par nouvelle cliente"
   },
   "founders": {
     "eyebrow": "Pros fondatrices",
     "title": "Fais partie des 20 premières.",
-    "text": "Nous lançons Seene à Bichkek, Toronto et Vancouver avec des pros de la beauté. En échange d’un avis honnête, tu reçois ce que les autres n’auront pas.",
-    "imageAlt": "Deux pros de la beauté rient devant un téléphone",
+    "text": "En échange d’un avis honnête, tu reçois ce que les autres n’auront pas.",
+    "imageAlt": "Une pro note ses clientes dans un carnet papier",
     "perk1": {
       "bold": "Pro gratuit pour toujours",
       "rest": ", pas juste un mois d’essai"
@@ -173,50 +313,76 @@
     "form": {
       "title": "Candidature fondatrice",
       "name": "Ton prénom",
-      "namePlaceholder": "Aigul",
+      "namePlaceholder": "Karina",
       "contact": "Instagram ou WhatsApp",
-      "contactPlaceholder": "@aigul.nails",
+      "contactPlaceholder": "@karina.nails",
       "city": "Ville",
       "cities": {
-        "bishkek": "Bichkek",
-        "toronto": "Toronto",
-        "vancouver": "Vancouver",
-        "other": "Une autre ville"
+        "kg": {
+          "bishkek": "Bichkek",
+          "osh": "Och",
+          "jalal-abad": "Djalal-Abad",
+          "karakol": "Karakol",
+          "tokmok": "Tokmok",
+          "kara-balta": "Kara-Balta",
+          "other": "Une autre ville"
+        },
+        "ca": {
+          "toronto": "Toronto",
+          "vancouver": "Vancouver",
+          "montreal": "Montréal",
+          "calgary": "Calgary",
+          "ottawa": "Ottawa",
+          "edmonton": "Edmonton",
+          "mississauga": "Mississauga",
+          "other": "Une autre ville"
+        }
       },
+      "place": "Pays et ville",
+      "placePlaceholder": "Par exemple : Almaty, Kazakhstan",
+      "placeNote": "Nous lançons d’abord au Kirghizistan et au Canada. Envoie ta candidature, et nous t’écrirons quand nous arriverons dans ta ville.",
       "specialty": "Ta spécialité",
-      "specialties": {
-        "manicure": "Ongles",
-        "pedicure": "Pédicure",
-        "brows": "Sourcils",
-        "lashes": "Cils",
-        "other": "Autre"
-      },
+      "specialtyPlaceholder": "Par exemple : ongles, sourcils, massage",
       "submit": "Je veux être fondatrice",
       "note": "Nous te répondons sous deux jours. En appuyant sur le bouton, tu acceptes la",
       "privacy": "politique de confidentialité",
       "nameRequired": "Indique ton prénom",
       "contactRequired": "Laisse ton Instagram ou WhatsApp",
-      "specialtyRequired": "Choisis au moins une option",
+      "specialtyRequired": "Indique ta spécialité",
+      "placeRequired": "Indique ton pays et ta ville",
       "failed": "L’envoi a échoué. Réessaie dans une minute.",
       "tooMany": "Trop de candidatures depuis cet appareil. Réessaie plus tard.",
       "doneTitle": "Merci !",
       "doneText": "Nous te répondons sous 2 jours."
+    },
+    "launch": {
+      "kg": "Nous lançons Seene à Bichkek avec des pros de la beauté.",
+      "ca": "Nous lançons Seene à Toronto et Vancouver avec des pros de la beauté.",
+      "other": "Pour l’instant, nous lançons Seene au Kirghizistan et au Canada avec des pros de la beauté."
     }
   },
   "faq": {
     "eyebrow": "Questions",
-    "title": "L’essentiel en bref",
+    "title": "Questions fréquentes",
+    "notebook": {
+      "q": "En quoi Seene est mieux qu’un carnet et Instagram ?",
+      "a": "Tous les rendez-vous, les clientes et l’argent au même endroit. L’app rappelle le rendez-vous aux clientes et te dit qui doit réserver à nouveau."
+    },
     "install": {
       "q": "Mes clientes doivent-elles installer quelque chose ?",
-      "a": "Non. Les rappels arrivent dans leur WhatsApp habituel, et la réservation s’ouvre depuis un lien dans le navigateur."
+      "a": "Non. Les rappels arrivent dans leur WhatsApp habituel, et la réservation en ligne s’ouvre depuis un lien dans le navigateur."
     },
-    "robot": {
-      "q": "Les messages sont-ils écrits par un robot ?",
-      "a": "Non. Seene prépare le texte, et c’est toi qui l’envoies depuis ton numéro. Tu peux modifier chaque mot."
+    "reminders": {
+      "q": "Comment marchent les rappels WhatsApp ?",
+      "a": "Seene prépare le texte avec le prénom, l’heure et la prestation. C’est toi qui l’envoies, depuis ton numéro, et tu peux changer chaque mot."
     },
     "price": {
-      "q": "Combien ça coûte ?",
-      "a": "Agenda, clientes et rappels sont gratuits. Pro, avec « à relancer » et le suivi de l’argent, coûte moins qu’une manucure par mois."
+      "q": "Combien coûte Seene ?",
+      "a": "L’agenda, le fichier clientes et les rappels sont gratuits. Pro, avec « à relancer » et le suivi de l’argent, coûte moins qu’une prestation par mois. Sans commission."
+    },
+    "platforms": {
+      "q": "Ça marche sur iPhone et Android ?",
+      "a": "Oui, l’app sera sur l’App Store et Google Play. La page de réservation en ligne s’ouvre sur n’importe quel téléphone."
     },
     "data": {
       "q": "Qui voit les données de mes clientes ?",
@@ -225,8 +391,9 @@
     }
   },
   "final": {
-    "title": "Moins de messages. Plus de clientes.",
-    "storePrefix": "Télécharger sur",
+    "title": "Commence à gérer tes rendez-vous dans Seene gratuitement",
+    "appStorePrefix": "Télécharger dans l’",
+    "googlePlayPrefix": "Disponible sur",
     "appStore": "App Store",
     "googlePlay": "Google Play",
     "note": "Gratuit. Sans carte. Sans commission."

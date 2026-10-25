@@ -9,8 +9,10 @@ export default defineEventHandler(async (event) => {
   const body = await readBody<{
     name?: unknown
     contact?: unknown
+    country?: unknown
     city?: unknown
-    specialties?: unknown
+    place?: unknown
+    specialty?: unknown
     locale?: unknown
     website?: unknown
     shown_at?: unknown
@@ -46,14 +48,20 @@ export default defineEventHandler(async (event) => {
   }
 
   const locale = ['en', 'fr', 'ru'].includes(body.locale as string) ? (body.locale as string) : 'en'
+  const ipCountry = (
+    getRequestHeader(event, 'cf-ipcountry') ?? getRequestHeader(event, 'x-vercel-ip-country')
+  )?.toUpperCase()
 
   const { error } = await supabase.from('waitlist').insert({
     name: input.name,
     contact: input.contact,
+    country: input.country,
     city: input.city,
-    specialties: input.specialties,
+    place: input.place,
+    specialty: input.specialty,
     locale,
-    ip_hash: ipHash
+    ip_hash: ipHash,
+    ip_country: ipCountry && /^[A-Z]{2}$/.test(ipCountry) ? ipCountry : null
   })
 
   // 23505: this contact applied already, the first application stays.

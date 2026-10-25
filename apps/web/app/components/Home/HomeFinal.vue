@@ -8,8 +8,8 @@ const { $ts, $localePath } = useI18n()
 
 const join = computed(() => `${$localePath('/')}#join`)
 const stores = computed(() => [
-  { key: 'appStore', to: config.public.appStoreUrl || join.value },
-  { key: 'googlePlay', to: config.public.googlePlayUrl || join.value }
+  { key: 'appStore' as const, to: config.public.appStoreUrl || join.value },
+  { key: 'googlePlay' as const, to: config.public.googlePlayUrl || join.value }
 ])
 </script>
 
@@ -30,13 +30,13 @@ const stores = computed(() => [
           :to="store.to"
           :target="store.to.startsWith('http') ? '_blank' : undefined"
           color="primary"
-          leading-icon="i-lucide-download"
-          class="leading-[normal] gap-2.5 rounded-[14px] px-5.5 py-3.5 text-left hover:bg-ink/85 active:scale-[0.98]"
-          :ui="{ label: 'leading-[normal]', leadingIcon: 'size-5.5' }"
+          class="gap-3 rounded-[14px] px-5.5 py-3 text-left leading-[normal] hover:bg-ink/85 active:scale-[0.98]"
+          :ui="{ label: 'leading-[normal]' }"
         >
+          <HomeStoreIcon :store="store.key" />
           <span class="flex flex-col">
             <span class="text-[11px] font-normal text-[#B8B8BE]">{{
-              $ts('final.storePrefix')
+              $ts(`final.${store.key}Prefix`)
             }}</span>
             <span class="text-[16px] font-semibold">{{ $ts(`final.${store.key}`) }}</span>
           </span>

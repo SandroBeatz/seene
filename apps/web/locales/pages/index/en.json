@@ -1,33 +1,248 @@
 {
   "seo": {
-    "title": "Seene — clients show up on time and come back",
-    "description": "Seene reminds your clients about their bookings on WhatsApp, tells you who is due for a fill, and counts what you earned. For nail, brow and lash artists. Free, no commission."
+    "title": "Seene — client booking app for beauty pros",
+    "description": "Calendar, client list, WhatsApp reminders, income tracking and your own online booking page. For nail, brow, lash and other beauty pros. Free, no commission."
   },
   "hero": {
-    "new": "New",
-    "badge": "Looking for 20 founding masters",
-    "titleStart": "Clients show up on time and",
-    "titleAccent": "come back",
-    "description": "Seene reminds them about their booking on WhatsApp, tells you who is due for a fill, and counts what you earned.",
+    "badge": "For beauty pros who work for themselves",
+    "titleStart": "Everything you need to run your work —",
+    "titleAccent": "in one phone",
+    "description": "Seene is a client booking app: calendar, client list, WhatsApp reminders, income tracking and your own page for online booking.",
     "cta": "I want to try it",
-    "ctaSecondary": "How much am I losing",
-    "audience": "For nail, brow and lash artists.",
-    "free": "Free, no commission.",
-    "imageAlt": "Nail artist with a phone at her desk",
-    "waLabel": "WhatsApp · from your number",
-    "waMessage": "Hi Aigul! See you tomorrow at 10:00 for your manicure. Still on?",
+    "ctaSecondary": "How it works",
+    "free": "Free",
+    "commission": "0% commission",
+    "platforms": "iPhone and Android",
+    "imageAlt": "Nail artist at work in a bright home studio",
+    "waLabel": "WhatsApp reminder",
+    "waMessage": "Vika, see you tomorrow at 10:00. Still on?",
     "waReply": "Yes, see you!",
-    "waConfirmed": "The client confirmed",
-    "netLabel": "Net in October",
-    "netCurrency": "som",
-    "netGrowth": "+12% vs September",
-    "recall": "Time to invite"
+    "waConfirmed": "The client confirmed"
+  },
+  "app": {
+    "currency": "som",
+    "tabs": {
+      "today": "Today",
+      "calendar": "Calendar",
+      "clients": "Clients",
+      "money": "Money"
+    },
+    "confirmed": "confirmed",
+    "waiting": "awaiting reply",
+    "today": {
+      "label": "Seene app “Today” screen: what needs attention and the day’s bookings",
+      "date": "Thursday, October 23",
+      "title": "Today",
+      "avatar": "K",
+      "attention": "Needs attention",
+      "remind": "Remind for tomorrow",
+      "remindMeta": "5 clients",
+      "send": "Send",
+      "recall": "Time to invite",
+      "recallMeta": "7 clients haven’t booked in a while",
+      "request": "New request from your page",
+      "requestMeta": "Fri, 14:00 · Manicure",
+      "visits": "Bookings · 3",
+      "vika": "Vika K.",
+      "vikaService": "Manicure + polish",
+      "mira": "Mira S.",
+      "miraService": "Brow touch-up",
+      "dina": "Dina T.",
+      "dinaService": "Manicure",
+      "total": "Today"
+    },
+    "calendar": {
+      "label": "Seene app “Calendar” screen: bookings, a free slot and personal time for the day",
+      "month": "October",
+      "day": "Day",
+      "week": "Week",
+      "weekdays": "Mo,Tu,We,Th,Fr,Sa,Su",
+      "vika": "Vika K.",
+      "vikaService": "Manicure + gel polish · 2 h",
+      "mira": "Mira S.",
+      "miraService": "Brow touch-up · 1 h",
+      "free": "Free · 1 h",
+      "freeHint": "Tap to book",
+      "dina": "Dina T.",
+      "dinaService": "Nail strengthening · 1 h",
+      "personal": "Lunch and personal",
+      "personalHint": "Only you see this",
+      "olivia": "Olivia M.",
+      "oliviaService": "Pedicure · 1 h 30 min"
+    },
+    "client": {
+      "label": "Seene app screen: a client card with visit history",
+      "edit": "Edit",
+      "name": "Zhanara B.",
+      "meta": "+996 555 12‑34‑56 · regular client",
+      "visits": "visits",
+      "average": "average ticket",
+      "cycle": "3 wk",
+      "cycleLabel": "comes every",
+      "noteLabel": "Note:",
+      "note": "likes nude and short length, coffee without sugar",
+      "works": "Work",
+      "history": "Visit history",
+      "visit1": "Manicure + gel polish",
+      "visit1Date": "Oct 2",
+      "visit2": "Manicure + nail art",
+      "visit2Date": "Sep 11",
+      "visit3": "Manicure + gel polish",
+      "visit3Date": "Aug 21",
+      "metaCa": "+1 416 555 0134 · regular client"
+    },
+    "recall": {
+      "label": "Seene app screen: the “time to invite” list and a ready message for Zhanara",
+      "title": "Clients",
+      "all": "All · 86",
+      "due": "Time to invite · 7",
+      "call": "Invite",
+      "zhanaraName": "Zhanara B.",
+      "sezimName": "Sezim A.",
+      "oliviaName": "Olivia M.",
+      "zhanara": "5 weeks ago · usually every 3",
+      "sezim": "4 weeks ago · usually every 3",
+      "olivia": "6 weeks ago · message in EN",
+      "sheetTitle": "Message for Zhanara",
+      "message": "Hi Zhanara! It’s been 5 weeks since your last manicure. I have slots on Thursday at 11:00 and Friday at 16:00. Shall I book you in?",
+      "correction": "Fill",
+      "birthday": "Birthday",
+      "custom": "Own text",
+      "open": "Open in WhatsApp"
+    },
+    "money": {
+      "label": "Seene app “Money” screen: income, expenses and net for October",
+      "title": "Money",
+      "month": "October",
+      "net": "Net this month",
+      "growth": "+12% vs September",
+      "income": "Income · 68 visits",
+      "expenses": "Expenses",
+      "chart": "Income by week in October",
+      "weeks": "1–7,8–14,15–21,22–31",
+      "add": "+ Add",
+      "rent": "Room rent",
+      "materials": "Supplies",
+      "ads": "Ads"
+    }
+  },
+  "features": {
+    "eyebrow": "Features",
+    "title": "Bookings, clients, reminders and money in one app",
+    "calendar": {
+      "title": "Client booking calendar",
+      "text": "Every booking for the day and the week on one screen. Free slots show up right away, and a new booking takes three taps.",
+      "p1": "Free slots are counted for you",
+      "p2": "Personal time next to work",
+      "p3": "A template for your work week"
+    },
+    "clients": {
+      "title": "Client list with visit history",
+      "text": "A card for every client: visits, average ticket, photos of your work and notes.",
+      "p1": "Visit history and average ticket",
+      "p2": "Work photos and notes",
+      "p3": "Import from your phone contacts"
+    },
+    "reminders": {
+      "title": "WhatsApp reminders for clients",
+      "text": "The text with the name, time and service is ready, and you send it from your own number. Clients who haven’t booked in a while go on a “time to invite” list.",
+      "p1": "WhatsApp, Telegram or copy the text",
+      "p2": "Messages in the client’s language",
+      "p3": "Each client’s own visit cycle"
+    },
+    "money": {
+      "title": "Income and expense tracking",
+      "text": "Visits count as income on their own, and an expense takes a second to add. At the end of the month you see what’s left as net.",
+      "p1": "Income by day, week and month",
+      "p2": "Expenses by category",
+      "p3": "New and regular clients"
+    }
+  },
+  "booking": {
+    "eyebrow": "Your page",
+    "title": "Online booking through your own page",
+    "text": "Clients book themselves, even when you’re busy. They don’t need to install anything, and you decide whether to accept requests right away or confirm them by hand.",
+    "page": {
+      "title": "The client opens your page",
+      "text": "Photos, work, services and prices at getseene.app/name, from Instagram, WhatsApp or Google Maps."
+    },
+    "services": {
+      "title": "Picks services",
+      "text": "Several at once if she likes; the total and time add up on their own."
+    },
+    "time": {
+      "title": "Picks a day and time",
+      "text": "Only the slots you opened in your schedule are shown."
+    },
+    "done": {
+      "title": "Confirms her number, and she’s booked",
+      "text": "A code by WhatsApp or Telegram, no sign-up. The booking lands in your calendar right away."
+    },
+    "phone": {
+      "labelPage": "Karina Mikhailova’s page in Seene: services, work and a “Book” button",
+      "labelServices": "Online booking, step 1: two services picked",
+      "labelTime": "Online booking, step 2: picking a day and time",
+      "labelDone": "Online booking done: the client is booked for Friday at 11:30",
+      "name": "Karina Mikhailova",
+      "verified": "Verified pro",
+      "specialty": "Manicure and pedicure",
+      "city": "Bishkek, Dzhal",
+      "poster": "cover · pro’s photo",
+      "photo": "photo",
+      "experience": "6 years",
+      "experienceLabel": "in the trade",
+      "visits": "1,200+",
+      "visitsLabel": "visits",
+      "days": "Mon–Sat",
+      "hours": "10:00–20:00",
+      "bio": "I do neat manicures that last 3–4 weeks. I work alone in my own room, no rush: every client gets as much time as she needs. Dry heat sterilization, single-use files. I love nude, French and minimal looks, but I’ll do bold art too.",
+      "more": "More",
+      "call": "Call",
+      "map": "Map",
+      "works": "Work",
+      "worksAll": "All 48",
+      "workLabels": "nude,French,milky,burgundy,art,pedicure",
+      "services": "Services",
+      "book": "Book",
+      "nearest": "Next free slot: tomorrow, 11:30",
+      "madeIn": "Made with Seene",
+      "service1": "Manicure, no polish",
+      "service2": "Manicure + gel polish",
+      "service3": "Nail strengthening",
+      "service4": "Nail art",
+      "service5": "Pedicure + gel polish",
+      "hour": "h",
+      "minutes": "min",
+      "step": "Step {n} of 3",
+      "servicesTitle": "Choose a service",
+      "servicesHint": "You can pick several",
+      "next": "Next",
+      "count": "2 services",
+      "timeTitle": "When suits you?",
+      "months": "October – November",
+      "timezone": "Bishkek time",
+      "weekdays": "Th,Fr,Sa,Su,Mo,Tu,We,Th,Fr,Sa",
+      "morning": "Morning",
+      "afternoon": "Afternoon",
+      "evening": "Evening",
+      "timeNext": "Next · Fri 24, 11:30",
+      "doneTitle": "You’re booked",
+      "doneText": "Karina will see you on Friday, October 24 at 11:30",
+      "doneWhen": "Friday, October 24 · 11:30",
+      "address": "125 Toktogul St, 2nd floor, room 4",
+      "addToCalendar": "Add to calendar",
+      "route": "Directions",
+      "doneNote": "The confirmation and a cancel link are already in WhatsApp. You can cancel online until 23:30 the day before.",
+      "backToPage": "Back to the pro’s page",
+      "cityCa": "Toronto, Leslieville",
+      "timezoneCa": "Toronto time",
+      "addressCa": "1120 Queen St E, suite 4"
+    }
   },
   "audience": {
     "eyebrow": "Who it’s for",
-    "title": "For beauty pros who work on their own",
-    "description": "At home, in a rented room or on the go — no front desk and no complicated systems.",
-    "soon": "soon",
+    "title": "For nail, brow, lash and other beauty pros",
+    "description": "Seene works for anyone who works on their own: at home, in their own room or on the go. Services, prices and durations fit any specialty.",
     "manicure": {
       "label": "Nails",
       "alt": "Artist applying milky gel polish"
@@ -57,114 +272,39 @@
       "alt": "Back massage in a bright room"
     }
   },
-  "money": {
-    "eyebrow": "Why it matters",
-    "title": "Money isn’t lost on supplies. It’s lost on empty slots.",
-    "noShow": {
-      "value": "−800 som",
-      "title": "One no-show",
-      "text": "The client forgot. The slot is empty, the evening is gone, and you found out at 10:05.",
-      "note": "Example for an 800 som manicure"
+  "why": {
+    "eyebrow": "Why Seene",
+    "title": "Why beauty pros choose Seene",
+    "calculator": "See what no-shows cost you",
+    "noShows": {
+      "title": "Fewer no-shows",
+      "text": "A WhatsApp reminder the day before. The client confirms with one reply, and you know about a change in advance."
     },
-    "silence": {
-      "value": "5 weeks",
-      "title": "Silence from a regular",
-      "text": "She didn’t leave for another artist. She just forgot to book. A paper notebook won’t show you that."
+    "return": {
+      "title": "Clients come back",
+      "text": "The app tells you who is due for a fill and drafts a message with your free slots."
     },
-    "net": {
-      "value": "? som",
-      "title": "Net for the month",
-      "text": "Rent, supplies, ads. If you count by eye, it’s hard to tell when to raise your prices."
+    "commission": {
+      "title": "0% commission",
+      "text": "The clients and the money are yours. Calendar, clients and reminders are free, and Pro costs less than one appointment."
+    },
+    "simple": {
+      "title": "Clear from day one",
+      "text": "No training, no computer: you’ll get it in five minutes, and we’ll move your clients over from your notebook for you."
     }
-  },
-  "features": {
-    "eyebrow": "Features",
-    "title": "Everything a front desk does. Nothing extra.",
-    "booking": {
-      "title": "Online booking",
-      "p1": "Clients book even when you’re busy",
-      "p2": "Photos and descriptions sell your services better than words",
-      "p3": "Only the slots you opened are shown",
-      "p4": "You confirm every request"
-    },
-    "calendar": {
-      "title": "Calendar",
-      "p1": "Work schedule and personal plans",
-      "p2": "Your next free slots, found for you",
-      "p3": "Free slots to your Stories in one tap",
-      "p4": "A week template, so you set it up once"
-    },
-    "clients": {
-      "title": "Clients",
-      "p1": "Client list and visit history",
-      "p2": "Sorted into regulars, new and lapsed on their own",
-      "p3": "Work photos and notes on each card",
-      "p4": "Import from your phone contacts"
-    },
-    "assistant": {
-      "title": "Assistant",
-      "p1": "Alerts about requests from your page",
-      "p2": "Reminders and a “time to invite” list",
-      "p3": "WhatsApp, Telegram or copy the text",
-      "p4": "Name, time and service filled in for you"
-    }
-  },
-  "recall": {
-    "eyebrow": "Time to invite",
-    "title": "New clients are nice. Returning ones cost less and are more reliable.",
-    "description": "Seene knows how often each client comes and lists those who are due for a fill. All that’s left is to pick a slot and tap “Invite”.",
-    "p1": "Each client’s own cycle, no manual setup",
-    "p2": "Ready texts: fill, birthday, free slot",
-    "p3": "At the end of the month you see how many clients came back and for how much",
-    "imageAlt": "Artist on her phone between clients",
-    "cycleLabel": "Zhanara’s cycle",
-    "cycleStart": "Comes every 3 weeks.",
-    "cyclePassed": "It’s been 5",
-    "cycleEnd": "— time to invite",
-    "replyLabel": "Zhanara replied",
-    "reply": "Oh, right! How about Thursday at 11:00?",
-    "returnedLabel": "Came back in October",
-    "returned": "9 clients · 7,200 som",
-    "phone": {
-      "label": "Seene app screen: the “time to invite” list and a ready message for Zhanara",
-      "title": "Clients",
-      "all": "All · 86",
-      "due": "Time to invite · 7",
-      "call": "Invite",
-      "zhanaraName": "Zhanara B.",
-      "sezimName": "Sezim A.",
-      "oliviaName": "Olivia M.",
-      "zhanara": "5 weeks ago · usually every 3",
-      "sezim": "4 weeks ago · usually every 3",
-      "olivia": "6 weeks ago · message in EN",
-      "sheetTitle": "Message for Zhanara",
-      "message": "Hi Zhanara! It’s been 5 weeks since your last manicure. I have slots on Thursday at 11:00 and Friday at 16:00. Shall I book you in?",
-      "correction": "Fill",
-      "birthday": "Birthday",
-      "custom": "Own text",
-      "open": "Open in WhatsApp"
-    }
-  },
-  "commission": {
-    "title": "0% commission.",
-    "titleEnd": "Always.",
-    "text": "Marketplaces take a cut of every new client. Seene takes nothing: your clients, your money. The basics are free, and Pro costs less than one manicure a month.",
-    "cta": "See pricing",
-    "seene": "Seene",
-    "marketplaces": "Marketplaces, per new client"
   },
   "founders": {
-    "eyebrow": "Founding masters",
+    "eyebrow": "Founding pros",
     "title": "Be one of the first 20.",
-    "text": "We’re launching in Bishkek, Toronto and Vancouver together with beauty pros. In return for honest feedback, you get what nobody else will.",
-    "imageAlt": "Two beauty artists laughing at a phone",
+    "text": "In return for honest feedback, you get what no one else will.",
+    "imageAlt": "Artist writing her clients in a paper notebook",
     "perk1": {
       "bold": "Pro free forever",
-      "rest": ", not just a trial month"
+      "rest": ", not a one-month trial"
     },
     "perk2": {
-      "bold": "We move your clients from your notebook for you",
-      "rest": ": just photograph the pages"
+      "bold": "We’ll move your clients from your notebook",
+      "rest": ": just take photos of the pages"
     },
     "perk3": {
       "bold": "A direct line to the founder",
@@ -173,60 +313,87 @@
     "form": {
       "title": "Apply to be a founder",
       "name": "Your name",
-      "namePlaceholder": "Aigul",
+      "namePlaceholder": "Karina",
       "contact": "Instagram or WhatsApp",
-      "contactPlaceholder": "@aigul.nails",
+      "contactPlaceholder": "@karina.nails",
       "city": "City",
       "cities": {
-        "bishkek": "Bishkek",
-        "toronto": "Toronto",
-        "vancouver": "Vancouver",
-        "other": "Another city"
+        "kg": {
+          "bishkek": "Bishkek",
+          "osh": "Osh",
+          "jalal-abad": "Jalal-Abad",
+          "karakol": "Karakol",
+          "tokmok": "Tokmok",
+          "kara-balta": "Kara-Balta",
+          "other": "Another city"
+        },
+        "ca": {
+          "toronto": "Toronto",
+          "vancouver": "Vancouver",
+          "montreal": "Montreal",
+          "calgary": "Calgary",
+          "ottawa": "Ottawa",
+          "edmonton": "Edmonton",
+          "mississauga": "Mississauga",
+          "other": "Another city"
+        }
       },
+      "place": "Country and city",
+      "placePlaceholder": "For example: Almaty, Kazakhstan",
+      "placeNote": "We’re launching in Kyrgyzstan and Canada first. Apply, and we’ll write when we come to your city.",
       "specialty": "What you do",
-      "specialties": {
-        "manicure": "Nails",
-        "pedicure": "Pedicure",
-        "brows": "Brows",
-        "lashes": "Lashes",
-        "other": "Other"
-      },
+      "specialtyPlaceholder": "For example: nails, brows, massage",
       "submit": "I want to be a founder",
       "note": "We’ll get back to you within two days. By tapping the button, you agree to the",
       "privacy": "privacy policy",
       "nameRequired": "Tell us your name",
       "contactRequired": "Leave your Instagram or WhatsApp",
-      "specialtyRequired": "Pick at least one",
-      "failed": "Couldn’t send it. Please try again in a minute.",
-      "tooMany": "Too many applications from this device. Please try later.",
+      "specialtyRequired": "Tell us what you do",
+      "placeRequired": "Tell us your country and city",
+      "failed": "Couldn’t send it. Try again in a minute.",
+      "tooMany": "Too many applications from this device. Try again later.",
       "doneTitle": "Thank you!",
       "doneText": "We’ll get back to you within 2 days."
+    },
+    "launch": {
+      "kg": "We’re launching in Bishkek together with beauty pros.",
+      "ca": "We’re launching in Toronto and Vancouver together with beauty pros.",
+      "other": "Right now we’re launching in Kyrgyzstan and Canada together with beauty pros."
     }
   },
   "faq": {
     "eyebrow": "Questions",
-    "title": "The short version",
+    "title": "Frequently asked questions",
+    "notebook": {
+      "q": "How is Seene better than a notebook and Instagram?",
+      "a": "All your bookings, clients and money in one place. The app reminds clients about their visit and tells you who is due to book again."
+    },
     "install": {
       "q": "Do my clients need to install anything?",
-      "a": "No. Reminders arrive in their regular WhatsApp, and booking opens from a link in the browser."
+      "a": "No. Reminders arrive in their regular WhatsApp, and online booking opens from a link in the browser."
     },
-    "robot": {
-      "q": "Are the messages written by a bot?",
-      "a": "No. Seene drafts the text, and you send it from your own number. You can change any word."
+    "reminders": {
+      "q": "How do WhatsApp reminders work?",
+      "a": "Seene drafts the text with the name, time and service. You send it from your own number and can change any word."
     },
     "price": {
-      "q": "How much does it cost?",
-      "a": "Calendar, clients and reminders are free. Pro with “time to invite” and money tracking costs less than one manicure a month."
+      "q": "How much does Seene cost?",
+      "a": "Calendar, client list and reminders are free. Pro, with “time to invite” and money tracking, costs less than one appointment a month. No commission."
+    },
+    "platforms": {
+      "q": "Does it work on iPhone and Android?",
+      "a": "Yes, the app will be on the App Store and Google Play. The online booking page opens on any phone."
     },
     "data": {
-      "q": "Who sees my clients’ data?",
-      "a": "Only you. We don’t sell data and we don’t message your clients. You can delete your whole account in settings.",
+      "q": "Who can see my clients’ data?",
+      "a": "Only you. We don’t sell data and we never message your clients. You can delete your whole account in settings.",
       "more": "Learn more"
     }
   },
   "final": {
-    "title": "Less texting. More clients.",
-    "storePrefix": "Download on",
+    "title": "Start keeping your bookings in Seene for free",
+    "appStorePrefix": "Download on the",
+    "googlePlayPrefix": "Get it on",
     "appStore": "App Store",
     "googlePlay": "Google Play",
     "note": "Free. No card. No commission."

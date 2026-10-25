@@ -77,7 +77,7 @@ useSeoMeta({
                 <label :id="`calc-${slider.key}`" class="font-semibold">{{
                   $ts(slider.key)
                 }}</label>
-                <span class="shrink-0 font-mono tabular-nums">{{ slider.value }}</span>
+                <span class="shrink-0 font-semibold tabular-nums">{{ slider.value }}</span>
               </div>
               <USlider
                 v-model="slider.model.value"

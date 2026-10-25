@@ -6,11 +6,6 @@
   "eyebrow": "Tarifs",
   "title": "Un prix simple. Sans commission.",
   "description": "Tout ce qui remplace ton carnet est gratuit. Pro t’aide à gagner plus et coûte moins qu’une visite par mois.",
-  "market": {
-    "label": "Où tu travailles",
-    "kg": "Bichkek",
-    "ca": "Canada"
-  },
   "currency": {
     "kg": "som",
     "ca": "CAD"

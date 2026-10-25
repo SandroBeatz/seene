@@ -845,34 +845,43 @@ export type Database = {
       }
       waitlist: {
         Row: {
-          city: string
+          city: string | null
           contact: string
+          country: string
           created_at: string
           id: string
+          ip_country: string | null
           ip_hash: string | null
           locale: string
           name: string
-          specialties: string[]
+          place: string | null
+          specialty: string
         }
         Insert: {
-          city: string
+          city?: string | null
           contact: string
+          country: string
           created_at?: string
           id?: string
+          ip_country?: string | null
           ip_hash?: string | null
           locale?: string
           name: string
-          specialties: string[]
+          place?: string | null
+          specialty: string
         }
         Update: {
-          city?: string
+          city?: string | null
           contact?: string
+          country?: string
           created_at?: string
           id?: string
+          ip_country?: string | null
           ip_hash?: string | null
           locale?: string
           name?: string
-          specialties?: string[]
+          place?: string | null
+          specialty?: string
         }
         Relationships: []
       }
