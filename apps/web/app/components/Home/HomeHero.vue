@@ -2,7 +2,8 @@
 /**
  * First screen ("Главная" artboard, 24 October): the master at work (H-01),
  * the app's "Today" screen in a phone at the bottom left and one WhatsApp card
- * at the bottom right. Motion per the animation spec: the text rises line by
+ * at the bottom right (on phones the photo takes the full width and the phone
+ * sits smaller in its corner). Motion per the animation spec: the text rises line by
  * line, at 1 s the reminder arrives, 1.5 s later the client answers "Yes" with
  * two ticks; the card then drifts ±4 px. On phones the card is hidden, as in
  * the design. Reduced motion shows everything at rest.
@@ -73,23 +74,26 @@ const checks = computed(() => [$ts('hero.free'), $ts('hero.commission'), $ts('he
         </ul>
       </div>
 
-      <div class="relative h-[520px] min-w-0 flex-[1_1_500px] md:h-[620px]">
-        <div class="absolute top-0 right-0 h-full w-[78%] overflow-hidden rounded-[36px]">
+      <div class="relative h-[480px] min-w-0 flex-[1_1_500px] md:h-[620px]">
+        <div
+          class="absolute top-0 right-0 h-full w-full overflow-hidden rounded-[28px] md:w-[78%] md:rounded-[36px]"
+        >
           <SiteImage
             id="H-01"
             name="h-01-hero"
             :alt="$ts('hero.imageAlt')"
             tint="#E6D6CE"
             priority
-            sizes="(max-width: 767px) 78vw, 450px"
+            sizes="(max-width: 767px) 100vw, 450px"
           />
         </div>
 
-        <!-- The app's "Today" screen, 320 × 660 drawn at 86% -->
+        <!-- The app's "Today" screen, 320 × 660 drawn at 86%; on phones smaller,
+             in the corner, so the photo stays in view -->
         <div
-          class="absolute -bottom-10 left-0 h-[568px] w-[275px] drop-shadow-[0_30px_40px_rgba(40,20,15,0.22)]"
+          class="absolute -bottom-8 left-3 h-[371px] w-[180px] drop-shadow-[0_30px_40px_rgba(40,20,15,0.22)] md:-bottom-10 md:left-0 md:h-[568px] md:w-[275px]"
         >
-          <div class="origin-top-left scale-[0.86]">
+          <div class="origin-top-left scale-[0.5625] md:scale-[0.86]">
             <HomeAppToday />
           </div>
         </div>
