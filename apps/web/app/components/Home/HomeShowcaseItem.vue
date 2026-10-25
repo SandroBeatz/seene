@@ -10,8 +10,6 @@ defineProps<{
   title: string
   text: string
   active: boolean
-  /** "01" (features) or a round step number (booking) */
-  numbering: 'zero' | 'step'
 }>()
 
 defineEmits<{ select: [] }>()
@@ -35,13 +33,6 @@ defineEmits<{ select: [] }>()
         @click="$emit('select')"
       >
         <span
-          v-if="numbering === 'zero'"
-          class="w-6 shrink-0 font-sans text-[12px] font-semibold tracking-normal text-ink-muted tabular-nums"
-        >
-          0{{ index + 1 }}
-        </span>
-        <span
-          v-else
           class="flex size-7 shrink-0 items-center justify-center rounded-full font-sans text-[13px] font-semibold tracking-normal transition-colors duration-150"
           :class="
             active ? 'bg-ink text-white' : 'bg-[#EDEDEA] text-ink-muted group-hover:bg-[#E2E2DE]'

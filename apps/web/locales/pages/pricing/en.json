@@ -23,7 +23,7 @@
   },
   "pro": {
     "title": "Pro",
-    "badge": "Free forever for founders",
+    "badge": "Free forever for the first 20",
     "period": "per month",
     "noteKg": "Less than half of one manicure",
     "noteCa": "Cheaper than GlossGenius and Booksy",
@@ -48,7 +48,7 @@
     "title": "Billing questions",
     "trial": {
       "q": "Is there a free trial?",
-      "a": "Yes, you can try Pro after signing up, no card needed. Founding masters get Pro free forever."
+      "a": "Yes, you can try Pro after signing up, no card needed. The first 20 beauty pros get Pro free forever."
     },
     "cancel": {
       "q": "How do I cancel?",

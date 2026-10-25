@@ -302,12 +302,12 @@
     }
   },
   "founders": {
-    "eyebrow": "Pros fondatrices",
-    "title": "Fais partie des 20 premières.",
+    "eyebrow": "Offre spéciale",
+    "title": "Pro gratuit pour toujours pour les 20 premières pros",
     "text": "En échange d’un avis honnête, tu reçois ce que les autres n’auront pas.",
     "imageAlt": "Une pro note ses clientes dans un carnet papier",
     "perk1": {
-      "bold": "Pro gratuit pour toujours",
+      "bold": "Toutes les fonctions Pro gratuites",
       "rest": ", pas juste un mois d’essai"
     },
     "perk2": {
@@ -319,7 +319,7 @@
       "rest": " sur WhatsApp ou Telegram"
     },
     "form": {
-      "title": "Candidature fondatrice",
+      "title": "Demande de place",
       "name": "Ton prénom",
       "namePlaceholder": "Karina",
       "contact": "Instagram ou WhatsApp",
@@ -334,7 +334,7 @@
       "placeNote": "Nous lançons d’abord au Kirghizistan et au Canada. Envoie ta candidature, et nous t’écrirons quand nous arriverons dans ta ville.",
       "specialty": "Ta spécialité",
       "specialtyPlaceholder": "Par exemple : ongles, sourcils, massage",
-      "submit": "Je veux être fondatrice",
+      "submit": "Réserver ma place",
       "note": "Nous te répondons sous deux jours. En appuyant sur le bouton, tu acceptes la",
       "privacy": "politique de confidentialité",
       "nameRequired": "Indique ton prénom",
@@ -351,7 +351,8 @@
       "kg": "Nous lançons Seene à Bichkek avec des pros de la beauté.",
       "ca": "Nous lançons Seene à Toronto et Vancouver avec des pros de la beauté.",
       "other": "Pour l’instant, nous lançons Seene au Kirghizistan et au Canada avec des pros de la beauté."
-    }
+    },
+    "spots": "20 places"
   },
   "faq": {
     "eyebrow": "Questions",

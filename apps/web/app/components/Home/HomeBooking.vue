@@ -44,7 +44,6 @@ const tabs = computed(() => steps.map((step) => $ts(`booking.${step}.tab`)))
             v-for="(step, i) in steps"
             :key="step"
             :index="i"
-            numbering="step"
             :title="$ts(`booking.${step}.title`)"
             :text="$ts(`booking.${step}.text`)"
             :active="active === i"

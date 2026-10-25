@@ -302,13 +302,13 @@
     }
   },
   "founders": {
-    "eyebrow": "Founding pros",
-    "title": "Be one of the first 20.",
+    "eyebrow": "Special offer",
+    "title": "Pro free forever for the first 20 beauty pros",
     "text": "In return for honest feedback, you get what no one else will.",
     "imageAlt": "Artist writing her clients in a paper notebook",
     "perk1": {
-      "bold": "Pro free forever",
-      "rest": ", not a one-month trial"
+      "bold": "Every Pro feature for free",
+      "rest": ", not just a one-month trial"
     },
     "perk2": {
       "bold": "We’ll move your clients from your notebook",
@@ -319,7 +319,7 @@
       "rest": " on WhatsApp or Telegram"
     },
     "form": {
-      "title": "Apply to be a founder",
+      "title": "Apply for a spot",
       "name": "Your name",
       "namePlaceholder": "Karina",
       "contact": "Instagram or WhatsApp",
@@ -334,7 +334,7 @@
       "placeNote": "We’re launching in Kyrgyzstan and Canada first. Apply, and we’ll write when we come to your city.",
       "specialty": "What you do",
       "specialtyPlaceholder": "For example: nails, brows, massage",
-      "submit": "I want to be a founder",
+      "submit": "Claim my spot",
       "note": "We’ll get back to you within two days. By tapping the button, you agree to the",
       "privacy": "privacy policy",
       "nameRequired": "Tell us your name",
@@ -351,7 +351,8 @@
       "kg": "We’re launching in Bishkek together with beauty pros.",
       "ca": "We’re launching in Toronto and Vancouver together with beauty pros.",
       "other": "Right now we’re launching in Kyrgyzstan and Canada together with beauty pros."
-    }
+    },
+    "spots": "20 spots"
   },
   "faq": {
     "eyebrow": "Questions",
