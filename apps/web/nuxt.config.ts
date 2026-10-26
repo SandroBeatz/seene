@@ -54,7 +54,16 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    '/': { prerender: true }
+    '/': { prerender: true },
+    // Legal pages read @nuxt/content, whose SQLite database does not start in
+    // the Vercel function (the content API answers 500 and the page renders
+    // empty). Built at deploy time, they need no database at runtime.
+    '/privacy': { prerender: true },
+    '/terms': { prerender: true },
+    '/ru/privacy': { prerender: true },
+    '/ru/terms': { prerender: true },
+    '/fr/privacy': { prerender: true },
+    '/fr/terms': { prerender: true }
   },
 
   compatibilityDate: '2025-01-15',
