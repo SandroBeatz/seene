@@ -25,6 +25,7 @@ export {
   type IconWeight,
 } from './Icon';
 export { Input, type InputProps, type InputSize } from './Input';
+export { Logo, type LogoProps, type LogoTone } from './Logo';
 export { CodeInput, type CodeInputProps } from './CodeInput';
 export { Switch, type SwitchProps, type SwitchSize } from './Switch';
 export {

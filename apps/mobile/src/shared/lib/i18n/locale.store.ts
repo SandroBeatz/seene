@@ -9,6 +9,13 @@ import { mmkvSyncStorage } from '@/shared/api/storage';
 export const SUPPORTED_LOCALES = ['en', 'fr', 'ru'] as const;
 export type AppLocale = (typeof SUPPORTED_LOCALES)[number];
 
+/** Each language's own name — shown untranslated, so anyone can find theirs. */
+export const LOCALE_NATIVE_NAMES: Record<AppLocale, string> = {
+  ru: 'Русский',
+  en: 'English',
+  fr: 'Français',
+};
+
 export function isSupportedLocale(value: string): value is AppLocale {
   return (SUPPORTED_LOCALES as readonly string[]).includes(value);
 }

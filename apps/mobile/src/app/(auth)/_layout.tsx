@@ -15,7 +15,18 @@ export default function AuthLayout() {
       }}>
       <Stack.Screen
         name="sign-in/index"
-        options={{ headerShown: false, statusBarStyle: 'light' }}
+        options={{ headerShown: false, statusBarStyle: theme.name === 'dark' ? 'light' : 'dark' }}
+      />
+      <Stack.Screen
+        name="language"
+        options={{
+          presentation: 'formSheet',
+          sheetAllowedDetents: 'fitToContents',
+          sheetCornerRadius: theme.radius.xxl,
+          // The grabber is drawn in content so iOS and Android match.
+          sheetGrabberVisible: false,
+          contentStyle: { backgroundColor: theme.colors.bg.canvas },
+        }}
       />
       <Stack.Screen
         name="sign-in/email"

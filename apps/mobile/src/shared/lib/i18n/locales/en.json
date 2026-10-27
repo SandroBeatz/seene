@@ -58,7 +58,19 @@
     "legalTerms": "Terms",
     "legalPrivacy": "Privacy Policy",
     "logIn": "Log in",
-    "confirmEmailSent": "We sent a confirmation link to {{email}}. Confirm it, then sign in."
+    "confirmEmailSent": "We sent a confirmation link to {{email}}. Confirm it, then sign in.",
+    "welcome": {
+      "title": "Your personal assistant at work",
+      "subtitle": "Bookings, clients and WhatsApp reminders. Free.",
+      "heroAlt": "A manicurist working by the window",
+      "chatFrom": "WhatsApp · Zhanara",
+      "chatText": "Yes, see you tomorrow at 10:00, thanks!",
+      "statLabel": "No-shows in October",
+      "statValue": "0 of 64",
+      "emailLogin": "Log in with email",
+      "legal": "By continuing, you accept the <terms>Terms</terms> and <privacy>Policy</privacy>",
+      "languageA11y": "Language: {{name}}"
+    }
   },
   "account": {
     "deactivatedTitle": "Account deactivated",
@@ -392,6 +404,15 @@
       "publicRoute": "Keep auth UI in its own public Stack and canonical URL namespace.",
       "returnTo": "Validate the target as an internal path before imperative replacement.",
       "signOut": "Let guard changes clear protected history; do not push the sign-in route manually."
+    }
+  },
+  "language": {
+    "title": "Language",
+    "hint": "We use your phone's language by default. You can change it later in settings.",
+    "names": {
+      "ru": "Russian",
+      "en": "English",
+      "fr": "French"
     }
   }
 }

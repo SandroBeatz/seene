@@ -16,6 +16,7 @@ import { initI18n } from '@/shared/lib/i18n';
 import { useAuthReturnIntent } from '@/shared/lib/navigation/useAuthReturnIntent';
 import { initSentry, wrap } from '@/shared/lib/observability/sentry';
 import { useAppFonts } from '@/shared/theme/fonts';
+import { motion } from '@/shared/theme/tokens';
 import { useThemeStore } from '@/shared/theme/theme.store';
 import { ErrorBoundary } from '@/shared/ui/ErrorBoundary';
 
@@ -23,6 +24,8 @@ initSentry();
 initI18n();
 initQueryManagers();
 void SplashScreen.preventAutoHideAsync();
+// The splash (ink + white wordmark, design "Сплэш") fades into the first screen (iOS; Android uses the system exit).
+SplashScreen.setOptions({ fade: true, duration: motion.duration.fade });
 
 function RootLayout() {
   useThemeStore();

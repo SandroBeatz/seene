@@ -21,6 +21,11 @@ export type TextColor =
   | 'brand'
   | 'brandStrong'
   | 'onDarkMuted'
+  /** Theme-invariant ink / white — for content on fixed-colour surfaces over photos. */
+  | 'ink'
+  | 'white'
+  /** Success green that stays dark on fixed white surfaces. */
+  | 'inkSuccess'
   | 'danger'
   | 'success'
   | 'warning';
@@ -66,6 +71,9 @@ const styles = StyleSheet.create((theme) => ({
         brand: { color: theme.colors.brand.text },
         brandStrong: { color: theme.colors.brand.strong },
         onDarkMuted: { color: theme.colors.content.onDarkMuted },
+        ink: { color: theme.colors.constant.ink },
+        white: { color: theme.colors.constant.white },
+        inkSuccess: { color: theme.colors.constant.success },
         danger: { color: theme.colors.feedback.danger },
         success: { color: theme.colors.feedback.success },
         warning: { color: theme.colors.feedback.warning },

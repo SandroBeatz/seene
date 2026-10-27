@@ -1,5 +1,5 @@
 ---
-version: 3.0
+version: 3.1
 date: 2026-10-27
 category: design
 status: implemented
@@ -60,6 +60,9 @@ Source of truth: the app boards of the "Seene: дизайн сайта" artboard
   `bg.sunken`,
   `content.primary`, `content.secondary`, `content.tertiary`, `content.inverse`, `content.disabled`,
   `content.onDarkMuted`,
+  `constant.white`, `constant.black`, `constant.ink`, `constant.success` (theme-invariant: UI drawn
+  on fixed surfaces over photos, e.g. the Welcome hero cards; `Text` exposes them as `ink`,
+  `white`, `inkSuccess`),
   `border.subtle`, `border.default`, `border.strong` (unchecked marks, dashed "add" buttons),
   `border.focus`, `border.dashed`,
   `control.trackOff`, `control.knob`, `control.focusRing`,
@@ -87,7 +90,7 @@ Source of truth: the app boards of the "Seene: дизайн сайта" artboard
   `title3` 19, `tile` 16 (Inter Tight bold, negative tracking); `headline` 17/600, `bodyLarge` 17,
   `callout` 16 (+ `calloutMedium`, `calloutStrong`), `body` 15 (+ `bodyMedium`, `bodyStrong`),
   `subhead` 14 (+ `subheadStrong`), `footnote` 13 (+ `footnoteStrong`), `caption` 12
-  (+ `captionStrong`), `overline` 11/600 uppercase, `micro` 10. Letter-spacing is stored in px
+  (+ `captionStrong`), `caption2` 11 (+ `caption2Strong`), `overline` 11/600 uppercase, `micro` 10. Letter-spacing is stored in px
   (design em × size).
 - **Dynamic Type:** respected, capped at `MAX_FONT_SCALE` (1.3) so fixed-height controls hold.
   `Text` also disables Android font padding.
@@ -97,7 +100,7 @@ Source of truth: the app boards of the "Seene: дизайн сайта" artboard
 ### 3.3 Spacing & sizing
 
 - **Space scale** (4-pt base): `space.0,1(4),2(8),3(12),4(16),5(20),6(24),8(32),10(40),12(48)…`,
-  plus half steps for the design's off-grid values: `0.25(1)`, `0.5(2)`, `1.5(6)`, `2.5(10)`,
+  plus half steps for the design's off-grid values: `0.25(1)`, `0.5(2)`, `1.25(5)`, `1.5(6)`, `2.5(10)`,
   `3.5(14)`, `4.5(18)`, `5.5(22)`, `6.5(26)`, `7(28)`, `7.5(30)`.
 - **Layout:** `layout.gutter` 20 (screen side padding), `layout.topGap` 10 (below the safe area on
   header-less screens), `layout.minBottomGap` 16.
@@ -163,7 +166,8 @@ wrappers in §4.3 (`Screen`, `ScreenScrollView`, `FormScreen`, `FormSheetContent
 Added for the onboarding design (v3): `CodeInput` (6 cells over one native input with OS
 one-time-code autofill), `SelectionMark` (24pt checkbox/radio, `onImage` tone for photo tiles),
 `SegmentedControl`, `StepHeader` (back + segmented progress + counter), `SheetHeader` (grabber,
-round close/back, centred title), `SectionLabel`, `GroupedCard` (filled/outlined row groups).
+round close/back, centred title; `inset={false}` when the sheet pads its own body), `Logo`
+(the brand wordmark as SVG, `ink` follows the theme, `white` is fixed), `SectionLabel`, `GroupedCard` (filled/outlined row groups).
 `Input` gained `prefix`/`suffix`/`strong`/`focusRing`/`inactive`/`below`; `Switch` is drawn from
 tokens (md 50×30, sm 46×27) so it matches on both platforms; `Button` is 54pt by default with a
 dedicated disabled look; `Chip` covers presets, weekdays and the dashed "custom" affordance.

@@ -58,7 +58,19 @@
     "legalTerms": "Conditions",
     "legalPrivacy": "Confidentialité",
     "logIn": "Connexion",
-    "confirmEmailSent": "Nous avons envoyé un lien de confirmation à {{email}}. Confirmez-le, puis connectez-vous."
+    "confirmEmailSent": "Nous avons envoyé un lien de confirmation à {{email}}. Confirmez-le, puis connectez-vous.",
+    "welcome": {
+      "title": "Ton assistant personnel au travail",
+      "subtitle": "Rendez-vous, clients et rappels WhatsApp. Gratuit.",
+      "heroAlt": "Une manucure travaille près de la fenêtre",
+      "chatFrom": "WhatsApp · Janara",
+      "chatText": "Oui, je serai là demain à 10:00, merci !",
+      "statLabel": "Absences en octobre",
+      "statValue": "0 sur 64",
+      "emailLogin": "Se connecter par e-mail",
+      "legal": "En continuant, vous acceptez les <terms>Conditions</terms> et la <privacy>Politique</privacy>",
+      "languageA11y": "Langue : {{name}}"
+    }
   },
   "account": {
     "deactivatedTitle": "Compte désactivé",
@@ -392,6 +404,15 @@
       "publicRoute": "Garder l’auth dans une Stack publique et un namespace URL dédié.",
       "returnTo": "Valider le chemin interne avant le replace impératif.",
       "signOut": "Laisser les guards nettoyer l’historique ; ne pas pousser la connexion manuellement."
+    }
+  },
+  "language": {
+    "title": "Langue",
+    "hint": "Par défaut, nous utilisons la langue du téléphone. Vous pourrez la changer plus tard dans les réglages.",
+    "names": {
+      "ru": "Russe",
+      "en": "Anglais",
+      "fr": "French"
     }
   }
 }

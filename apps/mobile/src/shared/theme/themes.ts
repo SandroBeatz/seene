@@ -115,6 +115,8 @@ export const lightTheme = {
       white: n[0],
       black: n[1000],
       ink: n[950],
+      /** Success green on fixed white surfaces (WhatsApp reply card over a photo). */
+      success: palette.green.base,
     },
     feedback: {
       success: palette.green.base,
@@ -227,6 +229,8 @@ export const darkTheme = {
       white: n[0],
       black: n[1000],
       ink: n[950],
+      /** Success green on fixed white surfaces (WhatsApp reply card over a photo). */
+      success: palette.green.base,
     },
     feedback: {
       success: palette.green.bright,
