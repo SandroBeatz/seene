@@ -101,7 +101,7 @@ public-booking tables. `payment-types.md` itself notes "*payment_type should be 
 `appointments.md` lists it as nullable. Treat it as **required** (the create form enforces
 `duration ≥ 1`).
 
-## 3. RPCs (9 in `public`)
+## 3. RPCs (11 in `public`)
 
 All are `SECURITY DEFINER` except `update_updated_at`. These are the **only** non-CRUD server
 operations; the mobile app calls a subset via `supabase.rpc(...)` inside the api layer.
@@ -113,6 +113,8 @@ operations; the mobile app calls a subset via `supabase.rpc(...)` inside the api
 | `get_analytics_widgets_v2(p_top_from,…, p_tz) → json` | ✅ | Fixed-window widgets: top services (30d), client mix (90d), busiest days (56d). |
 | `appointment_day_counts(p_from, p_to, p_tz) → table(day, cnt)` | ✅ | Per-day appointment counts for calendar dots. |
 | `check_username_available(p_username) → boolean` | ✅ | Username uniqueness check in onboarding/profile. |
+| `complete_onboarding(p_payload jsonb) → uuid` | ✅ | **SECURITY INVOKER** (caller's RLS). One transaction: `master_profile` + `master_settings` + `service[]` (+ `service_category` per distinct name). Raises `already_completed`, `invalid_payload` (22023); username clash = 23505. A service without a price is saved with `price 0, show_online false` (a draft, hidden from the public page). |
+| `specialization_keys() → text[]` | ❌ (CHECKs) | Immutable list of the 14 profession keys shared by both CHECK constraints. |
 | `analytics_period_metrics(p_uid, p_from, p_to) → json` | ❌ (internal) | Scalar-metrics helper; not granted to any role. |
 | `create_booking(p_username, p_service_ids, p_starts_at, p_phone, p_note) → jsonb` | ❌ (public site) | Anon creates a public booking. |
 | `create_appointment_from_booking(p_username, p_service_ids, p_starts_at, p_phone, p_first_name, p_last_name, p_note) → jsonb` | ❌ (public site) | Anon path that materialises an `appointment`. |

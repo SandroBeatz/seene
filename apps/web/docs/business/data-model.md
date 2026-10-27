@@ -1,6 +1,6 @@
 ---
-version: 2.5
-date: 2026-10-24
+version: 2.6
+date: 2026-10-27
 category: business
 ---
 
@@ -54,7 +54,7 @@ Identity, location, and availability data for the master. Populated once at the 
 | `user_id`           | `uuid`        | NO       | —                   | FK → `auth.users.id`; one profile per auth user                                                |
 | `first_name`        | `text`        | NO       | —                   | From onboarding Step 2                                                                         |
 | `last_name`         | `text`        | NO       | —                   | From onboarding Step 2                                                                         |
-| `phone`             | `text`        | NO       | —                   | International format, from Step 2                                                              |
+| `phone`             | `text`        | YES      | —                   | Optional since 2026-10-27 (not asked at onboarding; added in settings)                         |
 | `username`          | `text`        | NO       | —                   | Unique; forms public URL `getseene.app/<username>` (format below)                              |
 | `specializations`   | `text[]`      | NO       | —                   | Array of category keys (see details below)                                                     |
 | `country`           | `text`        | NO       | `''`                | ISO 3166-1 alpha-2 code or full country name                                                   |
@@ -106,19 +106,26 @@ CREATE POLICY "Users can manage own profile"
 
 ### `specializations` — `text[]`
 
-Array of service category keys. Order is not significant. At least one value is required (client-side validation).
+Array of profession keys. Order is not significant. At least one value, all from `public.specialization_keys()` (CHECK `master_profile_specializations_valid`).
 
-| Key               | English             | Russian         |
-| ----------------- | ------------------- | --------------- |
-| `makeup`          | Make-up             | Макияж          |
-| `hair`            | Hair                | Волосы          |
-| `nails`           | Nails               | Ногти           |
-| `barber`          | Barber              | Барбер          |
-| `massage`         | Massage             | Массаж          |
-| `tattoo_piercing` | Tattoo and piercing | Тату и пирсинг  |
-| `depilation`      | Depilation          | Депиляция       |
-| `cosmetology`     | Cosmetology         | Косметология    |
-| `brows_lashes`    | Brows and eyelashes | Брови и ресницы |
+| Key                | English          | Russian              |
+| ------------------ | ---------------- | -------------------- |
+| `lashes`           | Lashes           | Ресницы              |
+| `brows`            | Brows            | Брови                |
+| `manicure`         | Manicure         | Маникюр              |
+| `pedicure`         | Pedicure         | Педикюр              |
+| `hair`             | Haircuts & hair  | Стрижка и волосы     |
+| `barbers`          | Barbers          | Барберы              |
+| `makeup`           | Makeup           | Макияж и визаж       |
+| `skincare`         | Skincare         | Косметология         |
+| `hair_removal`     | Hair removal     | Депиляция и эпиляция |
+| `massage`          | Massage          | Массаж               |
+| `permanent_makeup` | Permanent makeup | Перманентный макияж  |
+| `tattoo`           | Tattoo           | Тату                 |
+| `piercing`         | Piercing         | Пирсинг              |
+| `pet_grooming`     | Pet grooming     | Груминг              |
+
+Until 2026-10-27 there were 9 broad keys; `20261027200000_onboarding_redesign` mapped them (`nails` → `manicure`+`pedicure`, `tattoo_piercing` → `tattoo`+`piercing`, `brows_lashes` → `brows`+`lashes`, `depilation` → `hair_removal`, `cosmetology` → `skincare`, `barber` → `barbers`).
 
 Display names are resolved at render time from i18n — only keys are stored.
 
@@ -234,23 +241,26 @@ Individual services that a master offers — e.g. "Manicure", "Haircut & Blowdry
 
 ### Schema
 
-| Column        | Type          | Nullable | Default             | Description                                              |
-| ------------- | ------------- | -------- | ------------------- | -------------------------------------------------------- |
-| `id`          | `uuid`        | NO       | `gen_random_uuid()` | Primary key                                              |
-| `user_id`     | `uuid`        | NO       | —                   | FK → `auth.users.id`                                     |
-| `category_id` | `uuid`        | YES      | `null`              | FK → `service_category.id`; SET NULL on category delete  |
-| `name`        | `text`        | NO       | —                   | Service display name                                     |
-| `description` | `text`        | YES      | `null`              | Optional description                                     |
-| `duration`    | `integer`     | NO       | —                   | Duration in minutes                                      |
-| `price`       | `numeric`     | NO       | —                   | Price (currency determined by master's locale)           |
-| `color`       | `text`        | NO       | `'#a78bfa'`         | Hex color for calendar rendering                         |
-| `is_active`   | `boolean`     | NO       | `true`              | Whether the service is available for booking             |
-| `sort_order`  | `integer`     | NO       | `0`                 | Controls display ordering                                |
-| `created_at`  | `timestamptz` | NO       | `now()`             | —                                                        |
-| `updated_at`  | `timestamptz` | NO       | `now()`             | Application-maintained                                   |
-| `photo_url`   | `text`        | YES      | `null`              | Photo in the public service list (`master-media` bucket) |
-| `price_from`  | `boolean`     | NO       | `false`             | Show the price as "from <price>"                         |
-| `show_online` | `boolean`     | NO       | `true`              | `false`: listed on the page, not bookable online         |
+| Column           | Type          | Nullable | Default             | Description                                                                   |
+| ---------------- | ------------- | -------- | ------------------- | ----------------------------------------------------------------------------- |
+| `id`             | `uuid`        | NO       | `gen_random_uuid()` | Primary key                                                                   |
+| `user_id`        | `uuid`        | NO       | —                   | FK → `auth.users.id`                                                          |
+| `category_id`    | `uuid`        | YES      | `null`              | FK → `service_category.id`; SET NULL on category delete                       |
+| `name`           | `text`        | NO       | —                   | Service display name                                                          |
+| `description`    | `text`        | YES      | `null`              | Optional description                                                          |
+| `duration`       | `integer`     | NO       | —                   | Duration in minutes                                                           |
+| `price`          | `numeric`     | NO       | —                   | Price (currency determined by master's locale)                                |
+| `color`          | `text`        | NO       | `'#a78bfa'`         | Hex color for calendar rendering                                              |
+| `is_active`      | `boolean`     | NO       | `true`              | Whether the service is available for booking                                  |
+| `sort_order`     | `integer`     | NO       | `0`                 | Controls display ordering                                                     |
+| `created_at`     | `timestamptz` | NO       | `now()`             | —                                                                             |
+| `updated_at`     | `timestamptz` | NO       | `now()`             | Application-maintained                                                        |
+| `photo_url`      | `text`        | YES      | `null`              | Photo in the public service list (`master-media` bucket)                      |
+| `price_from`     | `boolean`     | NO       | `false`             | Show the price as "from <price>"                                              |
+| `show_online`    | `boolean`     | NO       | `true`              | `false`: listed on the page, not bookable online                              |
+| `specialization` | `text`        | YES      | `null`              | Profession ("section") the service belongs to; one of `specialization_keys()` |
+
+A service with `price = 0` **and** `show_online = false` is a draft (saved without a price at onboarding): the public page (`/api/master/[username]`) does not return it until the master sets a price.
 
 ### Constraints & indexes
 

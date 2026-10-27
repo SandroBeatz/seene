@@ -1,11 +1,11 @@
 /**
  * Master-profile api — the only master-layer module allowed to import the Supabase
  * client (docs/api-layer.md §1). Backs onboarding: username availability, the
- * `master_profile` insert, and the `master_settings` upsert.
+ * one-shot `complete_onboarding` write (and the legacy insert/upsert pair).
  */
 import { supabase } from '@/shared/api/supabase';
 import type { Database, Json } from '@/shared/api/database.types';
-import type { OnboardingDraft } from '../model/types';
+import type { CompleteOnboardingPayload, OnboardingDraft } from '../model/types';
 
 type MasterSettingsInsert = Database['public']['Tables']['master_settings']['Insert'];
 
@@ -16,6 +16,20 @@ export async function checkUsernameAvailable(username: string): Promise<boolean>
   });
   if (error) throw error;
   return data ?? false;
+}
+
+/**
+ * The whole onboarding in one transaction (`complete_onboarding` RPC): profile,
+ * settings, services and their categories. Returns the new profile id. Raises
+ * `already_completed` if the master already has a profile, and a unique violation
+ * on `username` if it was taken in the meantime (both mapped by normalizeError).
+ */
+export async function completeOnboarding(payload: CompleteOnboardingPayload): Promise<string> {
+  const { data, error } = await supabase.rpc('complete_onboarding', {
+    p_payload: payload as unknown as Json,
+  });
+  if (error) throw error;
+  return data;
 }
 
 /** Insert the master's profile from the onboarding draft. Returns the new row id. */

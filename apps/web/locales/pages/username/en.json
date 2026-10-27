@@ -86,15 +86,20 @@
     }
   },
   "specializations": {
-    "makeup": "Make-up",
-    "hair": "Hair",
-    "nails": "Nails",
-    "barber": "Barber",
+    "lashes": "Lashes",
+    "brows": "Brows",
+    "manicure": "Manicure",
+    "pedicure": "Pedicure",
+    "hair": "Haircuts & hair",
+    "barbers": "Barbers",
+    "makeup": "Makeup",
+    "skincare": "Skincare",
+    "hair_removal": "Hair removal",
     "massage": "Massage",
-    "tattoo_piercing": "Tattoo and piercing",
-    "depilation": "Depilation",
-    "cosmetology": "Cosmetology",
-    "brows_lashes": "Brows and eyelashes"
+    "permanent_makeup": "Permanent makeup",
+    "tattoo": "Tattoo",
+    "piercing": "Piercing",
+    "pet_grooming": "Pet grooming"
   },
   "booking": {
     "title": "Booking with {name}",
