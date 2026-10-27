@@ -43,11 +43,13 @@ src/app/
 ├── (auth)/
 │   ├── _layout.tsx
 │   ├── sign-in/index.tsx       # /sign-in
-│   ├── sign-in/email.tsx       # /sign-in/email
+│   ├── sign-in/email.tsx       # /sign-in/email (email step)
+│   ├── sign-in/code.tsx        # /sign-in/code (one-time code)
+│   ├── language.tsx            # language form sheet
 │   └── email.tsx               # legacy redirect
 ├── (onboarding)/
 │   ├── _layout.tsx
-│   ├── onboarding.tsx          # one local-state wizard route
+│   ├── onboarding/             # index → profile → professions (one route per step)
 │   └── welcome.tsx             # legacy redirect
 ├── (app)/
 │   ├── _layout.tsx             # protected Stack: tabs + modal siblings
@@ -97,7 +99,7 @@ src/widgets/                    # composite, screen-level
 src/features/                   # one user action each
 ├── ✅ auth-login/              # Welcome, email → code (OTP), gated social sign-in
 ├── ✅ language-select/         # app language form sheet (ru/en/fr, applies live)
-├── ✅ onboarding/              # 5-step wizard + wizard state + single Step-5 write
+├── ✅ onboarding/              # step screens, persisted draft store, complete_onboarding write
 ├── ◻ appointment-form/  appointment-checkout/
 ├── ◻ quick-create/            # appointment + time-off wizard (uses shared/lib/scheduling)
 ├── ◻ client-form/  client-delete/

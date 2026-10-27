@@ -103,16 +103,6 @@
     "noResults": "Нет услуг по запросу «{{query}}»"
   },
   "onboarding": {
-    "stepTitle": {
-      "specializations": "Чем вы занимаетесь?",
-      "personal": "О вас",
-      "address": "Где вы работаете",
-      "schedule": "Ваше расписание",
-      "review": "Проверка и завершение"
-    },
-    "stepCounter": "Шаг {{current}} из {{total}}",
-    "specializationsHint": "Выберите всё, что вы предлагаете.",
-    "specializationsLabel": "Специализации",
     "specializations": {
       "lashes": "Ресницы",
       "brows": "Брови",
@@ -129,43 +119,36 @@
       "piercing": "Пирсинг",
       "pet_grooming": "Груминг"
     },
-    "firstName": "Имя",
-    "lastName": "Фамилия",
-    "phone": "Телефон",
-    "name": "Имя",
-    "username": "Имя пользователя",
-    "usernameHint": "Ваш публичный адрес для записи (a–z, 0–9, _ -).",
-    "usernameChecking": "Проверяем…",
-    "usernameAvailable": "Свободно",
-    "usernameTaken": "Это имя уже занято.",
-    "usernameInvalid": "3–30 латинских букв, цифр, _ или -, начинается с буквы или цифры",
-    "country": "Страна",
-    "countryHint": "Двухбуквенный код, напр. US, FR, RU.",
-    "street": "Улица",
-    "houseNumber": "Дом / офис",
-    "city": "Город",
-    "zip": "Индекс",
-    "worksAtPlace": "Работаю в салоне",
-    "canTravel": "Выезжаю к клиентам",
-    "days": {
-      "mon": "Понедельник",
-      "tue": "Вторник",
-      "wed": "Среда",
-      "thu": "Четверг",
-      "fri": "Пятница",
-      "sat": "Суббота",
-      "sun": "Воскресенье"
-    },
-    "start": "Начало",
-    "end": "Конец",
-    "timezone": "Часовой пояс",
-    "timeFormat": "Формат времени",
-    "time12": "12 ч",
-    "time24": "24 ч",
-    "reviewHint": "Проверьте данные и создайте студию.",
     "back": "Назад",
-    "next": "Далее",
-    "finish": "Создать студию"
+    "name": "Имя",
+    "next": "Дальше",
+    "step": "{{step}} из {{total}}",
+    "profile": {
+      "title": "Ваш профиль",
+      "subtitle": "Так вас увидят клиенты на странице записи.",
+      "firstName": "Имя",
+      "lastName": "Фамилия",
+      "username": "Имя пользователя",
+      "usernamePrefix": "getseene.app/",
+      "usernameHelp": "Это ваша ссылка для записи. Латиница, цифры, дефис и подчёркивание.",
+      "usernameInvalid": "От 3 символов: a–z, 0–9, - и _",
+      "usernameChecking": "Проверяем…",
+      "usernameFree": "Свободно",
+      "usernameTaken": "Уже занято, попробуйте другое",
+      "usernameError": "Не удалось проверить. Проверьте интернет."
+    },
+    "professions": {
+      "title": "Чем вы занимаетесь?",
+      "subtitle": "Можно выбрать несколько.",
+      "nextCount": "Дальше · выбрано {{count}}",
+      "nextEmpty": "Выберите хотя бы одну"
+    },
+    "signOut": {
+      "title": "Выйти из аккаунта?",
+      "message": "Введённые данные сохранятся на этом телефоне.",
+      "confirm": "Выйти",
+      "cancel": "Остаться"
+    }
   },
   "navigation": {
     "restoringSession": "Восстанавливаем сессию…",

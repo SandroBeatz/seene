@@ -29,25 +29,6 @@ export type WeeklySchedule = [
   DaySchedule,
 ];
 
-/** Everything the onboarding wizard collects before the Step 5 write. */
-export interface OnboardingDraft {
-  specializations: SpecializationKey[];
-  first_name: string;
-  last_name: string;
-  phone: string;
-  username: string;
-  country: string;
-  address: string;
-  house_number: string;
-  zip_code: string;
-  city: string;
-  works_at_place: boolean;
-  can_travel: boolean;
-  schedule: WeeklySchedule;
-  time_zone: string;
-  time_format: TimeFormat;
-}
-
 export const WEEKDAYS = [
   'monday',
   'tuesday',

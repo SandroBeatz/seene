@@ -5,7 +5,7 @@
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native-unistyles';
-import { IconButton, Text } from '@/shared/ui';
+import { IconButton, ScreenTitle } from '@/shared/ui';
 
 export interface AuthHeadingProps {
   title: string;
@@ -24,17 +24,12 @@ export function AuthHeading({ title, subtitle, onBack }: AuthHeadingProps) {
         onPress={onBack}
       />
       <View style={styles.copy}>
-        <Text variant="display" accessibilityRole="header">
-          {title}
-        </Text>
-        <Text variant="body" color="secondary">
-          {subtitle}
-        </Text>
+        <ScreenTitle title={title} subtitle={subtitle} />
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create((theme) => ({
-  copy: { marginTop: theme.space[7], gap: theme.space[2] },
+  copy: { marginTop: theme.space[7] },
 }));

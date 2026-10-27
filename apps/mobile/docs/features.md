@@ -35,14 +35,14 @@ screens and flows below.
 - **Mobile note:** Google uses the native `expo-auth-session` / Supabase native OAuth, not a web
   redirect. Apple Sign In must be native (App Store requirement once any social login ships).
 
-## 2. Onboarding (mandatory 5-step wizard)
+## 2. Onboarding (mandatory, 4 steps)
 
-Specializations → Personal info (+ username availability) → Address & location (+ Places
-autocomplete, country→time-format) → Schedule & timezone → Review & create. Creates
-`master_profile`, upserts `master_settings`. Cannot reach the dashboard until complete.
-- **Mobile note:** full-screen stepper; native pickers for country, timezone, times; device
-  timezone prefilled. **No Google Places for MVP** — address is manual (country select + free-text
-  street/house/zip/city); `place_id` stays unused (Q-PROD-3, resolved).
+Profile (name + username availability) → Professions (14 photo tiles) → Services (starter
+templates, prices optional) → Settings (timezone, currency, hours, online booking, manual
+confirm) → Review → Create. One `complete_onboarding` write; the app opens only after it.
+- **Mobile note:** one route per step with a shared step header (back, progress, "N из 4");
+  the draft survives an app restart; native sheets for timezone/currency/hours. Address and
+  phone are not asked here (settings later). See business-logic.md §3.
 
 ## 3. Home / Dashboard
 

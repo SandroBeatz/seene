@@ -103,16 +103,6 @@
     "noResults": "Aucune prestation ne correspond à « {{query}} »"
   },
   "onboarding": {
-    "stepTitle": {
-      "specializations": "Que faites-vous ?",
-      "personal": "À propos de vous",
-      "address": "Où vous travaillez",
-      "schedule": "Votre planning",
-      "review": "Vérifier et terminer"
-    },
-    "stepCounter": "Étape {{current}} sur {{total}}",
-    "specializationsHint": "Sélectionnez tout ce que vous proposez.",
-    "specializationsLabel": "Spécialités",
     "specializations": {
       "lashes": "Cils",
       "brows": "Sourcils",
@@ -129,43 +119,36 @@
       "piercing": "Piercing",
       "pet_grooming": "Toilettage"
     },
-    "firstName": "Prénom",
-    "lastName": "Nom",
-    "phone": "Téléphone",
-    "name": "Nom",
-    "username": "Nom d'utilisateur",
-    "usernameHint": "Votre identifiant de réservation public (a–z, 0–9, _ -).",
-    "usernameChecking": "Vérification…",
-    "usernameAvailable": "Disponible",
-    "usernameTaken": "Ce nom d'utilisateur est pris.",
-    "usernameInvalid": "3 à 30 lettres, chiffres, _ ou -, en commençant par une lettre ou un chiffre",
-    "country": "Pays",
-    "countryHint": "Code à deux lettres, ex. US, FR, RU.",
-    "street": "Rue",
-    "houseNumber": "N° / bâtiment",
-    "city": "Ville",
-    "zip": "Code postal",
-    "worksAtPlace": "Je travaille dans un lieu",
-    "canTravel": "Je me déplace chez les clients",
-    "days": {
-      "mon": "Lundi",
-      "tue": "Mardi",
-      "wed": "Mercredi",
-      "thu": "Jeudi",
-      "fri": "Vendredi",
-      "sat": "Samedi",
-      "sun": "Dimanche"
-    },
-    "start": "Début",
-    "end": "Fin",
-    "timezone": "Fuseau horaire",
-    "timeFormat": "Format d'heure",
-    "time12": "12 h",
-    "time24": "24 h",
-    "reviewHint": "Vérifiez tout, puis créez votre studio.",
     "back": "Retour",
+    "name": "Nom",
     "next": "Suivant",
-    "finish": "Créer le studio"
+    "step": "{{step}} sur {{total}}",
+    "profile": {
+      "title": "Votre profil",
+      "subtitle": "C’est ainsi que vos clients vous verront sur votre page de réservation.",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "username": "Nom d’utilisateur",
+      "usernamePrefix": "getseene.app/",
+      "usernameHelp": "C’est votre lien de réservation. Lettres latines, chiffres, tiret et tiret bas.",
+      "usernameInvalid": "Au moins 3 caractères : a–z, 0–9, - et _",
+      "usernameChecking": "Vérification…",
+      "usernameFree": "Disponible",
+      "usernameTaken": "Déjà pris, essayez un autre",
+      "usernameError": "Vérification impossible. Vérifiez votre connexion."
+    },
+    "professions": {
+      "title": "Que faites-vous ?",
+      "subtitle": "Vous pouvez en choisir plusieurs.",
+      "nextCount": "Suivant · {{count}} choisi(s)",
+      "nextEmpty": "Choisissez-en au moins une"
+    },
+    "signOut": {
+      "title": "Se déconnecter ?",
+      "message": "Vos saisies restent sur ce téléphone.",
+      "confirm": "Se déconnecter",
+      "cancel": "Rester"
+    }
   },
   "navigation": {
     "restoringSession": "Restauration de votre session…",

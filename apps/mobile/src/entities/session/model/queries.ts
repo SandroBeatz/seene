@@ -6,6 +6,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { type AppError, normalizeError } from '@/shared/api/errors';
 import { sendEmailCode, signInWithGoogle, verifyEmailCode } from '../api/session.api';
+import { type AuthName, nameFromUser } from './auth-name';
 import { useSessionStore } from './session.store';
 
 /**
@@ -14,6 +15,11 @@ import { useSessionStore } from './session.store';
  */
 export function useUserId(): string | undefined {
   return useSessionStore((state) => state.session?.user.id);
+}
+
+/** The provider's name for the signed-in person (onboarding prefill). */
+export function useAuthName(): AuthName {
+  return nameFromUser(useSessionStore((state) => state.session?.user));
 }
 
 export function useSendEmailCode() {
