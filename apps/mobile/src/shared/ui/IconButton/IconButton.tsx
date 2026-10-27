@@ -3,52 +3,68 @@
  * instead, so iOS owns their shape, gestures, and Liquid Glass material.
  *
  * Always requires an accessibilityLabel (icon-only controls have no visible
- * text). Min 44×44 touch target. `glass` is reserved for custom floating chrome,
- * never for OS-owned navigation chrome. docs/design-system.md §4 / §7.
+ * text). Sizes: md = the design's 40pt round back/close button, lg = 44pt header
+ * button; both keep a 44×44 touch target via hitSlop. `glass` is reserved for
+ * custom floating chrome, never for OS-owned navigation chrome.
+ * docs/design-system.md §4 / §7.
  */
 import { Pressable, type PressableProps } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { GlassSurface } from '@/shared/ui/GlassSurface';
-import { Icon, type IconName } from '@/shared/ui/Icon';
+import { Icon, type IconName, type IconSize } from '@/shared/ui/Icon';
 
 // 'default' is reserved by Unistyles variants (fallback key) — use 'neutral'.
 export type IconButtonVariant = 'neutral' | 'accent' | 'danger' | 'ghost' | 'glass';
+export type IconButtonSize = 'md' | 'lg';
 
 export interface IconButtonProps extends Omit<PressableProps, 'style' | 'children'> {
   icon: IconName;
   accessibilityLabel: string;
   variant?: IconButtonVariant;
+  size?: IconButtonSize;
+  iconSize?: IconSize;
 }
 
-export function IconButton({ icon, variant = 'ghost', disabled, ...rest }: IconButtonProps) {
+export function IconButton({
+  icon,
+  variant = 'ghost',
+  size = 'md',
+  iconSize,
+  disabled,
+  ...rest
+}: IconButtonProps) {
   const { theme } = useUnistyles();
-  styles.useVariants({ variant });
+  styles.useVariants({ variant, size });
   const isSolid = variant === 'accent' || variant === 'danger';
   const iconColor = disabled
-    ? theme.colors.content.disabled
+    ? 'content.disabled'
     : {
-        neutral: theme.colors.content.primary,
-        accent: theme.colors.accent.onAccent,
-        danger: theme.colors.feedback.onColor,
-        ghost: theme.colors.content.primary,
-        glass: theme.colors.content.primary,
+        neutral: 'content.primary',
+        accent: 'accent.onAccent',
+        danger: 'feedback.onColor',
+        ghost: 'content.primary',
+        glass: 'content.primary',
       }[variant];
   const rippleColor = isSolid
     ? theme.colors.interaction.onSolidPressed
     : theme.colors.interaction.onSurfacePressed;
-  const iconNode = <Icon name={icon} size="md" color={iconColor} />;
+  const box = size === 'md' ? theme.sizing.iconButton : theme.sizing.minTouch;
+  const slop = Math.max(0, (theme.sizing.minTouch - box) / 2) + theme.space[1];
+  const iconNode = (
+    <Icon name={icon} size={iconSize ?? (size === 'md' ? 'base' : 'md')} color={iconColor} />
+  );
 
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityState={{ disabled: !!disabled }}
-      hitSlop={8}
+      hitSlop={slop}
       disabled={disabled}
       android_ripple={{
         color: rippleColor,
         borderless: true,
         foreground: true,
-        radius: theme.sizing.minTouch / 2,
+        radius: box / 2,
       }}
       style={({ pressed }) => [
         styles.base,
@@ -69,19 +85,21 @@ export function IconButton({ icon, variant = 'ghost', disabled, ...rest }: IconB
 
 const styles = StyleSheet.create((theme) => ({
   base: {
-    width: theme.sizing.minTouch,
-    height: theme.sizing.minTouch,
     borderRadius: theme.radius.full,
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
     variants: {
       variant: {
-        neutral: { backgroundColor: theme.colors.bg.sunken },
+        neutral: { backgroundColor: theme.colors.bg.surface },
         accent: { backgroundColor: theme.colors.accent.default },
         danger: { backgroundColor: theme.colors.feedback.danger },
         ghost: { backgroundColor: 'transparent' },
         glass: { backgroundColor: 'transparent' },
+      },
+      size: {
+        md: { width: theme.sizing.iconButton, height: theme.sizing.iconButton },
+        lg: { width: theme.sizing.minTouch, height: theme.sizing.minTouch },
       },
     },
   },

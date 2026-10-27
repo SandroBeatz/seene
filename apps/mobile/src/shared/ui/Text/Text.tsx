@@ -1,10 +1,14 @@
 /**
  * The single text primitive. Exposes `variant` (type scale) + `color` (content role).
  * No raw fontSize/fontWeight/color at call sites (docs/design-system.md §3.2).
+ *
+ * Every variant carries its own font family (one static face per weight), so text
+ * renders with the same metrics on iOS and Android. Android's extra font padding is
+ * turned off for the same reason, and font scaling is capped at MAX_FONT_SCALE.
  */
 import { Text as RNText, type TextProps as RNTextProps } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
-import { typography, type TypographyVariant } from '@/shared/theme/tokens';
+import { MAX_FONT_SCALE, typography, type TypographyVariant } from '@/shared/theme/tokens';
 
 export type TextColor =
   | 'primary'
@@ -13,36 +17,44 @@ export type TextColor =
   | 'inverse'
   | 'disabled'
   | 'accent'
+  | 'onAccent'
+  | 'brand'
+  | 'brandStrong'
+  | 'onDarkMuted'
   | 'danger'
   | 'success'
   | 'warning';
 
+export type TextAlign = 'auto' | 'left' | 'center' | 'right';
+
 export interface TextProps extends RNTextProps {
   variant?: TypographyVariant;
   color?: TextColor;
+  align?: TextAlign;
+  /** Lining, fixed-width digits (times, codes, counters). */
+  tabularNums?: boolean;
 }
 
-export function Text({ variant = 'body', color = 'primary', style, ...rest }: TextProps) {
-  styles.useVariants({ variant, color });
-  return <RNText style={[styles.text, style]} {...rest} />;
+export function Text({
+  variant = 'body',
+  color = 'primary',
+  align = 'auto',
+  tabularNums = false,
+  maxFontSizeMultiplier = MAX_FONT_SCALE,
+  style,
+  ...rest
+}: TextProps) {
+  styles.useVariants({ variant, color, align, tabularNums });
+  return (
+    <RNText maxFontSizeMultiplier={maxFontSizeMultiplier} style={[styles.text, style]} {...rest} />
+  );
 }
 
 const styles = StyleSheet.create((theme) => ({
   text: {
+    includeFontPadding: false,
     variants: {
-      variant: {
-        display: typography.display,
-        title1: typography.title1,
-        title2: typography.title2,
-        title3: typography.title3,
-        headline: typography.headline,
-        body: typography.body,
-        bodyStrong: typography.bodyStrong,
-        callout: typography.callout,
-        subhead: typography.subhead,
-        footnote: typography.footnote,
-        caption: typography.caption,
-      },
+      variant: typography,
       color: {
         primary: { color: theme.colors.content.primary },
         secondary: { color: theme.colors.content.secondary },
@@ -50,9 +62,23 @@ const styles = StyleSheet.create((theme) => ({
         inverse: { color: theme.colors.content.inverse },
         disabled: { color: theme.colors.content.disabled },
         accent: { color: theme.colors.accent.default },
+        onAccent: { color: theme.colors.accent.onAccent },
+        brand: { color: theme.colors.brand.text },
+        brandStrong: { color: theme.colors.brand.strong },
+        onDarkMuted: { color: theme.colors.content.onDarkMuted },
         danger: { color: theme.colors.feedback.danger },
         success: { color: theme.colors.feedback.success },
         warning: { color: theme.colors.feedback.warning },
+      },
+      align: {
+        auto: { textAlign: 'auto' },
+        left: { textAlign: 'left' },
+        center: { textAlign: 'center' },
+        right: { textAlign: 'right' },
+      },
+      tabularNums: {
+        true: { fontVariant: ['tabular-nums'] },
+        false: {},
       },
     },
   },

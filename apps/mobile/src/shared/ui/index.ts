@@ -2,16 +2,50 @@
  * The Seene UI kit — public barrel. Import kit components from '@/shared/ui' only
  * (docs/design-system.md §8). Grow this seed set deliberately as features arrive.
  */
-export { Text, type TextProps, type TextColor } from './Text';
-export { Button, type ButtonProps, type ButtonVariant, type ButtonSize } from './Button';
-export { IconButton, type IconButtonProps, type IconButtonVariant } from './IconButton';
-export { Icon, type IconName, type IconProps, type IconSize } from './Icon';
-export { Input, type InputProps } from './Input';
-export { Switch, type SwitchProps } from './Switch';
+export { Text, type TextProps, type TextColor, type TextAlign } from './Text';
+export {
+  Button,
+  type ButtonProps,
+  type ButtonVariant,
+  type ButtonSize,
+  type ButtonTone,
+} from './Button';
+export {
+  IconButton,
+  type IconButtonProps,
+  type IconButtonVariant,
+  type IconButtonSize,
+} from './IconButton';
+export {
+  Icon,
+  ICON_NAMES,
+  type IconName,
+  type IconProps,
+  type IconSize,
+  type IconWeight,
+} from './Icon';
+export { Input, type InputProps, type InputSize } from './Input';
+export { CodeInput, type CodeInputProps } from './CodeInput';
+export { Switch, type SwitchProps, type SwitchSize } from './Switch';
+export {
+  SelectionMark,
+  type SelectionMarkProps,
+  type SelectionShape,
+  type SelectionTone,
+} from './SelectionMark';
+export {
+  SegmentedControl,
+  type SegmentedControlProps,
+  type SegmentedOption,
+} from './SegmentedControl';
 export { Card, type CardProps } from './Card';
-export { Avatar, type AvatarProps } from './Avatar';
+export { Avatar, initialsOf, type AvatarProps, type AvatarSize, type AvatarTone } from './Avatar';
 export { GlassSurface, type GlassSurfaceProps } from './GlassSurface';
-export { ListItem, type ListItemProps } from './ListItem';
+export { ListItem, type ListItemProps, type ListItemSize } from './ListItem';
+export { GroupedCard, type GroupedCardProps, type GroupedCardVariant } from './GroupedCard';
+export { SectionLabel, type SectionLabelProps } from './SectionLabel';
+export { StepHeader, type StepHeaderProps } from './StepHeader';
+export { SheetHeader, type SheetHeaderProps } from './SheetHeader';
 export {
   NativeList,
   type NativeListProps,
@@ -20,7 +54,7 @@ export {
 } from './NativeList';
 export { Divider, type DividerProps } from './Divider';
 export { Badge, StatusPill, type BadgeProps, type BadgeTone, type StatusPillProps } from './Badge';
-export { Chip, type ChipProps } from './Chip';
+export { Chip, type ChipProps, type ChipShape } from './Chip';
 export { Skeleton, SkeletonList, type SkeletonProps } from './Skeleton';
 export { EmptyState, type EmptyStateProps } from './EmptyState';
 export { ErrorState, type ErrorStateProps } from './ErrorState';

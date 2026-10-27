@@ -182,7 +182,11 @@
   "settings": {
     "theme": "Thème",
     "language": "Langue",
-    "themeModes": { "auto": "Système", "light": "Clair", "dark": "Sombre" }
+    "themeModes": {
+      "auto": "Système",
+      "light": "Clair",
+      "dark": "Sombre"
+    }
   },
   "quickCreate": {
     "startTitle": "Création rapide",
@@ -205,7 +209,10 @@
     "active": "actif",
     "notUsed": "non utilisé",
     "platformSpecific": "spécifique à la plateforme",
-    "badges": { "alpha": "alpha", "typedRoutesBeta": "routes typées bêta" },
+    "badges": {
+      "alpha": "alpha",
+      "typedRoutesBeta": "routes typées bêta"
+    },
     "row": "Ligne {{value}}",
     "sections": {
       "foundations": "Fondations",
@@ -224,24 +231,80 @@
       "authentication": "Routes protégées, restauration, retour et déconnexion"
     },
     "foundation": {
-      "colors": "Couleurs", "typography": "Typographie", "spacing": "Espacement",
-      "icons": "Icônes", "surfaces": "Ombres et bordures",
-      "border": "Bordure", "shadow": "Ombre",
+      "colors": "Couleurs",
+      "typography": "Typographie",
+      "spacing": "Espacement",
+      "icons": "Icônes",
+      "surfaces": "Ombres et bordures",
+      "border": "Bordure",
+      "shadow": "Ombre",
       "typeSamples": {
-        "display": "Affichage", "title1": "Titre 1", "title3": "Titre 3",
-        "body": "Corps", "caption": "Légende"
+        "display": "Affichage",
+        "title1": "Titre 1",
+        "title3": "Titre 3",
+        "body": "Corps",
+        "caption": "Légende"
       },
-      "safeAreas": "Les wrappers gèrent seulement les bords que le chrome natif ne possède pas déjà."
+      "safeAreas": "Les wrappers gèrent seulement les bords que le chrome natif ne possède pas déjà.",
+      "brand": "Marque",
+      "radii": "Arrondis"
     },
     "components": {
-      "buttons": "Boutons", "inputs": "Champs et sélecteurs",
-      "cards": "Cartes, listes et badges", "states": "États de chargement, vide et erreur",
-      "namePlaceholder": "Jeanne Dupont", "emailPlaceholder": "jeanne@example.com"
+      "buttons": "Boutons",
+      "inputs": "Champs et sélecteurs",
+      "cards": "Cartes, listes et badges",
+      "states": "États de chargement, vide et erreur",
+      "namePlaceholder": "Jeanne Dupont",
+      "emailPlaceholder": "jeanne@example.com",
+      "selection": "Coches et interrupteurs",
+      "segmented": "Contrôle segmenté et puces",
+      "groups": "Lignes groupées",
+      "headers": "En-têtes d'étape et de feuille",
+      "code": "Code à usage unique"
     },
     "labels": {
-      "primary": "Principal", "secondary": "Secondaire", "selector": "Sélecteur",
-      "add": "Ajouter", "all": "Tout", "hair": "Coiffure", "nails": "Ongles",
-      "new": "Nouveau", "paid": "Payé", "warning": "Attention"
+      "primary": "Principal",
+      "secondary": "Secondaire",
+      "selector": "Sélecteur",
+      "add": "Ajouter",
+      "all": "Tout",
+      "hair": "Coiffure",
+      "nails": "Ongles",
+      "new": "Nouveau",
+      "paid": "Payé",
+      "warning": "Attention",
+      "apple": "Continuer avec Apple",
+      "google": "Continuer avec Google",
+      "emailLink": "Se connecter par e-mail",
+      "later": "Plus tard",
+      "chooseOne": "Choisissez-en au moins un",
+      "same": "Identique",
+      "perDay": "Par jour",
+      "custom": "Durée libre",
+      "stepCounter": "{{step}} sur {{total}}",
+      "back": "Retour",
+      "close": "Fermer",
+      "timezone": "Fuseau horaire",
+      "timezoneValue": "Bichkek, GMT+6",
+      "currency": "Devise",
+      "currencyValue": "Som, KGS",
+      "hours": "Horaires",
+      "hoursHint": "Pauses et horaires différents selon les jours",
+      "hoursValue": "Lun–Sam, 10–19",
+      "onlineBooking": "Réservation en ligne",
+      "onlineBookingHint": "Les clients réservent eux-mêmes via votre lien",
+      "username": "Nom d'utilisateur",
+      "usernamePrefix": "getseene.app/",
+      "price": "Prix",
+      "currencySuffix": "som",
+      "free": "Gratuit",
+      "description": "Description",
+      "optional": "facultatif",
+      "descriptionPlaceholder": "Ce que comprend la prestation",
+      "code": "Code reçu par e-mail",
+      "codeError": "Le code ne correspond pas. Vérifiez le dernier e-mail.",
+      "section": "Manucure",
+      "sectionTrailing": "0 sur 3"
     },
     "layout": {
       "basic": "Écran simple",
@@ -254,7 +317,8 @@
       "formDescription": "Défilement adapté au clavier avec action fixe et accessible.",
       "dynamic": "Options Stack dynamiques",
       "dynamicDescription": "La route met à jour son titre natif sans cacher la configuration dans un wrapper.",
-      "dynamicAlternateTitle": "Titre modifié", "changeTitle": "Modifier le titre natif"
+      "dynamicAlternateTitle": "Titre modifié",
+      "changeTitle": "Modifier le titre natif"
     },
     "navigation": {
       "stack": "Stack imbriquée dans un onglet",
@@ -268,25 +332,40 @@
       "absoluteRelative": "Liens absolus et relatifs",
       "absoluteRelativeDescription": "Les chemins absolus typés restent le choix production.",
       "openRelative": "Ouvrir le layout relatif",
-      "deepLink": "Lien profond", "deepLinkDescription": "Les routes fichiers sont accessibles par le scheme de l’app.",
-      "back": "Navigation Retour", "backDescription": "Stack native, gestes et Retour Android sont le comportement par défaut.",
-      "drawer": "Drawer", "drawerDescription": "Aucun scénario ne justifie un Drawer avec cinq onglets principaux."
+      "deepLink": "Lien profond",
+      "deepLinkDescription": "Les routes fichiers sont accessibles par le scheme de l’app.",
+      "back": "Navigation Retour",
+      "backDescription": "Stack native, gestes et Retour Android sont le comportement par défaut.",
+      "drawer": "Drawer",
+      "drawerDescription": "Aucun scénario ne justifie un Drawer avec cinq onglets principaux."
     },
     "modals": {
-      "standard": "Modale routée standard", "standardDescription": "Pour une édition ciblée qui revient à son origine.",
-      "fullscreen": "Modale plein écran multi-étapes", "fullscreenDescription": "La création rapide garde une Stack dans une seule modale.",
-      "formSheet": "Feuille native", "formSheetDescription": "L’encaissement utilise deux detents et un titre dans le contenu sur Android.",
-      "confirmation": "Modale de confirmation", "confirmationDescription": "React Native Modal est réservé aux décisions bloquantes autonomes.",
-      "sheet": "Bottom sheet", "sheetDescription": "Pour aperçus, sélecteurs et actions temporaires, pas pour naviguer.",
-      "dismiss": "Dismiss et dismissTo", "dismissDescription": "Dismiss revient à l’origine ; dismissTo ferme le flux vers une route connue."
+      "standard": "Modale routée standard",
+      "standardDescription": "Pour une édition ciblée qui revient à son origine.",
+      "fullscreen": "Modale plein écran multi-étapes",
+      "fullscreenDescription": "La création rapide garde une Stack dans une seule modale.",
+      "formSheet": "Feuille native",
+      "formSheetDescription": "L’encaissement utilise deux detents et un titre dans le contenu sur Android.",
+      "confirmation": "Modale de confirmation",
+      "confirmationDescription": "React Native Modal est réservé aux décisions bloquantes autonomes.",
+      "sheet": "Bottom sheet",
+      "sheetDescription": "Pour aperçus, sélecteurs et actions temporaires, pas pour naviguer.",
+      "dismiss": "Dismiss et dismissTo",
+      "dismissDescription": "Dismiss revient à l’origine ; dismissTo ferme le flux vers une route connue."
     },
     "auth": {
-      "restoration": "Restauration de session", "restorationDescription": "Une route de chargement protégée évite les flashes auth/onboarding.",
-      "protected": "Route d’application protégée", "protectedDescription": "Les routes existent seulement avec une session et un profil valides.",
-      "public": "Route publique", "publicDescription": "Les routes de connexion existent seulement sans session active.",
-      "returnTo": "Retour après authentification", "returnToDescription": "Un lien interne validé est conservé pendant connexion et onboarding.",
-      "currentSession": "Session actuelle", "currentSessionDescription": "Utilisateur : {{user}} · profil : {{profile}}",
-      "signOutTitle": "Se déconnecter ?", "signOutDescription": "L’historique protégé sera supprimé et Retour ne rouvrira pas l’app."
+      "restoration": "Restauration de session",
+      "restorationDescription": "Une route de chargement protégée évite les flashes auth/onboarding.",
+      "protected": "Route d’application protégée",
+      "protectedDescription": "Les routes existent seulement avec une session et un profil valides.",
+      "public": "Route publique",
+      "publicDescription": "Les routes de connexion existent seulement sans session active.",
+      "returnTo": "Retour après authentification",
+      "returnToDescription": "Un lien interne validé est conservé pendant connexion et onboarding.",
+      "currentSession": "Session actuelle",
+      "currentSessionDescription": "Utilisateur : {{user}} · profil : {{profile}}",
+      "signOutTitle": "Se déconnecter ?",
+      "signOutDescription": "L’historique protégé sera supprimé et Retour ne rouvrira pas l’app."
     },
     "recommended": {
       "screen": "Pour un contenu statique sans header ; ne passer que les bords non gérés par le navigateur.",

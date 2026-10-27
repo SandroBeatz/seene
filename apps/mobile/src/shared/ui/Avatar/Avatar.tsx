@@ -1,20 +1,27 @@
 /**
  * Avatar for list rows and profiles. Renders, in priority order: an image, an emoji,
- * or deterministic initials on a hue derived from the name (docs/design-system.md §4.2).
+ * or initials. Initials sit on a hue derived from the name (`tone="hue"`, clients)
+ * or on the brand rose pair (`tone="brand"`, the master's own avatar).
+ * docs/design-system.md §4.2.
  */
-import { Image, View } from 'react-native';
+import { View } from 'react-native';
+import { Image } from 'expo-image';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { initialHueFor } from '@/shared/config/palettes';
 import { Text } from '@/shared/ui/Text';
+
+export type AvatarSize = 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
+export type AvatarTone = 'hue' | 'brand';
 
 export interface AvatarProps {
   name?: string;
   emoji?: string | null;
   imageUrl?: string | null;
-  size?: number;
+  size?: AvatarSize;
+  tone?: AvatarTone;
 }
 
-function initialsOf(name?: string): string {
+export function initialsOf(name?: string): string {
   if (!name) return '';
   const parts = name.trim().split(/\s+/).filter(Boolean);
   if (parts.length === 0) return '';
@@ -23,22 +30,37 @@ function initialsOf(name?: string): string {
   return (first + last).toUpperCase();
 }
 
-export function Avatar({ name, emoji, imageUrl, size = 40 }: AvatarProps) {
+export function Avatar({ name, emoji, imageUrl, size = 'md', tone = 'hue' }: AvatarProps) {
   const { theme } = useUnistyles();
-  const shape = { width: size, height: size, borderRadius: size / 2 };
+  const px = theme.sizing.avatar[size];
+  const shape = { width: px, height: px, borderRadius: px / 2 };
 
   if (imageUrl) {
-    return <Image source={{ uri: imageUrl }} style={[styles.base, shape]} />;
+    return <Image source={{ uri: imageUrl }} style={[styles.base, shape]} contentFit="cover" />;
   }
 
-  const background = name ? initialHueFor(name) : theme.colors.bg.sunken;
+  const background =
+    tone === 'brand'
+      ? theme.colors.brand.subtle
+      : name
+        ? initialHueFor(name)
+        : theme.colors.bg.sunken;
+  const foreground = tone === 'brand' ? theme.colors.brand.strong : theme.colors.constant.white;
 
   return (
-    <View style={[styles.base, styles.centered, shape, { backgroundColor: background }]}>
+    <View
+      style={[styles.base, styles.centered, shape, { backgroundColor: background }]}
+      accessibilityLabel={name}>
       {emoji ? (
-        <Text style={{ fontSize: size * 0.5 }}>{emoji}</Text>
+        <Text style={{ fontSize: px * 0.5 }}>{emoji}</Text>
       ) : (
-        <Text variant="subhead" style={{ color: theme.colors.constant.white }}>
+        <Text
+          variant="bodyStrong"
+          style={{
+            fontSize: theme.sizing.avatarText[size],
+            lineHeight: undefined,
+            color: foreground,
+          }}>
           {initialsOf(name)}
         </Text>
       )}

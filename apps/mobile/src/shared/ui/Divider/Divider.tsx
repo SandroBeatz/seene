@@ -12,7 +12,7 @@ export function Divider({ inset = false }: DividerProps) {
 
 const styles = StyleSheet.create((theme) => ({
   line: {
-    height: StyleSheet.hairlineWidth,
+    height: 1,
     backgroundColor: theme.colors.border.default,
     variants: {
       inset: {
