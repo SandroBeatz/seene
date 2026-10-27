@@ -46,6 +46,7 @@ export function initI18n(): typeof i18n {
 }
 
 export { default as i18n } from 'i18next';
+export { pluralCategory, type PluralCategory } from './plural';
 export {
   useLocaleStore,
   type AppLocale,

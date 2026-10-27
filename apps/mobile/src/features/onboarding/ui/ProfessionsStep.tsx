@@ -1,7 +1,6 @@
 /**
  * Step 2 of 4 — "Чем вы занимаетесь?": the 14 professions as photo tiles, two per
- * row, multi-select. The header stays put while the grid scrolls under a divided
- * footer whose button counts the picks.
+ * row, multi-select, above a divided footer whose button counts the picks.
  */
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -13,7 +12,7 @@ import {
 } from '@/shared/config/specializations';
 import { Button, FormScreen, ScreenTitle } from '@/shared/ui';
 import { useOnboardingDraft } from '../model/draft.store';
-import { OnboardingHeader } from './OnboardingHeader';
+import { useOnboardingHeaderInset } from './OnboardingHeader';
 import { ProfessionTile } from './ProfessionTile';
 
 /** Two tiles per row, in the design's order. */
@@ -23,30 +22,22 @@ const ROWS: SpecializationKey[][] = Array.from(
 );
 
 export interface ProfessionsStepProps {
-  onBack: () => void;
   onNext: () => void;
-  /** The final write is in flight (temporary: until steps 3–4 exist). */
-  submitting?: boolean;
 }
 
-export function ProfessionsStep({ onBack, onNext, submitting = false }: ProfessionsStepProps) {
+export function ProfessionsStep({ onNext }: ProfessionsStepProps) {
   const { t } = useTranslation();
   const selected = useOnboardingDraft((state) => state.specializations);
   const toggle = useOnboardingDraft((state) => state.toggleSpecialization);
   const count = selected.length;
+  const headerInset = useOnboardingHeaderInset();
 
   return (
     <FormScreen
-      edges={['top', 'right', 'bottom', 'left']}
-      header={
-        <View style={styles.header}>
-          <OnboardingHeader step={2} onBack={onBack} />
-          <ScreenTitle
-            title={t('onboarding.professions.title')}
-            subtitle={t('onboarding.professions.subtitle')}
-          />
-        </View>
-      }
+      edges={['right', 'bottom', 'left']}
+      // The floating step header owns the top inset; no automatic one on top of it.
+      contentInsetAdjustmentBehavior="never"
+      contentContainerStyle={{ paddingTop: headerInset }}
       footerDivider
       footer={
         <Button
@@ -56,10 +47,15 @@ export function ProfessionsStep({ onBack, onNext, submitting = false }: Professi
               : t('onboarding.professions.nextEmpty')
           }
           disabled={count === 0}
-          loading={submitting}
           onPress={onNext}
         />
       }>
+      <View style={styles.title}>
+        <ScreenTitle
+          title={t('onboarding.professions.title')}
+          subtitle={t('onboarding.professions.subtitle')}
+        />
+      </View>
       <View style={styles.grid}>
         {ROWS.map((row) => (
           <View key={row.join()} style={styles.row}>
@@ -80,7 +76,7 @@ export function ProfessionsStep({ onBack, onNext, submitting = false }: Professi
 }
 
 const styles = StyleSheet.create((theme) => ({
-  header: { gap: theme.space[7], paddingBottom: theme.space[5] },
+  title: { marginTop: theme.space[7], marginBottom: theme.space[5] },
   grid: { gap: theme.space[2.5] },
   row: { flexDirection: 'row', gap: theme.space[2.5] },
 }));

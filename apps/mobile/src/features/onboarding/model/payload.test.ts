@@ -4,13 +4,14 @@ import { describe, expect, it, jest } from '@jest/globals';
 jest.mock('@/shared/api/supabase', () => ({ supabase: {} }));
 
 // eslint-disable-next-line import/first -- must be imported after the mock is registered
+import { SERVICE_COLORS } from '@/shared/config/palettes';
+// eslint-disable-next-line import/first -- must be imported after the mock is registered
 import { buildPayload, type DeviceContext } from './payload';
 // eslint-disable-next-line import/first -- must be imported after the mock is registered
 import { normalizeUsernameInput } from './username-input';
 
 const device: DeviceContext = {
   timezone: 'Asia/Bishkek',
-  currency: 'KGS',
   region: 'KG',
   language: 'ru',
   theme: 'auto',
@@ -24,6 +25,38 @@ describe('buildPayload', () => {
       lastName: 'Михайлова ',
       username: 'karina_nails',
       specializations: ['manicure', 'pedicure'],
+      currency: 'KGS',
+      categories: ['Покрытие'],
+      services: [
+        {
+          id: 'manicure.gel',
+          templateId: 'manicure.gel',
+          name: '',
+          description: '',
+          duration: 90,
+          price: null,
+          color: 'rose',
+          specialization: 'manicure',
+          category: 'Покрытие',
+          active: true,
+          online: true,
+          selected: true,
+        },
+        {
+          id: 'manicure.plain',
+          templateId: 'manicure.plain',
+          name: 'Маникюр без покрытия',
+          description: '',
+          duration: 60,
+          price: 800,
+          color: 'sky',
+          specialization: 'manicure',
+          category: null,
+          active: true,
+          online: false,
+          selected: false,
+        },
+      ],
     },
     device,
   );
@@ -45,7 +78,22 @@ describe('buildPayload', () => {
     expect(payload.currency).toBe('KGS');
     expect(payload.online_booking_enabled).toBe(true);
     expect(payload.booking_default_status).toBe('confirmed');
-    expect(payload.services).toEqual([]);
+  });
+
+  it('writes only the selected services, with the colour as hex', () => {
+    expect(payload.services).toEqual([
+      {
+        name: 'Маникюр с покрытием гель-лаком',
+        duration: 90,
+        price: null,
+        description: null,
+        color: SERVICE_COLORS.rose,
+        specialization: 'manicure',
+        category: 'Покрытие',
+        is_active: true,
+        show_online: true,
+      },
+    ]);
   });
 });
 

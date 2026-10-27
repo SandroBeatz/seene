@@ -25,6 +25,7 @@ export {
   type IconWeight,
 } from './Icon';
 export { Input, type InputProps, type InputSize } from './Input';
+export { DurationPicker, type DurationPickerProps } from './DurationPicker';
 export { Logo, type LogoProps, type LogoTone } from './Logo';
 export { ScreenTitle, type ScreenTitleProps } from './ScreenTitle';
 export { CodeInput, type CodeInputProps } from './CodeInput';

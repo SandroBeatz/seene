@@ -1,5 +1,13 @@
 import { describe, expect, it } from '@jest/globals';
-import { formatDate, formatDuration, formatPrice, formatTime, isSameCalendarDay } from './index';
+import {
+  currencySymbol,
+  formatAmount,
+  formatDate,
+  formatDuration,
+  formatPrice,
+  formatTime,
+  isSameCalendarDay,
+} from './index';
 
 const utc = '2026-08-19T12:30:00.000Z';
 
@@ -25,6 +33,15 @@ describe('formats', () => {
   it('formats prices per currency + locale', () => {
     expect(formatPrice(80, { currency: 'EUR', locale: 'fr' })).toContain('80');
     expect(formatPrice(80, { currency: 'USD', locale: 'en' })).toBe('$80.00');
+  });
+
+  it('formats service amounts without forced decimals', () => {
+    expect(formatAmount(80, { currency: 'USD', locale: 'en' })).toBe('$80');
+    expect(formatAmount(80.5, { currency: 'USD', locale: 'en' })).toBe('$80.5');
+    expect(currencySymbol('USD', 'en')).toBe('$');
+    expect(currencySymbol('XYZ_BAD', 'en')).toBe('XYZ_BAD');
+    expect(currencySymbol('KGS', 'ru')).toBe('сом');
+    expect(formatAmount(300, { currency: 'KGS', locale: 'ru' })).toBe('300 сом');
   });
 
   it('formats durations compactly', () => {

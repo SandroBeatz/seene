@@ -59,6 +59,10 @@ export interface OnboardingServiceInput {
   specialization?: SpecializationKey | null;
   /** Category name; created once per distinct name. */
   category?: string | null;
+  /** "Активна" — default true. */
+  is_active?: boolean;
+  /** "Онлайн-запись" — default true; always false without a price. */
+  show_online?: boolean;
 }
 
 /** The `complete_onboarding` RPC payload — the whole onboarding in one write. */
