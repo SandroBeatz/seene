@@ -4,6 +4,7 @@
  * (entities → x → api → x.api.ts), enforced by ESLint. See docs/api-layer.md §1.
  */
 import 'react-native-url-polyfill/auto';
+import './crypto-polyfill';
 import { AppState } from 'react-native';
 import { createClient } from '@supabase/supabase-js';
 import { assertSupabaseEnv, env } from '@/shared/config/env';

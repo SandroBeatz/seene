@@ -58,7 +58,19 @@
     "legalTerms": "Условия",
     "legalPrivacy": "Конфиденциальность",
     "logIn": "Вход",
-    "confirmEmailSent": "Мы отправили ссылку для подтверждения на {{email}}. Подтвердите её и войдите."
+    "confirmEmailSent": "Мы отправили ссылку для подтверждения на {{email}}. Подтвердите её и войдите.",
+    "welcome": {
+      "title": "Твой личный помощник в работе",
+      "subtitle": "Записи, клиенты и напоминания в WhatsApp. Бесплатно.",
+      "heroAlt": "Мастер маникюра работает у окна",
+      "chatFrom": "WhatsApp · Жанара",
+      "chatText": "Да, буду завтра в 10:00, спасибо!",
+      "statLabel": "Неявок в октябре",
+      "statValue": "0 из 64",
+      "emailLogin": "Войти по почте",
+      "legal": "Продолжая, вы принимаете <terms>Условия</terms> и <privacy>Политику</privacy>",
+      "languageA11y": "Язык: {{name}}"
+    }
   },
   "account": {
     "deactivatedTitle": "Аккаунт деактивирован",
@@ -392,6 +404,15 @@
       "publicRoute": "Auth UI живёт в отдельном public Stack и стабильном URL namespace.",
       "returnTo": "Перед imperative replace проверяйте, что target — внутренний путь.",
       "signOut": "Guard сам очищает protected history; не делайте push sign-in вручную."
+    }
+  },
+  "language": {
+    "title": "Язык",
+    "hint": "По умолчанию берём язык телефона. Поменять можно и потом, в настройках.",
+    "names": {
+      "ru": "Russian",
+      "en": "Английский",
+      "fr": "Французский"
     }
   }
 }

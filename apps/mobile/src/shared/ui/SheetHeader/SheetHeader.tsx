@@ -19,6 +19,8 @@ export interface SheetHeaderProps {
   leadingLabel: string;
   trailing?: ReactNode;
   showGrabber?: boolean;
+  /** 16pt side padding; off when the sheet body already pads its content (language sheet). */
+  inset?: boolean;
 }
 
 export function SheetHeader({
@@ -29,7 +31,9 @@ export function SheetHeader({
   leadingLabel,
   trailing,
   showGrabber = true,
+  inset = true,
 }: SheetHeaderProps) {
+  styles.useVariants({ inset });
   return (
     <View style={styles.container}>
       {showGrabber ? <View style={styles.grabber} /> : null}
@@ -71,7 +75,12 @@ const styles = StyleSheet.create((theme) => ({
     alignItems: 'center',
     gap: theme.space[3],
     paddingTop: theme.space[1.5],
-    paddingHorizontal: theme.space[4],
+    variants: {
+      inset: {
+        true: { paddingHorizontal: theme.space[4] },
+        false: {},
+      },
+    },
   },
   titles: { flex: 1, alignItems: 'center', gap: theme.space[0.25] },
   side: { width: theme.sizing.iconButton, alignItems: 'flex-end' },

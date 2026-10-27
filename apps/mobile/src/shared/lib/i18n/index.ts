@@ -46,4 +46,10 @@ export function initI18n(): typeof i18n {
 }
 
 export { default as i18n } from 'i18next';
-export { useLocaleStore, type AppLocale, SUPPORTED_LOCALES } from './locale.store';
+export {
+  useLocaleStore,
+  type AppLocale,
+  isSupportedLocale,
+  LOCALE_NATIVE_NAMES,
+  SUPPORTED_LOCALES,
+} from './locale.store';

@@ -110,6 +110,7 @@ export const space = {
   0.25: 1,
   0.5: 2,
   1: 4,
+  1.25: 5,
   1.5: 6,
   2: 8,
   2.5: 10,
@@ -258,6 +259,13 @@ export const typography = {
     fontFamily: fontFamily.semibold,
     fontSize: 12,
     lineHeight: 16,
+    letterSpacing: 0,
+  },
+  caption2: { fontFamily: fontFamily.regular, fontSize: 11, lineHeight: 14, letterSpacing: 0 },
+  caption2Strong: {
+    fontFamily: fontFamily.semibold,
+    fontSize: 11,
+    lineHeight: 14,
     letterSpacing: 0,
   },
   overline: {
