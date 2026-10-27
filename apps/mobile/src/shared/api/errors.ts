@@ -9,6 +9,8 @@ export type AppError =
   | { kind: 'appointment_not_found' }
   | { kind: 'username_taken' }
   | { kind: 'has_related_records' }
+  | { kind: 'otp_invalid' }
+  | { kind: 'rate_limited' }
   | { kind: 'network' }
   | { kind: 'unauthorized' }
   | { kind: 'unknown'; message: string };
@@ -28,6 +30,12 @@ export function normalizeError(e: unknown): AppError {
   // 23503 = foreign_key_violation: a RESTRICT edge blocked the delete (e.g. a client
   // that still has appointments).
   if (code === '23503') return { kind: 'has_related_records' };
+  // Supabase Auth error codes (AuthApiError.code). A wrong and an expired code both
+  // come back as otp_expired.
+  if (code === 'otp_expired') return { kind: 'otp_invalid' };
+  if (code === 'over_email_send_rate_limit' || code === 'over_request_rate_limit') {
+    return { kind: 'rate_limited' };
+  }
   if (message.includes('already_completed')) return { kind: 'already_completed' };
   if (message.includes('appointment_not_found')) return { kind: 'appointment_not_found' };
   if (message.includes('username_taken')) return { kind: 'username_taken' };

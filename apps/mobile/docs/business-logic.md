@@ -52,8 +52,10 @@ most to behaviour:
 
 ## 3. Auth & onboarding
 
-**Auth methods:** email+password, Google OAuth (active); Apple (planned, native flow required for
-iOS). Email confirmation is currently disabled. Phone OTP is **not** used by masters.
+**Auth methods:** passwordless email code (Supabase email OTP, 6 digits, `shouldCreateUser`),
+Google OAuth (active); Apple (planned, native flow required for iOS). The Supabase "Magic Link"
+email template must contain `{{ .Token }}` so the email carries the code, and Redirect URLs must
+include `appmasterseene://**` for OAuth. Phone OTP is **not** used by masters.
 
 **Onboarding is a mandatory, linear 5-step wizard.** Data is held in local state and written in
 one transaction at Step 5. The wizard creates `master_profile` and upserts `master_settings`.

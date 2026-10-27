@@ -9,7 +9,8 @@
     "loading": "Chargement…",
     "search": "Rechercher",
     "close": "Fermer",
-    "continue": "Continuer"
+    "continue": "Continuer",
+    "back": "Retour"
   },
   "tabs": {
     "home": "Accueil",
@@ -30,35 +31,19 @@
     "has_related_records": "Impossible de supprimer tant que c'est encore utilisé.",
     "network": "Pas de connexion. Vérifiez votre réseau et réessayez.",
     "unauthorized": "Votre session a expiré. Veuillez vous reconnecter.",
-    "unknown": "Une erreur est survenue. Veuillez réessayer."
+    "unknown": "Une erreur est survenue. Veuillez réessayer.",
+    "otp_invalid": "Ce code ne fonctionne pas. Vérifiez le dernier e-mail.",
+    "rate_limited": "Trop de tentatives. Attendez une minute et réessayez."
   },
   "auth": {
-    "title": "Seene",
-    "subtitleSignIn": "Connectez-vous à votre studio",
-    "subtitleSignUp": "Créez votre compte studio",
     "email": "E-mail",
-    "password": "Mot de passe",
-    "confirmPassword": "Confirmer le mot de passe",
-    "signIn": "Se connecter",
-    "createAccount": "Créer un compte",
-    "switchToSignUp": "Pas de compte ? Inscrivez-vous",
-    "switchToSignIn": "Déjà un compte ? Connectez-vous",
-    "or": "ou",
     "continueWithGoogle": "Continuer avec Google",
     "continueWithApple": "Continuer avec Apple",
     "appleComingSoon": "Apple — bientôt disponible",
     "errors": {
-      "email": "Saisissez un e-mail valide.",
-      "password": "Au moins 8 caractères.",
-      "confirm": "Les mots de passe ne correspondent pas."
+      "email": "Saisissez un e-mail valide."
     },
     "logOut": "Se déconnecter",
-    "continueWithEmail": "Continuer avec l'e-mail",
-    "landingTagline": "Votre studio, élégamment réservé.",
-    "legalTerms": "Conditions",
-    "legalPrivacy": "Confidentialité",
-    "logIn": "Connexion",
-    "confirmEmailSent": "Nous avons envoyé un lien de confirmation à {{email}}. Confirmez-le, puis connectez-vous.",
     "welcome": {
       "title": "Ton assistant personnel au travail",
       "subtitle": "Rendez-vous, clients et rappels WhatsApp. Gratuit.",
@@ -70,6 +55,22 @@
       "emailLogin": "Se connecter par e-mail",
       "legal": "En continuant, vous acceptez les <terms>Conditions</terms> et la <privacy>Politique</privacy>",
       "languageA11y": "Langue : {{name}}"
+    },
+    "emailStep": {
+      "title": "Votre e-mail",
+      "subtitle": "Nous vous enverrons un code. Pas de mot de passe.",
+      "label": "E-mail",
+      "submit": "Recevoir le code",
+      "invalid": "Saisissez un e-mail valide."
+    },
+    "codeStep": {
+      "title": "Code reçu par e-mail",
+      "sentTo": "Envoyé à {{email}}",
+      "a11y": "Code reçu par e-mail",
+      "invalid": "Ce code ne fonctionne pas. Vérifiez le dernier e-mail.",
+      "resendIn": "Nouveau code dans {{time}}",
+      "resend": "Renvoyer un code",
+      "submit": "Continuer"
     }
   },
   "account": {

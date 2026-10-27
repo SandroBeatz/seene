@@ -74,7 +74,7 @@ product's core value.**
 
 ## Primary scenarios (at a glance)
 
-1. **Auth & onboarding** — register/login (email+password, Google, Apple planned), then a
+1. **Auth & onboarding** — sign in with an emailed code (no password), Google, Apple planned, then a
    mandatory 5-step onboarding wizard that creates the `master_profile`.
 2. **Calendar** — week/day/month views of appointments + time blocks.
 3. **Quick create** — a guided, availability-aware wizard to book an appointment (or block time)

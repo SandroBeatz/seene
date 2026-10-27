@@ -28,9 +28,9 @@ screens and flows below.
 
 ## 1. Authentication
 
-- **Login** — email + password; "Sign in with Google"; Apple button present but "Coming soon".
-- **Register** — full name, email, password, confirm (min 8). Name is kept for onboarding Step 2,
-  not sent to Supabase at sign-up. On success → onboarding.
+- **Sign in / sign up (one flow)** — Welcome → "Войти по почте" → email → 6-digit code from the
+  email (Supabase email OTP; the account is created on first use, no password). Also "Continue with
+  Google"; Apple button present but "Coming soon". New master → onboarding, existing → app.
 - Both: mutually-disabling loading states; OAuth separator.
 - **Mobile note:** Google uses the native `expo-auth-session` / Supabase native OAuth, not a web
   redirect. Apple Sign In must be native (App Store requirement once any social login ships).

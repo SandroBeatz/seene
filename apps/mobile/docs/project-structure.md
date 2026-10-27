@@ -95,7 +95,8 @@ src/widgets/                    # composite, screen-level
 └── ◻ analytics-dashboard/
 
 src/features/                   # one user action each
-├── ✅ auth-login/              # email+password + gated social sign-in
+├── ✅ auth-login/              # Welcome, email → code (OTP), gated social sign-in
+├── ✅ language-select/         # app language form sheet (ru/en/fr, applies live)
 ├── ✅ onboarding/              # 5-step wizard + wizard state + single Step-5 write
 ├── ◻ appointment-form/  appointment-checkout/
 ├── ◻ quick-create/            # appointment + time-off wizard (uses shared/lib/scheduling)
