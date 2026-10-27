@@ -8,9 +8,9 @@ import { StyleSheet } from 'react-native-unistyles';
 import {
   defaultTimeFormatForCountry,
   type OnboardingDraft,
-  SPECIALIZATION_KEYS,
   type WeeklySchedule,
 } from '@/entities/master';
+import { SPECIALIZATION_KEYS } from '@/shared/config/specializations';
 import { Chip, Input, Switch, Text } from '@/shared/ui';
 
 interface StepProps {

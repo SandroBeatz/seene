@@ -207,8 +207,9 @@ interface SessionProfile {                  // the lightweight profile the guard
 
 ## 4. Enums & fixed sets (single source of truth)
 
-- **Specialization keys (9):** makeup, hair, nails, barber, massage, tattoo_piercing, depilation,
-  cosmetology, brows_lashes.
+- **Specialization keys (14):** lashes, brows, manicure, pedicure, hair, barbers, makeup, skincare, hair_removal, massage, permanent_makeup, tattoo, piercing, pet_grooming.
+  Source of truth: `public.specialization_keys()` (DB CHECKs) and
+  `shared/config/specializations.ts` (app, with tile photos). Also on `service.specialization`.
 - **Appointment status (6):** pending, confirmed, completed, cancelled, no_show, expired.
 - **Appointment source (2):** manual, online_booking.
 - **Payment kind (3):** cash, card, custom.

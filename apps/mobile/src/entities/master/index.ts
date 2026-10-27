@@ -1,14 +1,19 @@
 /** Master entity — public barrel. Profile/settings writes live behind the api; the
  * onboarding feature composes them with the session store. */
-export { SPECIALIZATION_KEYS, type SpecializationKey } from './config/specializations';
 export { defaultTimeFormatForCountry, type TimeFormat } from './config/time-format';
-export { createMasterProfile, upsertMasterSettings } from './api/master.api';
+export { completeOnboarding, createMasterProfile, upsertMasterSettings } from './api/master.api';
+export { toStoredSchedule } from './lib/schedule';
 export {
   useUsernameAvailability,
   isUsernameSyntaxValid,
   MIN_USERNAME_LENGTH,
 } from './model/queries';
+export { WEEKDAYS } from './model/types';
 export type {
+  CompleteOnboardingPayload,
+  OnboardingServiceInput,
+  StoredSchedule,
+  Weekday,
   OnboardingDraft,
   WeeklySchedule,
   DaySchedule,

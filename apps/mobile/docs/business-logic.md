@@ -62,7 +62,7 @@ one transaction at Step 5. The wizard creates `master_profile` and upserts `mast
 
 | Step | Collects | Rules |
 |---|---|---|
-| 1 · Specializations | ≥1 category key from a fixed set of 9 | Stored as `text[]` of **keys** (`makeup`, `hair`, `nails`, `barber`, `massage`, `tattoo_piercing`, `depilation`, `cosmetology`, `brows_lashes`); display names come from i18n |
+| 1 · Specializations | ≥1 key from a fixed set of 14 | Stored as `text[]` of **keys** (see domain-model §4); enforced by `master_profile_specializations_valid`; display names come from i18n |
 | 2 · Personal info | first/last name, phone (intl), **username** | `username` is globally unique → public URL; check via `check_username_available` RPC |
 | 3 · Address & location | country (req.), street/house/zip/city (opt.), `place_id`, `works_at_place`, `can_travel` | Country auto-detected; also seeds `time_format` (US/CA/AU/IN… → 12h, else 24h). Address optionally via Google Places |
 | 4 · Schedule & timezone | weekly `schedule`, timezone, time format | Per day: enabled + start/end + breaks[]. Timezone defaults to device zone |

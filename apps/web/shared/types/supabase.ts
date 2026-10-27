@@ -304,7 +304,7 @@ export type Database = {
           is_verified: boolean
           last_name: string
           map_url: string | null
-          phone: string
+          phone: string | null
           place_id: string | null
           schedule: Json
           show_visits_count: boolean
@@ -336,7 +336,7 @@ export type Database = {
           is_verified?: boolean
           last_name: string
           map_url?: string | null
-          phone: string
+          phone?: string | null
           place_id?: string | null
           schedule: Json
           show_visits_count?: boolean
@@ -368,7 +368,7 @@ export type Database = {
           is_verified?: boolean
           last_name?: string
           map_url?: string | null
-          phone?: string
+          phone?: string | null
           place_id?: string | null
           schedule?: Json
           show_visits_count?: boolean
@@ -706,6 +706,7 @@ export type Database = {
           price_from: boolean
           show_online: boolean
           sort_order: number
+          specialization: string | null
           updated_at: string
           user_id: string
         }
@@ -723,6 +724,7 @@ export type Database = {
           price_from?: boolean
           show_online?: boolean
           sort_order?: number
+          specialization?: string | null
           updated_at?: string
           user_id: string
         }
@@ -740,6 +742,7 @@ export type Database = {
           price_from?: boolean
           show_online?: boolean
           sort_order?: number
+          specialization?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -918,6 +921,7 @@ export type Database = {
         }
         Returns: string
       }
+      complete_onboarding: { Args: { p_payload: Json }; Returns: string }
       create_appointment_from_booking: {
         Args: {
           p_first_name?: string
@@ -979,6 +983,7 @@ export type Database = {
         }
         Returns: string
       }
+      specialization_keys: { Args: never; Returns: string[] }
       update_sale_details: {
         Args: { p_amount: number; p_items: Json; p_sale_id: string }
         Returns: undefined

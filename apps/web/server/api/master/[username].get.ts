@@ -124,6 +124,9 @@ export default defineEventHandler(async (event) => {
       )
       .eq('user_id', profile.user_id)
       .eq('is_active', true)
+      // A price-less service saved at onboarding (price 0, not bookable online) is a
+      // draft: hidden from the public page until the master sets a price.
+      .or('price.gt.0,show_online.eq.true')
       .order('sort_order'),
     serviceSupabase
       .from('master_settings')

@@ -1,4 +1,5 @@
 /** Service entity — public barrel. */
+export { SERVICE_TEMPLATES, type ServiceTemplate } from './config/templates';
 export {
   serviceKeys,
   useServicesQuery,
