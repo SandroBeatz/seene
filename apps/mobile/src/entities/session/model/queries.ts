@@ -5,13 +5,8 @@
  */
 import { useMutation } from '@tanstack/react-query';
 import { type AppError, normalizeError } from '@/shared/api/errors';
-import { signInWithEmail, signInWithGoogle, signUpWithEmail } from '../api/session.api';
+import { sendEmailCode, signInWithGoogle, verifyEmailCode } from '../api/session.api';
 import { useSessionStore } from './session.store';
-
-interface Credentials {
-  email: string;
-  password: string;
-}
 
 /**
  * The authenticated master's id. Every entity query keys and RLS-scopes on this, so
@@ -21,11 +16,11 @@ export function useUserId(): string | undefined {
   return useSessionStore((state) => state.session?.user.id);
 }
 
-export function useSignIn() {
-  return useMutation<void, AppError, Credentials>({
-    mutationFn: async ({ email, password }) => {
+export function useSendEmailCode() {
+  return useMutation<void, AppError, string>({
+    mutationFn: async (email) => {
       try {
-        await signInWithEmail(email, password);
+        await sendEmailCode(email);
       } catch (e) {
         throw normalizeError(e);
       }
@@ -33,11 +28,11 @@ export function useSignIn() {
   });
 }
 
-export function useSignUp() {
-  return useMutation<{ needsConfirmation: boolean }, AppError, Credentials>({
-    mutationFn: async ({ email, password }) => {
+export function useVerifyEmailCode() {
+  return useMutation<void, AppError, { email: string; code: string }>({
+    mutationFn: async ({ email, code }) => {
       try {
-        return await signUpWithEmail(email, password);
+        await verifyEmailCode(email, code);
       } catch (e) {
         throw normalizeError(e);
       }

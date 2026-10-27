@@ -9,7 +9,8 @@
     "loading": "Loading…",
     "search": "Search",
     "close": "Close",
-    "continue": "Continue"
+    "continue": "Continue",
+    "back": "Back"
   },
   "tabs": {
     "home": "Home",
@@ -30,35 +31,19 @@
     "has_related_records": "This can't be deleted while it's still in use.",
     "network": "No connection. Check your internet and try again.",
     "unauthorized": "Your session expired. Please sign in again.",
-    "unknown": "Something went wrong. Please try again."
+    "unknown": "Something went wrong. Please try again.",
+    "otp_invalid": "That code doesn't work. Check the latest email.",
+    "rate_limited": "Too many attempts. Wait a minute and try again."
   },
   "auth": {
-    "title": "Seene",
-    "subtitleSignIn": "Sign in to your studio",
-    "subtitleSignUp": "Create your studio account",
     "email": "Email",
-    "password": "Password",
-    "confirmPassword": "Confirm password",
-    "signIn": "Sign in",
-    "createAccount": "Create account",
-    "switchToSignUp": "Don't have an account? Sign up",
-    "switchToSignIn": "Already have an account? Sign in",
-    "or": "or",
     "continueWithGoogle": "Continue with Google",
     "continueWithApple": "Continue with Apple",
     "appleComingSoon": "Apple — coming soon",
     "errors": {
-      "email": "Enter a valid email.",
-      "password": "At least 8 characters.",
-      "confirm": "Passwords don't match."
+      "email": "Enter a valid email."
     },
     "logOut": "Log out",
-    "continueWithEmail": "Continue with email",
-    "landingTagline": "Your studio, beautifully booked.",
-    "legalTerms": "Terms",
-    "legalPrivacy": "Privacy Policy",
-    "logIn": "Log in",
-    "confirmEmailSent": "We sent a confirmation link to {{email}}. Confirm it, then sign in.",
     "welcome": {
       "title": "Your personal assistant at work",
       "subtitle": "Bookings, clients and WhatsApp reminders. Free.",
@@ -70,6 +55,22 @@
       "emailLogin": "Log in with email",
       "legal": "By continuing, you accept the <terms>Terms</terms> and <privacy>Policy</privacy>",
       "languageA11y": "Language: {{name}}"
+    },
+    "emailStep": {
+      "title": "Your email",
+      "subtitle": "We'll send a code. No password needed.",
+      "label": "Email",
+      "submit": "Get code",
+      "invalid": "Enter a valid email."
+    },
+    "codeStep": {
+      "title": "Code from the email",
+      "sentTo": "Sent to {{email}}",
+      "a11y": "Code from the email",
+      "invalid": "That code doesn't work. Check the latest email.",
+      "resendIn": "New code in {{time}}",
+      "resend": "Send a new code",
+      "submit": "Continue"
     }
   },
   "account": {

@@ -171,7 +171,7 @@ AppState.addEventListener('change', (state) => {
 
 ## 6. Auth in the api layer
 
-Auth calls (`signInWithPassword`, `signUp`, `signInWithOAuth`/native, `signOut`, `updateUser`,
+Auth calls (`signInWithOtp` + `verifyOtp` for the email code, `signInWithOAuth`/native, `signOut`, `updateUser`,
 `onAuthStateChange`, `getSession`) live in `entities/session/api/session.api.ts`. The session
 **store** (Zustand) subscribes to `onAuthStateChange` — see [state-management.md](./state-management.md)
 for the synchronous-callback / deferred-fetch rule (the auth-lock deadlock is real and ported).

@@ -14,24 +14,26 @@ export type { Session } from '@supabase/supabase-js';
 
 const PROFILE_COLUMNS = 'id, first_name, last_name, username, avatar_url, deactivated_at';
 
-export async function signInWithEmail(email: string, password: string): Promise<void> {
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+/**
+ * Passwordless email sign-in, step 1: email a 6-digit code (the Supabase "Magic
+ * Link" template must contain `{{ .Token }}`). Creates the account on first use, so
+ * sign-in and sign-up are one flow. Rate-limited server-side (one per ~60s).
+ */
+export async function sendEmailCode(email: string): Promise<void> {
+  const { error } = await supabase.auth.signInWithOtp({
+    email,
+    options: { shouldCreateUser: true },
+  });
   if (error) throw error;
 }
 
 /**
- * Create an account. When email confirmation is enabled (the Supabase default),
- * `signUp` returns a user but NO session — the session (and `onAuthChange`) only
- * arrive after the user confirms via the emailed link. Callers must surface that
- * pending state instead of silently waiting for a route change that never comes.
+ * Step 2: exchange the code for a session. The session reaches the app through
+ * `onAuthChange`, which flips the root guards (→ onboarding or the app).
  */
-export async function signUpWithEmail(
-  email: string,
-  password: string,
-): Promise<{ needsConfirmation: boolean }> {
-  const { data, error } = await supabase.auth.signUp({ email, password });
+export async function verifyEmailCode(email: string, token: string): Promise<void> {
+  const { error } = await supabase.auth.verifyOtp({ email, token, type: 'email' });
   if (error) throw error;
-  return { needsConfirmation: !data.session };
 }
 
 export async function signOut(): Promise<void> {

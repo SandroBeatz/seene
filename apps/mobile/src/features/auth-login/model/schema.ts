@@ -1,18 +1,13 @@
-/** Auth form schema (Zod doubles as the DTO validator — docs/state-management.md §4). */
+/** Email-step validation (Zod doubles as the DTO validator — docs/state-management.md §4). */
 import { z } from 'zod';
 
-export type AuthMode = 'signIn' | 'signUp';
+export const emailSchema = z.string().trim().toLowerCase().email();
 
-export const authSchema = z
-  .object({
-    email: z.string().trim().email(),
-    password: z.string().min(8),
-    confirm: z.string().optional(),
-    mode: z.enum(['signIn', 'signUp']),
-  })
-  .refine((v) => v.mode === 'signIn' || v.password === v.confirm, {
-    path: ['confirm'],
-    message: 'passwords_mismatch',
-  });
+/** The normalized email, or null when it is not a valid address. */
+export function parseEmail(value: string): string | null {
+  const result = emailSchema.safeParse(value);
+  return result.success ? result.data : null;
+}
 
-export type AuthFormValues = z.infer<typeof authSchema>;
+/** Length of the emailed one-time code (Supabase → Auth → Email OTP Length). */
+export const EMAIL_CODE_LENGTH = 6;
