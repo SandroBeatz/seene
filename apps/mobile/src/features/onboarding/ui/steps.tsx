@@ -163,25 +163,24 @@ export function ScheduleStep({ draft, update }: StepProps) {
         <View key={DAY_KEYS[index]} style={styles.dayRow}>
           <View style={styles.dayHeader}>
             <Text variant="body">{t(`onboarding.days.${DAY_KEYS[index]}`)}</Text>
-            <Switch
-              value={day.enabled}
-              onValueChange={(enabled) => patchDay(index, { enabled })}
-            />
+            <Switch value={day.enabled} onValueChange={(enabled) => patchDay(index, { enabled })} />
           </View>
           {day.enabled ? (
             <View style={styles.timeRow}>
-              <Input
-                label={t('onboarding.start')}
-                value={day.start}
-                onChangeText={(start) => patchDay(index, { start })}
-                style={styles.timeInput}
-              />
-              <Input
-                label={t('onboarding.end')}
-                value={day.end}
-                onChangeText={(end) => patchDay(index, { end })}
-                style={styles.timeInput}
-              />
+              <View style={styles.timeInput}>
+                <Input
+                  label={t('onboarding.start')}
+                  value={day.start}
+                  onChangeText={(start) => patchDay(index, { start })}
+                />
+              </View>
+              <View style={styles.timeInput}>
+                <Input
+                  label={t('onboarding.end')}
+                  value={day.end}
+                  onChangeText={(end) => patchDay(index, { end })}
+                />
+              </View>
             </View>
           ) : null}
         </View>
@@ -216,9 +215,7 @@ export function ScheduleStep({ draft, update }: StepProps) {
 
 export function ReviewStep({ draft }: StepProps) {
   const { t } = useTranslation();
-  const specs = draft.specializations
-    .map((k) => t(`onboarding.specializations.${k}`))
-    .join(', ');
+  const specs = draft.specializations.map((k) => t(`onboarding.specializations.${k}`)).join(', ');
   const rows: { label: string; value: string }[] = [
     { label: t('onboarding.name'), value: `${draft.first_name} ${draft.last_name}`.trim() },
     { label: t('onboarding.username'), value: `@${draft.username}` },

@@ -245,7 +245,9 @@
         "body": "Body",
         "caption": "Caption"
       },
-      "safeAreas": "Safe areas belong to visual wrappers only when native chrome does not already own that edge."
+      "safeAreas": "Safe areas belong to visual wrappers only when native chrome does not already own that edge.",
+      "brand": "Brand",
+      "radii": "Radii"
     },
     "components": {
       "buttons": "Buttons",
@@ -253,7 +255,12 @@
       "cards": "Cards, lists and badges",
       "states": "Loading, empty and error states",
       "namePlaceholder": "Jane Doe",
-      "emailPlaceholder": "jane@example.com"
+      "emailPlaceholder": "jane@example.com",
+      "selection": "Selection marks and switches",
+      "segmented": "Segmented control and chips",
+      "groups": "Grouped rows",
+      "headers": "Step and sheet headers",
+      "code": "One-time code"
     },
     "labels": {
       "primary": "Primary",
@@ -265,7 +272,39 @@
       "nails": "Nails",
       "new": "New",
       "paid": "Paid",
-      "warning": "Warning"
+      "warning": "Warning",
+      "apple": "Continue with Apple",
+      "google": "Continue with Google",
+      "emailLink": "Sign in with email",
+      "later": "Later",
+      "chooseOne": "Choose at least one",
+      "same": "Same",
+      "perDay": "By day",
+      "custom": "Custom time",
+      "stepCounter": "{{step}} of {{total}}",
+      "back": "Back",
+      "close": "Close",
+      "timezone": "Time zone",
+      "timezoneValue": "Bishkek, GMT+6",
+      "currency": "Currency",
+      "currencyValue": "Som, KGS",
+      "hours": "Working hours",
+      "hoursHint": "Breaks and different hours per day",
+      "hoursValue": "Mon–Sat, 10–19",
+      "onlineBooking": "Online booking",
+      "onlineBookingHint": "Clients book themselves through your link",
+      "username": "Username",
+      "usernamePrefix": "getseene.app/",
+      "price": "Price",
+      "currencySuffix": "som",
+      "free": "Free",
+      "description": "Description",
+      "optional": "optional",
+      "descriptionPlaceholder": "What the service includes",
+      "code": "Code from the email",
+      "codeError": "The code doesn't match. Check the latest email.",
+      "section": "Manicure",
+      "sectionTrailing": "0 of 3"
     },
     "layout": {
       "basic": "Basic screen",

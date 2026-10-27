@@ -182,7 +182,11 @@
   "settings": {
     "theme": "Тема",
     "language": "Язык",
-    "themeModes": { "auto": "Системная", "light": "Светлая", "dark": "Тёмная" }
+    "themeModes": {
+      "auto": "Системная",
+      "light": "Светлая",
+      "dark": "Тёмная"
+    }
   },
   "quickCreate": {
     "startTitle": "Быстрое создание",
@@ -205,7 +209,10 @@
     "active": "активно",
     "notUsed": "не используется",
     "platformSpecific": "зависит от платформы",
-    "badges": { "alpha": "альфа", "typedRoutesBeta": "типизированные routes — бета" },
+    "badges": {
+      "alpha": "альфа",
+      "typedRoutesBeta": "типизированные routes — бета"
+    },
     "row": "Строка {{value}}",
     "sections": {
       "foundations": "Основы",
@@ -224,24 +231,80 @@
       "authentication": "Protected routes, восстановление, return intent и выход"
     },
     "foundation": {
-      "colors": "Цвета", "typography": "Типографика", "spacing": "Отступы",
-      "icons": "Иконки", "surfaces": "Тени и границы",
-      "border": "Граница", "shadow": "Тень",
+      "colors": "Цвета",
+      "typography": "Типографика",
+      "spacing": "Отступы",
+      "icons": "Иконки",
+      "surfaces": "Тени и границы",
+      "border": "Граница",
+      "shadow": "Тень",
       "typeSamples": {
-        "display": "Крупный текст", "title1": "Заголовок 1", "title3": "Заголовок 3",
-        "body": "Основной текст", "caption": "Подпись"
+        "display": "Крупный текст",
+        "title1": "Заголовок 1",
+        "title3": "Заголовок 3",
+        "body": "Основной текст",
+        "caption": "Подпись"
       },
-      "safeAreas": "Wrappers управляют только теми краями Safe Area, которые ещё не принадлежат нативному chrome."
+      "safeAreas": "Wrappers управляют только теми краями Safe Area, которые ещё не принадлежат нативному chrome.",
+      "brand": "Бренд",
+      "radii": "Скругления"
     },
     "components": {
-      "buttons": "Кнопки", "inputs": "Поля и селекторы",
-      "cards": "Карточки, списки и badges", "states": "Loading, empty и error states",
-      "namePlaceholder": "Анна Иванова", "emailPlaceholder": "anna@example.com"
+      "buttons": "Кнопки",
+      "inputs": "Поля и селекторы",
+      "cards": "Карточки, списки и badges",
+      "states": "Loading, empty и error states",
+      "namePlaceholder": "Анна Иванова",
+      "emailPlaceholder": "anna@example.com",
+      "selection": "Отметки и переключатели",
+      "segmented": "Сегменты и чипы",
+      "groups": "Сгруппированные строки",
+      "headers": "Шапки шага и шторки",
+      "code": "Код из письма"
     },
     "labels": {
-      "primary": "Основная", "secondary": "Вторичная", "selector": "Переключатель",
-      "add": "Добавить", "all": "Все", "hair": "Волосы", "nails": "Ногти",
-      "new": "Новое", "paid": "Оплачено", "warning": "Внимание"
+      "primary": "Основная",
+      "secondary": "Вторичная",
+      "selector": "Переключатель",
+      "add": "Добавить",
+      "all": "Все",
+      "hair": "Волосы",
+      "nails": "Ногти",
+      "new": "Новое",
+      "paid": "Оплачено",
+      "warning": "Внимание",
+      "apple": "Продолжить с Apple",
+      "google": "Продолжить с Google",
+      "emailLink": "Войти по почте",
+      "later": "Позже",
+      "chooseOne": "Выберите хотя бы одну",
+      "same": "Одинаково",
+      "perDay": "По дням",
+      "custom": "Своё время",
+      "stepCounter": "{{step}} из {{total}}",
+      "back": "Назад",
+      "close": "Закрыть",
+      "timezone": "Часовой пояс",
+      "timezoneValue": "Бишкек, GMT+6",
+      "currency": "Валюта",
+      "currencyValue": "Сом, KGS",
+      "hours": "Рабочие часы",
+      "hoursHint": "Перерывы и разные часы по дням",
+      "hoursValue": "Пн–Сб, 10–19",
+      "onlineBooking": "Онлайн-запись",
+      "onlineBookingHint": "Клиенты записываются сами по вашей ссылке",
+      "username": "Имя пользователя",
+      "usernamePrefix": "getseene.app/",
+      "price": "Цена",
+      "currencySuffix": "сом",
+      "free": "Бесплатно",
+      "description": "Описание",
+      "optional": "необязательно",
+      "descriptionPlaceholder": "Что входит в услугу",
+      "code": "Код из письма",
+      "codeError": "Код не подходит. Проверьте последнее письмо.",
+      "section": "Маникюр",
+      "sectionTrailing": "0 из 3"
     },
     "layout": {
       "basic": "Обычный экран",
@@ -254,7 +317,8 @@
       "formDescription": "Keyboard-aware прокрутка с фиксированной доступной action area.",
       "dynamic": "Динамические Stack options",
       "dynamicDescription": "Route меняет нативный title, не пряча конфигурацию навигатора во wrapper.",
-      "dynamicAlternateTitle": "Обновлённый заголовок", "changeTitle": "Изменить нативный title"
+      "dynamicAlternateTitle": "Обновлённый заголовок",
+      "changeTitle": "Изменить нативный title"
     },
     "navigation": {
       "stack": "Вложенный Stack во вкладке",
@@ -268,25 +332,40 @@
       "absoluteRelative": "Абсолютные и относительные ссылки",
       "absoluteRelativeDescription": "В production по умолчанию используются абсолютные типизированные пути.",
       "openRelative": "Открыть относительный layout route",
-      "deepLink": "Deep link", "deepLinkDescription": "Файловые маршруты открываются через scheme приложения.",
-      "back": "Возврат назад", "backDescription": "Нативный Stack Back, gestures и Android Back — поведение по умолчанию.",
-      "drawer": "Drawer", "drawerDescription": "Нет продуктового сценария для Drawer рядом с пятью основными вкладками."
+      "deepLink": "Deep link",
+      "deepLinkDescription": "Файловые маршруты открываются через scheme приложения.",
+      "back": "Возврат назад",
+      "backDescription": "Нативный Stack Back, gestures и Android Back — поведение по умолчанию.",
+      "drawer": "Drawer",
+      "drawerDescription": "Нет продуктового сценария для Drawer рядом с пятью основными вкладками."
     },
     "modals": {
-      "standard": "Стандартный route modal", "standardDescription": "Для сфокусированного редактирования с возвратом к источнику.",
-      "fullscreen": "Полноэкранный многошаговый modal", "fullscreenDescription": "Quick create содержит вложенный Stack внутри одного modal.",
-      "formSheet": "Нативный form sheet", "formSheetDescription": "Checkout использует два detent и content title на Android.",
-      "confirmation": "Modal подтверждения", "confirmationDescription": "React Native Modal предназначен только для автономного блокирующего решения.",
-      "sheet": "Bottom sheet", "sheetDescription": "Для preview, picker и временных действий, но не для навигационных flows.",
-      "dismiss": "Dismiss и dismissTo", "dismissDescription": "Dismiss возвращает к источнику, dismissTo закрывает flow до известного route."
+      "standard": "Стандартный route modal",
+      "standardDescription": "Для сфокусированного редактирования с возвратом к источнику.",
+      "fullscreen": "Полноэкранный многошаговый modal",
+      "fullscreenDescription": "Quick create содержит вложенный Stack внутри одного modal.",
+      "formSheet": "Нативный form sheet",
+      "formSheetDescription": "Checkout использует два detent и content title на Android.",
+      "confirmation": "Modal подтверждения",
+      "confirmationDescription": "React Native Modal предназначен только для автономного блокирующего решения.",
+      "sheet": "Bottom sheet",
+      "sheetDescription": "Для preview, picker и временных действий, но не для навигационных flows.",
+      "dismiss": "Dismiss и dismissTo",
+      "dismissDescription": "Dismiss возвращает к источнику, dismissTo закрывает flow до известного route."
     },
     "auth": {
-      "restoration": "Восстановление сессии", "restorationDescription": "Отдельный protected loading route предотвращает вспышки auth/onboarding.",
-      "protected": "Защищённый маршрут приложения", "protectedDescription": "App routes существуют только при валидных session и profile.",
-      "public": "Публичный маршрут", "publicDescription": "Sign-in routes существуют только без активной сессии.",
-      "returnTo": "Возврат после авторизации", "returnToDescription": "Проверенный внутренний deep link сохраняется через sign-in и onboarding.",
-      "currentSession": "Текущая сессия", "currentSessionDescription": "Пользователь: {{user}} · профиль: {{profile}}",
-      "signOutTitle": "Выйти из аккаунта?", "signOutDescription": "Protected history будет удалена, и Back не откроет приложение снова."
+      "restoration": "Восстановление сессии",
+      "restorationDescription": "Отдельный protected loading route предотвращает вспышки auth/onboarding.",
+      "protected": "Защищённый маршрут приложения",
+      "protectedDescription": "App routes существуют только при валидных session и profile.",
+      "public": "Публичный маршрут",
+      "publicDescription": "Sign-in routes существуют только без активной сессии.",
+      "returnTo": "Возврат после авторизации",
+      "returnToDescription": "Проверенный внутренний deep link сохраняется через sign-in и onboarding.",
+      "currentSession": "Текущая сессия",
+      "currentSessionDescription": "Пользователь: {{user}} · профиль: {{profile}}",
+      "signOutTitle": "Выйти из аккаунта?",
+      "signOutDescription": "Protected history будет удалена, и Back не откроет приложение снова."
     },
     "recommended": {
       "screen": "Для статического content без header; передавайте только края, не занятые навигатором.",

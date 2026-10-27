@@ -1,1 +1,1 @@
-export { ListItem, type ListItemProps } from './ListItem';
+export * from './ListItem';

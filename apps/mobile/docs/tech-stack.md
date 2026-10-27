@@ -212,6 +212,9 @@ invalidateQueries({key})` → `queryClient.invalidateQueries({queryKey})`; the `
 | UI kit            | custom on Unistyles                     | heavyweight kit            |
 | Lists / images    | FlashList / expo-image                  | FlatList                   |
 | Motion / gestures | reanimated 4 / gesture-handler          | —                          |
+| Keyboard          | react-native-keyboard-controller        | KeyboardAvoidingView (differs on Android edge-to-edge) |
+| Icons / vectors   | react-native-svg (design SVG paths)     | Ionicons (doesn't match the design) |
+| Fonts             | Inter + Inter Tight via expo-font plugin | system font (iOS ≠ Android) |
 | Charts            | victory-native (Skia)                   | Chart.js (web-only)        |
 | Calendar          | react-native-calendars (Wix)            | FullCalendar (DOM-only)    |
 | i18n              | i18next + expo-localization             | —                          |

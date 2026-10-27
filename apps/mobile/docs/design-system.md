@@ -1,13 +1,13 @@
 ---
-version: 2.1
-date: 2026-08-26
+version: 3.0
+date: 2026-10-27
 category: design
 status: implemented
 ---
 
 # Design System & UI Kit
 
-> Version 2.1 · 2026-08-26 · [Design](./)
+> Version 3.0 · 2026-10-27 · [Design](./)
 
 > The foundation and rules for Seene's native design system. This document defines **how** the
 > system is built and governed — the token contract, component contract, theming, states, and the
@@ -47,18 +47,29 @@ Components use **semantic** tokens only.
 
 ### 3.1 Color
 
-- **Primitive palette:** a neutral gray ramp (0–1000) + the brand accent.
-- **Brand accent — "Seene Violet":** `#7A5AF8` (light) / `#8B6DFF` (dark). One accent, defined once.
-- **Overall look:** monochrome/neutral base (Instagram/Threads-like restraint) with the violet
-  accent for primary actions, selection, and focus.
+Source of truth: the app boards of the "Seene: дизайн сайта" artboard (onboarding, sheets, tabs).
+
+- **Primitive palette:** a warm neutral ramp `neutral.0–1000` (`#FFFFFF`, `#F6F6F4`, `#F0F0EE`,
+  `#E7E7E4`, `#D6D6D2`, `#C9C9C4`, `#8E8E94`, `#5C5C63`, `#3A3A3F`, ink `#0B0B0C`) + the brand
+  **Seene Rose** ramp (`#FDEBF0`, `#F4B8C9`, `#CF3767`, `#B92D5A`, `#9E2449`).
+- **Overall look:** monochrome. **Ink** (`accent.*`) drives primary actions, selection and focus;
+  **rose** (`brand.*`) is for links ("Добавить цену"), the master's initials avatar, badges and
+  error emphasis. The earlier Seene Violet accent is retired.
 - **Semantic roles (theme-aware):**
-  `bg.canvas`, `bg.surface`, `bg.elevated`, `bg.sunken`,
+  `bg.canvas`, `bg.surface` (grouped rows, secondary buttons, icon buttons), `bg.elevated`,
+  `bg.sunken`,
   `content.primary`, `content.secondary`, `content.tertiary`, `content.inverse`, `content.disabled`,
-  `border.default`, `border.strong`, `border.subtle`,
+  `content.onDarkMuted`,
+  `border.subtle`, `border.default`, `border.strong` (unchecked marks, dashed "add" buttons),
+  `border.focus`, `border.dashed`,
+  `control.trackOff`, `control.knob`, `control.focusRing`,
+  `overlay.scrim`, `overlay.scrimStrong`, `overlay.scrimLight`, `overlay.bar`, `overlay.onImageDim`,
+  `overlay.onImageEdge`, `overlay.photoShade`,
   `navigation.headerGradientStart`, `navigation.headerGradientEnd`,
   `accent.default`, `accent.pressed`, `accent.subtle`, `accent.onAccent`,
-  `feedback.success`, `feedback.warning`, `feedback.danger`, `feedback.info` (each with `subtle`/
-  `onColor` pairs),
+  `brand.default`, `brand.text`, `brand.strong`, `brand.subtle`, `brand.soft`,
+  `feedback.success`, `feedback.warning`, `feedback.danger` (+ `dangerBorder`), `feedback.info`
+  (each with a `subtle` pair), `feedback.onColor`,
   plus domain tokens: `status.pending|confirmed|completed|cancelled|no_show|expired` (drive the
   appointment status pills/calendar events) and the fixed **service** & **payment** palettes and the
   8-hue **client-initials** set (see [domain-model.md](./domain-model.md) §4). These fixed palettes
@@ -66,41 +77,65 @@ Components use **semantic** tokens only.
 
 ### 3.2 Typography
 
-- One type family (system default or a chosen brand face via `expo-font`).
-- **Type scale (semantic):** `display`, `title1`, `title2`, `title3`, `headline`, `body`,
-  `bodyStrong`, `callout`, `subhead`, `footnote`, `caption`. Each token bundles size / line-height /
-  weight / letter-spacing.
-- **Dynamic Type:** respect OS font scaling; cap extreme scales where layout would break.
+- **Faces:** Inter (400/500/600/700) for UI text, Inter Tight (600/700) for headings and figures.
+  The static files live in `assets/fonts/` and are embedded at build time by the `expo-font`
+  config plugin (`app.json`); web loads the same files at runtime (`shared/theme/fonts.web.ts`).
+- **One family per weight.** Each file is named after its PostScript name (`Inter-SemiBold`), which
+  becomes the `fontFamily` on both iOS and Android. Tokens carry the family, never `fontWeight`, so
+  Android never synthesises bold and both platforms render the same face.
+- **Type scale (semantic):** `display` 30, `title1` 28, `title2` 26, `figure` 24, `stat` 20,
+  `title3` 19, `tile` 16 (Inter Tight bold, negative tracking); `headline` 17/600, `bodyLarge` 17,
+  `callout` 16 (+ `calloutMedium`, `calloutStrong`), `body` 15 (+ `bodyMedium`, `bodyStrong`),
+  `subhead` 14 (+ `subheadStrong`), `footnote` 13 (+ `footnoteStrong`), `caption` 12
+  (+ `captionStrong`), `overline` 11/600 uppercase, `micro` 10. Letter-spacing is stored in px
+  (design em × size).
+- **Dynamic Type:** respected, capped at `MAX_FONT_SCALE` (1.3) so fixed-height controls hold.
+  `Text` also disables Android font padding.
 - A single `<Text>` primitive exposes `variant` (the scale) + `color` (a content token). No raw
   `fontSize`/`fontWeight` at call sites.
 
 ### 3.3 Spacing & sizing
 
-- **Space scale** (4-pt base): `space.0,1(4),2(8),3(12),4(16),5(20),6(24),8(32),10(40),12(48)…`.
+- **Space scale** (4-pt base): `space.0,1(4),2(8),3(12),4(16),5(20),6(24),8(32),10(40),12(48)…`,
+  plus half steps for the design's off-grid values: `0.25(1)`, `0.5(2)`, `1.5(6)`, `2.5(10)`,
+  `3.5(14)`, `4.5(18)`, `5.5(22)`, `6.5(26)`, `7(28)`, `7.5(30)`.
+- **Layout:** `layout.gutter` 20 (screen side padding), `layout.topGap` 10 (below the safe area on
+  header-less screens), `layout.minBottomGap` 16.
 - **Sizing tokens** for icons (`size.icon.sm/md/lg`), avatars, control heights
   (`control.height.sm/md/lg`), and **minimum touch target 44×44**.
 - Layout uses tokens for padding/gap; no magic numbers.
 
 ### 3.4 Radii
 
-- `radius.none/sm(6)/md(10)/lg(14)/xl(20)/full`. Cards `lg`, sheets `xl`, pills `full`, inputs `md`.
+- Scale: `xs 4`, `sm 8` (checkbox), `md 12` (chips), `lg 16` (buttons, inputs), `xl 20` (cards,
+  tiles), `xxl 28` (sheets, dialogs, hero photo), `full`.
+- Roles for one-off design values: `bar 2`, `segment 10`, `field 14` (code cells, search,
+  segmented track), `panel 22` (summary card), `showcase 24`.
 
 ### 3.5 Elevation / shadows
 
-- `elevation.0..4` semantic tokens (iOS shadow + Android elevation pairs). Sheets and menus use
-  defined levels; surfaces prefer borders over heavy shadows for the neutral aesthetic.
+- `shadow.*` tokens are CSS `boxShadow` strings (rendered identically on iOS and Android, inset
+  supported): `knob`, `segment`, `bar`, `fab`, `bubble`, `pop`, `showcase`, `dialog`.
+- `elevation.0..4` (legacy iOS shadow + Android elevation pairs) remain for older screens.
+  Surfaces prefer borders over heavy shadows for the neutral aesthetic.
 
 ### 3.6 Motion
 
-- `motion.duration.fast(120)/base(200)/slow(320)` and `motion.easing.standard/entrance/exit`.
+- `motion.duration.fast(120)/base(200)/fade(300)/slow(320)/sheet(400)/enter(550)` and
+  `motion.easing.standard/entrance/exit/emphasized` (`emphasized` = the design's
+  `cubic-bezier(0.22, 1, 0.36, 1)` used by every enter animation).
 - Reanimated-driven; **respect Reduce Motion** (fall back to fades/instant).
 - Standard interactions: press scale/opacity on `Button`, sheet spring, list item transitions.
 
 ### 3.7 Icons
 
-- One icon set (e.g. `expo-symbols` on iOS + a consistent set like Lucide via `@expo/vector-icons`
-  cross-platform). Sized via `size.icon.*`, colored via content tokens. A single `<Icon name>`
-  facade so the underlying set can change without touching call sites.
+- One SVG line-icon set (`react-native-svg`), 24-unit viewBox, round caps/joins; paths for the
+  onboarding set are copied from the design (`shared/ui/Icon/glyphs.tsx`). Each glyph has a
+  default stroke weight (`iconStroke.light…black`, 1.8–3) that `weight` can override; brand marks
+  (Apple, Google) and `verified`/`star` are filled glyphs.
+- Sized via `sizing.icon.*` (`xs 12`, `mark 13`, `sm 16`, `base 18`, `md 20`, `lg 24`, `xl 34`),
+  colored via theme-color paths. A single `<Icon name>` facade so the set can change without
+  touching call sites.
 
 ## 4. Component contract (the UI Kit)
 
@@ -123,9 +158,18 @@ trimmed to Text/Button/Switch on purpose — resist premature breadth):
 `Text`, `Button`, `IconButton`, `Input`, `Switch`, `Card`, `ListItem`, `Avatar`, `Badge/Pill`
 (incl. `StatusPill`), `Chip`, `Divider`, `Sheet` (bottom sheet wrapper), `Modal`, the visual
 wrappers in §4.3 (`Screen`, `ScreenScrollView`, `FormScreen`, `FormSheetContent`), `Footer`,
-`ScrollFade`, `NavigationHeaderBackground`, and the state components in §6. Add `Select`,
-`SegmentedControl`, `Stepper`, `Calendar`, `Chart`, `PriceInput`, `EmojiPicker`, `PhoneInput` as
-their features arrive.
+`ScrollFade`, `NavigationHeaderBackground`, and the state components in §6.
+
+Added for the onboarding design (v3): `CodeInput` (6 cells over one native input with OS
+one-time-code autofill), `SelectionMark` (24pt checkbox/radio, `onImage` tone for photo tiles),
+`SegmentedControl`, `StepHeader` (back + segmented progress + counter), `SheetHeader` (grabber,
+round close/back, centred title), `SectionLabel`, `GroupedCard` (filled/outlined row groups).
+`Input` gained `prefix`/`suffix`/`strong`/`focusRing`/`inactive`/`below`; `Switch` is drawn from
+tokens (md 50×30, sm 46×27) so it matches on both platforms; `Button` is 54pt by default with a
+dedicated disabled look; `Chip` covers presets, weekdays and the dashed "custom" affordance.
+
+Add `Select`, `Stepper`, `Calendar`, `Chart`, `EmojiPicker`, `PhoneInput` as their features
+arrive.
 
 ### 4.2 Patterns (composed, documented)
 
@@ -147,7 +191,7 @@ animations, and detents. Import wrappers from `@/shared/ui`.
 | ------------------ | --------------------------------------------------------------- | ------------------------------------------------------------------------- |
 | `Screen`           | Static canvas with explicit safe-area edges                     | `padded`, `center`, `edges`, `style`, `contentStyle`                      |
 | `ScreenScrollView` | Scroll canvas with automatic native content insets              | `padded`, `contentContainerStyle`, normal `ScrollViewProps`               |
-| `FormScreen`       | Keyboard avoidance, scrollable fields, and fixed action footer  | `footer`, `padded`, `edges`, `contentContainerStyle`, normal scroll props |
+| `FormScreen`       | Fixed header, keyboard-aware scroll, footer riding the keyboard | `header`, `footer`, `footerDivider`, `padded`, `edges`, scroll props      |
 | `FormSheetContent` | Cross-platform content header/actions inside native form sheets | `title`, `description`, `headerLeft`, `headerRight`, `footer`             |
 
 `PageLayout`, `ModalLayout`, and `ScreenHeader` were removed after the navigation audit. They mixed
@@ -223,9 +267,9 @@ reinvent them.
 
 ## 9. What's decided vs. open
 
-- **Decided:** engine (Unistyles 3), accent (Seene Violet), monochrome base, two-tier tokens,
-  seed kit, mandatory states, governance rules, dev-build requirement.
-- **Open (for design):** the exact primitive scales' values (final hex ramp, type sizes, spacing
-  rhythm), the icon set choice, brand font, and the full component visual specs. These are filled
-  in by the dedicated design pass and encoded as tokens. See [open-questions.md](./open-questions.md)
-  Q-DS-1.
+- **Decided:** engine (Unistyles 3), ink + Seene Rose on a warm neutral base, Inter / Inter Tight,
+  SVG line icons, two-tier tokens, seed kit, mandatory states, governance rules, dev-build
+  requirement. Light values come 1:1 from the design.
+- **Open:** the dark theme is derived from the same roles and awaits a design review; the fixed
+  service/payment/client palettes in `shared/config/palettes.ts` are still the violet-era values and
+  move to the design's 8 service swatches with the service form (onboarding phase 5).
