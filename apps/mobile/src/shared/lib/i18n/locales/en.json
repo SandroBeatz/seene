@@ -103,16 +103,6 @@
     "noResults": "No services match “{{query}}”"
   },
   "onboarding": {
-    "stepTitle": {
-      "specializations": "What do you do?",
-      "personal": "About you",
-      "address": "Where you work",
-      "schedule": "Your schedule",
-      "review": "Review & finish"
-    },
-    "stepCounter": "Step {{current}} of {{total}}",
-    "specializationsHint": "Pick everything you offer.",
-    "specializationsLabel": "Specializations",
     "specializations": {
       "lashes": "Lashes",
       "brows": "Brows",
@@ -129,43 +119,36 @@
       "piercing": "Piercing",
       "pet_grooming": "Pet grooming"
     },
-    "firstName": "First name",
-    "lastName": "Last name",
-    "phone": "Phone",
-    "name": "Name",
-    "username": "Username",
-    "usernameHint": "Your public booking handle (a–z, 0–9, _ -).",
-    "usernameChecking": "Checking availability…",
-    "usernameAvailable": "Available",
-    "usernameTaken": "That username is taken.",
-    "usernameInvalid": "Use 3–30 letters, numbers, _ or -, starting with a letter or number",
-    "country": "Country",
-    "countryHint": "Two-letter code, e.g. US, FR, RU.",
-    "street": "Street",
-    "houseNumber": "House / unit",
-    "city": "City",
-    "zip": "ZIP / postcode",
-    "worksAtPlace": "I work at a place",
-    "canTravel": "I travel to clients",
-    "days": {
-      "mon": "Monday",
-      "tue": "Tuesday",
-      "wed": "Wednesday",
-      "thu": "Thursday",
-      "fri": "Friday",
-      "sat": "Saturday",
-      "sun": "Sunday"
-    },
-    "start": "Start",
-    "end": "End",
-    "timezone": "Timezone",
-    "timeFormat": "Time format",
-    "time12": "12h",
-    "time24": "24h",
-    "reviewHint": "Check everything looks right, then create your studio.",
     "back": "Back",
+    "name": "Name",
     "next": "Next",
-    "finish": "Create studio"
+    "step": "{{step}} of {{total}}",
+    "profile": {
+      "title": "Your profile",
+      "subtitle": "This is how clients will see you on your booking page.",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "username": "Username",
+      "usernamePrefix": "getseene.app/",
+      "usernameHelp": "This is your booking link. Latin letters, digits, hyphen and underscore.",
+      "usernameInvalid": "At least 3 characters: a–z, 0–9, - and _",
+      "usernameChecking": "Checking…",
+      "usernameFree": "Available",
+      "usernameTaken": "Already taken, try another",
+      "usernameError": "Couldn't check. Check your connection."
+    },
+    "professions": {
+      "title": "What do you do?",
+      "subtitle": "You can pick several.",
+      "nextCount": "Next · {{count}} selected",
+      "nextEmpty": "Pick at least one"
+    },
+    "signOut": {
+      "title": "Sign out?",
+      "message": "What you entered stays on this phone.",
+      "confirm": "Sign out",
+      "cancel": "Stay"
+    }
   },
   "navigation": {
     "restoringSession": "Restoring your session…",

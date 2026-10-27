@@ -57,16 +57,21 @@ Google OAuth (active); Apple (planned, native flow required for iOS). The Supaba
 email template must contain `{{ .Token }}` so the email carries the code, and Redirect URLs must
 include `appmasterseene://**` for OAuth. Phone OTP is **not** used by masters.
 
-**Onboarding is a mandatory, linear 5-step wizard.** Data is held in local state and written in
-one transaction at Step 5. The wizard creates `master_profile` and upserts `master_settings`.
+**Onboarding is a mandatory, linear 4-step flow** (design v3), one route per step
+(`/onboarding/profile`, `/onboarding/professions`, …). The draft lives in a persisted Zustand
+store (MMKV, tied to the user id) and is written once by the `complete_onboarding` RPC — profile,
+settings, services and categories in one transaction.
 
 | Step | Collects | Rules |
 |---|---|---|
-| 1 · Specializations | ≥1 key from a fixed set of 14 | Stored as `text[]` of **keys** (see domain-model §4); enforced by `master_profile_specializations_valid`; display names come from i18n |
-| 2 · Personal info | first/last name, phone (intl), **username** | `username` is globally unique → public URL; check via `check_username_available` RPC |
-| 3 · Address & location | country (req.), street/house/zip/city (opt.), `place_id`, `works_at_place`, `can_travel` | Country auto-detected; also seeds `time_format` (US/CA/AU/IN… → 12h, else 24h). Address optionally via Google Places |
-| 4 · Schedule & timezone | weekly `schedule`, timezone, time format | Per day: enabled + start/end + breaks[]. Timezone defaults to device zone |
-| 5 · Review & create | — | Validate all → `INSERT master_profile` → `UPSERT master_settings`. Settings failure is non-fatal |
+| 1 · Profile | first/last name (prefilled from Google), **username** | `username` = public URL `getseene.app/<username>`, `^[a-z0-9][a-z0-9_-]{2,29}$`, not reserved; live `check_username_available` (debounced). Back = sign out (confirm) |
+| 2 · Professions | ≥1 of the 14 keys (photo tiles) | Stored as `text[]` of **keys** (domain-model §4); CHECK `master_profile_specializations_valid` |
+| 3 · Services | picked starter services (`SERVICE_TEMPLATES`), optional prices | No price → saved as a draft (`price 0`, `show_online false`) |
+| 4 · Settings | timezone, currency, working hours, online booking, manual confirm | Prefilled from the phone; defaults Mon–Sat 10–19, online on, auto-confirm |
+| Review → create | — | `complete_onboarding` → refresh profile → guard opens the app |
+
+Steps 3–4 and review land in phases 5–7; until then step 2 finishes onboarding with the
+phone/design defaults and no services. Phone is not collected (nullable since 2026-10-27).
 
 **Nav guard rules** (port the web `beforeEach` exactly):
 

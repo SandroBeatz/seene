@@ -7,7 +7,6 @@
  * Lives in shared/config, not an entity: it is the vocabulary that both the master
  * (professions) and the service (its section) entities speak.
  */
-import type { ImageSourcePropType } from 'react-native';
 import lashesPhoto from '@/shared/assets/img/professions/lashes.jpg';
 import browsPhoto from '@/shared/assets/img/professions/brows.jpg';
 import manicurePhoto from '@/shared/assets/img/professions/manicure.jpg';
@@ -46,8 +45,8 @@ export function isSpecializationKey(value: string): value is SpecializationKey {
   return (SPECIALIZATION_KEYS as readonly string[]).includes(value);
 }
 
-/** Tile photo per profession (600×600, `seene-images-ready/app`). */
-export const SPECIALIZATION_IMAGES: Record<SpecializationKey, ImageSourcePropType> = {
+/** Tile photo per profession (600×600, `seene-images-ready/app`); Metro asset ids. */
+export const SPECIALIZATION_IMAGES: Record<SpecializationKey, number> = {
   lashes: lashesPhoto,
   brows: browsPhoto,
   manicure: manicurePhoto,
