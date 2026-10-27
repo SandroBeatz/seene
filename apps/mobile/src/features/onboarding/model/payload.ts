@@ -11,6 +11,7 @@ import {
 } from '@/entities/master';
 import type { AppLocale } from '@/shared/lib/i18n';
 import type { OnboardingDraftState } from './draft.store';
+import { toServiceInput } from './services';
 
 const workday = (enabled: boolean): DaySchedule => ({
   enabled,
@@ -32,15 +33,20 @@ export const DEFAULT_WEEK: WeeklySchedule = [
 
 export interface DeviceContext {
   timezone: string;
-  currency: string;
   region: string;
   language: AppLocale;
   theme: CompleteOnboardingPayload['theme'];
 }
 
+export interface BuildOptions {
+  /** "Настрою потом": finish without any services. */
+  skipServices?: boolean;
+}
+
 export function buildPayload(
   draft: OnboardingDraftState,
   device: DeviceContext,
+  options: BuildOptions = {},
 ): CompleteOnboardingPayload {
   return {
     first_name: draft.firstName.trim(),
@@ -48,12 +54,14 @@ export function buildPayload(
     username: draft.username.trim(),
     specializations: draft.specializations,
     schedule: toStoredSchedule(DEFAULT_WEEK, device.timezone),
-    currency: device.currency,
+    currency: draft.currency,
     language: device.language,
     time_format: device.region ? defaultTimeFormatForCountry(device.region) : 24,
     theme: device.theme,
     online_booking_enabled: true,
     booking_default_status: 'confirmed',
-    services: [],
+    services: options.skipServices
+      ? []
+      : draft.services.filter((s) => s.selected).map((s) => toServiceInput(s, device.language)),
   };
 }

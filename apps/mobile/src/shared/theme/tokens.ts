@@ -162,6 +162,8 @@ export const sizing = {
   /** Pressable rows: settings rows, list rows, option rows. */
   row: { sm: 52, md: 56, lg: 60, xl: 64 },
   codeCell: 58,
+  /** Inline create field + its button (category sheet). */
+  inlineField: 50,
   segment: 38,
   timeField: 68,
   tile: 136,

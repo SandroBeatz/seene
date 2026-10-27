@@ -10,6 +10,7 @@ import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { mmkvSyncStorage } from '@/shared/api/storage';
 import type { SpecializationKey } from '@/shared/config/specializations';
+import { type DraftService, forgetCatalogNames, syncWithProfessions } from './services';
 
 export interface OnboardingDraftState {
   /** Owner of this draft; a mismatch with the session user resets it. */
@@ -18,14 +19,29 @@ export interface OnboardingDraftState {
   lastName: string;
   username: string;
   specializations: SpecializationKey[];
+  /** ISO 4217, from the phone until step 4 lets the master change it. */
+  currency: string;
+  /** Step 3 candidates (templates of the picked professions + own services). */
+  services: DraftService[];
+  /** Category names created on step 3 ("Без категории" = null on a service). */
+  categories: string[];
 }
 
 interface OnboardingDraftActions {
   /** Start (or keep) the draft for this user; prefill the name once, if known. */
-  begin: (userId: string, prefill?: { firstName?: string; lastName?: string }) => void;
+  begin: (
+    userId: string,
+    prefill: { firstName?: string; lastName?: string; currency: string },
+  ) => void;
   setName: (patch: Partial<Pick<OnboardingDraftState, 'firstName' | 'lastName'>>) => void;
   setUsername: (username: string) => void;
   toggleSpecialization: (key: SpecializationKey) => void;
+  /** Align step-3 services with the picked professions (on entering step 3). */
+  syncServices: () => void;
+  toggleService: (id: string) => void;
+  /** Insert or replace by id (the service sheet's save). */
+  saveService: (service: DraftService) => void;
+  addCategory: (name: string) => void;
   reset: () => void;
 }
 
@@ -35,6 +51,9 @@ const EMPTY: OnboardingDraftState = {
   lastName: '',
   username: '',
   specializations: [],
+  currency: 'USD',
+  services: [],
+  categories: [],
 };
 
 export const useOnboardingDraft = create<OnboardingDraftState & OnboardingDraftActions>()(
@@ -46,8 +65,9 @@ export const useOnboardingDraft = create<OnboardingDraftState & OnboardingDraftA
         set({
           ...EMPTY,
           userId,
-          firstName: prefill?.firstName?.trim() ?? '',
-          lastName: prefill?.lastName?.trim() ?? '',
+          firstName: prefill.firstName?.trim() ?? '',
+          lastName: prefill.lastName?.trim() ?? '',
+          currency: prefill.currency,
         });
       },
       setName: (patch) => set(patch),
@@ -60,11 +80,36 @@ export const useOnboardingDraft = create<OnboardingDraftState & OnboardingDraftA
             : [...current, key],
         });
       },
+      syncServices: () =>
+        set((state) => ({
+          services: syncWithProfessions(state.services, state.specializations),
+        })),
+      toggleService: (id) =>
+        set((state) => ({
+          services: state.services.map((s) => (s.id === id ? { ...s, selected: !s.selected } : s)),
+        })),
+      saveService: (service) =>
+        set((state) => ({
+          services: state.services.some((s) => s.id === service.id)
+            ? state.services.map((s) => (s.id === service.id ? service : s))
+            : [...state.services, service],
+        })),
+      addCategory: (name) =>
+        set((state) => ({
+          categories: state.categories.some((c) => c.toLowerCase() === name.toLowerCase())
+            ? state.categories
+            : [name, ...state.categories],
+        })),
       reset: () => set(EMPTY),
     }),
     {
       name: 'seene.onboarding-draft',
-      version: 1,
+      // v2 adds currency/services/categories; v3 stops storing catalog names.
+      version: 3,
+      migrate: (persisted) => {
+        const state = { ...EMPTY, ...(persisted as Partial<OnboardingDraftState>) };
+        return { ...state, services: forgetCatalogNames(state.services) };
+      },
       storage: createJSONStorage(() => mmkvSyncStorage),
     },
   ),

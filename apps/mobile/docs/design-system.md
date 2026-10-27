@@ -1,5 +1,5 @@
 ---
-version: 3.1
+version: 3.2
 date: 2026-10-27
 category: design
 status: implemented
@@ -171,6 +171,13 @@ round close/back, centred title; `inset={false}` when the sheet pads its own bod
 `Input` gained `prefix`/`suffix`/`strong`/`focusRing`/`inactive`/`below`; `Switch` is drawn from
 tokens (md 50×30, sm 46×27) so it matches on both platforms; `Button` is 54pt by default with a
 dedicated disabled look; `Chip` covers presets, weekdays and the dashed "custom" affordance.
+
+Added with the onboarding steps: `ScreenTitle` (display title + body subtitle, every auth and
+onboarding step), `DurationPicker` (iOS: two SwiftUI wheel pickers "ч / мин" in a bottom panel
+with system colours; Android: the system time dialog in 24 h — `@expo/ui`, no extra native
+dependency), `ListItem titleNote` (muted inline note: "Категория · необязательно"). Service
+colours are the design's 8 swatches (`servicePalette` → `SERVICE_COLORS`, default rose).
+Prices on service rows use `formatAmount` (no forced decimals) and `currencySymbol`.
 
 Add `Select`, `Stepper`, `Calendar`, `Chart`, `EmojiPicker`, `PhoneInput` as their features
 arrive.

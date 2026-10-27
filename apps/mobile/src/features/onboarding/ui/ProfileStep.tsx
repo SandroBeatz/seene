@@ -1,19 +1,19 @@
 /**
  * Step 1 of 4 — "Ваш профиль": first/last name side by side and the booking link
- * `getseene.app/<username>` with a live availability check. Back here means leaving
- * onboarding, so it asks to sign out (native dialog). The name is prefilled from the
- * Google profile when there is one.
+ * `getseene.app/<username>` with a live availability check. The name is prefilled
+ * from the Google profile when there is one. (The step header lives in the layout.)
  */
 import { useEffect, useRef } from 'react';
-import { Alert, type TextInput, View } from 'react-native';
+import { type TextInput, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native-unistyles';
-import { useAuthName, useSessionStore, useUserId } from '@/entities/session';
+import { useAuthName, useUserId } from '@/entities/session';
 import { Button, FormScreen, Icon, Input, ScreenTitle, Text } from '@/shared/ui';
+import { deviceCurrency } from '../model/device';
 import { useOnboardingDraft } from '../model/draft.store';
 import { normalizeUsernameInput } from '../model/username-input';
 import { type UsernameStatus, useUsernameStatus } from '../model/username';
-import { OnboardingHeader } from './OnboardingHeader';
+import { useOnboardingHeaderInset } from './OnboardingHeader';
 
 export interface ProfileStepProps {
   onNext: () => void;
@@ -23,36 +23,29 @@ export function ProfileStep({ onNext }: ProfileStepProps) {
   const { t } = useTranslation();
   const userId = useUserId();
   const authName = useAuthName();
-  const signOut = useSessionStore((state) => state.signOut);
   const draft = useOnboardingDraft();
   const status = useUsernameStatus(draft.username);
+  const headerInset = useOnboardingHeaderInset();
   const lastNameRef = useRef<TextInput>(null);
   const usernameRef = useRef<TextInput>(null);
 
   const { begin } = draft;
   const { firstName: prefillFirst, lastName: prefillLast } = authName;
   useEffect(() => {
-    if (userId) begin(userId, { firstName: prefillFirst, lastName: prefillLast });
+    if (userId) {
+      begin(userId, { firstName: prefillFirst, lastName: prefillLast, currency: deviceCurrency() });
+    }
   }, [begin, userId, prefillFirst, prefillLast]);
 
   const canContinue =
     draft.firstName.trim().length > 0 && draft.lastName.trim().length > 0 && status === 'free';
 
-  function confirmSignOut() {
-    Alert.alert(t('onboarding.signOut.title'), t('onboarding.signOut.message'), [
-      { text: t('onboarding.signOut.cancel'), style: 'cancel' },
-      {
-        text: t('onboarding.signOut.confirm'),
-        style: 'destructive',
-        onPress: () => void signOut(),
-      },
-    ]);
-  }
-
   return (
     <FormScreen
-      edges={['top', 'right', 'bottom', 'left']}
-      header={<OnboardingHeader step={1} onBack={confirmSignOut} />}
+      edges={['right', 'bottom', 'left']}
+      // The floating step header owns the top inset; no automatic one on top of it.
+      contentInsetAdjustmentBehavior="never"
+      contentContainerStyle={{ paddingTop: headerInset }}
       footer={
         <Button label={t('onboarding.next')} disabled={!canContinue} onPress={onNext} />
       }>

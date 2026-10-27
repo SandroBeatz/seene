@@ -4,21 +4,16 @@
  * Seene violet and should be reconciled against the web palettes during the design
  * pass (Q-DS-1) so services/payments render identically across apps.
  */
+import { servicePalette } from '@/shared/theme/tokens';
 
-/** Service colour swatches. The first entry is the default for a new service. */
-export const SERVICE_COLORS = [
-  '#a78bfa', // default (violet)
-  '#f472b6',
-  '#fb7185',
-  '#f59e0b',
-  '#facc15',
-  '#34d399',
-  '#22d3ee',
-  '#60a5fa',
-  '#818cf8',
-  '#c084fc',
-] as const;
-export const DEFAULT_SERVICE_COLOR = SERVICE_COLORS[0];
+/**
+ * Service calendar colours — the design's 8 swatches (rose … grey), stored on
+ * `service.color` as hex. Rose is the default for a new service.
+ */
+export const SERVICE_COLOR_KEYS = Object.keys(servicePalette) as ServiceColorKey[];
+export type ServiceColorKey = keyof typeof servicePalette;
+export const SERVICE_COLORS = servicePalette;
+export const DEFAULT_SERVICE_COLOR = servicePalette.rose;
 
 /** Custom payment-method swatches (system cash/card get their own fixed colours). */
 export const PAYMENT_COLORS = [
@@ -50,7 +45,7 @@ export const CLIENT_INITIAL_HUES = [
 export const SERVICE_DURATIONS = [15, 30, 45, 60, 90, 120] as const;
 export type ServiceDuration = (typeof SERVICE_DURATIONS)[number];
 
-export type ServiceColor = (typeof SERVICE_COLORS)[number];
+export type ServiceColor = (typeof SERVICE_COLORS)[ServiceColorKey];
 export type PaymentColor = (typeof PAYMENT_COLORS)[number];
 
 /** Stable index into CLIENT_INITIAL_HUES from an arbitrary string (name/id). */

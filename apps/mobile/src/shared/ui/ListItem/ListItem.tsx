@@ -18,6 +18,8 @@ export interface ListItemProps {
   subtitle?: string;
   /** Muted title for label/value summary rows ("Профессия · Маникюр"). */
   titleTone?: 'primary' | 'secondary';
+  /** Muted note inline after the title ("Категория · необязательно"). */
+  titleNote?: string;
   /** Leading accessory — an avatar or icon. */
   left?: ReactNode;
   /** Trailing accessory — an icon, a switch, or any custom node. Wins over `trailingText`. */
@@ -35,6 +37,7 @@ export function ListItem({
   title,
   subtitle,
   titleTone = 'primary',
+  titleNote,
   left,
   right,
   trailingText,
@@ -54,6 +57,11 @@ export function ListItem({
       <View style={styles.body}>
         <Text variant="body" color={titleTone} numberOfLines={1}>
           {title}
+          {titleNote ? (
+            <Text variant="footnote" color="secondary">
+              {` · ${titleNote}`}
+            </Text>
+          ) : null}
         </Text>
         {subtitle ? (
           <Text variant="caption" color="secondary">

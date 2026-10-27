@@ -57,6 +57,54 @@ export function formatPrice(
   }
 }
 
+/**
+ * Local names ICU lacks on device (Hermes shows the ISO code: "300 KGS"). Keyed by
+ * currency, then language; a missing language falls back to Intl.
+ */
+const LOCAL_CURRENCY_NAMES: Partial<Record<string, Partial<Record<string, string>>>> = {
+  KGS: { ru: 'сом', en: 'som', fr: 'som' },
+  UZS: { ru: 'сум', en: 'sum', fr: 'sum' },
+  KZT: { ru: '₸', en: '₸', fr: '₸' },
+};
+
+function localCurrencyName(currency: string, locale: string): string | undefined {
+  return LOCAL_CURRENCY_NAMES[currency]?.[locale.slice(0, 2)];
+}
+
+/** Amount without forced decimals ("300 сом", "1 250,5 €") — service prices. */
+export function formatAmount(
+  amount: number,
+  ctx: Pick<FormatContext, 'currency' | 'locale'>,
+): string {
+  const local = localCurrencyName(ctx.currency, ctx.locale);
+  if (local) {
+    const number = new Intl.NumberFormat(ctx.locale, { maximumFractionDigits: 2 }).format(amount);
+    return `${number} ${local}`;
+  }
+  try {
+    return new Intl.NumberFormat(ctx.locale, {
+      style: 'currency',
+      currency: ctx.currency,
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    }).format(amount);
+  } catch {
+    return `${amount} ${ctx.currency}`;
+  }
+}
+
+/** The currency's local symbol or short name ("сом", "€", "$"), else the ISO code. */
+export function currencySymbol(currency: string, locale: string): string {
+  const local = localCurrencyName(currency, locale);
+  if (local) return local;
+  try {
+    const parts = new Intl.NumberFormat(locale, { style: 'currency', currency }).formatToParts(0);
+    return parts.find((part) => part.type === 'currency')?.value ?? currency;
+  } catch {
+    return currency;
+  }
+}
+
 /** Minutes → compact human duration, e.g. 90 → "1h 30m", 45 → "45m". */
 export function formatDuration(minutes: number): string {
   if (minutes <= 0) return '0m';
