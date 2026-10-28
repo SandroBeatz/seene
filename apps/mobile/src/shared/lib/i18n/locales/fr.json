@@ -232,6 +232,75 @@
       "count_other": "{{count}} prestations",
       "new": "nouvelle",
       "done": "OK"
+    },
+    "settings": {
+      "title": "L’essentiel",
+      "subtitle": "Rempli d’après votre téléphone. Vérifiez et corrigez si besoin.",
+      "timezone": "Fuseau horaire",
+      "currency": "Devise",
+      "hours": "Horaires",
+      "hoursHint": "Pauses et horaires différents selon les jours",
+      "online": "Réservation en ligne",
+      "onlineHint": "Vos clients réservent eux-mêmes via votre lien",
+      "manual": "Confirmer manuellement",
+      "manualHint": "Chaque nouvelle réservation attend votre accord",
+      "workDays_one": "{{count}} jour travaillé",
+      "workDays_few": "{{count}} jours travaillés",
+      "workDays_many": "{{count}} jours travaillés",
+      "workDays_other": "{{count}} jours travaillés",
+      "next": "Suivant"
+    },
+    "timezoneSheet": {
+      "title": "Fuseau horaire",
+      "search": "Ville ou fuseau",
+      "searchA11y": "Chercher une ville ou un fuseau",
+      "detected": "Détecté sur votre téléphone",
+      "others": "Autres",
+      "emptyTitle": "Aucun résultat",
+      "emptyText": "Essayez la grande ville la plus proche ou tapez un décalage, par ex. GMT+5.",
+      "hint": "Les heures des rendez-vous et les rappels suivent ce fuseau. L’heure d’été est gérée automatiquement.",
+      "done": "OK",
+      "countries": {
+        "CA": "Canada",
+        "US": "États-Unis",
+        "RU": "Russie"
+      }
+    },
+    "currencySheet": {
+      "title": "Devise",
+      "hint": "Les prix des prestations et toute la rubrique « Argent » utilisent cette devise.",
+      "done": "OK"
+    },
+    "hoursSheet": {
+      "title": "Horaires",
+      "modeA11y": "Mode d’horaire",
+      "same": "Identiques",
+      "perDay": "Par jour",
+      "days": "Jours travaillés",
+      "time": "Heures de travail",
+      "start": "Début",
+      "end": "Fin",
+      "breaks": "Pauses",
+      "addBreak": "Ajouter une pause",
+      "breaksHint": "Les clients ne peuvent pas réserver pendant les pauses.",
+      "removeBreak": "Supprimer la pause {{range}}",
+      "dayOff": "Repos",
+      "workDayA11y": "{{day}} : jour travaillé",
+      "breakChip": "Pause {{range}}",
+      "addBreakChip": "+ Pause",
+      "copyMonday": "Copier lundi sur tous les jours de semaine",
+      "pickStart": "Début du travail",
+      "pickEnd": "Fin du travail",
+      "pickBreakStart": "Début de la pause",
+      "pickBreakEnd": "Fin de la pause",
+      "pickDayStart": "{{day}} : début",
+      "pickDayEnd": "{{day}} : fin",
+      "doneSame": "OK · {{summary}}",
+      "doneDays_one": "OK · {{count}} jour travaillé",
+      "doneDays_few": "OK · {{count}} jours travaillés",
+      "doneDays_many": "OK · {{count}} jours travaillés",
+      "doneDays_other": "OK · {{count}} jours travaillés",
+      "pickDay": "Choisissez au moins un jour"
     }
   },
   "navigation": {
@@ -487,5 +556,34 @@
       "en": "Anglais",
       "fr": "French"
     }
+  },
+  "weekdays": {
+    "short": [
+      "Lun",
+      "Mar",
+      "Mer",
+      "Jeu",
+      "Ven",
+      "Sam",
+      "Dim"
+    ],
+    "long": [
+      "Lundi",
+      "Mardi",
+      "Mercredi",
+      "Jeudi",
+      "Vendredi",
+      "Samedi",
+      "Dimanche"
+    ]
+  },
+  "currencies": {
+    "KGS": "Som",
+    "CAD": "Dollar canadien",
+    "USD": "Dollar américain",
+    "EUR": "Euro",
+    "KZT": "Tenge",
+    "RUB": "Rouble",
+    "UZS": "Sum"
   }
 }

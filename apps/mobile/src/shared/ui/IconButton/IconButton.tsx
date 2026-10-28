@@ -22,7 +22,7 @@ export interface IconButtonProps extends Omit<PressableProps, 'style' | 'childre
   accessibilityLabel: string;
   variant?: IconButtonVariant;
   size?: IconButtonSize;
-  iconSize?: IconSize;
+  iconSize?: IconSize | number;
 }
 
 export function IconButton({

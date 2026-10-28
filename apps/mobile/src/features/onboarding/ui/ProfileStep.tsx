@@ -6,10 +6,11 @@
 import { useEffect, useRef } from 'react';
 import { type TextInput, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { useShallow } from 'zustand/react/shallow';
 import { StyleSheet } from 'react-native-unistyles';
 import { useAuthName, useUserId } from '@/entities/session';
 import { Button, FormScreen, Icon, Input, ScreenTitle, Text } from '@/shared/ui';
-import { deviceCurrency } from '../model/device';
+import { deviceCurrency, deviceTimeZone } from '../model/device';
 import { useOnboardingDraft } from '../model/draft.store';
 import { normalizeUsernameInput } from '../model/username-input';
 import { type UsernameStatus, useUsernameStatus } from '../model/username';
@@ -23,7 +24,17 @@ export function ProfileStep({ onNext }: ProfileStepProps) {
   const { t } = useTranslation();
   const userId = useUserId();
   const authName = useAuthName();
-  const draft = useOnboardingDraft();
+  // Only the step-1 slice — the rest of the draft changing must not re-render this.
+  const draft = useOnboardingDraft(
+    useShallow((state) => ({
+      firstName: state.firstName,
+      lastName: state.lastName,
+      username: state.username,
+      begin: state.begin,
+      setName: state.setName,
+      setUsername: state.setUsername,
+    })),
+  );
   const status = useUsernameStatus(draft.username);
   const headerInset = useOnboardingHeaderInset();
   const lastNameRef = useRef<TextInput>(null);
@@ -33,7 +44,12 @@ export function ProfileStep({ onNext }: ProfileStepProps) {
   const { firstName: prefillFirst, lastName: prefillLast } = authName;
   useEffect(() => {
     if (userId) {
-      begin(userId, { firstName: prefillFirst, lastName: prefillLast, currency: deviceCurrency() });
+      begin(userId, {
+        firstName: prefillFirst,
+        lastName: prefillLast,
+        currency: deviceCurrency(),
+        timezone: deviceTimeZone(),
+      });
     }
   }, [begin, userId, prefillFirst, prefillLast]);
 

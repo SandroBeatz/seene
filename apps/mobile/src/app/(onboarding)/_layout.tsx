@@ -12,6 +12,10 @@ const STEP_BY_ROUTE: Partial<Record<string, number>> = {
   service: 3,
   'service-section': 3,
   'service-category': 3,
+  settings: 4,
+  timezone: 4,
+  currency: 4,
+  hours: 4,
 };
 
 /**
@@ -28,12 +32,17 @@ export default function OnboardingLayout() {
   const confirmSignOut = useConfirmSignOut();
   const step = STEP_BY_ROUTE[segments[segments.length - 1] ?? ''];
 
-  // Step-3 sheets: full height; the grabber is drawn in content so iOS and Android match.
+  // Step sheets: full height; the grabber is drawn in content so iOS and Android match.
   const sheet: NativeStackNavigationOptions = {
     presentation: 'formSheet',
     sheetAllowedDetents: [1],
     sheetCornerRadius: theme.radius.xxl,
     sheetGrabberVisible: false,
+  };
+  // Short lists (currency) size to their content.
+  const compactSheet: NativeStackNavigationOptions = {
+    ...sheet,
+    sheetAllowedDetents: 'fitToContents',
   };
 
   return (
@@ -51,6 +60,10 @@ export default function OnboardingLayout() {
         <Stack.Screen name="onboarding/service" options={sheet} />
         <Stack.Screen name="onboarding/service-section" options={sheet} />
         <Stack.Screen name="onboarding/service-category" options={sheet} />
+        <Stack.Screen name="onboarding/settings" />
+        <Stack.Screen name="onboarding/timezone" options={sheet} />
+        <Stack.Screen name="onboarding/currency" options={compactSheet} />
+        <Stack.Screen name="onboarding/hours" options={sheet} />
         <Stack.Screen name="welcome" />
       </Stack>
       {step ? (

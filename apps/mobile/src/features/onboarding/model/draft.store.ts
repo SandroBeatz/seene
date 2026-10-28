@@ -10,6 +10,8 @@ import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { mmkvSyncStorage } from '@/shared/api/storage';
 import type { SpecializationKey } from '@/shared/config/specializations';
+import { deviceTimeZone } from '@/shared/lib/time-zone';
+import { DEFAULT_HOURS, type WorkingHours } from './hours';
 import { type DraftService, forgetCatalogNames, syncWithProfessions } from './services';
 
 export interface OnboardingDraftState {
@@ -25,13 +27,27 @@ export interface OnboardingDraftState {
   services: DraftService[];
   /** Category names created on step 3 ("Без категории" = null on a service). */
   categories: string[];
+  /** "Настрою потом" on step 3: finish without services (the picks are kept). */
+  servicesSkipped: boolean;
+  /** IANA zone, from the phone until changed on step 4. */
+  timezone: string;
+  hours: WorkingHours;
+  onlineBooking: boolean;
+  /** "Подтверждать вручную": online bookings wait for the master's yes. */
+  manualConfirm: boolean;
 }
+
+/** Step-4 fields set through `setSettings`. */
+export type DraftSettings = Pick<
+  OnboardingDraftState,
+  'timezone' | 'currency' | 'hours' | 'onlineBooking' | 'manualConfirm'
+>;
 
 interface OnboardingDraftActions {
   /** Start (or keep) the draft for this user; prefill the name once, if known. */
   begin: (
     userId: string,
-    prefill: { firstName?: string; lastName?: string; currency: string },
+    prefill: { firstName?: string; lastName?: string; currency: string; timezone: string },
   ) => void;
   setName: (patch: Partial<Pick<OnboardingDraftState, 'firstName' | 'lastName'>>) => void;
   setUsername: (username: string) => void;
@@ -42,6 +58,8 @@ interface OnboardingDraftActions {
   /** Insert or replace by id (the service sheet's save). */
   saveService: (service: DraftService) => void;
   addCategory: (name: string) => void;
+  setServicesSkipped: (skipped: boolean) => void;
+  setSettings: (patch: Partial<DraftSettings>) => void;
   reset: () => void;
 }
 
@@ -54,6 +72,11 @@ const EMPTY: OnboardingDraftState = {
   currency: 'USD',
   services: [],
   categories: [],
+  servicesSkipped: false,
+  timezone: deviceTimeZone(),
+  hours: DEFAULT_HOURS,
+  onlineBooking: true,
+  manualConfirm: false,
 };
 
 export const useOnboardingDraft = create<OnboardingDraftState & OnboardingDraftActions>()(
@@ -68,6 +91,7 @@ export const useOnboardingDraft = create<OnboardingDraftState & OnboardingDraftA
           firstName: prefill.firstName?.trim() ?? '',
           lastName: prefill.lastName?.trim() ?? '',
           currency: prefill.currency,
+          timezone: prefill.timezone,
         });
       },
       setName: (patch) => set(patch),
@@ -100,15 +124,21 @@ export const useOnboardingDraft = create<OnboardingDraftState & OnboardingDraftA
             ? state.categories
             : [name, ...state.categories],
         })),
+      setServicesSkipped: (servicesSkipped) => set({ servicesSkipped }),
+      setSettings: (patch) => set(patch),
       reset: () => set(EMPTY),
     }),
     {
       name: 'seene.onboarding-draft',
-      // v2 adds currency/services/categories; v3 stops storing catalog names.
-      version: 3,
-      migrate: (persisted) => {
+      // v2 adds currency/services/categories; v3 stops storing catalog names;
+      // v4 adds the step-4 settings (merged in from EMPTY); v5 replaces the 'UTC'
+      // placeholder an early v4 build stored with the phone's zone.
+      version: 5,
+      migrate: (persisted, version) => {
+        // Spread order keeps every saved field; new ones (phone timezone) come from EMPTY.
         const state = { ...EMPTY, ...(persisted as Partial<OnboardingDraftState>) };
-        return { ...state, services: forgetCatalogNames(state.services) };
+        const timezone = version === 4 && state.timezone === 'UTC' ? deviceTimeZone() : state.timezone;
+        return { ...state, timezone, services: forgetCatalogNames(state.services) };
       },
       storage: createJSONStorage(() => mmkvSyncStorage),
     },

@@ -25,9 +25,15 @@ export {
   type IconWeight,
 } from './Icon';
 export { Input, type InputProps, type InputSize } from './Input';
-export { DurationPicker, type DurationPickerProps } from './DurationPicker';
+export {
+  DurationPicker,
+  type DurationPickerProps,
+  TimePicker,
+  type TimePickerProps,
+} from './TimePicker';
 export { Logo, type LogoProps, type LogoTone } from './Logo';
 export { ScreenTitle, type ScreenTitleProps } from './ScreenTitle';
+export { SearchField, type SearchFieldProps } from './SearchField';
 export { CodeInput, type CodeInputProps } from './CodeInput';
 export { Switch, type SwitchProps, type SwitchSize } from './Switch';
 export {

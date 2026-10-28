@@ -232,6 +232,75 @@
       "count_other": "{{count}} services",
       "new": "new",
       "done": "Done"
+    },
+    "settings": {
+      "title": "Basics",
+      "subtitle": "Filled in from your phone. Check and adjust if needed.",
+      "timezone": "Time zone",
+      "currency": "Currency",
+      "hours": "Working hours",
+      "hoursHint": "Breaks and different hours per day",
+      "online": "Online booking",
+      "onlineHint": "Clients book themselves through your link",
+      "manual": "Confirm manually",
+      "manualHint": "A new booking waits for your yes",
+      "workDays_one": "{{count}} working day",
+      "workDays_few": "{{count}} working days",
+      "workDays_many": "{{count}} working days",
+      "workDays_other": "{{count}} working days",
+      "next": "Next"
+    },
+    "timezoneSheet": {
+      "title": "Time zone",
+      "search": "City or zone",
+      "searchA11y": "Find a city or time zone",
+      "detected": "Detected from your phone",
+      "others": "Other",
+      "emptyTitle": "Nothing found",
+      "emptyText": "Try the nearest big city or type an offset, e.g. GMT+5.",
+      "hint": "We show booking times and send reminders in this zone. Daylight saving is handled for you.",
+      "done": "Done",
+      "countries": {
+        "CA": "Canada",
+        "US": "United States",
+        "RU": "Russia"
+      }
+    },
+    "currencySheet": {
+      "title": "Currency",
+      "hint": "Service prices and everything under “Money” use this currency.",
+      "done": "Done"
+    },
+    "hoursSheet": {
+      "title": "Working hours",
+      "modeA11y": "Schedule mode",
+      "same": "Same every day",
+      "perDay": "Per day",
+      "days": "Working days",
+      "time": "Working time",
+      "start": "Start",
+      "end": "End",
+      "breaks": "Breaks",
+      "addBreak": "Add a break",
+      "breaksHint": "Clients can’t book during breaks.",
+      "removeBreak": "Remove break {{range}}",
+      "dayOff": "Day off",
+      "workDayA11y": "{{day}}: working day",
+      "breakChip": "Break {{range}}",
+      "addBreakChip": "+ Break",
+      "copyMonday": "Copy Monday to all weekdays",
+      "pickStart": "Start of work",
+      "pickEnd": "End of work",
+      "pickBreakStart": "Break start",
+      "pickBreakEnd": "Break end",
+      "pickDayStart": "{{day}}: start",
+      "pickDayEnd": "{{day}}: end",
+      "doneSame": "Done · {{summary}}",
+      "doneDays_one": "Done · {{count}} working day",
+      "doneDays_few": "Done · {{count}} working days",
+      "doneDays_many": "Done · {{count}} working days",
+      "doneDays_other": "Done · {{count}} working days",
+      "pickDay": "Pick at least one day"
     }
   },
   "navigation": {
@@ -487,5 +556,34 @@
       "en": "English",
       "fr": "French"
     }
+  },
+  "weekdays": {
+    "short": [
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "Sat",
+      "Sun"
+    ],
+    "long": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday"
+    ]
+  },
+  "currencies": {
+    "KGS": "Som",
+    "CAD": "Canadian dollar",
+    "USD": "US dollar",
+    "EUR": "Euro",
+    "KZT": "Tenge",
+    "RUB": "Ruble",
+    "UZS": "Sum"
   }
 }
