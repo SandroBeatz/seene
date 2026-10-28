@@ -2,7 +2,7 @@
  * Step 3 of 4 — "Ваши услуги": the starter services of the picked professions,
  * grouped by profession, the typical ones pre-ticked. Prices are optional here;
  * "Своя услуга" and the row links open the service sheet. "Настрою потом" goes on
- * without services.
+ * without services (the picks are kept in case the master comes back).
  */
 import { useEffect } from 'react';
 import { Pressable, View } from 'react-native';
@@ -19,17 +19,11 @@ import { ServiceRow } from './ServiceRow';
 export interface ServicesStepProps {
   /** Open the service sheet (the editor already holds the service). */
   onOpenService: () => void;
-  onNext: () => void;
-  onSkip: () => void;
-  submitting?: boolean;
+  /** Go to step 4 ("Дальше" or "Настрою потом"). */
+  onContinue: () => void;
 }
 
-export function ServicesStep({
-  onOpenService,
-  onNext,
-  onSkip,
-  submitting = false,
-}: ServicesStepProps) {
+export function ServicesStep({ onOpenService, onContinue }: ServicesStepProps) {
   const { t, i18n } = useTranslation();
   const locale = isSupportedLocale(i18n.language) ? i18n.language : 'en';
   const services = useOnboardingDraft((state) => state.services);
@@ -37,6 +31,7 @@ export function ServicesStep({
   const currency = useOnboardingDraft((state) => state.currency);
   const syncServices = useOnboardingDraft((state) => state.syncServices);
   const toggleService = useOnboardingDraft((state) => state.toggleService);
+  const setServicesSkipped = useOnboardingDraft((state) => state.setServicesSkipped);
   const editor = useServiceEditor();
   const headerInset = useOnboardingHeaderInset();
 
@@ -75,17 +70,21 @@ export function ServicesStep({
                 ? t(`onboarding.services.next_${pluralCategory(count, locale)}`, { count })
                 : t('onboarding.services.nextEmpty')
             }
-            disabled={count === 0 || submitting}
-            loading={submitting}
-            onPress={onNext}
+            disabled={count === 0}
+            onPress={() => {
+              setServicesSkipped(false);
+              onContinue();
+            }}
           />
           <Button
             label={t('onboarding.services.later')}
             variant="ghost"
             tone="secondary"
             size="md"
-            disabled={submitting}
-            onPress={onSkip}
+            onPress={() => {
+              setServicesSkipped(true);
+              onContinue();
+            }}
           />
         </View>
       }>

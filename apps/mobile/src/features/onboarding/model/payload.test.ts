@@ -6,12 +6,13 @@ jest.mock('@/shared/api/supabase', () => ({ supabase: {} }));
 // eslint-disable-next-line import/first -- must be imported after the mock is registered
 import { SERVICE_COLORS } from '@/shared/config/palettes';
 // eslint-disable-next-line import/first -- must be imported after the mock is registered
+import { DEFAULT_HOURS } from './hours';
+// eslint-disable-next-line import/first -- must be imported after the mock is registered
 import { buildPayload, type DeviceContext } from './payload';
 // eslint-disable-next-line import/first -- must be imported after the mock is registered
 import { normalizeUsernameInput } from './username-input';
 
 const device: DeviceContext = {
-  timezone: 'Asia/Bishkek',
   region: 'KG',
   language: 'ru',
   theme: 'auto',
@@ -26,7 +27,12 @@ describe('buildPayload', () => {
       username: 'karina_nails',
       specializations: ['manicure', 'pedicure'],
       currency: 'KGS',
+      timezone: 'Asia/Bishkek',
+      hours: DEFAULT_HOURS,
+      onlineBooking: true,
+      manualConfirm: true,
       categories: ['Покрытие'],
+      servicesSkipped: false,
       services: [
         {
           id: 'manicure.gel',
@@ -67,17 +73,17 @@ describe('buildPayload', () => {
     expect(payload.specializations).toEqual(['manicure', 'pedicure']);
   });
 
-  it('stores the device timezone with a Mon–Sat 10–19 week', () => {
+  it('stores the picked timezone with the hours as a weekday-keyed week', () => {
     expect(payload.schedule.timezone).toBe('Asia/Bishkek');
     expect(payload.schedule.days.monday).toMatchObject({ enabled: true, start: '10:00', end: '19:00' });
     expect(payload.schedule.days.saturday.enabled).toBe(true);
     expect(payload.schedule.days.sunday.enabled).toBe(false);
   });
 
-  it('uses the design defaults for booking', () => {
+  it('maps the step-4 switches', () => {
     expect(payload.currency).toBe('KGS');
     expect(payload.online_booking_enabled).toBe(true);
-    expect(payload.booking_default_status).toBe('confirmed');
+    expect(payload.booking_default_status).toBe('pending');
   });
 
   it('writes only the selected services, with the colour as hex', () => {

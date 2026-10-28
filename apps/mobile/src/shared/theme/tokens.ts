@@ -125,6 +125,7 @@ export const space = {
   7: 28,
   7.5: 30,
   8: 32,
+  9: 36,
   10: 40,
   12: 48,
   16: 64,
@@ -164,6 +165,10 @@ export const sizing = {
   codeCell: 58,
   /** Inline create field + its button (category sheet). */
   inlineField: 50,
+  /** Weekday name column in per-day hours rows. */
+  dayLabel: 100,
+  /** Remove (×) target inside a 30pt chip. */
+  chipAction: 26,
   segment: 38,
   timeField: 68,
   tile: 136,

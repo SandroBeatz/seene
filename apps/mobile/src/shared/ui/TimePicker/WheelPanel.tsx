@@ -1,50 +1,82 @@
 /**
- * iOS duration picker: the system wheel ("ч" / "мин" barrels, SwiftUI Picker) in a
- * bottom panel with Отмена / Готово — the keyboard-style picker iOS users know.
- * System colours (PlatformColor) keep it native in light and dark.
+ * iOS-only (imported by the .ios pickers) picker chrome shared by DurationPicker and TimePicker: the system wheels
+ * (SwiftUI Picker, wheel style) in a bottom panel with Отмена / Готово — the
+ * keyboard-style picker iOS users know. System colours keep it native in light/dark.
  */
-import { useState } from 'react';
 import { Modal, PlatformColor, Pressable, StyleSheet as RNStyleSheet, View } from 'react-native';
 import { Host, HStack, Picker, Text as SwiftText } from '@expo/ui/swift-ui';
 import { clipped, frame, labelsHidden, pickerStyle, tag } from '@expo/ui/swift-ui/modifiers';
 import Animated, { FadeIn, FadeOut, SlideInDown, SlideOutDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Text } from '@/shared/ui/Text';
-import type { DurationPickerProps } from './types';
 
-export type { DurationPickerProps } from './types';
+export interface WheelColumn {
+  values: readonly number[];
+  selection: number;
+  onChange: (value: number) => void;
+  /** Shown as "09" when true (clock), "9" otherwise. */
+  pad?: boolean;
+}
+
+export interface WheelPanelProps {
+  visible: boolean;
+  title: string;
+  cancelLabel: string;
+  doneLabel: string;
+  onCancel: () => void;
+  onDone: () => void;
+  left: WheelColumn;
+  right: WheelColumn;
+  /** Unit after each wheel ("ч", "мин") — or a separator between them (":"). */
+  leftUnit?: string;
+  rightUnit?: string;
+  separator?: string;
+}
 
 const WHEEL_HEIGHT = 216;
 const WHEEL_WIDTH = 90;
 const UNIT_WIDTH = 44;
 
-export function DurationPicker(props: DurationPickerProps) {
+export function WheelPanel(props: WheelPanelProps) {
   return (
     <Modal visible={props.visible} transparent animationType="none" onRequestClose={props.onCancel}>
-      {/* Mounted per opening, so the wheels start from the current value. */}
       {props.visible ? <Panel {...props} /> : null}
     </Modal>
   );
 }
 
+function Wheel({ column }: { column: WheelColumn }) {
+  return (
+    <Picker
+      selection={column.selection}
+      onSelectionChange={column.onChange}
+      modifiers={[pickerStyle('wheel'), labelsHidden(), frame({ width: WHEEL_WIDTH }), clipped()]}>
+      {column.values.map((v) => (
+        <SwiftText key={v} modifiers={[tag(v)]}>
+          {column.pad ? String(v).padStart(2, '0') : String(v)}
+        </SwiftText>
+      ))}
+    </Picker>
+  );
+}
+
 function Panel({
-  value,
-  onCancel,
-  onConfirm,
   title,
   cancelLabel,
   doneLabel,
-  hoursUnit,
-  minutesUnit,
-  maxMinutes = 24 * 60,
-  minuteStep = 5,
-}: DurationPickerProps) {
+  onCancel,
+  onDone,
+  left,
+  right,
+  leftUnit,
+  rightUnit,
+  separator,
+}: WheelPanelProps) {
   const insets = useSafeAreaInsets();
-  const [hours, setHours] = useState(Math.floor(value / 60));
-  const [minutes, setMinutes] = useState(value % 60 - ((value % 60) % minuteStep));
-  const hourOptions = Array.from({ length: Math.floor(maxMinutes / 60) + 1 }, (_, i) => i);
-  const minuteOptions = Array.from({ length: 60 / minuteStep }, (_, i) => i * minuteStep);
-  const total = Math.min(maxMinutes, hours * 60 + minutes);
+  const unit = (text?: string) =>
+    text ? (
+      <SwiftText modifiers={[frame({ width: UNIT_WIDTH, alignment: 'leading' })]}>{text}</SwiftText>
+    ) : null;
 
   return (
     <>
@@ -70,10 +102,7 @@ function Panel({
           <Text variant="bodyStrong" style={styles.title}>
             {title}
           </Text>
-          <Pressable
-            onPress={() => total > 0 && onConfirm(total)}
-            hitSlop={12}
-            accessibilityRole="button">
+          <Pressable onPress={onDone} hitSlop={12} accessibilityRole="button">
             <Text variant="headline" style={styles.action}>
               {doneLabel}
             </Text>
@@ -81,32 +110,11 @@ function Panel({
         </View>
         <Host style={styles.wheels}>
           <HStack spacing={0}>
-            <Picker
-              selection={hours}
-              onSelectionChange={setHours}
-              modifiers={[pickerStyle('wheel'), labelsHidden(), frame({ width: WHEEL_WIDTH }), clipped()]}>
-              {hourOptions.map((h) => (
-                <SwiftText key={h} modifiers={[tag(h)]}>
-                  {String(h)}
-                </SwiftText>
-              ))}
-            </Picker>
-            <SwiftText modifiers={[frame({ width: UNIT_WIDTH, alignment: 'leading' })]}>
-              {hoursUnit}
-            </SwiftText>
-            <Picker
-              selection={minutes}
-              onSelectionChange={setMinutes}
-              modifiers={[pickerStyle('wheel'), labelsHidden(), frame({ width: WHEEL_WIDTH }), clipped()]}>
-              {minuteOptions.map((m) => (
-                <SwiftText key={m} modifiers={[tag(m)]}>
-                  {String(m)}
-                </SwiftText>
-              ))}
-            </Picker>
-            <SwiftText modifiers={[frame({ width: UNIT_WIDTH, alignment: 'leading' })]}>
-              {minutesUnit}
-            </SwiftText>
+            <Wheel column={left} />
+            {unit(leftUnit)}
+            {separator ? <SwiftText>{separator}</SwiftText> : null}
+            <Wheel column={right} />
+            {unit(rightUnit)}
           </HStack>
         </Host>
       </Animated.View>

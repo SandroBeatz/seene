@@ -70,8 +70,11 @@ settings, services and categories in one transaction.
 | 4 · Settings | timezone, currency, working hours, online booking, manual confirm | Prefilled from the phone; defaults Mon–Sat 10–19, online on, auto-confirm |
 | Review → create | — | `complete_onboarding` → refresh profile → guard opens the app |
 
-Steps 3–4 and review land in phases 5–7; until then step 2 finishes onboarding with the
-phone/design defaults and no services. Phone is not collected (nullable since 2026-10-27).
+Step 4 settings: time zone (curated list + search, the phone's zone first), currency (the
+design's six + the phone's), working hours ("Одинаково" or "По дням", breaks, system time
+picker), online booking, manual confirm (→ `booking_default_status` pending/confirmed).
+"Настрою потом" on step 3 keeps the picks but writes no services. Until the review screen
+lands (phase 7), step 4 finishes onboarding. Phone is not collected (nullable since 2026-10-27).
 
 **Nav guard rules** (port the web `beforeEach` exactly):
 
