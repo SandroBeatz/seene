@@ -6,6 +6,7 @@
 import { Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useShallow } from 'zustand/react/shallow';
+import { useAuthAvatar } from '@/entities/session';
 import { StyleSheet } from 'react-native-unistyles';
 import { zoneOffsetLabel } from '@/shared/config/time-zones';
 import { isSupportedLocale } from '@/shared/lib/i18n';
@@ -33,6 +34,7 @@ export interface ReviewStepProps {
 
 export function ReviewStep({ onBack, onEdit, onCreate }: ReviewStepProps) {
   const { t, i18n } = useTranslation();
+  const photo = useAuthAvatar();
   const locale = isSupportedLocale(i18n.language) ? i18n.language : 'en';
   const draft = useOnboardingDraft(
     useShallow((state) => ({
@@ -117,7 +119,7 @@ export function ReviewStep({ onBack, onEdit, onCreate }: ReviewStepProps) {
 
       <View style={styles.card}>
         <View style={styles.profile}>
-          <Avatar name={name} size="lg" tone="brand" />
+          <Avatar name={name} imageUrl={photo} size="lg" tone="brand" />
           <View style={styles.profileText}>
             <Text variant="title3">{name}</Text>
             <Text variant="subhead" color="secondary" numberOfLines={1}>
