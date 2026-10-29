@@ -4,7 +4,8 @@
  * 1. `useCompleteOnboarding` — draft → `complete_onboarding` payload → one RPC.
  *    The session profile is not refreshed yet, so the root guard keeps the user here.
  * 2. `useEnterApp` — refresh the session profile (the root guard then opens the app)
- *    and clear the draft. Run on "Дальше" once the profile exists.
+ *    and clear the draft. Run on "Дальше" once the profile exists; Today then shows
+ *    "Профиль создан" once.
  */
 import { useMutation } from '@tanstack/react-query';
 import { completeOnboarding } from '@/entities/master';
@@ -13,6 +14,7 @@ import { type AppError, normalizeError } from '@/shared/api/errors';
 import { useOnboardingDraft } from './draft.store';
 import { readDeviceContext } from './device';
 import { buildPayload } from './payload';
+import { profileCreatedNotice } from './profile-created';
 
 export function useCompleteOnboarding() {
   return useMutation<void, AppError, void>({
@@ -32,6 +34,8 @@ export function useCompleteOnboarding() {
 export function useEnterApp() {
   return useMutation<void, AppError, void>({
     mutationFn: async () => {
+      // Before the refresh: it swaps to the app, where Today reads this.
+      profileCreatedNotice.mark();
       try {
         await useSessionStore.getState().refreshProfile();
       } catch (e) {

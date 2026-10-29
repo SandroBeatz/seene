@@ -546,7 +546,11 @@
       "sheet": "Bottom sheet",
       "sheetDescription": "Pour aperçus, sélecteurs et actions temporaires, pas pour naviguer.",
       "dismiss": "Dismiss et dismissTo",
-      "dismissDescription": "Dismiss revient à l’origine ; dismissTo ferme le flux vers une route connue."
+      "dismissDescription": "Dismiss revient à l’origine ; dismissTo ferme le flux vers une route connue.",
+      "profileCreated": "« Profil créé »",
+      "profileCreatedDescription": "La modale après l’onboarding : confettis, quoi compléter, « Compléter le profil ».",
+      "creating": "« Création du profil »",
+      "creatingDescription": "L’animation de fin d’onboarding sur le brouillon enregistré ; n’écrit rien."
     },
     "auth": {
       "restoration": "Restauration de session",
@@ -586,7 +590,8 @@
       "protected": "Les routes protégées ne remplacent pas l’autorisation backend.",
       "publicRoute": "Garder l’auth dans une Stack publique et un namespace URL dédié.",
       "returnTo": "Valider le chemin interne avant le replace impératif.",
-      "signOut": "Laisser les guards nettoyer l’historique ; ne pas pousser la connexion manuellement."
+      "signOut": "Laisser les guards nettoyer l’historique ; ne pas pousser la connexion manuellement.",
+      "preview": "Aperçu d’un écran du parcours : même composant, sans écriture en base."
     }
   },
   "language": {
@@ -626,5 +631,19 @@
     "KZT": "Tenge",
     "RUB": "Rouble",
     "UZS": "Sum"
+  },
+  "today": {
+    "profileCreated": {
+      "title": "Profil créé",
+      "text": "Il reste à soigner votre page. Avec une photo et une description, les clients réservent plus volontiers.",
+      "todo": {
+        "avatar": "Avatar",
+        "cover": "Couverture",
+        "about": "Description",
+        "contacts": "Contacts"
+      },
+      "fill": "Compléter le profil · 2 min",
+      "later": "Plus tard"
+    }
   }
 }

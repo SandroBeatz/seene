@@ -11,6 +11,7 @@ export { CurrencySheet, type CurrencySheetProps } from './ui/CurrencySheet';
 export { HoursSheet, type HoursSheetProps } from './ui/HoursSheet';
 export { ReviewStep, type ReviewStepProps, type ReviewTarget } from './ui/ReviewStep';
 export { CreatingStep, type CreatingStepProps } from './ui/CreatingStep';
+export { ProfileCreatedModal, type ProfileCreatedModalProps } from './ui/ProfileCreatedModal';
 export {
   OnboardingHeader,
   ONBOARDING_STEP_COUNT,
@@ -18,3 +19,4 @@ export {
 } from './ui/OnboardingHeader';
 export { useCompleteOnboarding, useEnterApp } from './model/submit';
 export { useConfirmSignOut } from './model/sign-out';
+export { profileCreatedNotice } from './model/profile-created';

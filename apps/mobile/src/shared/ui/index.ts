@@ -31,7 +31,7 @@ export {
   TimePicker,
   type TimePickerProps,
 } from './TimePicker';
-export { Logo, type LogoProps, type LogoTone } from './Logo';
+export { Logo, LogoMark, type LogoProps, type LogoTone } from './Logo';
 export { ScreenTitle, type ScreenTitleProps } from './ScreenTitle';
 export { SearchField, type SearchFieldProps } from './SearchField';
 export { CodeInput, type CodeInputProps } from './CodeInput';
