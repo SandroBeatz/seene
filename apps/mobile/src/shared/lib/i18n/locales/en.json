@@ -165,7 +165,9 @@
       "next_many": "Next · {{count}} services",
       "next_other": "Next · {{count}} services",
       "nextEmpty": "Next",
-      "later": "I’ll set up later"
+      "later": "I’ll set up later",
+      "currency": "Currency",
+      "currencyChange": "Change"
     },
     "serviceSheet": {
       "titleNew": "New service",
@@ -187,15 +189,22 @@
       "category": "Category",
       "noCategory": "None",
       "color": "Calendar colour",
+      "colorHint": "Same as the section to start with. You can change it.",
       "colors": {
-        "rose": "Rose",
-        "peach": "Peach",
-        "sand": "Sand",
-        "sage": "Sage",
-        "mint": "Mint",
-        "sky": "Sky",
         "lavender": "Lavender",
-        "grey": "Grey"
+        "sand": "Sand",
+        "powder": "Powder pink",
+        "peach": "Peach",
+        "sky": "Sky blue",
+        "slate": "Slate blue",
+        "dustyRose": "Dusty rose",
+        "sage": "Sage",
+        "teal": "Soft teal",
+        "mint": "Mint",
+        "rosyBeige": "Rosy beige",
+        "graphite": "Graphite",
+        "lilac": "Lilac",
+        "olive": "Olive sage"
       },
       "active": "Active",
       "activeHint": "An inactive service is hidden from you when booking and from clients",
@@ -235,20 +244,22 @@
     },
     "settings": {
       "title": "Basics",
-      "subtitle": "Filled in from your phone. Check and adjust if needed.",
+      "subtitle": "Filled in automatically, you can change it.",
       "timezone": "Time zone",
       "currency": "Currency",
       "hours": "Working hours",
-      "hoursHint": "Breaks and different hours per day",
+      "hoursHint": "Standard, you can change them",
       "online": "Online booking",
-      "onlineHint": "Clients book themselves through your link",
+      "onlineHint": "Starts working once you have services and hours",
       "manual": "Confirm manually",
       "manualHint": "A new booking waits for your yes",
       "workDays_one": "{{count}} working day",
       "workDays_few": "{{count}} working days",
       "workDays_many": "{{count}} working days",
       "workDays_other": "{{count}} working days",
-      "next": "Next"
+      "next": "Next",
+      "timezoneHint": "From your device",
+      "currencyHint": "By region, for service prices"
     },
     "timezoneSheet": {
       "title": "Time zone",
@@ -301,6 +312,36 @@
       "doneDays_many": "Done · {{count}} working days",
       "doneDays_other": "Done · {{count}} working days",
       "pickDay": "Pick at least one day"
+    },
+    "review": {
+      "title": "All correct?",
+      "subtitle": "Once created, your booking page goes live right away.",
+      "edit": "Edit",
+      "editProfile": "Edit profile",
+      "professions": "Profession",
+      "zoneCurrency": "Time zone and currency",
+      "hours": "Working hours",
+      "online": "Online booking",
+      "onlineOn": "On",
+      "onlineOff": "Off",
+      "services": "Services",
+      "servicesNone": "Later",
+      "create": "Create profile"
+    },
+    "creating": {
+      "title": "Creating your profile",
+      "subtitle": "A couple of seconds and you’re all set.",
+      "stepPage": "Creating your booking page",
+      "stepServices": "Adding services",
+      "stepHours": "Setting up your schedule {{hours}}",
+      "stepReminders": "Turning on WhatsApp reminders",
+      "book": "Book",
+      "bubbleTitle": "WhatsApp · reminder",
+      "bubbleText": "See you tomorrow at 10:00",
+      "next": "Continue →",
+      "errorTitle": "Couldn’t create your profile",
+      "retry": "Try again",
+      "back": "Back to review"
     }
   },
   "navigation": {

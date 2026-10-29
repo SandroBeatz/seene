@@ -1,17 +1,19 @@
 /**
- * Step 4 of 4 — "Основное": time zone, currency and working hours prefilled from
+ * Step 3 of 4 — "Основное": time zone, currency and working hours prefilled from
  * the phone (each opens its sheet), then the online-booking and manual-confirm
- * switches. Everything here lands in the draft; nothing is written until the end.
+ * switches. Comes before services so prices are typed in the right currency.
+ * Everything here lands in the draft; nothing is written until the end.
  */
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useShallow } from 'zustand/react/shallow';
 import { StyleSheet } from 'react-native-unistyles';
 import { timeZoneEntry, zoneOffsetLabel } from '@/shared/config/time-zones';
-import { isSupportedLocale, pluralCategory } from '@/shared/lib/i18n';
+import { isSupportedLocale } from '@/shared/lib/i18n';
 import { Button, FormScreen, GroupedCard, ListItem, ScreenTitle, Switch, Text } from '@/shared/ui';
 import { useOnboardingDraft } from '../model/draft.store';
-import { hasInvalidRange, sameSummary, workingDayCount } from '../model/hours';
+import { formatHoursLabel } from '../model/format';
+import { hasInvalidRange, workingDayCount } from '../model/hours';
 import { useOnboardingHeaderInset } from './OnboardingHeader';
 
 export interface SettingsStepProps {
@@ -19,7 +21,6 @@ export interface SettingsStepProps {
   onOpenCurrency: () => void;
   onOpenHours: () => void;
   onNext: () => void;
-  submitting?: boolean;
 }
 
 export function SettingsStep({
@@ -27,7 +28,6 @@ export function SettingsStep({
   onOpenCurrency,
   onOpenHours,
   onNext,
-  submitting = false,
 }: SettingsStepProps) {
   const { t, i18n } = useTranslation();
   const locale = isSupportedLocale(i18n.language) ? i18n.language : 'en';
@@ -45,11 +45,8 @@ export function SettingsStep({
     );
 
   const zone = timeZoneEntry(timezone);
-  const short = t('weekdays.short', { returnObjects: true }) as string[];
   const days = workingDayCount(hours);
-  const hoursLabel =
-    sameSummary(hours, short) ??
-    t(`onboarding.settings.workDays_${pluralCategory(days, locale)}`, { count: days });
+  const hoursLabel = formatHoursLabel(hours, t, locale);
 
   return (
     <FormScreen
@@ -60,7 +57,6 @@ export function SettingsStep({
         <Button
           label={t('onboarding.settings.next')}
           disabled={days === 0 || hasInvalidRange(hours)}
-          loading={submitting}
           onPress={onNext}
         />
       }>
@@ -75,12 +71,14 @@ export function SettingsStep({
         <GroupedCard>
           <ListItem
             title={t('onboarding.settings.timezone')}
+            subtitle={t('onboarding.settings.timezoneHint')}
             trailingText={`${zone.name[locale]}, ${zoneOffsetLabel(timezone)}`}
             inset={false}
             onPress={onOpenTimezone}
           />
           <ListItem
             title={t('onboarding.settings.currency')}
+            subtitle={t('onboarding.settings.currencyHint')}
             trailingText={`${t(`currencies.${currency}`, { defaultValue: currency })}, ${currency}`}
             inset={false}
             onPress={onOpenCurrency}

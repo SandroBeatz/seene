@@ -8,21 +8,23 @@ import { OnboardingHeader, useConfirmSignOut } from '@/features/onboarding';
 const STEP_BY_ROUTE: Partial<Record<string, number>> = {
   profile: 1,
   professions: 2,
-  services: 3,
-  service: 3,
-  'service-section': 3,
-  'service-category': 3,
-  settings: 4,
-  timezone: 4,
-  currency: 4,
-  hours: 4,
+  settings: 3,
+  timezone: 3,
+  currency: 3,
+  hours: 3,
+  services: 4,
+  service: 4,
+  'service-section': 4,
+  'service-category': 4,
 };
 
 /**
  * Onboarding: one route per step, pushed left to right. The step header (back,
  * progress, "N из 4") floats above the stack on a canvas-to-clear fade: it stays put
  * while steps slide and scroll under it, and its progress animates between steps. Back on step 1 = sign out (confirmed).
- * The step-3 service editor and its section/category pickers are native form sheets.
+ * The step sheets (time zone, currency, hours; the step-4 service editor and its
+ * section/category pickers) are native form sheets. The review and "creating" screens
+ * after step 4 have no step header.
  */
 export default function OnboardingLayout() {
   const { theme } = useUnistyles();
@@ -39,11 +41,6 @@ export default function OnboardingLayout() {
     sheetCornerRadius: theme.radius.xxl,
     sheetGrabberVisible: false,
   };
-  // Short lists (currency) size to their content.
-  const compactSheet: NativeStackNavigationOptions = {
-    ...sheet,
-    sheetAllowedDetents: 'fitToContents',
-  };
 
   return (
     <View style={styles.root}>
@@ -56,14 +53,17 @@ export default function OnboardingLayout() {
         <Stack.Screen name="onboarding/index" />
         <Stack.Screen name="onboarding/profile" />
         <Stack.Screen name="onboarding/professions" />
+        <Stack.Screen name="onboarding/settings" />
+        <Stack.Screen name="onboarding/timezone" options={sheet} />
+        <Stack.Screen name="onboarding/currency" options={sheet} />
+        <Stack.Screen name="onboarding/hours" options={sheet} />
         <Stack.Screen name="onboarding/services" />
         <Stack.Screen name="onboarding/service" options={sheet} />
         <Stack.Screen name="onboarding/service-section" options={sheet} />
         <Stack.Screen name="onboarding/service-category" options={sheet} />
-        <Stack.Screen name="onboarding/settings" />
-        <Stack.Screen name="onboarding/timezone" options={sheet} />
-        <Stack.Screen name="onboarding/currency" options={compactSheet} />
-        <Stack.Screen name="onboarding/hours" options={sheet} />
+        <Stack.Screen name="onboarding/review" />
+        {/* Finishing: no going back while the profile is being created. */}
+        <Stack.Screen name="onboarding/creating" options={{ gestureEnabled: false }} />
         <Stack.Screen name="welcome" />
       </Stack>
       {step ? (

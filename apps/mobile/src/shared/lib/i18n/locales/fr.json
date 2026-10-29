@@ -165,7 +165,9 @@
       "next_many": "Suivant · {{count}} prestations",
       "next_other": "Suivant · {{count}} prestations",
       "nextEmpty": "Suivant",
-      "later": "Je configurerai plus tard"
+      "later": "Je configurerai plus tard",
+      "currency": "Devise",
+      "currencyChange": "Modifier"
     },
     "serviceSheet": {
       "titleNew": "Nouvelle prestation",
@@ -187,15 +189,22 @@
       "category": "Catégorie",
       "noCategory": "Aucune",
       "color": "Couleur dans l’agenda",
+      "colorHint": "Celle de la section par défaut. Modifiable.",
       "colors": {
-        "rose": "Rose",
-        "peach": "Pêche",
-        "sand": "Sable",
-        "sage": "Sauge",
-        "mint": "Menthe",
-        "sky": "Ciel",
         "lavender": "Lavande",
-        "grey": "Gris"
+        "sand": "Sable",
+        "powder": "Rose poudré",
+        "peach": "Pêche",
+        "sky": "Bleu ciel",
+        "slate": "Bleu ardoise",
+        "dustyRose": "Vieux rose",
+        "sage": "Sauge",
+        "teal": "Turquoise doux",
+        "mint": "Menthe",
+        "rosyBeige": "Beige rosé",
+        "graphite": "Graphite",
+        "lilac": "Lilas",
+        "olive": "Sauge olive"
       },
       "active": "Active",
       "activeHint": "Une prestation inactive est masquée pour vous et pour vos clients",
@@ -235,20 +244,22 @@
     },
     "settings": {
       "title": "L’essentiel",
-      "subtitle": "Rempli d’après votre téléphone. Vérifiez et corrigez si besoin.",
+      "subtitle": "Rempli automatiquement, vous pouvez le modifier.",
       "timezone": "Fuseau horaire",
       "currency": "Devise",
       "hours": "Horaires",
-      "hoursHint": "Pauses et horaires différents selon les jours",
+      "hoursHint": "Standard, modifiables",
       "online": "Réservation en ligne",
-      "onlineHint": "Vos clients réservent eux-mêmes via votre lien",
+      "onlineHint": "Fonctionnera dès que services et horaires seront là",
       "manual": "Confirmer manuellement",
       "manualHint": "Chaque nouvelle réservation attend votre accord",
       "workDays_one": "{{count}} jour travaillé",
       "workDays_few": "{{count}} jours travaillés",
       "workDays_many": "{{count}} jours travaillés",
       "workDays_other": "{{count}} jours travaillés",
-      "next": "Suivant"
+      "next": "Suivant",
+      "timezoneHint": "D’après l’appareil",
+      "currencyHint": "Selon la région, pour les prix"
     },
     "timezoneSheet": {
       "title": "Fuseau horaire",
@@ -301,6 +312,36 @@
       "doneDays_many": "OK · {{count}} jours travaillés",
       "doneDays_other": "OK · {{count}} jours travaillés",
       "pickDay": "Choisissez au moins un jour"
+    },
+    "review": {
+      "title": "Tout est correct ?",
+      "subtitle": "Une fois créée, votre page de réservation fonctionne tout de suite.",
+      "edit": "Modifier",
+      "editProfile": "Modifier le profil",
+      "professions": "Métier",
+      "zoneCurrency": "Fuseau horaire et devise",
+      "hours": "Horaires de travail",
+      "online": "Réservation en ligne",
+      "onlineOn": "Activée",
+      "onlineOff": "Désactivée",
+      "services": "Services",
+      "servicesNone": "Plus tard",
+      "create": "Créer le profil"
+    },
+    "creating": {
+      "title": "Création de votre profil",
+      "subtitle": "Quelques secondes et tout est prêt.",
+      "stepPage": "Création de la page de réservation",
+      "stepServices": "Ajout des services",
+      "stepHours": "Réglage du planning {{hours}}",
+      "stepReminders": "Activation des rappels WhatsApp",
+      "book": "Réserver",
+      "bubbleTitle": "WhatsApp · rappel",
+      "bubbleText": "À demain, 10:00",
+      "next": "Continuer →",
+      "errorTitle": "Impossible de créer le profil",
+      "retry": "Réessayer",
+      "back": "Retour à la vérification"
     }
   },
   "navigation": {

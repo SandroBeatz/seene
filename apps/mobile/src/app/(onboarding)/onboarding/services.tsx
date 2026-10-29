@@ -6,7 +6,9 @@ export default function OnboardingServicesScreen() {
   return (
     <ServicesStep
       onOpenService={() => router.push('/onboarding/service')}
-      onContinue={() => router.push('/onboarding/settings')}
+      // Currency is set on step 3, right behind this one.
+      onChangeCurrency={() => router.back()}
+      onContinue={() => router.push('/onboarding/review')}
     />
   );
 }

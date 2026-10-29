@@ -1,5 +1,5 @@
 /**
- * One step-3 row: square check, the service name, and "1 ч 30 мин · 300 сом ·
+ * One step-4 row: square check, the service name, and "1 ч 30 мин · 300 сом ·
  * Изменить" (or "· Добавить цену" while it has no price). The row toggles the
  * service; the rose links open the service sheet.
  */

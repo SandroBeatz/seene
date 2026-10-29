@@ -78,16 +78,26 @@ export const statusPalette = {
   expired: '#C9C9C4', // muted — lapsed
 } as const;
 
-/** Calendar colours a master can assign to a service (service sheet, 8 swatches). */
+/**
+ * Calendar colours of services: one per profession section, in the profession order
+ * (the service sheet shows them as 2 rows of 7). A service starts with its
+ * section's colour (`SPECIALIZATION_COLORS`) and the master can pick another.
+ */
 export const servicePalette = {
-  rose: '#EBA9BC',
-  peach: '#F2B990',
-  sand: '#E6CF85',
-  sage: '#ADC9A0',
-  mint: '#93CFC4',
-  sky: '#A3C4EA',
-  lavender: '#BEAEE3',
-  grey: '#CFCFCB',
+  lavender: '#B9A4DC', // lashes
+  sand: '#D8B88B', // brows
+  powder: '#E9A5B5', // manicure
+  peach: '#EFB596', // pedicure
+  sky: '#96BDD9', // hair
+  slate: '#8797A8', // barbers
+  dustyRose: '#CF8DA7', // makeup
+  sage: '#9EBBA9', // skincare
+  teal: '#84BBC4', // hair removal
+  mint: '#8FC9BC', // massage
+  rosyBeige: '#CDA4A0', // permanent makeup
+  graphite: '#899092', // tattoo
+  lilac: '#A99CCB', // piercing
+  olive: '#A8B995', // pet grooming
 } as const;
 
 // 8-hue client-initials avatar set.
@@ -166,7 +176,7 @@ export const sizing = {
   /** Inline create field + its button (category sheet). */
   inlineField: 50,
   /** Weekday name column in per-day hours rows. */
-  dayLabel: 100,
+  dayLabel: 112, // fits "Понедельник" in bodyStrong (the design's 100 wraps it on iOS)
   /** Remove (×) target inside a 30pt chip. */
   chipAction: 26,
   segment: 38,

@@ -6,8 +6,8 @@
 import { SERVICE_TEMPLATES, type ServiceTemplate } from '@/entities/service';
 import type { OnboardingServiceInput } from '@/entities/master';
 import {
-  DEFAULT_SERVICE_COLOR,
   SERVICE_COLORS,
+  SPECIALIZATION_COLORS,
   type ServiceColorKey,
 } from '@/shared/config/palettes';
 import {
@@ -31,7 +31,8 @@ export interface DraftService {
   duration: number;
   /** null = no price yet ("Добавить цену"); 0 = free. */
   price: number | null;
-  color: ServiceColorKey;
+  /** Picked by hand; null = the section's colour (follows a section change). */
+  color: ServiceColorKey | null;
   specialization: SpecializationKey;
   /** Category name, or null for "Без категории". */
   category: string | null;
@@ -40,7 +41,10 @@ export interface DraftService {
   selected: boolean;
 }
 
-export const DEFAULT_COLOR_KEY: ServiceColorKey = 'rose';
+/** The colour the service shows and saves: its own pick, else its section's. */
+export function serviceColorKey(service: Pick<DraftService, 'color' | 'specialization'>) {
+  return service.color ?? SPECIALIZATION_COLORS[service.specialization];
+}
 
 const TEMPLATES_BY_ID = new Map(
   Object.values(SERVICE_TEMPLATES)
@@ -84,7 +88,7 @@ export function fromTemplate(
     description: '',
     duration: template.duration,
     price: null,
-    color: DEFAULT_COLOR_KEY,
+    color: null,
     specialization,
     category: null,
     active: true,
@@ -118,7 +122,7 @@ export interface ServiceGroup {
   services: DraftService[];
 }
 
-/** Grouped by profession, in the catalog order (the step-3 sections). */
+/** Grouped by profession, in the catalog order (the step-4 sections). */
 export function groupByProfession(services: readonly DraftService[]): ServiceGroup[] {
   return SPECIALIZATION_KEYS.map((key) => ({
     specialization: key,
@@ -132,7 +136,7 @@ export function toServiceInput(service: DraftService, locale: AppLocale): Onboar
     duration: service.duration,
     price: service.price,
     description: service.description.trim() || null,
-    color: SERVICE_COLORS[service.color] ?? DEFAULT_SERVICE_COLOR,
+    color: SERVICE_COLORS[serviceColorKey(service)],
     specialization: service.specialization,
     category: service.category,
     is_active: service.active,

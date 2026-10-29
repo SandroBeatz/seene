@@ -248,7 +248,13 @@ export function HoursSheet({ onClose }: HoursSheetProps) {
             {hours.perDay.map((day, i) => (
               <View key={long[i]} style={styles.dayRow}>
                 <View style={styles.dayHead}>
-                  <Text variant="bodyStrong" color={day.enabled ? 'primary' : 'tertiary'} style={styles.dayName}>
+                  <Text
+                    variant="bodyStrong"
+                    color={day.enabled ? 'primary' : 'tertiary'}
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
+                    minimumFontScale={0.8}
+                    style={styles.dayName}>
                     {long[i]}
                   </Text>
                   {day.enabled ? (

@@ -1,8 +1,9 @@
 /**
- * Step 3 of 4 — "Ваши услуги": the starter services of the picked professions,
- * grouped by profession, the typical ones pre-ticked. Prices are optional here;
- * "Своя услуга" and the row links open the service sheet. "Настрою потом" goes on
- * without services (the picks are kept in case the master comes back).
+ * Step 4 of 4 — "Ваши услуги": the starter services of the picked professions,
+ * grouped by profession, the typical ones pre-ticked. Prices are optional here, in
+ * the currency picked on step 3 (the strip on top links back to it); "Своя услуга"
+ * and the row links open the service sheet. "Настрою потом" goes on without
+ * services (the picks are kept in case the master comes back).
  */
 import { useEffect } from 'react';
 import { Pressable, View } from 'react-native';
@@ -19,11 +20,13 @@ import { ServiceRow } from './ServiceRow';
 export interface ServicesStepProps {
   /** Open the service sheet (the editor already holds the service). */
   onOpenService: () => void;
-  /** Go to step 4 ("Дальше" or "Настрою потом"). */
+  /** Back to step 3 to change the currency. */
+  onChangeCurrency: () => void;
+  /** Go to the review screen ("Дальше" or "Настрою потом"). */
   onContinue: () => void;
 }
 
-export function ServicesStep({ onOpenService, onContinue }: ServicesStepProps) {
+export function ServicesStep({ onOpenService, onChangeCurrency, onContinue }: ServicesStepProps) {
   const { t, i18n } = useTranslation();
   const locale = isSupportedLocale(i18n.language) ? i18n.language : 'en';
   const services = useOnboardingDraft((state) => state.services);
@@ -95,6 +98,22 @@ export function ServicesStep({ onOpenService, onContinue }: ServicesStepProps) {
         />
       </View>
 
+      <View style={styles.currency}>
+        <Text variant="footnote" color="secondary" style={styles.currencyLabel}>
+          {t('onboarding.services.currency')}
+        </Text>
+        <Text variant="footnoteStrong">
+          {`${t(`currencies.${currency}`, { defaultValue: currency })}, ${currency}`}
+        </Text>
+        <Text
+          variant="footnoteStrong"
+          color="brand"
+          accessibilityRole="link"
+          onPress={onChangeCurrency}>
+          {t('onboarding.services.currencyChange')}
+        </Text>
+      </View>
+
       {groups.map((group) => (
         <View key={group.specialization} style={styles.group}>
           <View style={styles.groupLabel}>
@@ -127,6 +146,17 @@ export function ServicesStep({ onOpenService, onContinue }: ServicesStepProps) {
 
 const styles = StyleSheet.create((theme) => ({
   title: { marginTop: theme.space[7] },
+  currency: {
+    marginTop: theme.space[4],
+    height: theme.sizing.control.md,
+    borderRadius: theme.radius.field,
+    backgroundColor: theme.colors.bg.surface,
+    paddingHorizontal: theme.space[3.5],
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.space[2],
+  },
+  currencyLabel: { flex: 1 },
   group: { marginTop: theme.space[5.5] },
   groupLabel: { marginBottom: theme.space[1] },
   custom: {

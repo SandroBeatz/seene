@@ -41,7 +41,7 @@ describe('buildPayload', () => {
           description: '',
           duration: 90,
           price: null,
-          color: 'rose',
+          color: null,
           specialization: 'manicure',
           category: 'Покрытие',
           active: true,
@@ -80,20 +80,20 @@ describe('buildPayload', () => {
     expect(payload.schedule.days.sunday.enabled).toBe(false);
   });
 
-  it('maps the step-4 switches', () => {
+  it('maps the step-3 switches', () => {
     expect(payload.currency).toBe('KGS');
     expect(payload.online_booking_enabled).toBe(true);
     expect(payload.booking_default_status).toBe('pending');
   });
 
-  it('writes only the selected services, with the colour as hex', () => {
+  it('writes only the selected services, with the colour as hex (the section’s by default)', () => {
     expect(payload.services).toEqual([
       {
         name: 'Маникюр с покрытием гель-лаком',
         duration: 90,
         price: null,
         description: null,
-        color: SERVICE_COLORS.rose,
+        color: SERVICE_COLORS.powder,
         specialization: 'manicure',
         category: 'Покрытие',
         is_active: true,

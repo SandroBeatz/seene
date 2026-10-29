@@ -5,6 +5,7 @@
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native-unistyles';
+import { SERVICE_COLORS, SPECIALIZATION_COLORS } from '@/shared/config/palettes';
 import {
   SPECIALIZATION_IMAGES,
   SPECIALIZATION_KEYS,
@@ -64,6 +65,7 @@ export function ProfessionsStep({ onNext }: ProfessionsStepProps) {
                 key={key}
                 label={t(`onboarding.specializations.${key}`)}
                 image={SPECIALIZATION_IMAGES[key]}
+                color={SERVICE_COLORS[SPECIALIZATION_COLORS[key]]}
                 selected={selected.includes(key)}
                 onPress={() => toggle(key)}
               />

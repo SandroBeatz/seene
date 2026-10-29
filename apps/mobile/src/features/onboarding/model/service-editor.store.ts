@@ -1,5 +1,5 @@
 /**
- * The service being edited in the step-3 sheets. The service sheet and its two
+ * The service being edited in the step-4 sheets. The service sheet and its two
  * child sheets (section, category) are separate native sheets, so they share the
  * working copy here; it reaches the draft only on "Сохранить" / "Добавить услугу".
  * Not persisted — an unsaved edit is dropped with the sheet.
@@ -7,7 +7,7 @@
 import { randomUUID } from 'expo-crypto';
 import { create } from 'zustand';
 import type { SpecializationKey } from '@/shared/config/specializations';
-import { DEFAULT_COLOR_KEY, type DraftService } from './services';
+import type { DraftService } from './services';
 
 /** Which field the sheet opens on ("Добавить цену" → price). */
 export type EditorFocus = 'name' | 'price';
@@ -37,7 +37,7 @@ export const useServiceEditor = create<ServiceEditorState>()((set) => ({
         description: '',
         duration: 60,
         price: null,
-        color: DEFAULT_COLOR_KEY,
+        color: null,
         specialization,
         category: null,
         active: true,

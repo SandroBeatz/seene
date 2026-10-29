@@ -1,7 +1,7 @@
 /**
  * Photo tile on step 2: the profession photo with a bottom shade, its name in white
- * and a round mark top-right. Selected = an ink ring inside a white ring, drawn with
- * inset shadows so the tile keeps its size.
+ * and a round mark top-right. Selected = a ring in the section's colour inside a white
+ * ring, drawn with inset shadows so the tile keeps its size.
  */
 import { Pressable, View } from 'react-native';
 import { Image } from 'expo-image';
@@ -12,11 +12,13 @@ export interface ProfessionTileProps {
   label: string;
   /** Metro asset id. */
   image: number;
+  /** The section's colour (hex) for the selected ring. */
+  color: string;
   selected: boolean;
   onPress: () => void;
 }
 
-export function ProfessionTile({ label, image, selected, onPress }: ProfessionTileProps) {
+export function ProfessionTile({ label, image, color, selected, onPress }: ProfessionTileProps) {
   return (
     <Pressable
       accessibilityRole="checkbox"
@@ -32,7 +34,7 @@ export function ProfessionTile({ label, image, selected, onPress }: ProfessionTi
       <Text variant="tile" color="white" style={styles.label} numberOfLines={2}>
         {label}
       </Text>
-      {selected ? <View style={styles.ring} /> : null}
+      {selected ? <View style={styles.ring(color)} /> : null}
     </Pressable>
   );
 }
@@ -63,11 +65,11 @@ const styles = StyleSheet.create((theme) => ({
     right: theme.space[3.5],
     bottom: theme.space[3],
   },
-  ring: {
+  ring: (color: string) => ({
     ...StyleSheet.absoluteFillObject,
     borderRadius: theme.radius.xl,
     pointerEvents: 'none',
-    boxShadow: `inset 0 0 0 3px ${theme.colors.constant.ink}, inset 0 0 0 5px ${theme.colors.constant.white}`,
-  },
+    boxShadow: `inset 0 0 0 3px ${color}, inset 0 0 0 5px ${theme.colors.constant.white}`,
+  }),
   pressed: { transform: [{ scale: 0.98 }] },
 }));

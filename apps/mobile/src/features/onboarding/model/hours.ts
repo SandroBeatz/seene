@@ -1,5 +1,5 @@
 /**
- * Working hours on step 4, pure. Two modes, as in the hours sheet: "Одинаково"
+ * Working hours on step 3, pure. Two modes, as in the hours sheet: "Одинаково"
  * (one set of hours + breaks for the picked weekdays) and "По дням" (each day its
  * own). Both are kept, so switching back and forth loses nothing; `toWeek` reads
  * the active one.
