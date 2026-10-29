@@ -9,7 +9,16 @@ import { useShallow } from 'zustand/react/shallow';
 import { StyleSheet } from 'react-native-unistyles';
 import { zoneOffsetLabel } from '@/shared/config/time-zones';
 import { isSupportedLocale } from '@/shared/lib/i18n';
-import { Avatar, Button, FormScreen, IconButton, ListItem, ScreenTitle, Text } from '@/shared/ui';
+import {
+  Avatar,
+  Button,
+  FormScreen,
+  IconButton,
+  ListItem,
+  LogoMark,
+  ScreenTitle,
+  Text,
+} from '@/shared/ui';
 import { useOnboardingDraft } from '../model/draft.store';
 import { formatHoursLabel, formatSentenceList } from '../model/format';
 
@@ -49,7 +58,12 @@ export function ReviewStep({ onBack, onEdit, onCreate }: ReviewStepProps) {
   const serviceCount = draft.services.filter((s) => s.selected).length;
 
   const rows: { key: string; title: string; value: string; target: ReviewTarget }[] = [
-    { key: 'professions', title: t('onboarding.review.professions'), value: professions, target: 'professions' },
+    {
+      key: 'professions',
+      title: t('onboarding.review.professions'),
+      value: professions,
+      target: 'professions',
+    },
     {
       key: 'zone',
       title: t('onboarding.review.zoneCurrency'),
@@ -65,7 +79,9 @@ export function ReviewStep({ onBack, onEdit, onCreate }: ReviewStepProps) {
     {
       key: 'online',
       title: t('onboarding.review.online'),
-      value: draft.onlineBooking ? t('onboarding.review.onlineOn') : t('onboarding.review.onlineOff'),
+      value: draft.onlineBooking
+        ? t('onboarding.review.onlineOn')
+        : t('onboarding.review.onlineOff'),
       target: 'settings',
     },
     {
@@ -79,7 +95,13 @@ export function ReviewStep({ onBack, onEdit, onCreate }: ReviewStepProps) {
   return (
     <FormScreen
       edges={['top', 'right', 'bottom', 'left']}
-      footer={<Button label={t('onboarding.review.create')} onPress={onCreate} />}>
+      footer={
+        <Button
+          label={t('onboarding.review.create')}
+          leftIcon={<LogoMark height={18} tone="onAccent" />}
+          onPress={onCreate}
+        />
+      }>
       <IconButton
         icon="chevronLeft"
         variant="neutral"
@@ -87,16 +109,17 @@ export function ReviewStep({ onBack, onEdit, onCreate }: ReviewStepProps) {
         onPress={onBack}
       />
       <View style={styles.title}>
-        <ScreenTitle title={t('onboarding.review.title')} subtitle={t('onboarding.review.subtitle')} />
+        <ScreenTitle
+          title={t('onboarding.review.title')}
+          subtitle={t('onboarding.review.subtitle')}
+        />
       </View>
 
       <View style={styles.card}>
         <View style={styles.profile}>
           <Avatar name={name} size="lg" tone="brand" />
           <View style={styles.profileText}>
-            <Text variant="title3" numberOfLines={1}>
-              {name}
-            </Text>
+            <Text variant="title3">{name}</Text>
             <Text variant="subhead" color="secondary" numberOfLines={1}>
               {`getseene.app/${draft.username}`}
             </Text>
@@ -107,7 +130,9 @@ export function ReviewStep({ onBack, onEdit, onCreate }: ReviewStepProps) {
             hitSlop={12}
             onPress={() => onEdit('profile')}
             style={({ pressed }) => pressed && styles.pressed}>
-            <Text variant="subheadStrong">{t('onboarding.review.edit')}</Text>
+            <Text variant="subheadStrong" style={styles.link}>
+              {t('onboarding.review.edit')}
+            </Text>
           </Pressable>
         </View>
         <View style={styles.rows}>
@@ -150,5 +175,7 @@ const styles = StyleSheet.create((theme) => ({
   profileText: { flex: 1, minWidth: 0, gap: theme.space[0.5] },
   rows: { paddingHorizontal: theme.space[4.5], paddingVertical: theme.space[1] },
   separator: { borderTopWidth: 1, borderTopColor: theme.colors.border.default },
+  // The design's plain link: ink, underlined.
+  link: { textDecorationLine: 'underline' },
   pressed: { opacity: 0.6 },
 }));

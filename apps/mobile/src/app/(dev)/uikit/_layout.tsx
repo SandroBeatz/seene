@@ -29,6 +29,7 @@ export default function UIKitLayout() {
       <Stack.Screen name="examples/layouts/basic" options={{ title: t('uikit.layout.basic') }} />
       <Stack.Screen name="examples/layouts/scroll" options={{ title: t('uikit.layout.scroll') }} />
       <Stack.Screen name="examples/layouts/form" options={{ title: t('uikit.layout.form') }} />
+      <Stack.Screen name="examples/creating" options={{ headerShown: false }} />
       <Stack.Screen
         name="examples/layouts/dynamic-options"
         options={{ title: t('uikit.layout.dynamic') }}

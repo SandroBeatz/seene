@@ -2,12 +2,14 @@ import { useRef, useState } from 'react';
 import type { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import { ProfileCreatedModal } from '@/features/onboarding';
 import { Button, Modal, Sheet, Text } from '@/shared/ui';
 import { UIKitExampleCard, UIKitScreen } from '@/widgets/uikit-catalog';
 
 export default function UIKitModalsScreen() {
   const { t } = useTranslation();
   const [confirmationVisible, setConfirmationVisible] = useState(false);
+  const [profileCreatedVisible, setProfileCreatedVisible] = useState(false);
   const sheetRef = useRef<BottomSheetModal>(null);
 
   return (
@@ -91,6 +93,34 @@ export default function UIKitModalsScreen() {
           }
         />
         <UIKitExampleCard
+          title={t('uikit.modals.profileCreated')}
+          description={t('uikit.modals.profileCreatedDescription')}
+          recommendation={t('uikit.recommended.rnModal')}
+          source="src/features/onboarding/ui/ProfileCreatedModal.tsx"
+          code="<ProfileCreatedModal visible … />"
+          action={
+            <Button
+              label={t('uikit.openExample')}
+              variant="secondary"
+              onPress={() => setProfileCreatedVisible(true)}
+            />
+          }
+        />
+        <UIKitExampleCard
+          title={t('uikit.modals.creating')}
+          description={t('uikit.modals.creatingDescription')}
+          recommendation={t('uikit.recommended.preview')}
+          source="src/features/onboarding/ui/CreatingStep.tsx"
+          code="<CreatingStep preview … />"
+          action={
+            <Button
+              label={t('uikit.openExample')}
+              variant="secondary"
+              onPress={() => router.push('/uikit/examples/creating')}
+            />
+          }
+        />
+        <UIKitExampleCard
           title={t('uikit.modals.dismiss')}
           description={t('uikit.modals.dismissDescription')}
           recommendation={t('uikit.recommended.dismiss')}
@@ -98,6 +128,12 @@ export default function UIKitModalsScreen() {
           code="router.dismissTo('/')"
         />
       </UIKitScreen>
+
+      <ProfileCreatedModal
+        visible={profileCreatedVisible}
+        onFillProfile={() => setProfileCreatedVisible(false)}
+        onLater={() => setProfileCreatedVisible(false)}
+      />
 
       <Sheet ref={sheetRef} snapPoints={['35%']}>
         <Text variant="title3">{t('uikit.modals.sheet')}</Text>

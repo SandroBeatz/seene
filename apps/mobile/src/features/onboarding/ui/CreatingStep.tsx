@@ -2,17 +2,21 @@
  * "Создаём ваш профиль" (design: AppObCreating): the single onboarding write runs
  * while a preview of the master's booking page assembles itself, four status lines
  * tick off and a bar fills. "Дальше →" appears once both the ~5s animation and the
- * write are done; the last status line waits for the write. A failed write swaps
- * the status lines for the error, "Повторить" and a way back to the review.
+ * write are done; the last status line waits for the write. A failed write swaps the
+ * status lines for the error, "Повторить" and a way back to the review.
  *
  * The keyframes are the design's CSS ones, run as Reanimated CSS animations. The
  * preview card is an illustration on fixed white surfaces, like the welcome hero.
  * Reduced motion: everything appears at once.
  */
 import { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { ActivityIndicator, Alert, Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import Animated, { type CSSAnimationKeyframes, useReducedMotion } from 'react-native-reanimated';
+import Animated, {
+  type CSSAnimationKeyframes,
+  cubicBezier,
+  useReducedMotion,
+} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useShallow } from 'zustand/react/shallow';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
@@ -39,7 +43,15 @@ const GLOW_SIZE = 320;
 // Illustration colours of the preview's cover (not theme surfaces).
 const COVER_GRADIENT = 'linear-gradient(135deg, #F3D9DF 0%, #E9C6CF 45%, #D9B3A8 100%)';
 
-const EASE_OUT = `cubic-bezier(${motion.easing.emphasized.join(', ')})`;
+/**
+ * Reanimated takes curves as cubicBezier() objects (a "cubic-bezier(…)" string
+ * throws at runtime), but RN's ViewStyle types the timing function as a string —
+ * hence the cast.
+ */
+const curve = (x1: number, y1: number, x2: number, y2: number) =>
+  cubicBezier(x1, y1, x2, y2) as unknown as string;
+const EASE_OUT = curve(...motion.easing.emphasized);
+const BAR_EASE = curve(0.45, 0, 0.2, 1);
 
 const fadeIn: CSSAnimationKeyframes = { from: { opacity: 0 }, to: { opacity: 1 } };
 const riseIn: CSSAnimationKeyframes = {
@@ -87,26 +99,33 @@ function useEntrance() {
         } as const);
 }
 
-/** Seconds since mount, ticking at the timeline's marks (all of them at once under reduced motion). */
+/**
+ * Seconds since the screen opened, ticking at the timeline's marks (all of them at
+ * once under reduced motion).
+ */
 function useTimeline(marks: readonly number[]) {
   const reduceMotion = useReducedMotion();
-  const [reached, setReached] = useState(reduceMotion ? Infinity : 0);
+  const [at, setAt] = useState(0);
   useEffect(() => {
     if (reduceMotion) return;
-    const timers = marks.map((mark) => setTimeout(() => setReached((r) => Math.max(r, mark)), mark * 1000));
+    const timers = marks.map((mark) =>
+      setTimeout(() => setAt((a) => Math.max(a, mark)), mark * 1000),
+    );
     return () => timers.forEach(clearTimeout);
   }, [marks, reduceMotion]);
-  return reached;
+  return reduceMotion ? Infinity : at;
 }
 
 const MARKS = [...STEP_DONE_AT, NEXT_AT];
 
 export interface CreatingStepProps {
-  /** Back to the review after a failed write. */
+  /** Back to the review after a failed write (in preview: "Дальше →" too). */
   onBack: () => void;
+  /** Dev catalog: play the animation over the current draft, write nothing. */
+  preview?: boolean;
 }
 
-export function CreatingStep({ onBack }: CreatingStepProps) {
+export function CreatingStep({ onBack, preview = false }: CreatingStepProps) {
   const { t, i18n } = useTranslation();
   const { theme } = useUnistyles();
   const locale = isSupportedLocale(i18n.language) ? i18n.language : 'en';
@@ -132,10 +151,10 @@ export function CreatingStep({ onBack }: CreatingStepProps) {
   // The write starts with the animation.
   const { mutate } = complete;
   useEffect(() => {
-    mutate();
-  }, [mutate]);
+    if (!preview) mutate();
+  }, [mutate, preview]);
 
-  const written = complete.isSuccess;
+  const written = preview || complete.isSuccess;
   const failed = complete.isError;
   const name = [draft.firstName.trim(), draft.lastName.trim()].filter(Boolean).join(' ');
   const tagline = [
@@ -160,13 +179,19 @@ export function CreatingStep({ onBack }: CreatingStepProps) {
     <View
       style={[
         styles.screen,
-        { paddingTop: insets.top + theme.layout.topGap, paddingBottom: insets.bottom + theme.space[2] },
+        {
+          paddingTop: insets.top + theme.layout.topGap,
+          paddingBottom: insets.bottom + theme.space[2],
+        },
       ]}>
       <Animated.View style={[styles.logo, entrance('fade', 0)]}>
         <Logo height={26} />
       </Animated.View>
 
-      <View style={styles.stage} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+      <View
+        style={styles.stage}
+        accessibilityElementsHidden
+        importantForAccessibility="no-hide-descendants">
         <Animated.View
           style={[
             styles.glow,
@@ -195,12 +220,12 @@ export function CreatingStep({ onBack }: CreatingStepProps) {
                 <Avatar name={name} size="xl" tone="brand" />
               </Animated.View>
               <Animated.View style={[styles.nameRow, entrance('rise', 0.6)]}>
-                <Text variant="headline" color="ink" numberOfLines={1} style={styles.cardName}>
+                <Text variant="title3" color="ink" numberOfLines={1} style={styles.cardName}>
                   {name}
                 </Text>
                 <Icon name="verified" size="sm" color="constant.ink" />
               </Animated.View>
-              <Animated.View style={entrance('rise', 0.75)}>
+              <Animated.View style={[styles.tagline, entrance('rise', 0.75)]}>
                 <Text variant="caption" color="secondary" align="center" numberOfLines={1}>
                   {tagline}
                 </Text>
@@ -217,11 +242,20 @@ export function CreatingStep({ onBack }: CreatingStepProps) {
                     <Animated.View
                       key={service.id}
                       style={[styles.serviceRow, entrance('rise', 1.5 + i * 0.25)]}>
-                      <View style={[styles.dot, { backgroundColor: SERVICE_COLORS[serviceColorKey(service)] }]} />
-                      <Text variant="footnote" color="ink" numberOfLines={1} style={styles.serviceName}>
+                      <View
+                        style={[
+                          styles.dot,
+                          { backgroundColor: SERVICE_COLORS[serviceColorKey(service)] },
+                        ]}
+                      />
+                      <Text
+                        variant="caption"
+                        color="ink"
+                        numberOfLines={1}
+                        style={styles.serviceName}>
                         {serviceName(service, locale)}
                       </Text>
-                      <Text variant="footnote" color="secondary">
+                      <Text variant="caption" color="secondary">
                         {formatDurationLabel(service.duration, t)}
                       </Text>
                     </Animated.View>
@@ -289,7 +323,7 @@ export function CreatingStep({ onBack }: CreatingStepProps) {
                 !reduceMotion && {
                   animationName: fillBar,
                   animationDuration: '4.6s',
-                  animationTimingFunction: 'cubic-bezier(0.45, 0, 0.2, 1)',
+                  animationTimingFunction: BAR_EASE,
                   animationDelay: '0.2s',
                   animationFillMode: 'both',
                 },
@@ -299,13 +333,23 @@ export function CreatingStep({ onBack }: CreatingStepProps) {
           <View style={styles.footer}>
             {canContinue ? (
               <Animated.View style={entrance('fade', 0)}>
-                <Button
-                  label={t('onboarding.creating.next')}
-                  variant="ghost"
-                  size="md"
-                  loading={enter.isPending}
-                  onPress={() => enter.mutate()}
-                />
+                {enter.isPending ? (
+                  <ActivityIndicator color={theme.colors.content.primary} />
+                ) : (
+                  <Pressable
+                    accessibilityRole="button"
+                    hitSlop={12}
+                    onPress={() =>
+                      preview
+                        ? onBack()
+                        : enter.mutate(undefined, {
+                            onError: (e) => Alert.alert(t(errorMessageKey(e))),
+                          })
+                    }
+                    style={({ pressed }) => pressed && styles.pressed}>
+                    <Text variant="subheadStrong">{t('onboarding.creating.next')}</Text>
+                  </Pressable>
+                )}
               </Animated.View>
             ) : null}
           </View>
@@ -395,6 +439,7 @@ const styles = StyleSheet.create((theme) => ({
     maxWidth: '100%',
   },
   cardName: { flexShrink: 1 },
+  tagline: { marginTop: 3 },
   link: {
     marginTop: theme.space[2],
     height: 26,
@@ -483,5 +528,6 @@ const styles = StyleSheet.create((theme) => ({
     justifyContent: 'flex-end',
     alignItems: 'center',
   },
+  pressed: { opacity: 0.6 },
   actions: { gap: theme.space[1.5] },
 }));

@@ -546,7 +546,11 @@
       "sheet": "Bottom sheet",
       "sheetDescription": "Gorhom Sheet is for previews, pickers and transient actions, not navigable flows.",
       "dismiss": "Dismiss and dismissTo",
-      "dismissDescription": "Dismiss returns to the origin; dismissTo closes the whole nested flow to a known route."
+      "dismissDescription": "Dismiss returns to the origin; dismissTo closes the whole nested flow to a known route.",
+      "profileCreated": "“Profile created”",
+      "profileCreatedDescription": "The post-onboarding modal: confetti, what to fill in, “Fill in profile”.",
+      "creating": "“Creating your profile”",
+      "creatingDescription": "The end-of-onboarding animation over the saved draft; writes nothing."
     },
     "auth": {
       "restoration": "Session restoration",
@@ -586,7 +590,8 @@
       "protected": "Treat protected routes as client navigation control, not backend authorization.",
       "publicRoute": "Keep auth UI in its own public Stack and canonical URL namespace.",
       "returnTo": "Validate the target as an internal path before imperative replacement.",
-      "signOut": "Let guard changes clear protected history; do not push the sign-in route manually."
+      "signOut": "Let guard changes clear protected history; do not push the sign-in route manually.",
+      "preview": "A flow screen preview: the same component, no database writes."
     }
   },
   "language": {
@@ -626,5 +631,19 @@
     "KZT": "Tenge",
     "RUB": "Ruble",
     "UZS": "Sum"
+  },
+  "today": {
+    "profileCreated": {
+      "title": "Profile created",
+      "text": "Now finish your page. Clients book more readily when there’s a photo and a description.",
+      "todo": {
+        "avatar": "Avatar",
+        "cover": "Cover",
+        "about": "Description",
+        "contacts": "Contacts"
+      },
+      "fill": "Fill in profile · 2 min",
+      "later": "Later"
+    }
   }
 }

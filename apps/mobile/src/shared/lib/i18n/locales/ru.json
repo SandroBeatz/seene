@@ -546,7 +546,11 @@
       "sheet": "Bottom sheet",
       "sheetDescription": "Для preview, picker и временных действий, но не для навигационных flows.",
       "dismiss": "Dismiss и dismissTo",
-      "dismissDescription": "Dismiss возвращает к источнику, dismissTo закрывает flow до известного route."
+      "dismissDescription": "Dismiss возвращает к источнику, dismissTo закрывает flow до известного route.",
+      "profileCreated": "«Профиль создан»",
+      "profileCreatedDescription": "Модалка после онбординга: конфетти, что заполнить, «Заполнить профиль».",
+      "creating": "«Создаём профиль»",
+      "creatingDescription": "Анимация конца онбординга по сохранённому черновику; в базу ничего не пишет."
     },
     "auth": {
       "restoration": "Восстановление сессии",
@@ -586,7 +590,8 @@
       "protected": "Protected routes управляют клиентской навигацией, но не заменяют backend authorization.",
       "publicRoute": "Auth UI живёт в отдельном public Stack и стабильном URL namespace.",
       "returnTo": "Перед imperative replace проверяйте, что target — внутренний путь.",
-      "signOut": "Guard сам очищает protected history; не делайте push sign-in вручную."
+      "signOut": "Guard сам очищает protected history; не делайте push sign-in вручную.",
+      "preview": "Превью экрана из флоу: тот же компонент, без записи в базу."
     }
   },
   "language": {
@@ -626,5 +631,19 @@
     "KZT": "Тенге",
     "RUB": "Рубль",
     "UZS": "Сум"
+  },
+  "today": {
+    "profileCreated": {
+      "title": "Профиль создан",
+      "text": "Осталось оформить страницу. С фото и описанием клиенты записываются охотнее.",
+      "todo": {
+        "avatar": "Аватарка",
+        "cover": "Обложка",
+        "about": "Описание",
+        "contacts": "Контакты"
+      },
+      "fill": "Заполнить профиль · 2 мин",
+      "later": "Позже"
+    }
   }
 }

@@ -1,14 +1,23 @@
+import { useState } from 'react';
 import { Link, router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
+import { ProfileCreatedModal, profileCreatedNotice } from '@/features/onboarding';
 import { Button, Card, GlassSurface, Icon, ScreenScrollView, Text } from '@/shared/ui';
 
 export default function HomeScreen() {
   const { t } = useTranslation();
   const { theme } = useUnistyles();
   const insets = useSafeAreaInsets();
+  // Once, right after onboarding.
+  const [profileCreated, setProfileCreated] = useState(profileCreatedNotice.isPending);
+
+  function closeProfileCreated() {
+    profileCreatedNotice.clear();
+    setProfileCreated(false);
+  }
 
   return (
     <View style={styles.root}>
@@ -48,6 +57,15 @@ export default function HomeScreen() {
           <Icon name="add" size="lg" color="content.primary" />
         </GlassSurface>
       </Pressable>
+
+      <ProfileCreatedModal
+        visible={profileCreated}
+        onFillProfile={() => {
+          closeProfileCreated();
+          router.push('/settings/profile');
+        }}
+        onLater={closeProfileCreated}
+      />
     </View>
   );
 }
