@@ -4,16 +4,37 @@
  * Seene violet and should be reconciled against the web palettes during the design
  * pass (Q-DS-1) so services/payments render identically across apps.
  */
+import type { SpecializationKey } from '@/shared/config/specializations';
 import { servicePalette } from '@/shared/theme/tokens';
 
 /**
- * Service calendar colours — the design's 8 swatches (rose … grey), stored on
- * `service.color` as hex. Rose is the default for a new service.
+ * Service calendar colours — one per profession section, stored on `service.color`
+ * as hex. Appointments take their service's colour.
  */
 export const SERVICE_COLOR_KEYS = Object.keys(servicePalette) as ServiceColorKey[];
 export type ServiceColorKey = keyof typeof servicePalette;
 export const SERVICE_COLORS = servicePalette;
-export const DEFAULT_SERVICE_COLOR = servicePalette.rose;
+
+/** Each profession section's colour: its services start with it, its tile rings in it. */
+export const SPECIALIZATION_COLORS: Record<SpecializationKey, ServiceColorKey> = {
+  lashes: 'lavender',
+  brows: 'sand',
+  manicure: 'powder',
+  pedicure: 'peach',
+  hair: 'sky',
+  barbers: 'slate',
+  makeup: 'dustyRose',
+  skincare: 'sage',
+  hair_removal: 'teal',
+  massage: 'mint',
+  permanent_makeup: 'rosyBeige',
+  tattoo: 'graphite',
+  piercing: 'lilac',
+  pet_grooming: 'olive',
+};
+
+/** A service with no section of its own (direct inserts) gets manicure's powder pink. */
+export const DEFAULT_SERVICE_COLOR = servicePalette.powder;
 
 /** Custom payment-method swatches (system cash/card get their own fixed colours). */
 export const PAYMENT_COLORS = [

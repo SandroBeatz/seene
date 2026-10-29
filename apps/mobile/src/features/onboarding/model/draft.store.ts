@@ -21,15 +21,15 @@ export interface OnboardingDraftState {
   lastName: string;
   username: string;
   specializations: SpecializationKey[];
-  /** ISO 4217, from the phone until step 4 lets the master change it. */
+  /** ISO 4217, from the phone until step 3 lets the master change it. */
   currency: string;
-  /** Step 3 candidates (templates of the picked professions + own services). */
+  /** Step 4 candidates (templates of the picked professions + own services). */
   services: DraftService[];
-  /** Category names created on step 3 ("Без категории" = null on a service). */
+  /** Category names created on step 4 ("Без категории" = null on a service). */
   categories: string[];
-  /** "Настрою потом" on step 3: finish without services (the picks are kept). */
+  /** "Настрою потом" on step 4: finish without services (the picks are kept). */
   servicesSkipped: boolean;
-  /** IANA zone, from the phone until changed on step 4. */
+  /** IANA zone, from the phone until changed on step 3. */
   timezone: string;
   hours: WorkingHours;
   onlineBooking: boolean;
@@ -37,7 +37,7 @@ export interface OnboardingDraftState {
   manualConfirm: boolean;
 }
 
-/** Step-4 fields set through `setSettings`. */
+/** Step-3 fields set through `setSettings`. */
 export type DraftSettings = Pick<
   OnboardingDraftState,
   'timezone' | 'currency' | 'hours' | 'onlineBooking' | 'manualConfirm'
@@ -52,7 +52,7 @@ interface OnboardingDraftActions {
   setName: (patch: Partial<Pick<OnboardingDraftState, 'firstName' | 'lastName'>>) => void;
   setUsername: (username: string) => void;
   toggleSpecialization: (key: SpecializationKey) => void;
-  /** Align step-3 services with the picked professions (on entering step 3). */
+  /** Align step-4 services with the picked professions (on entering step 4). */
   syncServices: () => void;
   toggleService: (id: string) => void;
   /** Insert or replace by id (the service sheet's save). */
@@ -131,14 +131,18 @@ export const useOnboardingDraft = create<OnboardingDraftState & OnboardingDraftA
     {
       name: 'seene.onboarding-draft',
       // v2 adds currency/services/categories; v3 stops storing catalog names;
-      // v4 adds the step-4 settings (merged in from EMPTY); v5 replaces the 'UTC'
-      // placeholder an early v4 build stored with the phone's zone.
-      version: 5,
+      // v4 adds the "Основное" settings (merged in from EMPTY); v5 replaces the 'UTC'
+      // placeholder an early v4 build stored with the phone's zone; v6 moves service
+      // colours to the per-section palette (old picks reset to the section's colour).
+      version: 6,
       migrate: (persisted, version) => {
         // Spread order keeps every saved field; new ones (phone timezone) come from EMPTY.
         const state = { ...EMPTY, ...(persisted as Partial<OnboardingDraftState>) };
         const timezone = version === 4 && state.timezone === 'UTC' ? deviceTimeZone() : state.timezone;
-        return { ...state, timezone, services: forgetCatalogNames(state.services) };
+        const services = forgetCatalogNames(state.services).map((service) =>
+          version < 6 ? { ...service, color: null } : service,
+        );
+        return { ...state, timezone, services };
       },
       storage: createJSONStorage(() => mmkvSyncStorage),
     },

@@ -9,10 +9,12 @@ export { SettingsStep, type SettingsStepProps } from './ui/SettingsStep';
 export { TimezoneSheet, type TimezoneSheetProps } from './ui/TimezoneSheet';
 export { CurrencySheet, type CurrencySheetProps } from './ui/CurrencySheet';
 export { HoursSheet, type HoursSheetProps } from './ui/HoursSheet';
+export { ReviewStep, type ReviewStepProps, type ReviewTarget } from './ui/ReviewStep';
+export { CreatingStep, type CreatingStepProps } from './ui/CreatingStep';
 export {
   OnboardingHeader,
   ONBOARDING_STEP_COUNT,
   useOnboardingHeaderInset,
 } from './ui/OnboardingHeader';
-export { useCompleteOnboarding } from './model/submit';
+export { useCompleteOnboarding, useEnterApp } from './model/submit';
 export { useConfirmSignOut } from './model/sign-out';

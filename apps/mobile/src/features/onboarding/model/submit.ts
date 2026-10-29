@@ -1,8 +1,10 @@
 /**
- * The final onboarding write: draft → `complete_onboarding` payload → one RPC →
- * refresh the session profile (the root guard then opens the app) → clear the draft.
+ * The end of onboarding, in two moves so the "creating" animation can play out:
  *
- * The review screen (phase 7) is not built yet, so step 4 finishes for now.
+ * 1. `useCompleteOnboarding` — draft → `complete_onboarding` payload → one RPC.
+ *    The session profile is not refreshed yet, so the root guard keeps the user here.
+ * 2. `useEnterApp` — refresh the session profile (the root guard then opens the app)
+ *    and clear the draft. Run on "Дальше" once the profile exists.
  */
 import { useMutation } from '@tanstack/react-query';
 import { completeOnboarding } from '@/entities/master';
@@ -19,11 +21,22 @@ export function useCompleteOnboarding() {
         await completeOnboarding(buildPayload(useOnboardingDraft.getState(), readDeviceContext()));
       } catch (e) {
         const error = normalizeError(e);
-        // A retry after the write landed but the profile refresh failed: the profile
-        // exists, so just load it.
+        // A retry after the write landed (e.g. the response was lost): the profile
+        // exists, which is all this step needs.
         if (error.kind !== 'already_completed') throw error;
       }
-      await useSessionStore.getState().refreshProfile();
+    },
+  });
+}
+
+export function useEnterApp() {
+  return useMutation<void, AppError, void>({
+    mutationFn: async () => {
+      try {
+        await useSessionStore.getState().refreshProfile();
+      } catch (e) {
+        throw normalizeError(e);
+      }
       useOnboardingDraft.getState().reset();
     },
   });

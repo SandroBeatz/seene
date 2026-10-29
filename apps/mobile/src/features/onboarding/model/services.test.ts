@@ -8,6 +8,7 @@ import {
   type DraftService,
   forgetCatalogNames,
   groupByProfession,
+  serviceColorKey,
   serviceName,
   syncWithProfessions,
   withStoredName,
@@ -34,6 +35,14 @@ describe('syncWithProfessions', () => {
   it('groups by profession in catalog order', () => {
     const groups = groupByProfession(syncWithProfessions([], ['pedicure', 'lashes']));
     expect(groups.map((g) => g.specialization)).toEqual(['lashes', 'pedicure']);
+  });
+});
+
+describe('serviceColorKey', () => {
+  it('follows the section until a colour is picked by hand', () => {
+    expect(serviceColorKey({ color: null, specialization: 'lashes' })).toBe('lavender');
+    expect(serviceColorKey({ color: null, specialization: 'barbers' })).toBe('slate');
+    expect(serviceColorKey({ color: 'mint', specialization: 'lashes' })).toBe('mint');
   });
 });
 

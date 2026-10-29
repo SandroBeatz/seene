@@ -1,5 +1,5 @@
 /**
- * Service sheet (design: "Новая услуга" / "Услуга"), a native form sheet over step 3:
+ * Service sheet (design: "Новая услуга" / "Услуга"), a native form sheet over step 4:
  * name, optional description, duration (presets or "Своё время" on the system wheel),
  * price or "Бесплатно", where it shows (section → its own sheet, category → its own
  * sheet), calendar colour, and the Активна / Онлайн-запись switches.
@@ -11,7 +11,11 @@ import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native-unistyles';
-import { SERVICE_COLOR_KEYS, SERVICE_COLORS } from '@/shared/config/palettes';
+import {
+  SERVICE_COLOR_KEYS,
+  SERVICE_COLORS,
+  SPECIALIZATION_COLORS,
+} from '@/shared/config/palettes';
 import { currencySymbol } from '@/shared/lib/formats';
 import { isSupportedLocale } from '@/shared/lib/i18n';
 import {
@@ -31,7 +35,7 @@ import {
 import { useOnboardingDraft } from '../model/draft.store';
 import { formatDurationLabel } from '../model/format';
 import { useServiceEditor } from '../model/service-editor.store';
-import { withStoredName } from '../model/services';
+import { serviceColorKey, withStoredName } from '../model/services';
 
 /** The design's 8 presets, minutes, 4 per row. */
 const PRESET_ROWS = [
@@ -39,6 +43,8 @@ const PRESET_ROWS = [
   [90, 120, 150, 180],
 ] as const;
 const PRESETS: readonly number[] = PRESET_ROWS.flat();
+/** The 14 section colours as two rows of 7, in the profession order. */
+const SWATCH_ROWS = [SERVICE_COLOR_KEYS.slice(0, 7), SERVICE_COLOR_KEYS.slice(7)];
 /** Half-hour presets read as clock time in the design ("1:30", "2:30"). */
 const presetLabel = (minutes: number, fallback: string) =>
   minutes % 60 === 30 && minutes > 60 ? `${Math.floor(minutes / 60)}:30` : fallback;
@@ -68,6 +74,8 @@ export function ServiceSheet({ onClose, onOpenSection, onOpenCategory }: Service
   const custom = !PRESETS.includes(service.duration);
   const canSave = service.name.trim().length > 0 && service.price !== null && service.duration > 0;
   const durationLabel = formatDurationLabel(service.duration, t);
+  const sectionColor = SPECIALIZATION_COLORS[service.specialization];
+  const colorKey = serviceColorKey(service);
 
   function close() {
     clear();
@@ -239,22 +247,32 @@ export function ServiceSheet({ onClose, onOpenSection, onOpenCategory }: Service
         </View>
 
         <View style={styles.colorField}>
-          <SectionLabel label={t('onboarding.serviceSheet.color')} />
+          <View style={styles.colorHead}>
+            <SectionLabel label={t('onboarding.serviceSheet.color')} />
+            <Text variant="caption" color="secondary">
+              {t('onboarding.serviceSheet.colorHint')}
+            </Text>
+          </View>
           <View style={styles.swatches} accessibilityRole="radiogroup">
-            {SERVICE_COLOR_KEYS.map((key) => {
-              const on = service.color === key;
-              return (
-                <Pressable
-                  key={key}
-                  accessibilityRole="radio"
-                  accessibilityState={{ checked: on }}
-                  accessibilityLabel={t(`onboarding.serviceSheet.colors.${key}`)}
-                  onPress={() => patch({ color: key })}
-                  style={[styles.swatch, { backgroundColor: SERVICE_COLORS[key] }, on && styles.swatchOn]}>
-                  {on ? <Icon name="check" size={14} weight="black" color="constant.ink" /> : null}
-                </Pressable>
-              );
-            })}
+            {SWATCH_ROWS.map((row, index) => (
+              <View key={index} style={styles.swatchRow}>
+                {row.map((key) => {
+                  const on = colorKey === key;
+                  return (
+                    <Pressable
+                      key={key}
+                      accessibilityRole="radio"
+                      accessibilityState={{ checked: on }}
+                      accessibilityLabel={t(`onboarding.serviceSheet.colors.${key}`)}
+                      // The section's own colour is stored as "follow the section".
+                      onPress={() => patch({ color: key === sectionColor ? null : key })}
+                      style={[styles.swatch, { backgroundColor: SERVICE_COLORS[key] }, on && styles.swatchOn]}>
+                      {on ? <Icon name="check" size={14} weight="black" color="constant.ink" /> : null}
+                    </Pressable>
+                  );
+                })}
+              </View>
+            ))}
           </View>
         </View>
 
@@ -342,7 +360,9 @@ const styles = StyleSheet.create((theme) => ({
     backgroundColor: theme.colors.accent.default,
     borderColor: theme.colors.accent.default,
   },
-  swatches: { flexDirection: 'row', justifyContent: 'space-between' },
+  colorHead: { gap: theme.space[1] },
+  swatches: { gap: theme.space[3] },
+  swatchRow: { flexDirection: 'row', justifyContent: 'space-between' },
   swatch: {
     width: theme.sizing.swatch,
     height: theme.sizing.swatch,

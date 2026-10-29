@@ -3,5 +3,5 @@ import { ProfessionsStep } from '@/features/onboarding';
 
 export default function OnboardingProfessionsScreen() {
   const router = useRouter();
-  return <ProfessionsStep onNext={() => router.push('/onboarding/services')} />;
+  return <ProfessionsStep onNext={() => router.push('/onboarding/settings')} />;
 }
