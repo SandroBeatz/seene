@@ -1,6 +1,8 @@
 /**
- * Toggle drawn from tokens (ink track on, neutral track off, white knob) instead of
- * the platform switch, so it looks the same on iOS and Android as in the design.
+ * Toggle drawn from tokens (accent track on, neutral track off) instead of the
+ * platform switch, so it looks the same on iOS and Android as in the design.
+ * The knob is white, and takes the on-accent colour when on: in dark the accent
+ * track is near-white, so the knob turns ink to stay visible.
  * Sizes: md 50×30 (settings rows), sm 46×27 (dense per-day rows).
  */
 import { useEffect } from 'react';
@@ -61,7 +63,17 @@ export function Switch({
         },
         disabled && styles.disabled,
       ]}>
-      <Animated.View style={[styles.knob, { width: dims.knob, height: dims.knob }, knobStyle]} />
+      <Animated.View
+        style={[
+          styles.knob,
+          {
+            width: dims.knob,
+            height: dims.knob,
+            backgroundColor: value ? theme.colors.accent.onAccent : theme.colors.control.knob,
+          },
+          knobStyle,
+        ]}
+      />
     </Pressable>
   );
 }
@@ -73,7 +85,6 @@ const styles = StyleSheet.create((theme) => ({
   },
   knob: {
     borderRadius: theme.radius.full,
-    backgroundColor: theme.colors.control.knob,
     boxShadow: theme.shadow.knob,
   },
   disabled: { opacity: 0.5 },

@@ -1,7 +1,7 @@
 /** Master entity — public barrel. Profile/settings writes live behind the api; the
  * onboarding feature composes them with the session store. */
 export { defaultTimeFormatForCountry, type TimeFormat } from './config/time-format';
-export { completeOnboarding } from './api/master.api';
+export { completeOnboarding, importAvatar } from './api/master.api';
 export { toStoredSchedule } from './lib/schedule';
 export {
   useUsernameAvailability,

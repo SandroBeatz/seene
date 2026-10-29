@@ -3,13 +3,14 @@
  *
  * 1. `useCompleteOnboarding` — draft → `complete_onboarding` payload → one RPC.
  *    The session profile is not refreshed yet, so the root guard keeps the user here.
+ *    Then, best effort, the Google photo becomes the profile's avatar.
  * 2. `useEnterApp` — refresh the session profile (the root guard then opens the app)
- *    and clear the draft. Run on "Дальше" once the profile exists; Today then shows
+ *    and clear the draft. Run on "Готово!" once the profile exists; Today then shows
  *    "Профиль создан" once.
  */
 import { useMutation } from '@tanstack/react-query';
-import { completeOnboarding } from '@/entities/master';
-import { useSessionStore } from '@/entities/session';
+import { completeOnboarding, importAvatar } from '@/entities/master';
+import { avatarFromUser, useSessionStore } from '@/entities/session';
 import { type AppError, normalizeError } from '@/shared/api/errors';
 import { useOnboardingDraft } from './draft.store';
 import { readDeviceContext } from './device';
@@ -27,6 +28,10 @@ export function useCompleteOnboarding() {
         // exists, which is all this step needs.
         if (error.kind !== 'already_completed') throw error;
       }
+      const user = useSessionStore.getState().session?.user;
+      const photo = avatarFromUser(user);
+      // A missing photo is not worth failing onboarding over: initials stand in.
+      if (user && photo) await importAvatar(user.id, photo).catch(() => undefined);
     },
   });
 }
