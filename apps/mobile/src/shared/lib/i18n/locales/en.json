@@ -351,7 +351,6 @@
     "appointmentDetails": "Appointment",
     "appointmentForm": "Edit appointment",
     "appointmentNote": "Note",
-    "checkout": "Checkout",
     "clientDetails": "Client",
     "profileSettings": "Profile",
     "sharedRoute": "Shared route",
@@ -367,8 +366,7 @@
     "calendar": "Calendar data is not implemented yet. This screen already owns a native Stack.",
     "clients": "Client data is not implemented yet. Use the action below to inspect the dynamic route.",
     "analytics": "Analytics data is not implemented yet.",
-    "profileSettings": "Profile settings will be implemented with the settings feature.",
-    "checkout": "Payment and completion data remain intentionally outside this navigation example."
+    "profileSettings": "Profile settings will be implemented with the settings feature."
   },
   "settings": {
     "theme": "Theme",
@@ -832,6 +830,28 @@
     "manual": "Set the time manually",
     "pick": "Pick a time",
     "submit": "Move · {{when}}"
+  },
+  "checkout": {
+    "title": "Complete visit",
+    "back": "Back to appointment",
+    "amountA11y": "Amount to pay, {{currency}}",
+    "planned": "Booked at {{amount}} ·",
+    "restore": "Restore",
+    "canChange": "Amount from the appointment, you can change it",
+    "method": "Payment method",
+    "methods": {
+      "cash": "Cash",
+      "card": "Card"
+    },
+    "time": "Visit time",
+    "asPlanned": "As booked",
+    "plannedTime": "Booked {{range}}",
+    "change": "Change",
+    "done": "Done",
+    "start": "Start",
+    "end": "End",
+    "timeNote": "If the visit ended earlier or later, adjust the time so your schedule and stats stay accurate.",
+    "submit": "Complete · {{amount}}"
   },
   "months": [
     "January",

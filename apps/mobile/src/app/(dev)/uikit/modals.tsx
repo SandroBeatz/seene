@@ -47,8 +47,8 @@ export default function UIKitModalsScreen() {
           title={t('uikit.modals.formSheet')}
           description={t('uikit.modals.formSheetDescription')}
           recommendation={t('uikit.recommended.formSheet')}
-          source="src/app/(app)/(modals)/checkout/[appointmentId].tsx"
-          code="sheetAllowedDetents: [0.45, 0.85]"
+          source="src/app/(app)/_layout.tsx"
+          code="presentation: 'formSheet', sheetAllowedDetents: [1]"
           badge={t('uikit.platformSpecific')}
           badgeTone="warning"
           action={
@@ -57,7 +57,7 @@ export default function UIKitModalsScreen() {
               variant="secondary"
               onPress={() =>
                 router.push({
-                  pathname: '/checkout/[appointmentId]',
+                  pathname: '/appointment/[appointmentId]/note',
                   params: { appointmentId: 'uikit-appointment' },
                 })
               }

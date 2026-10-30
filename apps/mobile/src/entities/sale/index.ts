@@ -1,3 +1,15 @@
-/** Sale entity — public barrel (read-only in Phase 2). */
-export { saleKeys, useSaleByAppointmentQuery, useSaleAmountsRangeQuery } from './model/queries';
-export type { SaleAmount, Sale, SaleItem, SaleRow, PaymentTypeRef } from './model/types';
+/** Sale entity — public barrel. */
+export {
+  saleKeys,
+  useSaleByAppointmentQuery,
+  useSaleAmountsRangeQuery,
+  useCompleteAppointmentMutation,
+} from './model/queries';
+export type {
+  CompleteAppointmentDto,
+  SaleAmount,
+  Sale,
+  SaleItem,
+  SaleRow,
+  PaymentTypeRef,
+} from './model/types';

@@ -36,19 +36,10 @@ export default function AppLayout() {
       <Stack.Screen name="(modals)/appointment/[appointmentId]/note" options={sheet} />
       <Stack.Screen name="(modals)/appointment/[appointmentId]/services" options={sheet} />
       <Stack.Screen name="(modals)/appointment/[appointmentId]/reschedule" options={sheet} />
+      <Stack.Screen name="(modals)/appointment/[appointmentId]/checkout" options={sheet} />
       <Stack.Screen
         name="(modals)/appointment-form"
         options={{ presentation: 'modal', title: t('navigation.appointmentForm') }}
-      />
-      <Stack.Screen
-        name="(modals)/checkout/[appointmentId]"
-        options={{
-          presentation: 'formSheet',
-          headerShown: false,
-          sheetAllowedDetents: [0.45, 0.85],
-          sheetInitialDetentIndex: 0,
-          sheetGrabberVisible: true,
-        }}
       />
       <Stack.Screen
         name="(modals)/quick-create"

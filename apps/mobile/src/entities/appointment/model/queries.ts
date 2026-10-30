@@ -30,7 +30,7 @@ export const appointmentKeys = {
 };
 
 /** Invalidate everything a create/update/delete can affect. */
-function invalidateAppointmentCaches(qc: QueryClient, userId: string): void {
+export function invalidateAppointmentCaches(qc: QueryClient, userId: string): void {
   qc.invalidateQueries({ queryKey: appointmentKeys.all(userId) });
   qc.invalidateQueries({ queryKey: appointmentKeys.actionable(userId) });
   qc.invalidateQueries({ queryKey: appointmentKeys.dayCounts(userId) });

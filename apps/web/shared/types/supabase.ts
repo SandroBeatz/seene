@@ -916,8 +916,10 @@ export type Database = {
         Args: {
           p_amount: number
           p_appointment_id: string
+          p_duration?: number
           p_items: Json
           p_payment_type_id: string
+          p_start_at?: string
         }
         Returns: string
       }

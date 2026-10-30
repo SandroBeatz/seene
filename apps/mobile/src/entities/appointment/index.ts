@@ -1,6 +1,7 @@
 /** Appointment entity — public barrel. */
 export {
   appointmentKeys,
+  invalidateAppointmentCaches,
   useAppointmentsRangeQuery,
   useActionableAppointmentsQuery,
   useAppointmentQuery,

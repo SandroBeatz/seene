@@ -92,7 +92,7 @@ export function useAppointmentActions(ctx: AppointmentActionContext | null) {
         );
       case 'complete':
         return router.push({
-          pathname: '/checkout/[appointmentId]',
+          pathname: '/appointment/[appointmentId]/checkout',
           params: { appointmentId: id },
         });
       case 'reschedule':
