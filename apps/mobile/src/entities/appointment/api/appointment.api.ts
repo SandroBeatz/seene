@@ -5,6 +5,7 @@
  */
 import { supabase } from '@/shared/api/supabase';
 import type {
+  ClientAppointment,
   Appointment,
   CreateAppointmentDto,
   UpdateAppointmentDto,
@@ -32,6 +33,24 @@ export async function listAppointmentsByRange(
  * Every visit since `fromIso` reduced to who and when: finished ones (a client's
  * rhythm) and booked ones (a visit ahead). Feeds "Пора позвать".
  */
+/** Every appointment of a client, newest first, with the checkout amount. */
+export async function listClientAppointments(
+  userId: string,
+  clientId: string,
+): Promise<ClientAppointment[]> {
+  const { data, error } = await supabase
+    .from('appointments')
+    .select('*, sale(amount)')
+    .eq('user_id', userId)
+    .eq('client_id', clientId)
+    .order('start_at', { ascending: false });
+  if (error) throw error;
+  return data.map(({ sale, ...appointment }) => ({
+    ...(appointment as Appointment),
+    paid: sale ? Number(sale.amount) : null,
+  }));
+}
+
 export async function listVisitHistory(userId: string, fromIso: string): Promise<VisitHistoryRow[]> {
   const { data, error } = await supabase
     .from('appointments')

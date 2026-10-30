@@ -25,7 +25,11 @@ export default function ClientsStackLayout() {
         // The list draws its own header (title, add button, search, filters).
         options={{ title: t('tabs.clients'), headerShown: false }}
       />
-      <Stack.Screen name="clients/[clientId]" options={{ title: t('navigation.clientDetails') }} />
+      {/* The profile draws its own back and "⋯" buttons. */}
+      <Stack.Screen
+        name="clients/[clientId]"
+        options={{ title: t('navigation.clientDetails'), headerShown: false }}
+      />
     </Stack>
   );
 }

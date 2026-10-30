@@ -7,6 +7,7 @@ export {
   useActionableAppointmentsQuery,
   useAppointmentQuery,
   useClientAppointmentCountQuery,
+  useClientAppointmentsQuery,
   useClientVisitCountQuery,
   useCreateAppointmentMutation,
   useUpdateAppointmentMutation,
@@ -49,4 +50,5 @@ export type {
   CreateAppointmentDto,
   UpdateAppointmentDto,
   VisitHistoryRow,
+  ClientAppointment,
 } from './model/types';

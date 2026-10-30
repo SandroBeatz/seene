@@ -13,6 +13,7 @@ import {
   listActionableAppointments,
   listAppointmentsByRange,
   listVisitHistory,
+  listClientAppointments,
   updateAppointment,
 } from '../api/appointment.api';
 import type { CreateAppointmentDto, UpdateAppointmentDto } from './types';
@@ -26,6 +27,8 @@ export const appointmentKeys = {
   clientVisits: (userId: string, clientId: string) =>
     ['appointments', userId, 'client-visits', clientId] as const,
   history: (userId: string, from: string) => ['appointments', userId, 'history', from] as const,
+  client: (userId: string, clientId: string) =>
+    ['appointments', userId, 'client', clientId] as const,
   actionable: (userId: string) => ['appointments-actionable', userId] as const,
   detail: (id: string) => ['appointment', id] as const,
   dayCounts: (userId: string) => ['appointment-day-counts', userId] as const,
@@ -78,6 +81,15 @@ export function useClientAppointmentCountQuery(userId: string, clientId: string 
   return useQuery({
     queryKey: appointmentKeys.clientCount(userId, clientId ?? ''),
     queryFn: () => countClientAppointments(userId, clientId!),
+    enabled: !!userId && !!clientId,
+  });
+}
+
+/** A client's appointments, newest first (client profile "Визиты"). */
+export function useClientAppointmentsQuery(userId: string, clientId: string | undefined) {
+  return useQuery({
+    queryKey: appointmentKeys.client(userId, clientId ?? ''),
+    queryFn: () => listClientAppointments(userId, clientId!),
     enabled: !!userId && !!clientId,
   });
 }

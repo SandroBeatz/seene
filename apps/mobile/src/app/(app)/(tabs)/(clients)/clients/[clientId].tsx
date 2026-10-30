@@ -1,15 +1,7 @@
-import { Stack, useLocalSearchParams } from 'expo-router';
-import { useTranslation } from 'react-i18next';
-import { ClientDetails } from '@/widgets/client-details';
+import { useLocalSearchParams } from 'expo-router';
+import { ClientProfile } from '@/widgets/client-profile';
 
-export default function ClientDetailsScreen() {
-  const { t } = useTranslation();
+export default function ClientProfileScreen() {
   const { clientId } = useLocalSearchParams<{ clientId: string }>();
-
-  return (
-    <>
-      <Stack.Screen options={{ title: t('navigation.clientDetails') }} />
-      <ClientDetails clientId={clientId} />
-    </>
-  );
+  return <ClientProfile clientId={clientId} />;
 }
