@@ -48,7 +48,10 @@ const styles = StyleSheet.create((theme) => ({
   input: {
     flex: 1,
     minWidth: 0,
-    height: '100%',
+    // Stretched by the row, not `height: '100%'`: a percentage height lets the
+    // iOS text drift down on re-layout (a filter tap re-rendering the list).
+    alignSelf: 'stretch',
+    paddingVertical: 0,
     color: theme.colors.content.primary,
     fontFamily: theme.typography.callout.fontFamily,
     fontSize: theme.typography.callout.fontSize,
