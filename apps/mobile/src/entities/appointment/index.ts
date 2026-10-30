@@ -18,6 +18,25 @@ export {
   sumServicePrice,
   appointmentTotalPrice,
 } from './lib/derive';
+export {
+  getAppointmentPhase,
+  isShownInSchedule,
+  scheduleCardLook,
+  visitProgress,
+  minutesUntilStart,
+  appointmentColor,
+  PHASE_TONE,
+  PREVIEW_ACTIONS,
+  DESTRUCTIVE_ACTIONS,
+} from './lib/presentation';
+export type {
+  AppointmentPhase,
+  StatusTone,
+  ScheduleCardLook,
+  AppointmentAction,
+  PreviewActions,
+  VisitProgress,
+} from './lib/presentation';
 export type {
   Appointment,
   AppointmentStatus,

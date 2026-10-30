@@ -45,6 +45,23 @@ export const palette = {
   green: { base: '#0E7A3F', bright: '#3FBF7A', subtleLight: '#E3F3EA', subtleDark: '#0F2C1D' },
   amber: { base: '#D98A0B', subtleLight: '#FBF0DA', subtleDark: '#2E2411' },
   blue: { base: '#3B82F6', subtleLight: '#E4EEFC', subtleDark: '#15223A' },
+  // Appointment status pills and "Требуют внимания" cards (app main-screen boards).
+  tone: {
+    roseSubtle: '#FCEFF3',
+    roseNow: '#F06A93',
+    amberText: '#8A5A00',
+    amberSubtle: '#FFF4D6',
+    amberBright: '#F2B544',
+    greenSubtle: '#E8F5EE',
+    red: '#B3261E',
+    redSubtle: '#FCE8E6',
+    redBright: '#F2867E',
+    redSubtleDark: '#3A1715',
+    slate: '#3B4A6B',
+    slateSubtle: '#ECEFF6',
+    slateBright: '#A9B6D3',
+    slateSubtleDark: '#1A2030',
+  },
   translucent: {
     whiteStrong: 'rgba(255, 255, 255, 0.94)',
     whiteBar: 'rgba(255, 255, 255, 0.92)',
