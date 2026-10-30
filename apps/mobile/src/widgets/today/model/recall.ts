@@ -46,3 +46,32 @@ export function recallState(
 
   return { cadenceDays, sinceDays, due: !hasUpcoming && sinceDays >= cadenceDays + lateBy };
 }
+
+export interface RecallVisit {
+  client_id: string;
+  start_at: string;
+  status: string;
+}
+
+/**
+ * Clients due for a call, from their visit history: finished visits give the rhythm,
+ * a pending or confirmed visit ahead means they are already coming.
+ */
+export function recallCandidates(
+  history: readonly RecallVisit[],
+  now: number = Date.now(),
+): { clientId: string; cadenceDays: number; sinceDays: number }[] {
+  const byClient = new Map<string, { done: string[]; upcoming: boolean }>();
+  for (const visit of history) {
+    const entry = byClient.get(visit.client_id) ?? { done: [], upcoming: false };
+    if (visit.status === 'completed') entry.done.push(visit.start_at);
+    else if (new Date(visit.start_at).getTime() > now) entry.upcoming = true;
+    byClient.set(visit.client_id, entry);
+  }
+  const due: { clientId: string; cadenceDays: number; sinceDays: number }[] = [];
+  for (const [clientId, entry] of byClient) {
+    const state = recallState(entry.done, entry.upcoming, now);
+    if (state?.due) due.push({ clientId, cadenceDays: state.cadenceDays, sinceDays: state.sinceDays });
+  }
+  return due;
+}

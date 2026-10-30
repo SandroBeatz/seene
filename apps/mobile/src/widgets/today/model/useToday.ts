@@ -109,7 +109,7 @@ export function useToday() {
       profile: profile.data ?? null,
     });
 
-    return { timeline, summary, steps, visitById };
+    return { timeline, summary, steps, visitById, clientById, serviceById };
   }, [
     appointments.data,
     blocks.data,

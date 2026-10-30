@@ -12,6 +12,7 @@ import {
   getAppointment,
   listActionableAppointments,
   listAppointmentsByRange,
+  listVisitHistory,
   updateAppointment,
 } from '../api/appointment.api';
 import type { CreateAppointmentDto, UpdateAppointmentDto } from './types';
@@ -24,6 +25,7 @@ export const appointmentKeys = {
     ['appointments', userId, 'client-count', clientId] as const,
   clientVisits: (userId: string, clientId: string) =>
     ['appointments', userId, 'client-visits', clientId] as const,
+  history: (userId: string, from: string) => ['appointments', userId, 'history', from] as const,
   actionable: (userId: string) => ['appointments-actionable', userId] as const,
   detail: (id: string) => ['appointment', id] as const,
   dayCounts: (userId: string) => ['appointment-day-counts', userId] as const,
@@ -35,6 +37,15 @@ export function invalidateAppointmentCaches(qc: QueryClient, userId: string): vo
   qc.invalidateQueries({ queryKey: appointmentKeys.actionable(userId) });
   qc.invalidateQueries({ queryKey: appointmentKeys.dayCounts(userId) });
   qc.invalidateQueries({ queryKey: ['analytics', userId] });
+}
+
+/** Finished and booked visits since `from` (who and when) — client rhythms. */
+export function useVisitHistoryQuery(userId: string, from: string) {
+  return useQuery({
+    queryKey: appointmentKeys.history(userId, from),
+    queryFn: () => listVisitHistory(userId, from),
+    enabled: !!userId && !!from,
+  });
 }
 
 export function useAppointmentsRangeQuery(userId: string, from: string, to: string) {

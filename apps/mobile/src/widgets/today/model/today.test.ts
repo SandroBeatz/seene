@@ -5,9 +5,9 @@ import type { AppointmentSource, AppointmentStatus } from '@/entities/appointmen
 jest.mock('@/shared/api/supabase', () => ({ supabase: {} }));
 
 /* eslint-disable import/first -- must be imported after the mock is registered */
-import { attentionKey, buildAttentionItems } from './attention';
+import { attentionKey, buildAttentionItems, reminderKey } from './attention';
 import { firstSteps, greetingPeriod } from './first-steps';
-import { recallState } from './recall';
+import { recallCandidates, recallState } from './recall';
 import { summarizeDay } from './summary';
 /* eslint-enable import/first */
 
@@ -146,6 +146,17 @@ describe('buildAttentionItems', () => {
     expect(keys).not.toContain('recall:a');
   });
 
+  it('drops visits already reminded from the reminder card', () => {
+    const card = build([reminderKey('reminder-1'), reminderKey('request')]).find(
+      (i) => i.kind === 'tomorrow_reminders',
+    );
+    expect(card?.kind === 'tomorrow_reminders' && card.appointments.map((a) => a.id)).toEqual([
+      'reminder-2',
+    ]);
+    const none = build([reminderKey('reminder-1'), reminderKey('request'), reminderKey('reminder-2')]);
+    expect(none.some((i) => i.kind === 'tomorrow_reminders')).toBe(false);
+  });
+
   it('ignores a client cancellation whose time has passed', () => {
     const items = buildAttentionItems({
       appointments: [
@@ -185,6 +196,28 @@ describe('recallState', () => {
   it('is never due with a booking ahead, and ignores future visits', () => {
     expect(recallState([day(9), day(30), day(51)], true, now)?.due).toBe(false);
     expect(recallState([day(9), day(30), day(120)], false, now)).toBeNull();
+  });
+});
+
+describe('recallCandidates', () => {
+  const day = (n: number) => new Date(Date.UTC(2026, 0, 1) + n * 86_400_000).toISOString();
+  const now = at(day(100));
+  const done = (client_id: string, n: number) => ({ client_id, start_at: day(n), status: 'completed' });
+
+  it('finds regulars who are late, skipping those already booked', () => {
+    const history = [
+      done('late', 9),
+      done('late', 30),
+      done('late', 51),
+      done('booked', 9),
+      done('booked', 30),
+      done('booked', 51),
+      { client_id: 'booked', start_at: day(105), status: 'confirmed' },
+      done('new', 90),
+    ];
+    expect(recallCandidates(history, now)).toEqual([
+      { clientId: 'late', cadenceDays: 21, sinceDays: 49 },
+    ]);
   });
 });
 

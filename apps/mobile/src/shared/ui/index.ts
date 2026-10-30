@@ -48,6 +48,12 @@ export {
   type SegmentedOption,
 } from './SegmentedControl';
 export { Card, type CardProps } from './Card';
+export {
+  ContextMenu,
+  type ContextMenuAnchor,
+  type ContextMenuItem,
+  type ContextMenuProps,
+} from './ContextMenu';
 export { Avatar, initialsOf, type AvatarProps, type AvatarSize, type AvatarTone } from './Avatar';
 export { GlassSurface, type GlassSurfaceProps } from './GlassSurface';
 export {

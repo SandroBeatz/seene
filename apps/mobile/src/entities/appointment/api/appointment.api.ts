@@ -4,7 +4,12 @@
  * sale (erases revenue) — callers must confirm destructive deletes in the UI.
  */
 import { supabase } from '@/shared/api/supabase';
-import type { Appointment, CreateAppointmentDto, UpdateAppointmentDto } from '../model/types';
+import type {
+  Appointment,
+  CreateAppointmentDto,
+  UpdateAppointmentDto,
+  VisitHistoryRow,
+} from '../model/types';
 
 /** Appointments starting within [fromIso, toIso). */
 export async function listAppointmentsByRange(
@@ -21,6 +26,22 @@ export async function listAppointmentsByRange(
     .order('start_at');
   if (error) throw error;
   return data as Appointment[];
+}
+
+/**
+ * Every visit since `fromIso` reduced to who and when: finished ones (a client's
+ * rhythm) and booked ones (a visit ahead). Feeds "Пора позвать".
+ */
+export async function listVisitHistory(userId: string, fromIso: string): Promise<VisitHistoryRow[]> {
+  const { data, error } = await supabase
+    .from('appointments')
+    .select('client_id, start_at, status')
+    .eq('user_id', userId)
+    .in('status', ['completed', 'pending', 'confirmed'])
+    .gte('start_at', fromIso)
+    .order('start_at');
+  if (error) throw error;
+  return data as VisitHistoryRow[];
 }
 
 /** Pending, or confirmed and already started — the master's action list. */

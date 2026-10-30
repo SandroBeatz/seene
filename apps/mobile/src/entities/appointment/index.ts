@@ -3,6 +3,7 @@ export {
   appointmentKeys,
   invalidateAppointmentCaches,
   useAppointmentsRangeQuery,
+  useVisitHistoryQuery,
   useActionableAppointmentsQuery,
   useAppointmentQuery,
   useClientAppointmentCountQuery,
@@ -47,4 +48,5 @@ export type {
   AppointmentCancelledBy,
   CreateAppointmentDto,
   UpdateAppointmentDto,
+  VisitHistoryRow,
 } from './model/types';

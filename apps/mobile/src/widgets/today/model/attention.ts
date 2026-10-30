@@ -67,6 +67,39 @@ export const ATTENTION_ACTIONS: Record<
   recall: { secondary: 'snooze', primary: 'invite' },
 };
 
+/** What a long press on a card offers (design "Карточка внимания · долгое нажатие"). */
+export type AttentionMenuAction =
+  | 'confirm'
+  | 'complete'
+  | 'propose_time'
+  | 'whatsapp'
+  | 'call'
+  | 'open_client'
+  | 'invite'
+  | 'dismiss'
+  | 'snooze'
+  | 'decline'
+  | 'cancel'
+  | 'no_show';
+
+export const ATTENTION_MENU: Record<
+  Exclude<AttentionKind, 'tomorrow_reminders'>,
+  { regular: AttentionMenuAction[]; danger: AttentionMenuAction[] }
+> = {
+  new_request: {
+    regular: ['confirm', 'propose_time', 'whatsapp', 'call', 'open_client'],
+    danger: ['decline'],
+  },
+  awaiting_completion: { regular: ['complete', 'whatsapp', 'call', 'open_client'], danger: ['no_show'] },
+  overdue_request: { regular: ['propose_time', 'whatsapp', 'call', 'open_client'], danger: ['decline'] },
+  unconfirmed: { regular: ['confirm', 'whatsapp', 'call', 'open_client'], danger: ['cancel'] },
+  client_cancelled: {
+    regular: ['propose_time', 'whatsapp', 'call', 'open_client', 'dismiss'],
+    danger: [],
+  },
+  recall: { regular: ['invite', 'call', 'open_client', 'snooze'], danger: [] },
+};
+
 type AttentionAppointment = Pick<
   Appointment,
   'id' | 'status' | 'source' | 'start_at' | 'duration' | 'client_id' | 'cancelled_by'
@@ -113,6 +146,11 @@ export function attentionKey(kind: AttentionKind, id: string): string {
   return `${kind}:${id}`;
 }
 
+/** A reminder sent for one of tomorrow's visits: it leaves the reminder card. */
+export function reminderKey(appointmentId: string): string {
+  return `reminder:${appointmentId}`;
+}
+
 export function buildAttentionItems<A extends AttentionAppointment>({
   appointments,
   tomorrow,
@@ -141,7 +179,11 @@ export function buildAttentionItems<A extends AttentionAppointment>({
   const to = new Date(tomorrow.end).getTime();
   const tomorrowVisits = sorted.filter(
     (a) =>
-      isShownInSchedule(a) && a.status !== 'completed' && startMs(a) >= from && startMs(a) < to,
+      isShownInSchedule(a) &&
+      a.status !== 'completed' &&
+      startMs(a) >= from &&
+      startMs(a) < to &&
+      !dismissed.has(reminderKey(a.id)),
   );
   if (tomorrowVisits.length) {
     items.push({

@@ -79,9 +79,10 @@ export const lightTheme = {
       scrim: palette.translucent.scrim,
       scrimStrong: palette.translucent.scrimStrong,
       scrimLight: palette.translucent.scrimLight,
-      // Behind a popover menu, and the menu's own fill.
+      // Behind a popover menu, and the menu's own fill: opaque, there is no blur
+      // under it, so a translucent fill lets the row text behind show through.
       menuScrim: palette.translucent.scrimMenu,
-      menu: palette.translucent.whiteBar,
+      menu: n[0],
       // Floating tab bar fill.
       bar: palette.translucent.whiteBar,
       // Over photos: unchecked selection mark fill, its outline, and the label shade.

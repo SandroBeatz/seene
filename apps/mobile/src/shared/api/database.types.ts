@@ -86,6 +86,27 @@ export type Database = {
           },
         ]
       }
+      attention_dismissal: {
+        Row: {
+          created_at: string
+          key: string
+          until: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          key: string
+          until?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          key?: string
+          until?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       availability: {
         Row: {
           day_of_week: number | null

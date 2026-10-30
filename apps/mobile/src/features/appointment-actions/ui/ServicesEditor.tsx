@@ -111,7 +111,9 @@ export function ServicesEditor({
   };
 
   return (
-    <View style={styles.root}>
+    // Kept as a real view: a form sheet (react-native-screens) pins a ScrollView that
+    // is a direct child of the screen to the top and stretches it over the header.
+    <View style={styles.root} collapsable={false}>
       <View style={styles.grabber} />
       <View style={styles.header}>
         <IconButton
