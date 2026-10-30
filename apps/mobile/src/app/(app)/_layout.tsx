@@ -1,4 +1,4 @@
-import { Stack } from 'expo-router';
+import { type NativeStackNavigationOptions, Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useUnistyles } from 'react-native-unistyles';
 import { NavigationHeaderBackground } from '@/shared/ui/NavigationHeaderBackground';
@@ -9,6 +9,14 @@ export const unstable_settings = { anchor: '(tabs)' };
 export default function AppLayout() {
   const { t } = useTranslation();
   const { theme } = useUnistyles();
+  const sheet: NativeStackNavigationOptions = {
+    presentation: 'formSheet',
+    headerShown: false,
+    sheetAllowedDetents: [1],
+    sheetCornerRadius: theme.radius.showcase,
+    sheetGrabberVisible: false,
+    contentStyle: { backgroundColor: theme.colors.bg.elevated },
+  };
 
   return (
     <Stack
@@ -23,6 +31,9 @@ export default function AppLayout() {
       }}>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="analytics" options={{ title: t('tabs.analytics') }} />
+      {/* Full-height sheets; the grabber is drawn in content so iOS and Android match. */}
+      <Stack.Screen name="(modals)/appointment/[appointmentId]/index" options={sheet} />
+      <Stack.Screen name="(modals)/appointment/[appointmentId]/note" options={sheet} />
       <Stack.Screen
         name="(modals)/appointment-form"
         options={{ presentation: 'modal', title: t('navigation.appointmentForm') }}

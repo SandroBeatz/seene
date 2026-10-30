@@ -149,10 +149,6 @@
       "confirm": "Sign out",
       "cancel": "Stay"
     },
-    "duration": {
-      "hours": "{{count}} h",
-      "minutes": "{{count}} min"
-    },
     "services": {
       "title": "Your services",
       "subtitle": "Tick what you do. Add prices now or later.",
@@ -684,6 +680,121 @@
       "open": "Appointment note",
       "close": "Close note",
       "from": "Booking note · {{name}}"
+    }
+  },
+  "duration": {
+    "hours": "{{count}} h",
+    "minutes": "{{count}} min"
+  },
+  "preview": {
+    "more": "More actions",
+    "vip": "VIP client",
+    "call": "Call",
+    "remind": "Remind",
+    "visits_one": "{{count}} visit",
+    "visits_few": "{{count}} visits",
+    "visits_many": "{{count}} visits",
+    "visits_other": "{{count}} visits",
+    "day": {
+      "today": "Today",
+      "tomorrow": "Tomorrow",
+      "yesterday": "Yesterday"
+    },
+    "when": "{{date}} at {{time}}",
+    "status": {
+      "upcoming": "Confirmed",
+      "upcomingMinutes": "Confirmed · in {{count}} min",
+      "upcomingHours": "Confirmed · in {{count}} h",
+      "ongoing": "In progress · since {{time}}",
+      "awaiting": "Waiting to be completed",
+      "completed": "Completed",
+      "request": "New online request",
+      "unconfirmed": "Not confirmed",
+      "overdue": "Request overdue",
+      "cancelled": "Cancelled",
+      "no_show": "No-show",
+      "expired": "Request expired"
+    },
+    "reschedule": "Reschedule",
+    "editServices": "Edit services, duration and price",
+    "noServices": "Services deleted",
+    "ownPrice": "custom price",
+    "note": "Note",
+    "editNote": "Edit note",
+    "addNote": "Add a note",
+    "progress": {
+      "elapsed": "{{duration}} in",
+      "plan": "Planned {{duration}} · until {{time}}",
+      "hint": "We record the visit time when you tap “Complete”."
+    },
+    "timerA11y": "Complete the visit, {{minutes}} min in",
+    "actions": {
+      "confirm": "Confirm",
+      "decline": "Decline",
+      "complete": "Complete",
+      "reschedule": "Reschedule",
+      "cancel": "Cancel",
+      "no_show": "No-show",
+      "propose_time": "Suggest a time",
+      "book_again": "Book again",
+      "edit": "Edit"
+    },
+    "menu": {
+      "book_again": "Book again",
+      "note": "Edit note",
+      "addNote": "Add a note",
+      "send_details": "Send details to client",
+      "no_show": "Mark as no-show",
+      "cancel": "Cancel appointment",
+      "delete": "Delete appointment"
+    },
+    "missingTitle": "No appointment",
+    "missing": "It was deleted or is unavailable."
+  },
+  "actions": {
+    "failedTitle": "Something went wrong",
+    "failedMessage": "Check your connection and try again.",
+    "noPhone": "This client has no phone number.",
+    "confirm": {
+      "decline": {
+        "title": "Decline the request?",
+        "message": "The appointment will be cancelled. Message the client to suggest another time.",
+        "action": "Decline"
+      },
+      "cancel": {
+        "title": "Cancel the appointment?",
+        "message": "The time frees up. The client won’t be told — message them.",
+        "action": "Cancel appointment"
+      },
+      "noShow": {
+        "title": "Mark as no-show?",
+        "message": "The visit won’t count towards earnings.",
+        "action": "No-show"
+      },
+      "delete": {
+        "title": "Delete the appointment?",
+        "message": "The appointment and its payment are deleted for good.",
+        "action": "Delete"
+      }
+    },
+    "messages": {
+      "reminder": "Hi {{name}}! A reminder of your appointment {{when}}: {{services}}. See you!",
+      "details": "Hi {{name}}! You’re booked {{when}}: {{services}}, {{price}}.",
+      "proposeTime": "Hi {{name}}! Unfortunately {{when}} won’t work. Shall we find another time?"
+    }
+  },
+  "note": {
+    "title": "Note",
+    "titleNew": "New note",
+    "field": "Note text",
+    "placeholder": "E.g. favourite shade, allergy",
+    "private": "Only you can see it",
+    "delete": "Delete note",
+    "chips": {
+      "allergy": "Allergy",
+      "favouriteShade": "Favourite shade",
+      "sensitiveSkin": "Sensitive skin",
+      "runsLate": "Runs late"
     }
   }
 }

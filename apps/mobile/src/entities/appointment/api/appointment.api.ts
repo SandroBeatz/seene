@@ -57,6 +57,18 @@ export async function countClientAppointments(userId: string, clientId: string):
   return count ?? 0;
 }
 
+/** The client's finished visits (status `completed`) — "14 визитов". */
+export async function countClientVisits(userId: string, clientId: string): Promise<number> {
+  const { count, error } = await supabase
+    .from('appointments')
+    .select('*', { count: 'exact', head: true })
+    .eq('user_id', userId)
+    .eq('client_id', clientId)
+    .eq('status', 'completed');
+  if (error) throw error;
+  return count ?? 0;
+}
+
 export async function createAppointment(
   userId: string,
   dto: CreateAppointmentDto,

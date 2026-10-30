@@ -6,6 +6,7 @@
 import { type QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   countClientAppointments,
+  countClientVisits,
   createAppointment,
   deleteAppointment,
   getAppointment,
@@ -18,10 +19,11 @@ import type { CreateAppointmentDto, UpdateAppointmentDto } from './types';
 export const appointmentKeys = {
   /** Prefix for every range/client-count query — invalidating this covers them all. */
   all: (userId: string) => ['appointments', userId] as const,
-  range: (userId: string, from: string, to: string) =>
-    ['appointments', userId, from, to] as const,
+  range: (userId: string, from: string, to: string) => ['appointments', userId, from, to] as const,
   clientCount: (userId: string, clientId: string) =>
     ['appointments', userId, 'client-count', clientId] as const,
+  clientVisits: (userId: string, clientId: string) =>
+    ['appointments', userId, 'client-visits', clientId] as const,
   actionable: (userId: string) => ['appointments-actionable', userId] as const,
   detail: (id: string) => ['appointment', id] as const,
   dayCounts: (userId: string) => ['appointment-day-counts', userId] as const,
@@ -63,6 +65,14 @@ export function useClientAppointmentCountQuery(userId: string, clientId: string 
   return useQuery({
     queryKey: appointmentKeys.clientCount(userId, clientId ?? ''),
     queryFn: () => countClientAppointments(userId, clientId!),
+    enabled: !!userId && !!clientId,
+  });
+}
+
+export function useClientVisitCountQuery(userId: string, clientId: string | undefined) {
+  return useQuery({
+    queryKey: appointmentKeys.clientVisits(userId, clientId ?? ''),
+    queryFn: () => countClientVisits(userId, clientId!),
     enabled: !!userId && !!clientId,
   });
 }

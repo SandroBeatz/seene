@@ -4,7 +4,7 @@
  * steps. Re-derives every minute so the "now" line, past dimming and the day itself
  * roll over without a refetch.
  */
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { DateTime } from 'luxon';
 import {
   appointmentColor,
@@ -27,28 +27,9 @@ import { useTimeBlocksRangeQuery, type TimeBlock } from '@/entities/time-block';
 import { DEFAULT_SERVICE_COLOR } from '@/shared/config/palettes';
 import { buildDayTimeline, dayBounds, weekdayIndex, workingHours } from '@/shared/lib/scheduling';
 import { deviceTimeZone } from '@/shared/lib/time-zone';
+import { useNow } from '@/shared/ui';
 import { firstSteps } from './first-steps';
 import { summarizeDay } from './summary';
-
-/** Current time, refreshed at the start of every minute. */
-export function useNow(): number {
-  const [now, setNow] = useState(() => Date.now());
-  useEffect(() => {
-    let interval: ReturnType<typeof setInterval> | undefined;
-    const timeout = setTimeout(
-      () => {
-        setNow(Date.now());
-        interval = setInterval(() => setNow(Date.now()), 60_000);
-      },
-      60_000 - (Date.now() % 60_000),
-    );
-    return () => {
-      clearTimeout(timeout);
-      if (interval) clearInterval(interval);
-    };
-  }, []);
-  return now;
-}
 
 /** An appointment as the schedule draws it. */
 export interface ScheduleVisit {

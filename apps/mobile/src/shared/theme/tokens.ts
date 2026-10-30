@@ -62,6 +62,8 @@ export const palette = {
     slateBright: '#A9B6D3',
     slateSubtleDark: '#1A2030',
   },
+  // VIP badge gradient (design "Запись · превью").
+  vip: ['#CF3767', '#8A6FD0', '#E0A84E'],
   translucent: {
     whiteStrong: 'rgba(255, 255, 255, 0.94)',
     whiteBar: 'rgba(255, 255, 255, 0.92)',
@@ -77,6 +79,7 @@ export const palette = {
     scrimLight: 'rgba(11, 11, 12, 0.25)',
     scrimDark: 'rgba(0, 0, 0, 0.6)',
     blackDim: 'rgba(0, 0, 0, 0.18)',
+    scrimMenu: 'rgba(11, 11, 12, 0.12)',
     whiteEdge: 'rgba(255, 255, 255, 0.9)',
   },
 } as const;
@@ -175,6 +178,7 @@ export const radius = {
   segment: 10, // segmented-control thumb
   field: 14, // code cells, search, segmented track
   panel: 22, // review summary card
+  block: 18, // appointment preview cards
   showcase: 24, // illustration card
 } as const;
 
@@ -312,6 +316,10 @@ export const typography = {
     textTransform: 'uppercase',
   },
   micro: { fontFamily: fontFamily.semibold, fontSize: 10, lineHeight: 13, letterSpacing: 0 },
+  /** "Добавить заметку" row. */
+  subheadMedium: { fontFamily: fontFamily.medium, fontSize: 14, lineHeight: 20, letterSpacing: 0 },
+  /** Side actions of the preview's bottom bar. */
+  caption2Medium: { fontFamily: fontFamily.medium, fontSize: 11, lineHeight: 14, letterSpacing: 0 },
   /** Personal-time label on the schedule. */
   captionMedium: { fontFamily: fontFamily.medium, fontSize: 12, lineHeight: 17, letterSpacing: 0 },
   /** Client name on a schedule event card. */
@@ -332,6 +340,7 @@ export const shadow = {
   fab: '0px 6px 20px rgba(0, 0, 0, 0.12)',
   tabBar: '0px 8px 24px rgba(0, 0, 0, 0.08)',
   tabAction: '0px 12px 28px rgba(0, 0, 0, 0.14)',
+  menu: '0px 16px 40px rgba(0, 0, 0, 0.16), 0px 2px 6px rgba(0, 0, 0, 0.06)',
   bubble: '0px 12px 30px rgba(0, 0, 0, 0.18)',
   bubbleDark: '0px 12px 30px rgba(0, 0, 0, 0.22)',
   pop: '0px 10px 26px rgba(0, 0, 0, 0.14)',
@@ -363,6 +372,7 @@ export const iconStroke = {
 /** Third-party marks whose colours are fixed by their brand guidelines. */
 export const brandMarks = {
   google: { blue: '#4285F4', green: '#34A853', yellow: '#FBBC05', red: '#EA4335' },
+  whatsapp: '#25D366',
 } as const;
 
 /**

@@ -149,10 +149,6 @@
       "confirm": "Se déconnecter",
       "cancel": "Rester"
     },
-    "duration": {
-      "hours": "{{count}} h",
-      "minutes": "{{count}} min"
-    },
     "services": {
       "title": "Vos prestations",
       "subtitle": "Cochez ce que vous faites. Ajoutez les prix maintenant ou plus tard.",
@@ -684,6 +680,121 @@
       "open": "Note du rendez-vous",
       "close": "Fermer la note",
       "from": "Note de réservation · {{name}}"
+    }
+  },
+  "duration": {
+    "hours": "{{count}} h",
+    "minutes": "{{count}} min"
+  },
+  "preview": {
+    "more": "Plus d’actions",
+    "vip": "Client VIP",
+    "call": "Appeler",
+    "remind": "Rappeler",
+    "visits_one": "{{count}} visite",
+    "visits_few": "{{count}} visites",
+    "visits_many": "{{count}} visites",
+    "visits_other": "{{count}} visites",
+    "day": {
+      "today": "Aujourd’hui",
+      "tomorrow": "Demain",
+      "yesterday": "Hier"
+    },
+    "when": "{{date}} à {{time}}",
+    "status": {
+      "upcoming": "Confirmé",
+      "upcomingMinutes": "Confirmé · dans {{count}} min",
+      "upcomingHours": "Confirmé · dans {{count}} h",
+      "ongoing": "En cours · depuis {{time}}",
+      "awaiting": "À terminer",
+      "completed": "Terminé",
+      "request": "Nouvelle demande en ligne",
+      "unconfirmed": "Non confirmé",
+      "overdue": "Demande en retard",
+      "cancelled": "Annulé",
+      "no_show": "Absence",
+      "expired": "Demande expirée"
+    },
+    "reschedule": "Déplacer",
+    "editServices": "Modifier les prestations, la durée et le prix",
+    "noServices": "Prestations supprimées",
+    "ownPrice": "prix personnalisé",
+    "note": "Note",
+    "editNote": "Modifier la note",
+    "addNote": "Ajouter une note",
+    "progress": {
+      "elapsed": "{{duration}} écoulées",
+      "plan": "Prévu {{duration}} · jusqu’à {{time}}",
+      "hint": "La durée de la visite est enregistrée quand vous appuyez sur « Terminer »."
+    },
+    "timerA11y": "Terminer la visite, {{minutes}} min écoulées",
+    "actions": {
+      "confirm": "Confirmer",
+      "decline": "Refuser",
+      "complete": "Terminer",
+      "reschedule": "Déplacer",
+      "cancel": "Annuler",
+      "no_show": "Absence",
+      "propose_time": "Proposer un horaire",
+      "book_again": "Reprendre RDV",
+      "edit": "Modifier"
+    },
+    "menu": {
+      "book_again": "Reprendre RDV",
+      "note": "Modifier la note",
+      "addNote": "Ajouter une note",
+      "send_details": "Envoyer les détails au client",
+      "no_show": "Marquer absent",
+      "cancel": "Annuler le rendez-vous",
+      "delete": "Supprimer le rendez-vous"
+    },
+    "missingTitle": "Aucun rendez-vous",
+    "missing": "Il a été supprimé ou n’est pas disponible."
+  },
+  "actions": {
+    "failedTitle": "Échec",
+    "failedMessage": "Vérifiez votre connexion et réessayez.",
+    "noPhone": "Ce client n’a pas de numéro.",
+    "confirm": {
+      "decline": {
+        "title": "Refuser la demande ?",
+        "message": "Le rendez-vous sera annulé. Écrivez au client pour proposer un autre horaire.",
+        "action": "Refuser"
+      },
+      "cancel": {
+        "title": "Annuler le rendez-vous ?",
+        "message": "Le créneau se libère. Le client n’est pas prévenu — écrivez-lui.",
+        "action": "Annuler le rendez-vous"
+      },
+      "noShow": {
+        "title": "Marquer absent ?",
+        "message": "La visite ne comptera pas dans les gains.",
+        "action": "Absence"
+      },
+      "delete": {
+        "title": "Supprimer le rendez-vous ?",
+        "message": "Le rendez-vous et son paiement sont supprimés définitivement.",
+        "action": "Supprimer"
+      }
+    },
+    "messages": {
+      "reminder": "Bonjour {{name}} ! Je vous rappelle votre rendez-vous {{when}} : {{services}}. À bientôt !",
+      "details": "Bonjour {{name}} ! Vous avez rendez-vous {{when}} : {{services}}, {{price}}.",
+      "proposeTime": "Bonjour {{name}} ! Malheureusement, {{when}} ne sera pas possible. Trouvons un autre horaire ?"
+    }
+  },
+  "note": {
+    "title": "Note",
+    "titleNew": "Nouvelle note",
+    "field": "Texte de la note",
+    "placeholder": "Ex. : teinte préférée, allergie",
+    "private": "Visible par vous seul",
+    "delete": "Supprimer la note",
+    "chips": {
+      "allergy": "Allergie",
+      "favouriteShade": "Teinte préférée",
+      "sensitiveSkin": "Peau sensible",
+      "runsLate": "Souvent en retard"
     }
   }
 }
