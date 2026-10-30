@@ -260,7 +260,8 @@
       "loading": "Lecture des contacts…",
       "done_one": "{{count}} client ajouté",
       "done_many": "{{count}} clients ajoutés",
-      "done_other": "{{count}} clients ajoutés"
+      "done_other": "{{count}} clients ajoutés",
+      "unreadable": "Numéro non reconnu — ajouté sans"
     },
     "fromContacts": "Ajouter depuis les contacts",
     "pickContact": "Choisir dans les contacts",

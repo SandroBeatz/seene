@@ -252,7 +252,8 @@
       "empty": "Your phone book has no contacts with a name.",
       "loading": "Reading contacts…",
       "done_one": "{{count}} client added",
-      "done_other": "{{count}} clients added"
+      "done_other": "{{count}} clients added",
+      "unreadable": "Number not recognised — added without it"
     },
     "fromContacts": "Add from phone contacts",
     "pickContact": "Pick from phone contacts",

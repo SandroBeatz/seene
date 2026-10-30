@@ -42,14 +42,16 @@ describe('importCandidates', () => {
         { id: 'a', givenName: 'Айгерим', phones: [{ number: '0555 12 34 56' }] },
         { id: 'a2', givenName: 'Айгерим (работа)', phones: [{ number: '+996 555 12 34 56' }] },
         { id: 'c', givenName: 'Без номера' },
+        { id: 'd', givenName: 'Чужой формат', phones: [{ number: '(555) 564-8583' }] },
       ],
       [{ phone: null, whatsapp: '996700882140' }],
       'KG',
     );
-    expect(rows.map((r) => [r.contactId, r.phone, r.exists])).toEqual([
-      ['a', '996555123456', false],
-      ['c', null, false],
-      ['b', '996700882140', true],
+    expect(rows.map((r) => [r.contactId, r.phone, r.exists, r.unreadable])).toEqual([
+      ['a', '996555123456', false, false],
+      ['c', null, false, false],
+      ['b', '996700882140', true, false],
+      ['d', null, false, true],
     ]);
   });
 });

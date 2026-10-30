@@ -16,6 +16,8 @@ export interface ImportCandidate {
   card: ClientCardDto;
   /** A client with this number is already in the book. */
   exists: boolean;
+  /** The contact has numbers, but none reads as a valid phone. */
+  unreadable: boolean;
 }
 
 export function contactToCard(contact: PhoneBookContact, country: CountryCode): ClientCardDto | null {
@@ -66,6 +68,7 @@ export function importCandidates(
       phone: card.phone ?? null,
       card,
       exists: !!card.phone && known.has(card.phone),
+      unreadable: !card.phone && (contact.phones ?? []).some((p) => !!p.number?.trim()),
     });
   }
   return rows.sort((a, b) => a.name.localeCompare(b.name));

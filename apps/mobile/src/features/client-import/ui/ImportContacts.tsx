@@ -119,7 +119,9 @@ export function ImportContacts({ country }: { country: CountryCode }) {
                     ? t('clients.import.exists')
                     : item.phone
                       ? formatPhone(item.phone)
-                      : t('clients.import.noPhone')}
+                      : item.unreadable
+                        ? t('clients.import.unreadable')
+                        : t('clients.import.noPhone')}
                 </Text>
               </View>
               {item.exists ? null : <SelectionMark checked={on} />}
