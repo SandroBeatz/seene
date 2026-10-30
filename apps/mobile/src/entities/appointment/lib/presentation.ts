@@ -149,7 +149,10 @@ export function visitProgress(
 }
 
 /** Whole minutes until the start ("через 2 ч"); negative once started. */
-export function minutesUntilStart(a: Pick<Appointment, 'start_at'>, now: number = Date.now()): number {
+export function minutesUntilStart(
+  a: Pick<Appointment, 'start_at'>,
+  now: number = Date.now(),
+): number {
   return Math.ceil((new Date(a.start_at).getTime() - now) / 60_000);
 }
 

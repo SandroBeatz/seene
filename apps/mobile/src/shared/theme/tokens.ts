@@ -208,6 +208,8 @@ export const sizing = {
     sm: { width: 46, height: 27, knob: 23, padding: 2 },
   },
   minTouch: 44,
+  /** Floating tab bar (design "Таб · Сегодня"): capsule, item, raised "+" button. */
+  tabBar: { height: 68, item: 56, action: 62, actionLift: 22, inset: 16, safeAreaOverlap: 6 },
 } as const;
 
 /**
@@ -310,6 +312,8 @@ export const typography = {
     textTransform: 'uppercase',
   },
   micro: { fontFamily: fontFamily.semibold, fontSize: 10, lineHeight: 13, letterSpacing: 0 },
+  /** Inactive tab label (the active one is `micro`). */
+  microMedium: { fontFamily: fontFamily.medium, fontSize: 10, lineHeight: 13, letterSpacing: 0 },
 } as const;
 
 /**
@@ -322,6 +326,8 @@ export const shadow = {
   segment: '0px 1px 3px rgba(0, 0, 0, 0.1)',
   bar: '0px 6px 20px rgba(0, 0, 0, 0.06)',
   fab: '0px 6px 20px rgba(0, 0, 0, 0.12)',
+  tabBar: '0px 8px 24px rgba(0, 0, 0, 0.08)',
+  tabAction: '0px 12px 28px rgba(0, 0, 0, 0.14)',
   bubble: '0px 12px 30px rgba(0, 0, 0, 0.18)',
   bubbleDark: '0px 12px 30px rgba(0, 0, 0, 0.22)',
   pop: '0px 10px 26px rgba(0, 0, 0, 0.14)',

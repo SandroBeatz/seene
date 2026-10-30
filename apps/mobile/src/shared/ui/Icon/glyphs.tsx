@@ -53,6 +53,22 @@ export const GLYPHS = {
   ),
   // Tabs & header
   home: stroke('regular', <Path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z" />),
+  today: stroke(
+    'regular',
+    <>
+      <Circle cx={12} cy={12} r={4} />
+      <Path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+    </>,
+  ),
+  menu: stroke(
+    'regular',
+    <>
+      <Rect x={3.5} y={3.5} width={7} height={7} rx={2.2} />
+      <Rect x={13.5} y={3.5} width={7} height={7} rx={2.2} />
+      <Rect x={3.5} y={13.5} width={7} height={7} rx={2.2} />
+      <Rect x={13.5} y={13.5} width={7} height={7} rx={2.2} />
+    </>,
+  ),
   calendar: stroke(
     'regular',
     <>

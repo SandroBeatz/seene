@@ -66,13 +66,15 @@ describe('summarizeDay', () => {
   });
 
   it('is empty-safe', () => {
-    expect(summarizeDay({ appointments: [], priceOf: () => 0, paid: new Map(), now: NOW })).toEqual({
-      count: 0,
-      earned: 0,
-      planned: 0,
-      progress: 0,
-      segments: [],
-    });
+    expect(summarizeDay({ appointments: [], priceOf: () => 0, paid: new Map(), now: NOW })).toEqual(
+      {
+        count: 0,
+        earned: 0,
+        planned: 0,
+        progress: 0,
+        segments: [],
+      },
+    );
   });
 });
 
@@ -100,7 +102,13 @@ describe('buildAttentionItems', () => {
   ];
 
   const build = (dismissed: string[] = []) =>
-    buildAttentionItems({ appointments, tomorrow, recalls, dismissed: new Set(dismissed), now: NOW });
+    buildAttentionItems({
+      appointments,
+      tomorrow,
+      recalls,
+      dismissed: new Set(dismissed),
+      now: NOW,
+    });
 
   it('lists the seven kinds in the design order', () => {
     expect(build().map((i) => i.key)).toEqual([
@@ -139,7 +147,9 @@ describe('buildAttentionItems', () => {
 
   it('ignores a client cancellation whose time has passed', () => {
     const items = buildAttentionItems({
-      appointments: [appt('old', '2026-10-26T09:00:00.000Z', 'cancelled', { cancelled_by: 'client' })],
+      appointments: [
+        appt('old', '2026-10-26T09:00:00.000Z', 'cancelled', { cancelled_by: 'client' }),
+      ],
       tomorrow,
       recalls: [],
       dismissed: new Set(),

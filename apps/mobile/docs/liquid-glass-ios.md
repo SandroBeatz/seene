@@ -41,10 +41,11 @@ status: proposed
 
 When we use a **native** navigator/control, iOS 26 applies Liquid Glass itself. No glass API calls.
 
-- **Native tabs** — `NativeTabs` from `expo-router/unstable-native-tabs`. Already live in
-  `src/app/(app)/(tabs)/_layout.tsx`. The rule that makes glass work: **do not set `backgroundColor`** on
-  `NativeTabs` (any background opts the bar out of the system material). `tintColor` + SF Symbols are
-  fine. `minimizeBehavior="onScrollDown"` gives the iOS 26 shrink-on-scroll behavior.
+- **Native tabs** — `NativeTabs` from `expo-router/unstable-native-tabs`. **Not used since
+  2026-10-30:** the design's bar has a raised "new appointment" button in the middle, which the
+  native tab bar can't host, so the app draws its own (§7.1). If native tabs come back, the rule
+  that makes glass work: **do not set `backgroundColor`** on `NativeTabs` (any background opts the
+  bar out of the system material); `tintColor` + SF Symbols are fine.
 - **Native stack headers / search / sheets** — driven by `react-native-screens` (already a dep) via
   Expo Router's native `Stack`, `Stack.Screen` `headerSearchBarOptions`, and form-sheet
   presentation. Seene's regular Stacks pass `NavigationHeaderBackground` to the supported
@@ -126,10 +127,14 @@ Liquid Glass is **build-time gated**, not just runtime:
 
 ## 7. Usage
 
-### 7.1 Native tab bar (automatic — current)
+### 7.1 Floating tab bar (explicit — current)
 
-See `src/app/(app)/(tabs)/_layout.tsx`. Key points: `NativeTabs` with `tintColor` + `minimizeBehavior`, no
-`backgroundColor`, SF Symbols per tab, labels `hidden` (icon-only).
+`src/app/(app)/(tabs)/_layout.tsx` uses Expo Router's headless tabs (`expo-router/ui`): a hidden
+`TabList` declares the routes and `FloatingTabBar` (`src/shared/ui/FloatingTabBar/`) renders the
+design's capsule — Сегодня · Календарь · ＋ · Клиенты · Меню — with `TabTrigger asChild` items. The
+capsule is a `GlassSurface` (explicit path, so it falls back on iOS < 26 / Android / Reduce
+Transparency); the raised "+" sits above it as a sibling so the glass never clips it. The bar shows
+on tab roots only, and `ScreenScrollView` pads its content by `useFloatingTabBarInset()`.
 
 ### 7.2 Floating glass surface (explicit)
 
@@ -187,7 +192,8 @@ guessing APIs from memory (per [AGENTS.md](../AGENTS.md)):
 
 | Path                                           | Role                                               |
 | ---------------------------------------------- | -------------------------------------------------- |
-| `src/app/(app)/(tabs)/_layout.tsx`             | Native tab bar; automatic Liquid Glass on iOS 26   |
+| `src/app/(app)/(tabs)/_layout.tsx`             | Headless tabs wired to the floating tab bar        |
+| `src/shared/ui/FloatingTabBar/`                | Glass capsule tab bar + raised action, insets      |
 | `src/shared/ui/NavigationHeaderBackground/`    | Tokened gradient behind native Stack chrome        |
 | `src/shared/ui/GlassSurface/GlassSurface.tsx`  | Shared glass primitive: guard + tokened fallback   |
 | `src/shared/ui/hooks/useReduceTransparency.ts` | Tracks the OS Reduce Transparency setting          |

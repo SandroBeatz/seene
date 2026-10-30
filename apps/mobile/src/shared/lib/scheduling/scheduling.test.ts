@@ -1,5 +1,11 @@
 import { describe, expect, it } from '@jest/globals';
-import { buildDayTimeline, dayBounds, weekdayIndex, workingHours, type WorkdayHours } from './index';
+import {
+  buildDayTimeline,
+  dayBounds,
+  weekdayIndex,
+  workingHours,
+  type WorkdayHours,
+} from './index';
 
 const ZONE = 'Asia/Bishkek'; // UTC+6, no DST
 const DAY = '2026-10-27'; // Tuesday
@@ -55,7 +61,10 @@ describe('weekdayIndex', () => {
 
 describe('workingHours', () => {
   it('converts the working day to UTC', () => {
-    expect(workingHours(DAY, ZONE, WORKDAY)).toEqual({ start: local('10:00'), end: local('19:00') });
+    expect(workingHours(DAY, ZONE, WORKDAY)).toEqual({
+      start: local('10:00'),
+      end: local('19:00'),
+    });
   });
 
   it('is null on a day off', () => {
@@ -66,7 +75,9 @@ describe('workingHours', () => {
 
 describe('buildDayTimeline', () => {
   const kinds = (items: ReturnType<typeof buildDayTimeline>) =>
-    items.map((i) => (i.kind === 'appointment' || i.kind === 'block' ? `${i.kind}:${i.record.id}` : i.kind));
+    items.map((i) =>
+      i.kind === 'appointment' || i.kind === 'block' ? `${i.kind}:${i.record.id}` : i.kind,
+    );
 
   it('reproduces the designed day: visits, break, now line under the ongoing visit, personal time', () => {
     const items = buildDayTimeline({
@@ -127,8 +138,14 @@ describe('buildDayTimeline', () => {
       appointments: [visit('a', '10:00', 60)],
       blocks: [],
     };
-    expect(kinds(buildDayTimeline({ ...input, now: nowAt('08:00') }))).toEqual(['now', 'appointment:a']);
-    expect(kinds(buildDayTimeline({ ...input, now: nowAt('22:00') }))).toEqual(['appointment:a', 'now']);
+    expect(kinds(buildDayTimeline({ ...input, now: nowAt('08:00') }))).toEqual([
+      'now',
+      'appointment:a',
+    ]);
+    expect(kinds(buildDayTimeline({ ...input, now: nowAt('22:00') }))).toEqual([
+      'appointment:a',
+      'now',
+    ]);
   });
 
   it('has no breaks on a day off', () => {
@@ -171,7 +188,10 @@ describe('buildDayTimeline', () => {
       now: 0,
     });
     expect(kinds(items)).toEqual(['block:vacation', 'block:trip', 'appointment:a']);
-    expect(items[1]).toMatchObject({ start: '2026-10-26T18:00:00.000Z', end: '2026-10-27T18:00:00.000Z' });
+    expect(items[1]).toMatchObject({
+      start: '2026-10-26T18:00:00.000Z',
+      end: '2026-10-27T18:00:00.000Z',
+    });
   });
 
   it('orders a break before a visit starting at the same minute', () => {

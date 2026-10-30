@@ -127,7 +127,11 @@ export function buildAttentionItems<A extends AttentionAppointment>({
     const phase = getAppointmentPhase(appointment, now);
     let kind: Exclude<AttentionKind, 'tomorrow_reminders' | 'recall'> | null = null;
     if (phase in PHASE_KIND) kind = PHASE_KIND[phase as keyof typeof PHASE_KIND];
-    else if (phase === 'cancelled' && appointment.cancelled_by === 'client' && startMs(appointment) > now) {
+    else if (
+      phase === 'cancelled' &&
+      appointment.cancelled_by === 'client' &&
+      startMs(appointment) > now
+    ) {
       kind = 'client_cancelled';
     }
     if (kind) items.push({ kind, key: attentionKey(kind, appointment.id), appointment });
@@ -136,7 +140,8 @@ export function buildAttentionItems<A extends AttentionAppointment>({
   const from = new Date(tomorrow.start).getTime();
   const to = new Date(tomorrow.end).getTime();
   const tomorrowVisits = sorted.filter(
-    (a) => isShownInSchedule(a) && a.status !== 'completed' && startMs(a) >= from && startMs(a) < to,
+    (a) =>
+      isShownInSchedule(a) && a.status !== 'completed' && startMs(a) >= from && startMs(a) < to,
   );
   if (tomorrowVisits.length) {
     items.push({

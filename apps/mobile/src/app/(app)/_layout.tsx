@@ -22,6 +22,7 @@ export default function AppLayout() {
         contentStyle: { backgroundColor: theme.colors.bg.canvas },
       }}>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="analytics" options={{ title: t('tabs.analytics') }} />
       <Stack.Screen
         name="(modals)/appointment-form"
         options={{ presentation: 'modal', title: t('navigation.appointmentForm') }}

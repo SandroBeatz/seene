@@ -71,7 +71,10 @@ export function workingHours(
   workday: WorkdayHours | null | undefined,
 ): TimeInterval | null {
   if (!workday?.enabled) return null;
-  return { start: wallTimeUtc(dayKey, workday.start, zone), end: wallTimeUtc(dayKey, workday.end, zone) };
+  return {
+    start: wallTimeUtc(dayKey, workday.start, zone),
+    end: wallTimeUtc(dayKey, workday.end, zone),
+  };
 }
 
 const ms = (iso: string) => new Date(iso).getTime();
@@ -106,7 +109,8 @@ export function buildDayTimeline<A extends TimedRecord, B extends BlockRecord>({
   now,
 }: BuildDayTimelineInput<A, B>): TimelineItem<A, B>[] {
   const day = dayBounds(dayKey, zone);
-  const overlapsDay = (start: string, end: string) => ms(start) < ms(day.end) && ms(end) > ms(day.start);
+  const overlapsDay = (start: string, end: string) =>
+    ms(start) < ms(day.end) && ms(end) > ms(day.start);
 
   const items: Exclude<TimelineItem<A, B>, { kind: 'now' }>[] = [];
 

@@ -13,11 +13,11 @@
     "back": "Back"
   },
   "tabs": {
-    "home": "Home",
+    "today": "Today",
     "calendar": "Calendar",
     "clients": "Clients",
     "analytics": "Analytics",
-    "settings": "Settings"
+    "menu": "Menu"
   },
   "states": {
     "empty": "Nothing here yet",

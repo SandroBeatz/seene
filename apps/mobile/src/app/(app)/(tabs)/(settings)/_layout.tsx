@@ -22,7 +22,7 @@ export default function SettingsStackLayout() {
       }}>
       <Stack.Screen
         name="settings/index"
-        options={{ title: t('tabs.settings'), headerLargeTitle: process.env.EXPO_OS === 'ios' }}
+        options={{ title: t('tabs.menu'), headerLargeTitle: process.env.EXPO_OS === 'ios' }}
       />
       <Stack.Screen name="settings/profile" options={{ title: t('navigation.profileSettings') }} />
       <Stack.Screen name="settings/services" options={{ title: t('services.title') }} />

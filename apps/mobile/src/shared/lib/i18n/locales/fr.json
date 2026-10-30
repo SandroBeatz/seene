@@ -13,11 +13,11 @@
     "back": "Retour"
   },
   "tabs": {
-    "home": "Accueil",
+    "today": "Aujourd'hui",
     "calendar": "Agenda",
     "clients": "Clients",
     "analytics": "Statistiques",
-    "settings": "Réglages"
+    "menu": "Menu"
   },
   "states": {
     "empty": "Rien pour l'instant",
