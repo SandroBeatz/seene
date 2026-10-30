@@ -233,6 +233,45 @@
         "delete": "Delete client"
       },
       "notFound": "Client not found. They may have been deleted."
+    },
+    "import": {
+      "title": "From contacts",
+      "search": "Name or number",
+      "selectAll": "Select all",
+      "clearAll": "Clear",
+      "noPhone": "No number",
+      "exists": "Already in your list",
+      "pick": "Choose contacts",
+      "submit_one": "Add {{count}} client",
+      "submit_other": "Add {{count}} clients",
+      "deniedTitle": "No access to contacts",
+      "deniedText": "Allow Seene to see your contacts in the phone settings, then choose whom to add.",
+      "openSettings": "Open settings",
+      "limited": "Seene only sees the contacts you shared.",
+      "limitedMore": "Choose more",
+      "empty": "Your phone book has no contacts with a name.",
+      "loading": "Reading contacts…",
+      "done_one": "{{count}} client added",
+      "done_other": "{{count}} clients added"
+    },
+    "fromContacts": "Add from phone contacts",
+    "pickContact": "Pick from phone contacts",
+    "merge": {
+      "title": "Merge duplicates",
+      "hint": "Choose whom to merge into “{{name}}”. Visits, payments and the note move to this card; the other one is deleted.",
+      "reasons": {
+        "phone": "Same number",
+        "name": "Same name",
+        "firstName": "Similar name"
+      },
+      "suggested": "Look alike",
+      "others": "Other clients",
+      "search": "Find a client",
+      "none": "No look-alikes found — search for the duplicate.",
+      "confirmTitle": "Merge with “{{name}}”?",
+      "confirmText": "Visits and payments of “{{merge}}” move to “{{keep}}”, and the “{{merge}}” card is deleted. This can’t be undone.",
+      "confirm": "Merge",
+      "menu": "Merge duplicates"
     }
   },
   "services": {

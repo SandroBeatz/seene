@@ -6,7 +6,13 @@
 import { AppState, type AppStateStatus, Platform } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
-import { focusManager, onlineManager, QueryClient } from '@tanstack/react-query';
+import {
+  defaultShouldDehydrateQuery,
+  focusManager,
+  onlineManager,
+  QueryClient,
+  type Query,
+} from '@tanstack/react-query';
 import { mmkvSyncStorage } from './storage';
 
 export const queryClient = new QueryClient({
@@ -19,6 +25,15 @@ export const queryClient = new QueryClient({
     },
   },
 });
+
+/**
+ * What goes to disk: the default (successful queries), minus queries marked
+ * `meta: { persist: false }` — data that must not outlive the screen (the phone book).
+ */
+export const persistDehydrateOptions = {
+  shouldDehydrateQuery: (query: Query) =>
+    query.meta?.persist !== false && defaultShouldDehydrateQuery(query),
+};
 
 /** Persister for @tanstack/react-query-persist-client (PersistQueryClientProvider). */
 export const queryPersister = createSyncStoragePersister({

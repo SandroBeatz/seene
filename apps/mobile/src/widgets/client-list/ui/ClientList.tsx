@@ -79,6 +79,17 @@ export function ClientList() {
   }, [list.rows, segment, query, t]);
 
   const openNew = () => router.push('/client/new');
+  const openImport = () => router.push('/client/import');
+
+  const importButton = (
+    <Pressable
+      accessibilityRole="button"
+      onPress={openImport}
+      style={({ pressed }) => [styles.import, pressed && styles.pressed]}>
+      <Icon name="contacts" size="sm" color="content.primary" />
+      <Text variant="bodyStrong">{t('clients.fromContacts')}</Text>
+    </Pressable>
+  );
 
   const seenLabel = (seen: Seen): string => {
     switch (seen.kind) {
@@ -214,6 +225,7 @@ export function ClientList() {
           actionLabel={t('clients.list.add')}
           onAction={openNew}
         />
+        <View style={styles.emptyImport}>{importButton}</View>
       </View>
     );
   }
@@ -231,6 +243,7 @@ export function ClientList() {
         refreshControl={
           <RefreshControl refreshing={list.isRefetching} onRefresh={() => void list.refetch()} />
         }
+        ListFooterComponent={importButton}
         ListEmptyComponent={
           <Text variant="subhead" color="secondary" align="center" style={styles.nobody}>
             {t('clients.list.nobody')}
@@ -415,4 +428,17 @@ const styles = StyleSheet.create((theme) => ({
     backgroundColor: theme.colors.accent.default,
   },
   invitePressed: { opacity: 0.85 },
+  import: {
+    marginTop: theme.space[4],
+    height: theme.sizing.control.lg,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: theme.space[2],
+    borderRadius: theme.radius.field,
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: theme.colors.border.strong,
+  },
+  emptyImport: { paddingHorizontal: theme.space[5] },
 }));
