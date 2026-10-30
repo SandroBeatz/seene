@@ -226,58 +226,67 @@ export type Database = {
       }
       client: {
         Row: {
-          birthday: string | null
+          avatar_color: string | null
+          birth_day: number | null
+          birth_month: number | null
           blocked: boolean
           created_at: string
-          email: string | null
-          emoji: string | null
           first_name: string
           id: string
+          instagram: string | null
           is_favorite: boolean
           last_name: string | null
           marketing_consent: boolean
           notes: string | null
-          phone: string
+          phone: string | null
           reminders_consent: boolean
           source: string
+          telegram: string | null
           updated_at: string
           user_id: string
+          whatsapp: string | null
         }
         Insert: {
-          birthday?: string | null
+          avatar_color?: string | null
+          birth_day?: number | null
+          birth_month?: number | null
           blocked?: boolean
           created_at?: string
-          email?: string | null
-          emoji?: string | null
           first_name: string
           id?: string
+          instagram?: string | null
           is_favorite?: boolean
           last_name?: string | null
           marketing_consent?: boolean
           notes?: string | null
-          phone: string
+          phone?: string | null
           reminders_consent?: boolean
           source?: string
+          telegram?: string | null
           updated_at?: string
           user_id: string
+          whatsapp?: string | null
         }
         Update: {
-          birthday?: string | null
+          avatar_color?: string | null
+          birth_day?: number | null
+          birth_month?: number | null
           blocked?: boolean
           created_at?: string
-          email?: string | null
-          emoji?: string | null
           first_name?: string
           id?: string
+          instagram?: string | null
           is_favorite?: boolean
           last_name?: string | null
           marketing_consent?: boolean
           notes?: string | null
-          phone?: string
+          phone?: string | null
           reminders_consent?: boolean
           source?: string
+          telegram?: string | null
           updated_at?: string
           user_id?: string
+          whatsapp?: string | null
         }
         Relationships: []
       }
@@ -938,6 +947,18 @@ export type Database = {
       check_username_available: {
         Args: { p_username: string }
         Returns: boolean
+      }
+      client_summaries: {
+        Args: never
+        Returns: {
+          client_id: string
+          first_visit: string
+          last_visit: string
+          next_visit: string
+          no_shows: number
+          spent: number
+          visits: number
+        }[]
       }
       complete_appointment: {
         Args: {

@@ -1,5 +1,6 @@
 /**
- * iOS-only (imported by the .ios pickers) picker chrome shared by DurationPicker and TimePicker: the system wheels
+ * iOS-only (imported by the .ios pickers) picker chrome shared by the Duration, Time and
+ * Birthday pickers: the system wheels
  * (SwiftUI Picker, wheel style) in a bottom panel with Отмена / Готово — the
  * keyboard-style picker iOS users know. System colours keep it native in light/dark.
  */
@@ -16,6 +17,10 @@ export interface WheelColumn {
   onChange: (value: number) => void;
   /** Shown as "09" when true (clock), "9" otherwise. */
   pad?: boolean;
+  /** Custom label per value ("мая"); wins over `pad`. */
+  label?: (value: number) => string;
+  /** Wheel width, pt. Default 90. */
+  width?: number;
 }
 
 export interface WheelPanelProps {
@@ -50,10 +55,15 @@ function Wheel({ column }: { column: WheelColumn }) {
     <Picker
       selection={column.selection}
       onSelectionChange={column.onChange}
-      modifiers={[pickerStyle('wheel'), labelsHidden(), frame({ width: WHEEL_WIDTH }), clipped()]}>
+      modifiers={[
+        pickerStyle('wheel'),
+        labelsHidden(),
+        frame({ width: column.width ?? WHEEL_WIDTH }),
+        clipped(),
+      ]}>
       {column.values.map((v) => (
         <SwiftText key={v} modifiers={[tag(v)]}>
-          {column.pad ? String(v).padStart(2, '0') : String(v)}
+          {column.label ? column.label(v) : column.pad ? String(v).padStart(2, '0') : String(v)}
         </SwiftText>
       ))}
     </Picker>

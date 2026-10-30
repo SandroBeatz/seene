@@ -22,7 +22,8 @@ export default function ClientsStackLayout() {
       }}>
       <Stack.Screen
         name="clients/index"
-        options={{ title: t('tabs.clients'), headerLargeTitle: process.env.EXPO_OS === 'ios' }}
+        // The list draws its own header (title, add button, search, filters).
+        options={{ title: t('tabs.clients'), headerShown: false }}
       />
       <Stack.Screen name="clients/[clientId]" options={{ title: t('navigation.clientDetails') }} />
     </Stack>

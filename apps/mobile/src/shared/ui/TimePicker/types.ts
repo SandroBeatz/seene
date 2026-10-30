@@ -35,3 +35,16 @@ export const fromClock = (time: string): [number, number] => {
   const [h = '0', m = '0'] = time.split(':');
   return [Number(h) || 0, Number(m) || 0];
 };
+
+export interface BirthdayPickerProps extends PickerChrome {
+  /** Current day and month (1-based), or null to start from today. */
+  value: { day: number; month: number } | null;
+  onConfirm: (value: { day: number; month: number }) => void;
+  /** Month names as they read after a day number ("мая"), January first. */
+  monthNames: readonly string[];
+}
+
+const MONTH_DAYS = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+/** Days a birthday can fall on in a month, any year (29 February allowed). */
+export const daysInMonth = (month: number) => MONTH_DAYS[month - 1] ?? 31;

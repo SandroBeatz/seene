@@ -5,7 +5,7 @@
  * surfaces `has_related_records` (23503, RESTRICT) via normalizeError at the UI.
  */
 import { supabase } from '@/shared/api/supabase';
-import type { Client, CreateClientDto, UpdateClientDto } from '../model/types';
+import type { Client, ClientSummary, CreateClientDto, UpdateClientDto } from '../model/types';
 
 export async function listClients(userId: string): Promise<Client[]> {
   const { data, error } = await supabase
@@ -56,6 +56,21 @@ export async function setClientFavorite(id: string, isFavorite: boolean): Promis
     .single();
   if (error) throw error;
   return data;
+}
+
+/** Visits, no-shows, money and the next booking of every client of the caller. */
+export async function listClientSummaries(): Promise<ClientSummary[]> {
+  const { data, error } = await supabase.rpc('client_summaries');
+  if (error) throw error;
+  return data.map((row) => ({
+    clientId: row.client_id,
+    visits: row.visits,
+    noShows: row.no_shows,
+    firstVisit: row.first_visit ?? null,
+    lastVisit: row.last_visit ?? null,
+    nextVisit: row.next_visit ?? null,
+    spent: Number(row.spent),
+  }));
 }
 
 /** RESTRICT: throws 23503 (→ has_related_records) if the client has appointments. */

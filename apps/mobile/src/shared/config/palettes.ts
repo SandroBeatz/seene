@@ -5,7 +5,7 @@
  * pass (Q-DS-1) so services/payments render identically across apps.
  */
 import type { SpecializationKey } from '@/shared/config/specializations';
-import { servicePalette } from '@/shared/theme/tokens';
+import { avatarGradients, servicePalette, type AvatarColorKey } from '@/shared/theme/tokens';
 
 /**
  * Service calendar colours — one per profession section, stored on `service.color`
@@ -68,10 +68,28 @@ export type ServiceDuration = (typeof SERVICE_DURATIONS)[number];
 
 export type ServiceColor = (typeof SERVICE_COLORS)[ServiceColorKey];
 export type PaymentColor = (typeof PAYMENT_COLORS)[number];
+export type { AvatarColorKey };
+
+function hashOf(seed: string): number {
+  let hash = 0;
+  for (let i = 0; i < seed.length; i += 1) hash = (hash * 31 + seed.charCodeAt(i)) | 0;
+  return Math.abs(hash);
+}
 
 /** Stable index into CLIENT_INITIAL_HUES from an arbitrary string (name/id). */
 export function initialHueFor(seed: string): string {
-  let hash = 0;
-  for (let i = 0; i < seed.length; i += 1) hash = (hash * 31 + seed.charCodeAt(i)) | 0;
-  return CLIENT_INITIAL_HUES[Math.abs(hash) % CLIENT_INITIAL_HUES.length];
+  return CLIENT_INITIAL_HUES[hashOf(seed) % CLIENT_INITIAL_HUES.length];
+}
+
+/** The nine client avatar backgrounds, in the picker's order. */
+export const AVATAR_COLOR_KEYS = Object.keys(avatarGradients) as AvatarColorKey[];
+export const AVATAR_GRADIENTS = avatarGradients;
+
+export function isAvatarColorKey(value: string | null | undefined): value is AvatarColorKey {
+  return !!value && value in avatarGradients;
+}
+
+/** The client's chosen background, or a stable one from their name. */
+export function avatarColorFor(color: string | null | undefined, seed: string): AvatarColorKey {
+  return isAvatarColorKey(color) ? color : AVATAR_COLOR_KEYS[hashOf(seed) % AVATAR_COLOR_KEYS.length];
 }

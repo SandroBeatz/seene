@@ -8,7 +8,7 @@ import type { Json } from '@/shared/api/database.types';
 import type { CompleteOnboardingPayload, MasterProfile, MasterSettings } from '../model/types';
 
 const PROFILE_COLUMNS =
-  'id, first_name, last_name, username, avatar_url, cover_url, bio, schedule, whatsapp, telegram, instagram, phone, address, city';
+  'id, first_name, last_name, username, avatar_url, cover_url, bio, schedule, whatsapp, telegram, instagram, phone, address, city, country';
 const SETTINGS_COLUMNS = 'currency, time_format, date_format, calendar_slot_step_minutes';
 
 /** The master's own profile (the fields the app screens read), or null before onboarding. */

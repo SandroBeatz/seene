@@ -1,7 +1,6 @@
 /** "Сегодня" widget — public barrel. */
 export { TodayScreen } from './ui/TodayScreen';
 export { summarizeDay, type DaySummary, type DaySegment } from './model/summary';
-export { recallState, type RecallState } from './model/recall';
 export {
   buildAttentionItems,
   attentionKey,

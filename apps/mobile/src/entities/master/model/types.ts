@@ -103,6 +103,7 @@ export type MasterProfile = Pick<
   | 'phone'
   | 'address'
   | 'city'
+  | 'country'
 >;
 
 /** Display settings (`getMasterSettings`). */

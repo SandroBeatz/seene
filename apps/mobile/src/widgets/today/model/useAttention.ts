@@ -12,12 +12,11 @@ import {
   type Appointment,
 } from '@/entities/appointment';
 import { useDismissedAttentionQuery } from '@/entities/attention';
-import type { Client } from '@/entities/client';
+import { recallCandidates, type Client } from '@/entities/client';
 import type { ServiceWithCategory } from '@/entities/service';
 import { useUserId } from '@/entities/session';
 import { dayBounds } from '@/shared/lib/scheduling';
 import { buildAttentionItems, type AttentionItem } from './attention';
-import { recallCandidates } from './recall';
 
 /** Overdue requests and visits to close out reach back this far. */
 const LOOK_BACK_DAYS = 30;

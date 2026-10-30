@@ -26,6 +26,8 @@ export {
 } from './Icon';
 export { Input, type InputProps, type InputSize } from './Input';
 export {
+  BirthdayPicker,
+  type BirthdayPickerProps,
   DurationPicker,
   type DurationPickerProps,
   TimePicker,
@@ -56,6 +58,7 @@ export {
 } from './ContextMenu';
 export { Avatar, initialsOf, type AvatarProps, type AvatarSize, type AvatarTone } from './Avatar';
 export { GlassSurface, type GlassSurfaceProps } from './GlassSurface';
+export { VipBadge, type VipBadgeProps } from './VipBadge';
 export {
   FloatingTabBar,
   FloatingTabBarItem,

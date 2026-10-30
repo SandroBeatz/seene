@@ -59,8 +59,7 @@ export function ClientDetails({ clientId }: { clientId: string }) {
       </Card>
 
       <Card>
-        <Row label={t('clients.phone')} value={c.phone} />
-        {c.email ? <Row label={t('clients.email')} value={c.email} /> : null}
+        {c.phone ? <Row label={t('clients.phone')} value={c.phone} /> : null}
         {c.notes ? <Row label={t('clients.notes')} value={c.notes} /> : null}
       </Card>
     </ScreenScrollView>

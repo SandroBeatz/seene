@@ -9,15 +9,28 @@ import {
   deleteClient,
   getClient,
   listClients,
+  listClientSummaries,
   setClientFavorite,
   updateClient,
 } from '../api/client.api';
-import type { Client, CreateClientDto, UpdateClientDto } from './types';
+import type { Client, ClientSummary, CreateClientDto, UpdateClientDto } from './types';
 
 export const clientKeys = {
   all: (userId: string) => ['clients', userId] as const,
   detail: (id: string) => ['client', id] as const,
+  /** Literal shared with the appointment entity's cache invalidation. */
+  summaries: (userId: string) => ['client-summaries', userId] as const,
 };
+
+/** Every client's numbers, by client id. */
+export function useClientSummariesQuery(userId: string) {
+  return useQuery({
+    queryKey: clientKeys.summaries(userId),
+    queryFn: listClientSummaries,
+    enabled: !!userId,
+    select: (rows: ClientSummary[]) => new Map(rows.map((row) => [row.clientId, row])),
+  });
+}
 
 export function useClientsQuery(userId: string) {
   return useQuery({
@@ -58,7 +71,10 @@ export function useDeleteClientMutation(userId: string) {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => deleteClient(id),
-    onSettled: () => qc.invalidateQueries({ queryKey: clientKeys.all(userId) }),
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: clientKeys.all(userId) });
+      qc.invalidateQueries({ queryKey: clientKeys.summaries(userId) });
+    },
   });
 }
 
