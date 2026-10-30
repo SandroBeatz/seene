@@ -4,8 +4,8 @@
  */
 import type { ReactNode } from 'react';
 import { ScrollView, type ScrollViewProps } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
-import { useFloatingTabBarInset } from '../FloatingTabBar';
 
 export interface ScreenScrollViewProps extends Omit<
   ScrollViewProps,
@@ -27,10 +27,14 @@ export function ScreenScrollView({
   ...rest
 }: ScreenScrollViewProps) {
   const { theme } = useUnistyles();
-  // On tab roots the floating tab bar covers the bottom; keep the last row clear of it.
-  const tabBarInset = useFloatingTabBarInset();
+  const insets = useSafeAreaInsets();
+  // iOS insets the content under the native header and tab bar itself; a screen that
+  // opts out (it draws its own header) still keeps the last row clear of the tab bar.
+  // Inside a native tab the safe area's bottom includes the bar.
   const bottomInset =
-    tabBarInset > 0 ? { paddingBottom: tabBarInset + (padded ? theme.space[8] : 0) } : null;
+    process.env.EXPO_OS === 'ios' && contentInsetAdjustmentBehavior === 'never'
+      ? { paddingBottom: insets.bottom + (padded ? theme.space[8] : 0) }
+      : null;
 
   return (
     <ScrollView
@@ -41,7 +45,6 @@ export function ScreenScrollView({
         bottomInset,
         contentContainerStyle,
       ]}
-      scrollIndicatorInsets={tabBarInset > 0 ? { bottom: tabBarInset } : undefined}
       contentInsetAdjustmentBehavior={contentInsetAdjustmentBehavior}
       keyboardShouldPersistTaps={keyboardShouldPersistTaps}
       showsVerticalScrollIndicator={showsVerticalScrollIndicator}

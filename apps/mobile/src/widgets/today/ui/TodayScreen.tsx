@@ -8,7 +8,6 @@ import { router } from 'expo-router';
 import { DateTime } from 'luxon';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { errorMessageKey, normalizeError } from '@/shared/api/errors';
 import { currencySymbol, formatAmount } from '@/shared/lib/formats';
@@ -40,7 +39,6 @@ import { TodayHeader } from './TodayHeader';
 export function TodayScreen() {
   const { t, i18n } = useTranslation();
   const { theme } = useUnistyles();
-  const insets = useSafeAreaInsets();
   const locale = isSupportedLocale(i18n.language) ? i18n.language : 'en';
   const today = useToday();
   const attention = useAttention({
@@ -65,13 +63,9 @@ export function TodayScreen() {
     Promise.all([today.refetch(), attention.refetch()]),
   );
 
-  const top = { paddingTop: insets.top + theme.space[2.5] };
-
   if (today.isPending) {
     return (
-      <ScreenScrollView
-        contentContainerStyle={[styles.content, top]}
-        contentInsetAdjustmentBehavior="never">
+      <ScreenScrollView contentContainerStyle={styles.content} scrollEnabled={false}>
         <Skeleton height={44} width="60%" />
         <Skeleton height={70} radius={theme.radius.lg} />
         <Skeleton height={320} radius={theme.radius.lg} />
@@ -81,12 +75,12 @@ export function TodayScreen() {
 
   if (today.error) {
     return (
-      <View style={[styles.error, top]}>
+      <ScreenScrollView padded={false} contentContainerStyle={styles.error}>
         <ErrorState
           message={t(errorMessageKey(normalizeError(today.error)))}
           onRetry={() => void today.refetch()}
         />
-      </View>
+      </ScreenScrollView>
     );
   }
 
@@ -125,18 +119,13 @@ export function TodayScreen() {
 
   return (
     <>
-      <ScreenScrollView
-        contentContainerStyle={[styles.content, top]}
-        // No native header: the top safe area is padded by hand, identically on Android.
-        contentInsetAdjustmentBehavior="never"
-        refreshControl={refreshControl}>
-        <TodayHeader
-          firstName={firstName}
-          lastName={today.profile?.last_name ?? ''}
-          avatarUrl={today.profile?.avatar_url ?? null}
-          greeting={greetingPeriod(local.hour)}
-        />
-
+      <TodayHeader
+        firstName={firstName}
+        lastName={today.profile?.last_name ?? ''}
+        avatarUrl={today.profile?.avatar_url ?? null}
+        greeting={greetingPeriod(local.hour)}
+      />
+      <ScreenScrollView contentContainerStyle={styles.content} refreshControl={refreshControl}>
         <View style={styles.title}>
           <Text variant="stat" accessibilityRole="header">
             {t('tabs.today')}
@@ -281,5 +270,5 @@ const styles = StyleSheet.create((theme) => ({
     justifyContent: 'space-between',
     marginBottom: -theme.space[2],
   },
-  error: { flex: 1, backgroundColor: theme.colors.bg.canvas },
+  error: { flexGrow: 1 },
 }));

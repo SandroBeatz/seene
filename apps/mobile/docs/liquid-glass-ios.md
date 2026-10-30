@@ -41,11 +41,9 @@ status: proposed
 
 When we use a **native** navigator/control, iOS 26 applies Liquid Glass itself. No glass API calls.
 
-- **Native tabs** — `NativeTabs` from `expo-router/unstable-native-tabs`. **Not used since
-  2026-10-30:** the design's bar has a raised "new appointment" button in the middle, which the
-  native tab bar can't host, so the app draws its own (§7.1). If native tabs come back, the rule
-  that makes glass work: **do not set `backgroundColor`** on `NativeTabs` (any background opts the
-  bar out of the system material); `tintColor` + SF Symbols are fine.
+- **Native tabs** — `NativeTabs` from `expo-router/unstable-native-tabs` (§7.1). The rule that
+  makes glass work: **do not set `backgroundColor`** on `NativeTabs` (any background opts the bar
+  out of the system material); `tintColor` + SF Symbols are fine.
 - **Native stack headers / search / sheets** — driven by `react-native-screens` (already a dep) via
   Expo Router's native `Stack`, `Stack.Screen` `headerSearchBarOptions`, and form-sheet
   presentation. Seene's regular Stacks pass `NavigationHeaderBackground` to the supported
@@ -127,16 +125,35 @@ Liquid Glass is **build-time gated**, not just runtime:
 
 ## 7. Usage
 
-### 7.1 Floating tab bar (explicit — current)
+### 7.1 Native tab bar (automatic — current)
 
-`src/app/(app)/(tabs)/_layout.tsx` uses Expo Router's headless tabs (`expo-router/ui`): a hidden
-`TabList` declares the routes and `FloatingTabBar` (`src/shared/ui/FloatingTabBar/`) renders the
-design's capsule — Сегодня · Календарь · ＋ · Клиенты · Меню — with `TabTrigger asChild` items. The
-capsule is a `GlassSurface` (explicit path, so it falls back on iOS < 26 / Android / Reduce
-Transparency); the raised "+" sits above it as a sibling so the glass never clips it. The bar shows
-on tab roots only, and `ScreenScrollView` pads its content by `useFloatingTabBarInset()`.
+`src/app/(app)/(tabs)/_layout.tsx` uses `NativeTabs`: Сегодня · Календарь · Клиенты · Меню with SF
+Symbols and a token `tintColor`, no background, full width. The "+" floats over the bar's right
+end (`features/create-menu`, explicit glass: a `GlassSurface` button). A tap grows a `GlassSurface`
+card out of the button's corner with a spring — Перерыв, Новый клиент, and "Новая запись" as the
+main button; a tap outside folds it back. Apple doesn't let a tab bar item carry such a card,
+hence a floating button rather than a tab.
 
-### 7.2 Floating glass surface (explicit)
+Screens pushed from a tab (client profile, settings pages, analytics) are routes of the app stack
+`src/app/(app)/_layout.tsx`, not of the tab's own stack, so they slide over the bar instead of
+sitting under it. Each tab sets `disableAutomaticContentInsets`: its Stack screens own their
+insets; inside a tab the safe-area bottom already includes the bar.
+
+### 7.2 Header buttons and sheet chrome (automatic)
+
+Action buttons at the top of a screen are native bar items, never drawn `IconButton`s: a screen
+renders `Stack.Toolbar placement="left|right"` with `Stack.Toolbar.Button` (SF Symbol) or
+`Stack.Toolbar.Menu` + `MenuAction` for a "⋯" — a system menu. Examples: the client profile's
+"⋯", "add client" on the clients list, analytics on "Сегодня". Search is `Stack.SearchBar`.
+
+Route form sheets render `SheetChrome` (`src/shared/ui/SheetChrome/`) first in their content: on
+iOS it sets the sheet's title and puts close/back and the action or "⋯" menu into the sheet's
+native navigation bar (the app layout's sheet options show it), plus a spacer of the bar's
+height, since iOS 26 lays the bar over the content. Android form sheets have no header, so there
+`SheetChrome` draws `SheetHeader` in content. RN `Modal` sheets (onboarding pickers) are not
+routes and keep `SheetHeader`.
+
+### 7.3 Floating glass surface (explicit)
 
 Use the `GlassSurface` primitive (§5) — it hides the guard, fallback, `colorScheme`, and Reduce
 Transparency handling:
@@ -156,7 +173,7 @@ function FloatingBar() {
 Only drop to raw `GlassView` + `isGlassEffectAPIAvailable()` for cases `GlassSurface` can't express
 (e.g. merging elements via `GlassContainer`, below).
 
-### 7.3 Merging multiple glass elements
+### 7.4 Merging multiple glass elements
 
 ```tsx
 import { GlassContainer, GlassView } from 'expo-glass-effect';
@@ -192,8 +209,9 @@ guessing APIs from memory (per [AGENTS.md](../AGENTS.md)):
 
 | Path                                           | Role                                               |
 | ---------------------------------------------- | -------------------------------------------------- |
-| `src/app/(app)/(tabs)/_layout.tsx`             | Headless tabs wired to the floating tab bar        |
-| `src/shared/ui/FloatingTabBar/`                | Glass capsule tab bar + raised action, insets      |
+| `src/app/(app)/(tabs)/_layout.tsx`             | Native tabs + the "+" slot                         |
+| `src/features/create-menu/`                    | The floating "+" and its create card (glass)      |
+| `src/shared/ui/SheetChrome/`                   | Native sheet bar items (iOS), SheetHeader fallback |
 | `src/shared/ui/NavigationHeaderBackground/`    | Tokened gradient behind native Stack chrome        |
 | `src/shared/ui/GlassSurface/GlassSurface.tsx`  | Shared glass primitive: guard + tokened fallback   |
 | `src/shared/ui/hooks/useReduceTransparency.ts` | Tracks the OS Reduce Transparency setting          |

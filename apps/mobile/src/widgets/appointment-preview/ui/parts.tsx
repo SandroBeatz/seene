@@ -4,6 +4,7 @@
  * "⋯" menu and the VIP badge.
  */
 import { useEffect, type ReactNode } from 'react';
+import type { SFSymbol } from 'expo-symbols';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 import Animated, {
@@ -31,7 +32,7 @@ import {
   VipBadge,
   type IconName,
 } from '@/shared/ui';
-import type { MenuAction, MoreMenu } from '../model/labels';
+import type { MenuAction } from '../model/labels';
 
 // ---- Status pill ----
 
@@ -324,7 +325,17 @@ export function TimerBar({
 
 // ---- "⋯" menu ----
 
-const MENU_ICON: Record<MenuAction, IconName> = {
+/** The "⋯" menu's icons: SF Symbols on iOS (native menu), kit icons elsewhere. */
+export const MENU_SYMBOL: Record<MenuAction, SFSymbol> = {
+  book_again: 'arrow.clockwise',
+  note: 'pencil',
+  send_details: 'paperplane',
+  no_show: 'person.crop.circle.badge.xmark',
+  cancel: 'xmark.circle',
+  delete: 'trash',
+};
+
+export const MENU_ICON: Record<MenuAction, IconName> = {
   book_again: 'repeat',
   note: 'pencil',
   send_details: 'send',
@@ -332,69 +343,6 @@ const MENU_ICON: Record<MenuAction, IconName> = {
   cancel: 'cancelCircle',
   delete: 'trashBin',
 };
-
-export interface MoreMenuSheetProps {
-  menu: MoreMenu | null;
-  top: number;
-  hasNote: boolean;
-  onClose: () => void;
-  onSelect: (action: MenuAction) => void;
-}
-
-export function MoreMenuPopover({ menu, top, hasNote, onClose, onSelect }: MoreMenuSheetProps) {
-  const { t } = useTranslation();
-  const label = (action: MenuAction) =>
-    action === 'note' && !hasNote ? t('preview.menu.addNote') : t(`preview.menu.${action}`);
-
-  const group = (items: MenuAction[], danger: boolean) =>
-    items.length ? (
-      <View style={styles.menuGroup}>
-        {items.map((action, index) => (
-          <Pressable
-            key={action}
-            accessibilityRole="menuitem"
-            onPress={() => {
-              onClose();
-              onSelect(action);
-            }}
-            style={({ pressed }) => [
-              styles.menuItem,
-              index > 0 && styles.menuDivider,
-              pressed && styles.menuPressed,
-            ]}>
-            <Text
-              variant="bodyMedium"
-              numberOfLines={1}
-              style={[styles.grow, danger && styles.dangerText]}>
-              {label(action)}
-            </Text>
-            <Icon
-              name={MENU_ICON[action]}
-              size="base"
-              color={danger ? 'tone.danger.fg' : 'content.secondary'}
-            />
-          </Pressable>
-        ))}
-      </View>
-    ) : null;
-
-  // Drawn inside the sheet (not a Modal) so it sits right under the "⋯" button.
-  if (!menu) return null;
-  return (
-    <>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={t('common.close')}
-        style={styles.menuScrim}
-        onPress={onClose}
-      />
-      <View accessibilityRole="menu" style={[styles.menu, { top }]}>
-        {group(menu.regular, false)}
-        {group(menu.danger, true)}
-      </View>
-    </>
-  );
-}
 
 const BAR_HEIGHT = 68;
 
@@ -521,21 +469,4 @@ const styles = StyleSheet.create((theme) => ({
     alignItems: 'center',
     gap: theme.space[1.5],
   },
-  menuScrim: { ...StyleSheet.absoluteFillObject, backgroundColor: theme.colors.overlay.menuScrim },
-  menu: { position: 'absolute', right: theme.space[4], width: 264, gap: theme.space[2] },
-  menuGroup: {
-    borderRadius: theme.radius.lg,
-    backgroundColor: theme.colors.overlay.menu,
-    overflow: 'hidden',
-    boxShadow: theme.shadow.menu,
-  },
-  menuItem: {
-    height: 46,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: theme.space[3],
-    paddingHorizontal: theme.space[4],
-  },
-  menuDivider: { borderTopWidth: 1, borderTopColor: theme.colors.border.subtle },
-  menuPressed: { backgroundColor: theme.colors.interaction.onSurfacePressed },
 }));

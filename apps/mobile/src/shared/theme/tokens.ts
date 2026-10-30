@@ -229,8 +229,6 @@ export const sizing = {
     sm: { width: 46, height: 27, knob: 23, padding: 2 },
   },
   minTouch: 44,
-  /** Floating tab bar (design "Таб · Сегодня"): capsule, item, raised "+" button. */
-  tabBar: { height: 68, item: 56, action: 62, actionLift: 22, inset: 16, safeAreaOverlap: 6 },
 } as const;
 
 /**
@@ -367,7 +365,6 @@ export const shadow = {
   tabBar: '0px 8px 24px rgba(0, 0, 0, 0.08)',
   /** The big avatar of the client form. */
   avatar: '0px 8px 20px rgba(0, 0, 0, 0.08)',
-  tabAction: '0px 12px 28px rgba(0, 0, 0, 0.14)',
   menu: '0px 16px 40px rgba(0, 0, 0, 0.16), 0px 2px 6px rgba(0, 0, 0, 0.06)',
   panel: '0px -8px 24px rgba(0, 0, 0, 0.05)',
   bubble: '0px 12px 30px rgba(0, 0, 0, 0.18)',

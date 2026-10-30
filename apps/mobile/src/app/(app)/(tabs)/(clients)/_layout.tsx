@@ -1,34 +1,17 @@
 import { Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { useUnistyles } from 'react-native-unistyles';
-import { NavigationHeaderBackground } from '@/shared/ui/NavigationHeaderBackground';
+import { useStackScreenOptions } from '@/shared/ui';
 
 export const unstable_settings = { initialRouteName: 'clients/index' };
 
 export default function ClientsStackLayout() {
   const { t } = useTranslation();
-  const { theme } = useUnistyles();
   return (
-    <Stack
-      screenOptions={{
-        headerBackButtonDisplayMode: 'minimal',
-        headerTransparent: process.env.EXPO_OS === 'ios',
-        headerShadowVisible: false,
-        headerTintColor: theme.colors.content.primary,
-        headerLargeTitleStyle: { color: theme.colors.content.primary },
-        headerBackground: () => <NavigationHeaderBackground />,
-        statusBarStyle: theme.name === 'dark' ? 'light' : 'dark',
-        contentStyle: { backgroundColor: theme.colors.bg.canvas },
-      }}>
+    <Stack screenOptions={useStackScreenOptions()}>
       <Stack.Screen
         name="clients/index"
-        // The list draws its own header (title, add button, search, filters).
-        options={{ title: t('tabs.clients'), headerShown: false }}
-      />
-      {/* The profile draws its own back and "⋯" buttons. */}
-      <Stack.Screen
-        name="clients/[clientId]"
-        options={{ title: t('navigation.clientDetails'), headerShown: false }}
+        // The list adds its "add" button and search bar to this header.
+        options={{ title: t('tabs.clients'), headerLargeTitle: process.env.EXPO_OS === 'ios' }}
       />
     </Stack>
   );

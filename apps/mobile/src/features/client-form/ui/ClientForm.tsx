@@ -21,11 +21,7 @@ import {
 import { useUserId } from '@/entities/session';
 import { normalizeError } from '@/shared/api/errors';
 import { AVATAR_COLOR_KEYS, AVATAR_GRADIENTS } from '@/shared/config/palettes';
-import {
-  dialCode,
-  resolvePhoneInput,
-  type CountryCode,
-} from '@/shared/lib/phone';
+import { dialCode, resolvePhoneInput, type CountryCode } from '@/shared/lib/phone';
 import { pickPhoneBookContact } from '@/shared/lib/phone-book';
 import {
   Avatar,
@@ -33,6 +29,7 @@ import {
   Button,
   Icon,
   IconButton,
+  SheetChrome,
   Switch,
   Text,
   VipBadge,
@@ -123,7 +120,9 @@ export function ClientForm({ client, defaultCountry, prefill }: ClientFormProps)
       onError: (error: unknown) => {
         const kind = normalizeError(error).kind;
         Alert.alert(
-          kind === 'duplicate_phone' ? t('clients.form.errors.duplicate') : t('actions.failedTitle'),
+          kind === 'duplicate_phone'
+            ? t('clients.form.errors.duplicate')
+            : t('actions.failedTitle'),
           kind === 'duplicate_phone' ? undefined : t('actions.failedMessage'),
         );
       },
@@ -140,32 +139,26 @@ export function ClientForm({ client, defaultCountry, prefill }: ClientFormProps)
     // Kept as a real view: a form sheet (react-native-screens) pins a ScrollView that
     // is a direct child of the screen to the top and stretches it over the header.
     <View style={styles.root} collapsable={false}>
-      <View style={styles.grabber} />
-      <View style={styles.header}>
-        <IconButton
-          icon="close"
-          variant="neutral"
-          accessibilityLabel={t('clients.form.close')}
-          onPress={() => router.back()}
-        />
-        <Text variant="calloutStrong" align="center" style={styles.title}>
-          {client ? t('clients.form.editTitle') : t('clients.form.newTitle')}
-        </Text>
-        {client ? (
-          <IconButton
-            icon="trash"
-            variant="ghost"
-            iconColor="tone.danger.fg"
-            accessibilityLabel={t('clients.form.delete')}
-            onPress={() => deleteClient(client)}
-          />
-        ) : (
-          <View style={styles.headerSpacer} />
-        )}
-      </View>
+      <SheetChrome
+        title={client ? t('clients.form.editTitle') : t('clients.form.newTitle')}
+        leadingLabel={t('clients.form.close')}
+        action={
+          client
+            ? {
+                key: 'delete',
+                label: t('clients.form.delete'),
+                sf: 'trash',
+                icon: 'trash',
+                destructive: true,
+                onPress: () => deleteClient(client),
+              }
+            : undefined
+        }
+      />
 
       <KeyboardAwareScrollView
         style={styles.scroll}
+        contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={[styles.content, { paddingBottom: 120 + insets.bottom }]}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
@@ -204,7 +197,9 @@ export function ClientForm({ client, defaultCountry, prefill }: ClientFormProps)
             })}
           </View>
           <Text variant="caption" color="tertiary">
-            {t('clients.form.avatarCaption', { name: t(`clients.form.colors.${draft.avatarColor}`) })}
+            {t('clients.form.avatarCaption', {
+              name: t(`clients.form.colors.${draft.avatarColor}`),
+            })}
           </Text>
         </View>
 
@@ -318,11 +313,18 @@ export function ClientForm({ client, defaultCountry, prefill }: ClientFormProps)
             <Pressable
               accessibilityRole="button"
               onPress={() => setBirthdayOpen(true)}
-              style={({ pressed }) => [styles.grow, styles.birthdayMain, pressed && styles.pressed]}>
+              style={({ pressed }) => [
+                styles.grow,
+                styles.birthdayMain,
+                pressed && styles.pressed,
+              ]}>
               <Text variant="caption" color="tertiary">
                 {t('clients.form.birthday')}
               </Text>
-              <Text variant="callout" color={birthdayLabel ? 'primary' : 'tertiary'} numberOfLines={1}>
+              <Text
+                variant="callout"
+                color={birthdayLabel ? 'primary' : 'tertiary'}
+                numberOfLines={1}>
                 {birthdayLabel || t('clients.form.birthdayPlaceholder')}
               </Text>
             </Pressable>
@@ -466,22 +468,6 @@ const FIELD_HEIGHT = 58;
 
 const styles = StyleSheet.create((theme) => ({
   root: { flex: 1, backgroundColor: theme.colors.bg.elevated },
-  grabber: {
-    alignSelf: 'center',
-    marginTop: theme.space[2],
-    width: 36,
-    height: 5,
-    borderRadius: 3,
-    backgroundColor: theme.colors.border.default,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingTop: theme.space[2],
-    paddingHorizontal: theme.space[4],
-  },
-  title: { flex: 1 },
-  headerSpacer: { width: theme.sizing.iconButton },
   scroll: { flex: 1 },
   content: { paddingTop: theme.space[4.5], paddingHorizontal: theme.space[4] },
   avatarBlock: { alignItems: 'center', gap: theme.space[3] },

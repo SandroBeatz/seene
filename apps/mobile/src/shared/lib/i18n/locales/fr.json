@@ -1116,5 +1116,14 @@
     "octobre",
     "novembre",
     "décembre"
-  ]
+  ],
+  "createMenu": {
+    "title": "Créer",
+    "appointment": "Nouveau rendez-vous",
+    "block": "Pause",
+    "client": "Nouveau client",
+    "blockSoon": "Les pauses et les créneaux bloqués arriveront avec le calendrier.",
+    "blockHint": "Bloquer un créneau dans l'agenda",
+    "clientHint": "Ajouter au carnet de clients"
+  }
 }

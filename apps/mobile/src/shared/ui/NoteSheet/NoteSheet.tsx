@@ -5,14 +5,13 @@
  * the appointment note and the client note.
  */
 import { useState } from 'react';
-import { router } from 'expo-router';
 import { Pressable, TextInput, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { appendChip } from '@/shared/lib/note';
 import { Button } from '@/shared/ui/Button';
 import { FormScreen } from '@/shared/ui/FormScreen';
 import { Icon } from '@/shared/ui/Icon';
-import { IconButton } from '@/shared/ui/IconButton';
+import { SheetChrome } from '@/shared/ui/SheetChrome';
 import { Text } from '@/shared/ui/Text';
 
 export interface NoteSheetLabels {
@@ -39,7 +38,15 @@ export interface NoteSheetProps {
   onSave: (value: string | null) => void;
 }
 
-export function NoteSheet({ initial, maxLength, chips, locale, labels, saving, onSave }: NoteSheetProps) {
+export function NoteSheet({
+  initial,
+  maxLength,
+  chips,
+  locale,
+  labels,
+  saving,
+  onSave,
+}: NoteSheetProps) {
   const { theme } = useUnistyles();
   const existing = initial?.trim() ?? '';
   const [note, setNote] = useState(existing);
@@ -57,16 +64,7 @@ export function NoteSheet({ initial, maxLength, chips, locale, labels, saving, o
           fullWidth
         />
       }>
-      <View style={styles.grabber} />
-      <View style={styles.header}>
-        <Text variant="title3">{existing ? labels.title : labels.titleNew}</Text>
-        <IconButton
-          icon="close"
-          accessibilityLabel={labels.close}
-          variant="neutral"
-          onPress={() => router.back()}
-        />
-      </View>
+      <SheetChrome title={existing ? labels.title : labels.titleNew} leadingLabel={labels.close} />
 
       <View style={styles.field}>
         <TextInput
@@ -107,7 +105,12 @@ export function NoteSheet({ initial, maxLength, chips, locale, labels, saving, o
       </View>
 
       {existing ? (
-        <Button label={labels.delete} variant="ghost" onPress={() => onSave(null)} disabled={saving} />
+        <Button
+          label={labels.delete}
+          variant="ghost"
+          onPress={() => onSave(null)}
+          disabled={saving}
+        />
       ) : null}
     </FormScreen>
   );
@@ -115,15 +118,6 @@ export function NoteSheet({ initial, maxLength, chips, locale, labels, saving, o
 
 const styles = StyleSheet.create((theme) => ({
   content: { gap: theme.space[3.5] },
-  grabber: {
-    alignSelf: 'center',
-    marginTop: theme.space[2],
-    width: 36,
-    height: 5,
-    borderRadius: 3,
-    backgroundColor: theme.colors.border.default,
-  },
-  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   field: {
     borderRadius: theme.radius.lg,
     borderWidth: 1,

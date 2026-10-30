@@ -1,13 +1,14 @@
 /**
- * "Сегодня" header (design "Таб · Сегодня"): the master's avatar (→ Меню), the
- * greeting with their name, and the analytics button. The bell joins when
- * notifications exist.
+ * "Сегодня" header (design "Таб · Сегодня"): the master's avatar (→ Меню) and the
+ * greeting with their name on the left of the native header, the analytics button
+ * on its right — native bar items, so iOS 26 draws the button in Liquid Glass. The
+ * bell joins when notifications exist.
  */
-import { router } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
-import { Avatar, IconButton, Text } from '@/shared/ui';
+import { Avatar, Text } from '@/shared/ui';
 import type { GreetingPeriod } from '../model/first-steps';
 
 export interface TodayHeaderProps {
@@ -20,34 +21,38 @@ export interface TodayHeaderProps {
 export function TodayHeader({ firstName, lastName, avatarUrl, greeting }: TodayHeaderProps) {
   const { t } = useTranslation();
   return (
-    <View style={styles.row}>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={t('today.openMenu')}
-        onPress={() => router.navigate('/settings')}
-        hitSlop={4}>
-        <Avatar name={`${firstName} ${lastName}`} imageUrl={avatarUrl} size="md" tone="brand" />
-      </Pressable>
-      <View style={styles.names}>
-        <Text variant="footnote" color="secondary">
-          {t(`today.greeting.${greeting}`)}
-        </Text>
-        <Text variant="calloutStrong" numberOfLines={1}>
-          {firstName}
-        </Text>
-      </View>
-      <IconButton
-        icon="analytics"
-        accessibilityLabel={t('tabs.analytics')}
-        variant="ghost"
-        size="lg"
-        onPress={() => router.push('/analytics')}
-      />
-    </View>
+    <>
+      <Stack.Toolbar placement="left">
+        <Stack.Toolbar.View hidesSharedBackground>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('today.openMenu')}
+            onPress={() => router.navigate('/settings')}
+            style={styles.row}>
+            <Avatar name={`${firstName} ${lastName}`} imageUrl={avatarUrl} size="md" tone="brand" />
+            <View style={styles.names}>
+              <Text variant="footnote" color="secondary" numberOfLines={1}>
+                {t(`today.greeting.${greeting}`)}
+              </Text>
+              <Text variant="calloutStrong" numberOfLines={1}>
+                {firstName}
+              </Text>
+            </View>
+          </Pressable>
+        </Stack.Toolbar.View>
+      </Stack.Toolbar>
+      <Stack.Toolbar placement="right">
+        <Stack.Toolbar.Button
+          icon="chart.bar.xaxis"
+          accessibilityLabel={t('tabs.analytics')}
+          onPress={() => router.push('/analytics')}
+        />
+      </Stack.Toolbar>
+    </>
   );
 }
 
 const styles = StyleSheet.create((theme) => ({
   row: { flexDirection: 'row', alignItems: 'center', gap: theme.space[3] },
-  names: { flex: 1, minWidth: 0, gap: 1 },
+  names: { maxWidth: 200, gap: 1 },
 }));

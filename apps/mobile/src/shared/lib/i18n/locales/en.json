@@ -1110,5 +1110,14 @@
     "October",
     "November",
     "December"
-  ]
+  ],
+  "createMenu": {
+    "title": "Create",
+    "appointment": "New appointment",
+    "block": "Break",
+    "client": "New client",
+    "blockSoon": "Breaks and time blocks arrive with the calendar.",
+    "blockHint": "Block off time in your schedule",
+    "clientHint": "Add to your client book"
+  }
 }

@@ -306,7 +306,8 @@ function visitWhen(iso: string, format: AttentionFormat, t: T) {
     local.startOf('day').diff(DateTime.fromISO(format.todayKey, { zone: format.zone }), 'days')
       .days,
   );
-  const relative = days === 0 ? 'today' : days === 1 ? 'tomorrow' : days === -1 ? 'yesterday' : null;
+  const relative =
+    days === 0 ? 'today' : days === 1 ? 'tomorrow' : days === -1 ? 'yesterday' : null;
   // Hermes' Intl has no weekday names, so they come from i18n.
   const day = relative
     ? t(`preview.day.${relative}`)

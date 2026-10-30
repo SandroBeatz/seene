@@ -3,12 +3,13 @@
  * numbers, "Записать" with WhatsApp and call, money, the note, when to invite them
  * again, and every visit by day. "⋯" edits, shares or deletes the client.
  */
-import { useRef, useState } from 'react';
-import { router } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { router, Stack, useNavigation } from 'expo-router';
+import { useHeaderHeight } from 'expo-router/react-navigation';
 import { DateTime } from 'luxon';
 import { useTranslation } from 'react-i18next';
-import { Alert, Linking, Pressable, Share, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Alert, FlatList, Linking, Pressable, Share, View } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { getAppointmentPhase } from '@/entities/appointment';
 import { clientName } from '@/entities/client';
@@ -19,89 +20,53 @@ import { isSupportedLocale, pluralCategory, type AppLocale } from '@/shared/lib/
 import { formatPhone, phoneCallUrl, whatsappUrl } from '@/shared/lib/phone';
 import {
   Avatar,
-  ContextMenu,
   ErrorState,
   Icon,
-  IconButton,
   ScreenScrollView,
   Skeleton,
   Text,
   VipBadge,
-  type ContextMenuAnchor,
-  type ContextMenuItem,
   useRefreshControl,
 } from '@/shared/ui';
 import { clientSince } from '../model/profile';
 import { useClientProfile, type ProfileVisit } from '../model/useClientProfile';
 
-const MENU_WIDTH = 264;
+/** Scrolled distance after which the card's name is under the bar. */
+const NAME_SCROLLED_AWAY = 56;
 
 export function ClientProfile({ clientId }: { clientId: string }) {
   const { t, i18n } = useTranslation();
   const { theme } = useUnistyles();
-  const insets = useSafeAreaInsets();
   const locale = isSupportedLocale(i18n.language) ? i18n.language : 'en';
   const profile = useClientProfile(clientId);
   const deleteClient = useDeleteClient();
-  const moreRef = useRef<View>(null);
-  const [menu, setMenu] = useState<ContextMenuAnchor | null>(null);
   const refreshControl = useRefreshControl(profile.refetch);
+  const headerHeight = useHeaderHeight();
+  const [nameInHeader, setNameInHeader] = useState(false);
+  const settled = useTransitionSettled();
 
-  const top = { paddingTop: insets.top + theme.space[1.5] };
   const monthNames = t('monthsGenitive', { returnObjects: true }) as string[];
   const weekdays = t('weekdays.short', { returnObjects: true }) as string[];
   const number = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 });
   const money = (amount: number) => formatAmount(amount, { currency: profile.currency, locale });
 
-  const bar = (
-    <View style={[styles.bar, top]}>
-      <IconButton
-        icon="chevronLeft"
-        variant="neutral"
-        accessibilityLabel={t('clients.profile.back')}
-        onPress={() => router.back()}
-      />
-      <View style={styles.grow} />
-      {profile.client ? (
-        <View ref={moreRef} collapsable={false}>
-          <IconButton
-            icon="more"
-            variant="neutral"
-            accessibilityLabel={t('clients.profile.more')}
-            onPress={() =>
-              moreRef.current?.measureInWindow((x, y, width, height) =>
-                setMenu({
-                  x: x + width - MENU_WIDTH,
-                  y: y + height + theme.space[2],
-                  width: MENU_WIDTH,
-                }),
-              )
-            }
-          />
-        </View>
-      ) : null}
-    </View>
-  );
-
   if (profile.isPending) {
     return (
-      <View style={styles.root}>
-        {bar}
+      <ScreenScrollView padded={false} scrollEnabled={false}>
         <View style={styles.skeleton}>
           <Skeleton height={68} width="70%" />
           <Skeleton height={64} radius={theme.radius.block} />
           <Skeleton height={52} radius={theme.radius.full} />
           <Skeleton height={200} radius={theme.radius.block} />
         </View>
-      </View>
+      </ScreenScrollView>
     );
   }
 
   const client = profile.client;
   if (!client) {
     return (
-      <View style={styles.root}>
-        {bar}
+      <ScreenScrollView padded={false} contentContainerStyle={styles.grow}>
         <ErrorState
           message={
             profile.error
@@ -110,7 +75,7 @@ export function ClientProfile({ clientId }: { clientId: string }) {
           }
           onRetry={() => void profile.refetch()}
         />
-      </View>
+      </ScreenScrollView>
     );
   }
 
@@ -150,169 +115,201 @@ export function ClientProfile({ clientId }: { clientId: string }) {
         ? t('clients.profile.cadenceWeeks', { count: Math.round(stats.cadenceDays / 7) })
         : t('clients.profile.cadenceDays', { count: stats.cadenceDays });
 
-  const menuItems: ContextMenuItem[] = [
-    { key: 'edit', label: t('clients.profile.menu.edit'), icon: 'pencil' },
-    { key: 'share', label: t('clients.profile.menu.share'), icon: 'send' },
-    { key: 'merge', label: t('clients.merge.menu'), icon: 'clients' },
-    { key: 'delete', label: t('clients.profile.menu.delete'), icon: 'trash', danger: true },
-  ];
+  const merge = () =>
+    router.push({ pathname: '/client/[clientId]/merge', params: { clientId: client.id } });
 
   return (
     <View style={styles.root}>
-      {bar}
-      <ScreenScrollView
-        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 130 }]}
-        contentInsetAdjustmentBehavior="never"
-        refreshControl={refreshControl}>
-        <View style={styles.identity}>
-          <Avatar name={name} color={client.avatar_color} size="xxl" />
-          <View style={styles.grow}>
-            <View style={styles.nameLine}>
-              <Text
-                variant="stat"
-                numberOfLines={1}
-                style={styles.shrink}
-                accessibilityRole="header">
-                {name}
-              </Text>
-              {client.is_favorite ? (
-                <VipBadge accessibilityLabel={t('clients.list.vipA11y')} />
-              ) : null}
+      {/* The name joins the bar once the card's own name scrolls under it. */}
+      <Stack.Screen
+        options={{ headerTitle: () => <HeaderName name={name} visible={nameInHeader} /> }}
+      />
+      {/* "⋯": the native header menu (Liquid Glass on iOS 26). */}
+      <Stack.Toolbar placement="right">
+        <Stack.Toolbar.Menu icon="ellipsis" accessibilityLabel={t('clients.profile.more')}>
+          <Stack.Toolbar.MenuAction icon="pencil" onPress={edit}>
+            {t('clients.profile.menu.edit')}
+          </Stack.Toolbar.MenuAction>
+          <Stack.Toolbar.MenuAction icon="square.and.arrow.up" onPress={share}>
+            {t('clients.profile.menu.share')}
+          </Stack.Toolbar.MenuAction>
+          <Stack.Toolbar.MenuAction icon="person.2" onPress={merge}>
+            {t('clients.merge.menu')}
+          </Stack.Toolbar.MenuAction>
+          <Stack.Toolbar.MenuAction icon="trash" destructive onPress={() => deleteClient(client)}>
+            {t('clients.profile.menu.delete')}
+          </Stack.Toolbar.MenuAction>
+        </Stack.Toolbar.Menu>
+      </Stack.Toolbar>
+      <FlatList
+        // The visits mount once the push has landed: the card opens at once, its
+        // history follows a frame later instead of holding the transition.
+        data={settled ? profile.days : []}
+        keyExtractor={(day) => day.dayKey}
+        contentInsetAdjustmentBehavior="automatic"
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+        refreshControl={refreshControl}
+        initialNumToRender={4}
+        scrollEventThrottle={16}
+        onScroll={(e) =>
+          setNameInHeader(e.nativeEvent.contentOffset.y + headerHeight > NAME_SCROLLED_AWAY)
+        }
+        ListHeaderComponent={
+          <>
+            <View style={styles.identity}>
+              <Avatar name={name} color={client.avatar_color} size="xxl" />
+              <View style={styles.grow}>
+                <View style={styles.nameLine}>
+                  <Text
+                    variant="stat"
+                    numberOfLines={1}
+                    style={styles.shrink}
+                    accessibilityRole="header">
+                    {name}
+                  </Text>
+                  {client.is_favorite ? (
+                    <VipBadge accessibilityLabel={t('clients.list.vipA11y')} />
+                  ) : null}
+                </View>
+                {client.phone ? (
+                  <Text variant="subhead" color="secondary" tabularNums>
+                    {formatPhone(client.phone)}
+                  </Text>
+                ) : null}
+                <Text variant="caption" color="tertiary">
+                  {t('clients.profile.since', {
+                    date: `${monthNames[since.month - 1]} ${since.year}`,
+                  })}
+                </Text>
+              </View>
             </View>
-            {client.phone ? (
-              <Text variant="subhead" color="secondary" tabularNums>
-                {formatPhone(client.phone)}
+
+            <View style={styles.stats}>
+              <Stat
+                value={number.format(stats.visits)}
+                label={t(`clients.profile.visitsWord_${pluralCategory(stats.visits, locale)}`)}
+              />
+              <View style={styles.statDivider} />
+              <Stat value={cadence} label={t('clients.profile.cadence')} />
+              <View style={styles.statDivider} />
+              <Stat
+                value={number.format(stats.noShows)}
+                label={t(`clients.profile.noShowsWord_${pluralCategory(stats.noShows, locale)}`)}
+              />
+            </View>
+
+            <View style={styles.actions}>
+              <Pressable
+                accessibilityRole="button"
+                onPress={() =>
+                  router.push({ pathname: '/quick-create', params: { clientId: client.id } })
+                }
+                style={({ pressed }) => [styles.book, pressed && styles.pressed]}>
+                <Icon name="add" size="md" color="accent.onAccent" />
+                <Text variant="bodyStrong" color="onAccent">
+                  {t('clients.profile.book')}
+                </Text>
+              </Pressable>
+              <RoundAction
+                icon="whatsapp"
+                label={t('clients.profile.whatsappA11y')}
+                onPress={() => openWhatsApp()}
+              />
+              <RoundAction icon="phone" label={t('clients.profile.callA11y')} onPress={call} />
+            </View>
+
+            <View style={styles.money}>
+              <View style={styles.moneyCell}>
+                <Text variant="caption" color="tertiary">
+                  {t('clients.profile.averageCheck')}
+                </Text>
+                <Text variant="calloutStrong" tabularNums>
+                  {money(stats.averageCheck)}
+                </Text>
+              </View>
+              <View style={styles.statDivider} />
+              <View style={styles.moneyCell}>
+                <Text variant="caption" color="tertiary">
+                  {t('clients.profile.total')}
+                </Text>
+                <Text variant="calloutStrong" tabularNums>
+                  {money(stats.total)}
+                </Text>
+              </View>
+            </View>
+
+            {client.notes?.trim() ? (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t('clients.profile.noteA11y')}
+                onPress={editNote}
+                style={({ pressed }) => [styles.note, pressed && styles.pressed]}>
+                <Icon name="note" size="md" color="content.tertiary" />
+                <View style={styles.grow}>
+                  <Text variant="caption" color="tertiary">
+                    {t('clients.profile.note')}
+                  </Text>
+                  <Text variant="subhead" color="secondary">
+                    {client.notes.trim()}
+                  </Text>
+                </View>
+                <Icon name="chevronRight" size="sm" color="content.disabled" />
+              </Pressable>
+            ) : (
+              <Pressable
+                accessibilityRole="button"
+                onPress={editNote}
+                style={({ pressed }) => [styles.addNote, pressed && styles.pressed]}>
+                <Icon name="note" size="md" color="content.secondary" />
+                <Text variant="subhead" color="secondary">
+                  {t('clients.form.addNote')}
+                </Text>
+              </Pressable>
+            )}
+
+            {stats.recallAt ? (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t('clients.profile.recallA11y', {
+                  date: dayMonth(stats.recallAt),
+                })}
+                onPress={() =>
+                  openWhatsApp(t('clients.list.recallMessage', { name: client.first_name }))
+                }
+                style={({ pressed }) => [styles.recall, pressed && styles.pressed]}>
+                <View style={styles.recallIcon}>
+                  <Icon name="repeat" size="md" color="brand.default" />
+                </View>
+                <View style={styles.grow}>
+                  <Text variant="bodyStrong">
+                    {`${t('clients.profile.recallTitle')} · `}
+                    <Text variant="bodyStrong" style={styles.recallDate}>
+                      {dayMonth(stats.recallAt)}
+                    </Text>
+                  </Text>
+                  <Text variant="footnote" style={styles.recallText}>
+                    {t('clients.profile.recallText')}
+                  </Text>
+                </View>
+                <Icon name="chevronRight" size="sm" color="brand.text" />
+              </Pressable>
+            ) : null}
+
+            <View style={styles.visitsHead}>
+              <Text variant="bodyStrong">{t('clients.profile.visits')}</Text>
+              <Text variant="footnote" color="tertiary" tabularNums>
+                {profile.count}
+              </Text>
+            </View>
+            {profile.days.length === 0 ? (
+              <Text variant="subhead" color="secondary" style={styles.noVisits}>
+                {t('clients.profile.noVisits')}
               </Text>
             ) : null}
-            <Text variant="caption" color="tertiary">
-              {t('clients.profile.since', {
-                date: `${monthNames[since.month - 1]} ${since.year}`,
-              })}
-            </Text>
-          </View>
-        </View>
-
-        <View style={styles.stats}>
-          <Stat
-            value={number.format(stats.visits)}
-            label={t(`clients.profile.visitsWord_${pluralCategory(stats.visits, locale)}`)}
-          />
-          <View style={styles.statDivider} />
-          <Stat value={cadence} label={t('clients.profile.cadence')} />
-          <View style={styles.statDivider} />
-          <Stat
-            value={number.format(stats.noShows)}
-            label={t(`clients.profile.noShowsWord_${pluralCategory(stats.noShows, locale)}`)}
-          />
-        </View>
-
-        <View style={styles.actions}>
-          <Pressable
-            accessibilityRole="button"
-            onPress={() =>
-              router.push({ pathname: '/quick-create', params: { clientId: client.id } })
-            }
-            style={({ pressed }) => [styles.book, pressed && styles.pressed]}>
-            <Icon name="add" size="md" color="accent.onAccent" />
-            <Text variant="bodyStrong" color="onAccent">
-              {t('clients.profile.book')}
-            </Text>
-          </Pressable>
-          <RoundAction
-            icon="whatsapp"
-            label={t('clients.profile.whatsappA11y')}
-            onPress={() => openWhatsApp()}
-          />
-          <RoundAction icon="phone" label={t('clients.profile.callA11y')} onPress={call} />
-        </View>
-
-        <View style={styles.money}>
-          <View style={styles.moneyCell}>
-            <Text variant="caption" color="tertiary">
-              {t('clients.profile.averageCheck')}
-            </Text>
-            <Text variant="calloutStrong" tabularNums>
-              {money(stats.averageCheck)}
-            </Text>
-          </View>
-          <View style={styles.statDivider} />
-          <View style={styles.moneyCell}>
-            <Text variant="caption" color="tertiary">
-              {t('clients.profile.total')}
-            </Text>
-            <Text variant="calloutStrong" tabularNums>
-              {money(stats.total)}
-            </Text>
-          </View>
-        </View>
-
-        {client.notes?.trim() ? (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t('clients.profile.noteA11y')}
-            onPress={editNote}
-            style={({ pressed }) => [styles.note, pressed && styles.pressed]}>
-            <Icon name="note" size="md" color="content.tertiary" />
-            <View style={styles.grow}>
-              <Text variant="caption" color="tertiary">
-                {t('clients.profile.note')}
-              </Text>
-              <Text variant="subhead" color="secondary">
-                {client.notes.trim()}
-              </Text>
-            </View>
-            <Icon name="chevronRight" size="sm" color="content.disabled" />
-          </Pressable>
-        ) : (
-          <Pressable
-            accessibilityRole="button"
-            onPress={editNote}
-            style={({ pressed }) => [styles.addNote, pressed && styles.pressed]}>
-            <Icon name="note" size="md" color="content.secondary" />
-            <Text variant="subhead" color="secondary">
-              {t('clients.form.addNote')}
-            </Text>
-          </Pressable>
-        )}
-
-        {stats.recallAt ? (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t('clients.profile.recallA11y', { date: dayMonth(stats.recallAt) })}
-            onPress={() =>
-              openWhatsApp(t('clients.list.recallMessage', { name: client.first_name }))
-            }
-            style={({ pressed }) => [styles.recall, pressed && styles.pressed]}>
-            <View style={styles.recallIcon}>
-              <Icon name="repeat" size="md" color="brand.default" />
-            </View>
-            <View style={styles.grow}>
-              <Text variant="bodyStrong">
-                {`${t('clients.profile.recallTitle')} · `}
-                <Text variant="bodyStrong" style={styles.recallDate}>
-                  {dayMonth(stats.recallAt)}
-                </Text>
-              </Text>
-              <Text variant="footnote" style={styles.recallText}>
-                {t('clients.profile.recallText')}
-              </Text>
-            </View>
-            <Icon name="chevronRight" size="sm" color="brand.text" />
-          </Pressable>
-        ) : null}
-
-        <View style={styles.visitsHead}>
-          <Text variant="bodyStrong">{t('clients.profile.visits')}</Text>
-          <Text variant="footnote" color="tertiary" tabularNums>
-            {profile.count}
-          </Text>
-        </View>
-        {profile.days.length === 0 ? (
-          <Text variant="subhead" color="secondary" style={styles.noVisits}>
-            {t('clients.profile.noVisits')}
-          </Text>
-        ) : null}
-        {profile.days.map((day) => {
+          </>
+        }
+        renderItem={({ item: day }) => {
           const local = DateTime.fromISO(day.dayKey, { zone: profile.zone });
           const weekday = weekdays[local.weekday - 1] ?? '';
           const date = `${weekday} ${dayMonth(day.visits[0].start_at)}`;
@@ -335,23 +332,48 @@ export function ClientProfile({ clientId }: { clientId: string }) {
               ))}
             </View>
           );
-        })}
-      </ScreenScrollView>
-
-      <ContextMenu
-        anchor={menu}
-        items={menuItems}
-        closeLabel={t('common.close')}
-        onClose={() => setMenu(null)}
-        onSelect={(key) => {
-          if (key === 'edit') edit();
-          else if (key === 'share') share();
-          else if (key === 'merge')
-            router.push({ pathname: '/client/[clientId]/merge', params: { clientId: client.id } });
-          else if (key === 'delete') deleteClient(client);
         }}
       />
     </View>
+  );
+}
+
+/** Settling time for a push the native side didn't report (e.g. no animation). */
+const SETTLE_FALLBACK_MS = 600;
+
+/** True once the screen's push transition has finished. */
+function useTransitionSettled() {
+  const navigation = useNavigation();
+  const [settled, setSettled] = useState(false);
+  useEffect(() => {
+    const done = () => setSettled(true);
+    const timer = setTimeout(done, SETTLE_FALLBACK_MS);
+    // A native-stack event; the generic navigation type doesn't list it.
+    const unsubscribe = navigation.addListener('transitionEnd' as never, done);
+    return () => {
+      clearTimeout(timer);
+      unsubscribe();
+    };
+  }, [navigation]);
+  return settled;
+}
+
+/** The client's name in the bar: fades and rises in as the card's name leaves. */
+function HeaderName({ name, visible }: { name: string; visible: boolean }) {
+  const shown = useSharedValue(visible ? 1 : 0);
+  useEffect(() => {
+    shown.value = withTiming(visible ? 1 : 0, { duration: 180 });
+  }, [shown, visible]);
+  const style = useAnimatedStyle(() => ({
+    opacity: shown.value,
+    transform: [{ translateY: (1 - shown.value) * 6 }],
+  }));
+  return (
+    <Animated.View style={style} accessibilityElementsHidden={!visible}>
+      <Text variant="headline" numberOfLines={1}>
+        {name}
+      </Text>
+    </Animated.View>
   );
 }
 
@@ -447,12 +469,15 @@ function VisitCard({
 
 const styles = StyleSheet.create((theme) => ({
   root: { flex: 1, backgroundColor: theme.colors.bg.canvas },
-  bar: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: theme.space[4] },
   grow: { flex: 1, minWidth: 0, gap: 2 },
   shrink: { flexShrink: 1 },
   pressed: { opacity: 0.7 },
   skeleton: { padding: theme.space[4], gap: theme.space[3] },
-  content: { paddingHorizontal: theme.space[4], paddingTop: theme.space[4] },
+  content: {
+    paddingHorizontal: theme.space[4],
+    paddingTop: theme.space[4],
+    paddingBottom: theme.space[8],
+  },
   identity: { flexDirection: 'row', alignItems: 'center', gap: theme.space[3.5] },
   nameLine: { flexDirection: 'row', alignItems: 'center', gap: theme.space[1.5] },
   stats: {

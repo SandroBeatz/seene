@@ -1,29 +1,16 @@
 import { Stack } from 'expo-router';
-import { useTranslation } from 'react-i18next';
-import { useUnistyles } from 'react-native-unistyles';
-import { NavigationHeaderBackground } from '@/shared/ui/NavigationHeaderBackground';
+import { useStackScreenOptions } from '@/shared/ui';
 
 export const unstable_settings = { initialRouteName: 'index' };
 
 export default function HomeStackLayout() {
-  const { t } = useTranslation();
-  const { theme } = useUnistyles();
   return (
-    <Stack
-      screenOptions={{
-        headerBackButtonDisplayMode: 'minimal',
-        headerTransparent: process.env.EXPO_OS === 'ios',
-        headerShadowVisible: false,
-        headerTintColor: theme.colors.content.primary,
-        headerLargeTitleStyle: { color: theme.colors.content.primary },
-        headerBackground: () => <NavigationHeaderBackground />,
-        statusBarStyle: theme.name === 'dark' ? 'light' : 'dark',
-        contentStyle: { backgroundColor: theme.colors.bg.canvas },
-      }}>
+    <Stack screenOptions={useStackScreenOptions()}>
       <Stack.Screen
         name="index"
-        // "Сегодня" draws its own header (avatar, greeting, analytics).
-        options={{ title: t('tabs.today'), headerShown: false }}
+        // No title: "Сегодня" heads the content; the screen puts the avatar, the
+        // greeting and analytics into this header.
+        options={{ title: '' }}
       />
     </Stack>
   );
