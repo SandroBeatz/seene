@@ -4,6 +4,7 @@
  * green "now" line. Ended visits are dimmed; unconfirmed ones get a dashed outline in
  * their colour and a warning mark. An empty day shows the free hours.
  */
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 import Svg, { Line } from 'react-native-svg';
@@ -13,7 +14,7 @@ import type { TimeBlock } from '@/entities/time-block';
 import { eventSwatch } from '@/shared/lib/color';
 import { formatTime } from '@/shared/lib/formats';
 import type { TimeInterval, TimelineItem } from '@/shared/lib/scheduling';
-import { Icon, Text } from '@/shared/ui';
+import { Icon, Text, type ContextMenuAnchor } from '@/shared/ui';
 import type { ScheduleVisit } from '../model/useToday';
 
 type Item = TimelineItem<Appointment, TimeBlock>;
@@ -31,6 +32,8 @@ export interface DayScheduleCardProps {
   formatAmount: (amount: number) => string;
   onOpenVisit: (visit: ScheduleVisit) => void;
   onOpenNote: (visit: ScheduleVisit) => void;
+  /** Long press: the menu, anchored where the event is and with its time range. */
+  onMenu: (visit: ScheduleVisit, anchor: ContextMenuAnchor, range: string) => void;
 }
 
 export function DayScheduleCard({
@@ -44,6 +47,7 @@ export function DayScheduleCard({
   formatAmount,
   onOpenVisit,
   onOpenNote,
+  onMenu,
 }: DayScheduleCardProps) {
   const { t } = useTranslation();
   const time = (iso: string) => formatTime(iso, { zone, timeFormat });
@@ -63,15 +67,17 @@ export function DayScheduleCard({
               case 'appointment': {
                 const visit = visitById.get(item.record.id);
                 if (!visit) return null;
+                const range = `${time(item.start)}–${time(item.end)}`;
                 return (
                   <VisitRow
                     key={item.record.id}
                     visit={visit}
                     label={time(item.start)}
-                    range={`${time(item.start)}–${time(item.end)}`}
+                    range={range}
                     now={now}
                     formatAmount={formatAmount}
                     onPress={() => onOpenVisit(visit)}
+                    onLongPress={(anchor) => onMenu(visit, anchor, range)}
                     onNote={() => onOpenNote(visit)}
                   />
                 );
@@ -126,20 +132,45 @@ interface VisitRowProps {
   now: number;
   formatAmount: (amount: number) => string;
   onPress: () => void;
+  onLongPress: (anchor: ContextMenuAnchor) => void;
   onNote: () => void;
 }
 
-function VisitRow({ visit, label, range, now, formatAmount, onPress, onNote }: VisitRowProps) {
+function visitInfo(
+  visit: ScheduleVisit,
+  now: number,
+  formatAmount: (amount: number) => string,
+  unknownClient: string,
+) {
+  return {
+    look: scheduleCardLook(visit.appointment, now),
+    name: visit.client
+      ? [visit.client.first_name, visit.client.last_name].filter(Boolean).join(' ')
+      : unknownClient,
+    details: [visit.serviceNames.join(', '), formatAmount(visit.price)].filter(Boolean).join(' · '),
+  };
+}
+
+function VisitRow({
+  visit,
+  label,
+  range,
+  now,
+  formatAmount,
+  onPress,
+  onLongPress,
+  onNote,
+}: VisitRowProps) {
   const { t } = useTranslation();
   const { theme } = useUnistyles();
+  const ref = useRef<View>(null);
   const swatch = eventSwatch(visit.color, theme.name);
-  const look = scheduleCardLook(visit.appointment, now);
-  const name = visit.client
-    ? [visit.client.first_name, visit.client.last_name].filter(Boolean).join(' ')
-    : t('today.schedule.unknownClient');
-  const details = [visit.serviceNames.join(', '), formatAmount(visit.price)]
-    .filter(Boolean)
-    .join(' · ');
+  const { look, name, details } = visitInfo(
+    visit,
+    now,
+    formatAmount,
+    t('today.schedule.unknownClient'),
+  );
 
   return (
     <View style={[styles.row, look.dimmed && styles.dimmed]}>
@@ -147,6 +178,7 @@ function VisitRow({ visit, label, range, now, formatAmount, onPress, onNote }: V
         {label}
       </Text>
       <Pressable
+        ref={ref}
         accessibilityRole="button"
         accessibilityLabel={[
           range,
@@ -157,47 +189,125 @@ function VisitRow({ visit, label, range, now, formatAmount, onPress, onNote }: V
           .filter(Boolean)
           .join(', ')}
         onPress={onPress}
+        onLongPress={() =>
+          ref.current?.measureInWindow((x, y, width) => onLongPress({ x, y, width }))
+        }
         style={({ pressed }) => [
           styles.event,
           { backgroundColor: swatch.fill },
           look.unconfirmed && { borderWidth: 1, borderStyle: 'dashed', borderColor: swatch.bar },
           pressed && styles.pressed,
         ]}>
-        <View style={[styles.bar, { backgroundColor: swatch.bar }]} />
-        <View style={styles.eventHead}>
-          <Text variant="microMedium" color="tertiary" tabularNums>
-            {range}
-          </Text>
-          {look.unconfirmed ? (
-            <View
-              accessible
-              accessibilityLabel={t('today.schedule.unconfirmed')}
-              style={styles.unconfirmed}>
-              <Icon name="unconfirmed" size={14} color="tone.warning.fg" />
-            </View>
-          ) : null}
-        </View>
-        <View style={styles.nameRow}>
-          <Text variant="eventTitle" numberOfLines={1} style={styles.shrink}>
-            {name}
-          </Text>
-          {visit.appointment.notes?.trim() ? (
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={t('today.note.open')}
-              hitSlop={10}
-              onPress={onNote}
-              style={styles.noteButton}>
-              <Icon name="note" size={14} color="content.secondary" />
-              <View style={styles.noteDot} />
-            </Pressable>
-          ) : null}
-        </View>
-        <Text variant="caption2" color="secondary" tabularNums numberOfLines={1}>
-          {details}
-        </Text>
+        <EventContent
+          visit={visit}
+          range={range}
+          name={name}
+          details={details}
+          unconfirmed={look.unconfirmed}
+          bar={swatch.bar}
+          onNote={onNote}
+        />
       </Pressable>
     </View>
+  );
+}
+
+/** A schedule event as drawn on the timeline — the lifted card of its long-press menu. */
+export function VisitEventPreview({
+  visit,
+  range,
+  now,
+  formatAmount,
+}: {
+  visit: ScheduleVisit;
+  range: string;
+  now: number;
+  formatAmount: (amount: number) => string;
+}) {
+  const { t } = useTranslation();
+  const { theme } = useUnistyles();
+  const swatch = eventSwatch(visit.color, theme.name);
+  const { look, name, details } = visitInfo(
+    visit,
+    now,
+    formatAmount,
+    t('today.schedule.unknownClient'),
+  );
+  return (
+    <View
+      style={[
+        styles.event,
+        styles.lifted,
+        { backgroundColor: swatch.fill },
+        look.unconfirmed && { borderWidth: 1, borderStyle: 'dashed', borderColor: swatch.bar },
+      ]}>
+      <EventContent
+        visit={visit}
+        range={range}
+        name={name}
+        details={details}
+        unconfirmed={look.unconfirmed}
+        bar={swatch.bar}
+      />
+    </View>
+  );
+}
+
+function EventContent({
+  visit,
+  range,
+  name,
+  details,
+  unconfirmed,
+  bar,
+  onNote,
+}: {
+  visit: ScheduleVisit;
+  range: string;
+  name: string;
+  details: string;
+  unconfirmed: boolean;
+  bar: string;
+  onNote?: () => void;
+}) {
+  const { t } = useTranslation();
+  return (
+    <>
+      <View style={[styles.bar, { backgroundColor: bar }]} />
+      <View style={styles.eventHead}>
+        <Text variant="microMedium" color="tertiary" tabularNums>
+          {range}
+        </Text>
+        {unconfirmed ? (
+          <View
+            accessible
+            accessibilityLabel={t('today.schedule.unconfirmed')}
+            style={styles.unconfirmed}>
+            <Icon name="unconfirmed" size={14} color="tone.warning.fg" />
+          </View>
+        ) : null}
+      </View>
+      <View style={styles.nameRow}>
+        <Text variant="eventTitle" numberOfLines={1} style={styles.shrink}>
+          {name}
+        </Text>
+        {visit.appointment.notes?.trim() ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('today.note.open')}
+            hitSlop={10}
+            disabled={!onNote}
+            onPress={onNote}
+            style={styles.noteButton}>
+            <Icon name="note" size={14} color="content.secondary" />
+            <View style={styles.noteDot} />
+          </Pressable>
+        ) : null}
+      </View>
+      <Text variant="caption2" color="secondary" tabularNums numberOfLines={1}>
+        {details}
+      </Text>
+    </>
   );
 }
 
@@ -299,6 +409,7 @@ const styles = StyleSheet.create((theme) => ({
     overflow: 'hidden',
   },
   pressed: { opacity: 0.7 },
+  lifted: { flex: 0 },
   bar: { position: 'absolute', left: 0, top: 0, bottom: 0, width: 4 },
   eventHead: { flexDirection: 'row', alignItems: 'center', gap: theme.space[1.5] },
   unconfirmed: { marginLeft: 'auto' },

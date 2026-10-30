@@ -39,3 +39,6 @@ export type UpdateAppointmentDto = { id: string } & Partial<
     cancelled_at?: string | null;
     cancel_reason?: string | null;
   };
+
+/** A visit reduced to who and when (`listVisitHistory`). */
+export type VisitHistoryRow = Pick<Appointment, 'client_id' | 'start_at' | 'status'>;
