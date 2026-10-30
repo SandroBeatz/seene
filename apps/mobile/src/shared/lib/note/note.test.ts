@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import { appendChip, NOTE_MAX_LENGTH } from './note';
+import { appendChip, NOTE_MAX_LENGTH } from './index';
 
 describe('appendChip', () => {
   it('starts an empty note with the chip and appends lowercased after', () => {

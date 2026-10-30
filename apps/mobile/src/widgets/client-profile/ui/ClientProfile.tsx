@@ -130,6 +130,8 @@ export function ClientProfile({ clientId }: { clientId: string }) {
   };
   const edit = () =>
     router.push({ pathname: '/client/[clientId]/edit', params: { clientId: client.id } });
+  const editNote = () =>
+    router.push({ pathname: '/client/[clientId]/note', params: { clientId: client.id } });
   const share = () =>
     void Share.share({
       message: [name, client.phone ? formatPhone(client.phone) : null].filter(Boolean).join('\n'),
@@ -238,7 +240,7 @@ export function ClientProfile({ clientId }: { clientId: string }) {
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={t('clients.profile.noteA11y')}
-            onPress={edit}
+            onPress={editNote}
             style={({ pressed }) => [styles.note, pressed && styles.pressed]}>
             <Icon name="note" size="md" color="content.tertiary" />
             <View style={styles.grow}>
@@ -254,7 +256,7 @@ export function ClientProfile({ clientId }: { clientId: string }) {
         ) : (
           <Pressable
             accessibilityRole="button"
-            onPress={edit}
+            onPress={editNote}
             style={({ pressed }) => [styles.addNote, pressed && styles.pressed]}>
             <Icon name="note" size="md" color="content.secondary" />
             <Text variant="subhead" color="secondary">

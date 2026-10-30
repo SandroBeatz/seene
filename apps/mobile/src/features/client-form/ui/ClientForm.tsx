@@ -50,6 +50,7 @@ import {
   type Messenger,
 } from '../model/draft';
 import { useDeleteClient } from '../model/useDeleteClient';
+import { CLIENT_NOTE_MAX_LENGTH } from './ClientNoteEditor';
 import { CountrySheet } from './CountrySheet';
 
 export interface ClientFormProps {
@@ -372,7 +373,7 @@ export function ClientForm({ client, defaultCountry }: ClientFormProps) {
                   placeholderTextColor={theme.colors.content.tertiary}
                   multiline
                   autoFocus={!draft.notes}
-                  maxLength={1000}
+                  maxLength={CLIENT_NOTE_MAX_LENGTH}
                   accessibilityLabel={t('clients.form.note')}
                   style={[styles.input, styles.noteInput]}
                 />
