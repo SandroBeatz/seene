@@ -1027,6 +1027,10 @@ export type Database = {
         }
         Returns: string
       }
+      merge_clients: {
+        Args: { p_keep: string; p_merge: string }
+        Returns: undefined
+      }
       specialization_keys: { Args: never; Returns: string[] }
       update_sale_details: {
         Args: { p_amount: number; p_items: Json; p_sale_id: string }
