@@ -194,6 +194,51 @@
       "countryTitle": "Indicatif du pays",
       "countrySearch": "Pays ou indicatif",
       "countryHint": "Absent de la liste ? Commencez le numéro par « + », le pays sera détecté."
+    },
+    "profile": {
+      "back": "Retour aux clients",
+      "more": "Plus d'actions",
+      "since": "Client depuis {{date}}",
+      "visitsWord_one": "visite",
+      "visitsWord_many": "visites",
+      "visitsWord_other": "visites",
+      "noShowsWord_one": "absence",
+      "noShowsWord_many": "absences",
+      "noShowsWord_other": "absences",
+      "cadence": "entre les visites",
+      "cadenceWeeks": "~{{count}} sem",
+      "cadenceDays": "~{{count}} j",
+      "book": "Réserver",
+      "whatsappA11y": "Écrire sur WhatsApp",
+      "callA11y": "Appeler",
+      "averageCheck": "Panier moyen",
+      "total": "Au total",
+      "note": "Note sur le client",
+      "noteA11y": "Modifier la note sur le client",
+      "recallTitle": "Relancer",
+      "recallText": "On vous rappellera d’écrire sur WhatsApp",
+      "recallA11y": "Relancer le {{date}}, écrire sur WhatsApp",
+      "visits": "Visites",
+      "noVisits": "Pas encore de visite. Réservez le client et son historique s'affichera ici.",
+      "todayDay": "Aujourd'hui, {{date}}",
+      "status": {
+        "upcoming": "À venir · confirmé",
+        "unconfirmed": "À venir · non confirmé",
+        "request": "Demande en ligne",
+        "overdue": "Demande en retard",
+        "ongoing": "En cours",
+        "awaiting": "À clôturer",
+        "completed": "Terminé",
+        "cancelled": "Annulé",
+        "no_show": "Absence",
+        "expired": "Demande expirée"
+      },
+      "menu": {
+        "edit": "Modifier",
+        "share": "Partager le contact",
+        "delete": "Supprimer le client"
+      },
+      "notFound": "Client introuvable. Il a peut-être été supprimé."
     }
   },
   "services": {

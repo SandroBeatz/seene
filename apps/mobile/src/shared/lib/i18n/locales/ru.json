@@ -198,6 +198,53 @@
       "countryTitle": "Код страны",
       "countrySearch": "Страна или код",
       "countryHint": "Нет в списке? Начните номер с «+» — страна определится сама."
+    },
+    "profile": {
+      "back": "Назад к клиентам",
+      "more": "Ещё действия",
+      "since": "Клиент с {{date}}",
+      "visitsWord_one": "визит",
+      "visitsWord_few": "визита",
+      "visitsWord_many": "визитов",
+      "visitsWord_other": "визита",
+      "noShowsWord_one": "неявка",
+      "noShowsWord_few": "неявки",
+      "noShowsWord_many": "неявок",
+      "noShowsWord_other": "неявки",
+      "cadence": "между визитами",
+      "cadenceWeeks": "~{{count}} нед",
+      "cadenceDays": "~{{count}} дн",
+      "book": "Записать",
+      "whatsappA11y": "Написать в WhatsApp",
+      "callA11y": "Позвонить",
+      "averageCheck": "Средний чек",
+      "total": "За всё время",
+      "note": "Заметка о клиенте",
+      "noteA11y": "Изменить заметку о клиенте",
+      "recallTitle": "Позвать снова",
+      "recallText": "Напомним написать в WhatsApp",
+      "recallA11y": "Позвать снова {{date}}, написать в WhatsApp",
+      "visits": "Визиты",
+      "noVisits": "Визитов пока не было. Запишите клиента — история появится здесь.",
+      "todayDay": "Сегодня, {{date}}",
+      "status": {
+        "upcoming": "Предстоит · подтверждена",
+        "unconfirmed": "Предстоит · не подтверждена",
+        "request": "Онлайн-заявка",
+        "overdue": "Заявка просрочена",
+        "ongoing": "Идёт сейчас",
+        "awaiting": "Ожидает завершения",
+        "completed": "Завершена",
+        "cancelled": "Отменена",
+        "no_show": "Неявка",
+        "expired": "Заявка истекла"
+      },
+      "menu": {
+        "edit": "Редактировать",
+        "share": "Поделиться контактом",
+        "delete": "Удалить клиента"
+      },
+      "notFound": "Клиент не найден. Возможно, его удалили."
     }
   },
   "services": {

@@ -42,3 +42,6 @@ export type UpdateAppointmentDto = { id: string } & Partial<
 
 /** A visit reduced to who and when (`listVisitHistory`). */
 export type VisitHistoryRow = Pick<Appointment, 'client_id' | 'start_at' | 'status'>;
+
+/** One of a client's appointments with what was paid at checkout (null if not paid). */
+export type ClientAppointment = Appointment & { paid: number | null };

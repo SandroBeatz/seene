@@ -13,7 +13,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import {
   useCreateClientMutation,
-  useDeleteClientMutation,
   useUpdateClientMutation,
   type Client,
 } from '@/entities/client';
@@ -42,6 +41,7 @@ import {
   type ClientDraft,
   type Messenger,
 } from '../model/draft';
+import { useDeleteClient } from '../model/useDeleteClient';
 import { CountrySheet } from './CountrySheet';
 
 export interface ClientFormProps {
@@ -64,7 +64,7 @@ export function ClientForm({ client, defaultCountry }: ClientFormProps) {
   const userId = useUserId() ?? '';
   const create = useCreateClientMutation(userId);
   const update = useUpdateClientMutation(userId);
-  const remove = useDeleteClientMutation(userId);
+  const deleteClient = useDeleteClient();
 
   const [draft, setDraft] = useState<ClientDraft>(() =>
     client
@@ -111,31 +111,6 @@ export function ClientForm({ client, defaultCountry }: ClientFormProps) {
     else create.mutate(result.card, done);
   };
 
-  const confirmDelete = () => {
-    if (!client) return;
-    Alert.alert(
-      t('clients.form.deleteTitle'),
-      t('clients.form.deleteText', { name: client.first_name }),
-      [
-        { text: t('common.cancel'), style: 'cancel' },
-        {
-          text: t('common.delete'),
-          style: 'destructive',
-          onPress: () =>
-            remove.mutate(client.id, {
-              onSuccess: () => router.dismissTo('/clients'),
-              onError: (error) =>
-                Alert.alert(
-                  normalizeError(error).kind === 'has_related_records'
-                    ? t('clients.form.deleteBlocked')
-                    : t('actions.failedTitle'),
-                ),
-            }),
-        },
-      ],
-    );
-  };
-
   const birthdayLabel = draft.birthday
     ? `${draft.birthday.day} ${monthNames[draft.birthday.month - 1] ?? ''}`
     : '';
@@ -161,7 +136,7 @@ export function ClientForm({ client, defaultCountry }: ClientFormProps) {
             variant="ghost"
             iconColor="tone.danger.fg"
             accessibilityLabel={t('clients.form.delete')}
-            onPress={confirmDelete}
+            onPress={() => deleteClient(client)}
           />
         ) : (
           <View style={styles.headerSpacer} />

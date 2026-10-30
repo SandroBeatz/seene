@@ -190,6 +190,49 @@
       "countryTitle": "Country code",
       "countrySearch": "Country or code",
       "countryHint": "Not listed? Start the number with \"+\" and the country is detected."
+    },
+    "profile": {
+      "back": "Back to clients",
+      "more": "More actions",
+      "since": "Client since {{date}}",
+      "visitsWord_one": "visit",
+      "visitsWord_other": "visits",
+      "noShowsWord_one": "no-show",
+      "noShowsWord_other": "no-shows",
+      "cadence": "between visits",
+      "cadenceWeeks": "~{{count}} wk",
+      "cadenceDays": "~{{count}} d",
+      "book": "Book",
+      "whatsappA11y": "Message on WhatsApp",
+      "callA11y": "Call",
+      "averageCheck": "Average check",
+      "total": "All time",
+      "note": "Note about the client",
+      "noteA11y": "Edit the note about the client",
+      "recallTitle": "Invite again",
+      "recallText": "We'll remind you to message on WhatsApp",
+      "recallA11y": "Invite again on {{date}}, message on WhatsApp",
+      "visits": "Visits",
+      "noVisits": "No visits yet. Book the client and their history shows up here.",
+      "todayDay": "Today, {{date}}",
+      "status": {
+        "upcoming": "Upcoming · confirmed",
+        "unconfirmed": "Upcoming · not confirmed",
+        "request": "Online request",
+        "overdue": "Request overdue",
+        "ongoing": "In progress",
+        "awaiting": "Waiting to be closed",
+        "completed": "Completed",
+        "cancelled": "Cancelled",
+        "no_show": "No-show",
+        "expired": "Request expired"
+      },
+      "menu": {
+        "edit": "Edit",
+        "share": "Share contact",
+        "delete": "Delete client"
+      },
+      "notFound": "Client not found. They may have been deleted."
     }
   },
   "services": {

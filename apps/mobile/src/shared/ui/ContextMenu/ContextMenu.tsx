@@ -28,8 +28,8 @@ export interface ContextMenuAnchor {
 export interface ContextMenuProps {
   /** Null = closed. */
   anchor: ContextMenuAnchor | null;
-  /** The card as it looked when pressed. */
-  preview: ReactNode;
+  /** The card as it looked when pressed; absent for a menu under a "⋯" button. */
+  preview?: ReactNode;
   /** The note it was booked with, if any. */
   note?: { label: string; text: string } | null;
   items: ContextMenuItem[];
@@ -117,7 +117,7 @@ export function ContextMenu({
             styles.stack,
             { top, left: anchor.x, width: anchor.width, opacity: height ? 1 : 0 },
           ]}>
-          <View style={styles.lifted}>{preview}</View>
+          {preview ? <View style={styles.lifted}>{preview}</View> : null}
           {note ? (
             <View style={styles.note}>
               <Icon name="note" size={14} color="content.secondary" />
