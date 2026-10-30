@@ -106,4 +106,7 @@ export type MasterProfile = Pick<
 >;
 
 /** Display settings (`getMasterSettings`). */
-export type MasterSettings = Pick<SettingsRow, 'currency' | 'time_format' | 'date_format'>;
+export type MasterSettings = Pick<
+  SettingsRow,
+  'currency' | 'time_format' | 'date_format' | 'calendar_slot_step_minutes'
+>;

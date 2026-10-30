@@ -796,5 +796,55 @@
       "sensitiveSkin": "Sensitive skin",
       "runsLate": "Runs late"
     }
-  }
+  },
+  "servicesSheet": {
+    "title": "Services",
+    "back": "Back to the appointment",
+    "search": "Find a service",
+    "all": "All",
+    "other": "Other",
+    "noCategory": "No category",
+    "nothing": "Nothing found",
+    "pickOne": "Pick services",
+    "badDuration": "Duration must be from 5 minutes to 24 hours.",
+    "count_one": "{{count}} service",
+    "count_few": "{{count}} services",
+    "count_many": "{{count}} services",
+    "count_other": "{{count}} services",
+    "asListed": "As in the price list",
+    "canChange": "You can change it for this appointment",
+    "minutes": "min",
+    "durationA11y": "Duration of this appointment, minutes",
+    "priceA11y": "Price of this appointment, {{currency}}"
+  },
+  "reschedule": {
+    "title": "Reschedule",
+    "back": "Back to the appointment",
+    "now": "Currently: {{when}}",
+    "zone": "your time zone: {{zone}}",
+    "parts": {
+      "morning": "Morning",
+      "afternoon": "Afternoon",
+      "evening": "Evening"
+    },
+    "full": "This day is fully booked.",
+    "dayOff": "Day off — you can set a time manually.",
+    "manual": "Set the time manually",
+    "pick": "Pick a time",
+    "submit": "Move · {{when}}"
+  },
+  "months": [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ]
 }

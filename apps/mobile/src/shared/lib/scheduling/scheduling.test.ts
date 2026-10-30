@@ -2,6 +2,8 @@ import { describe, expect, it } from '@jest/globals';
 import {
   buildDayTimeline,
   dayBounds,
+  findFreeSlots,
+  groupByDayPart,
   weekdayIndex,
   workingHours,
   type WorkdayHours,
@@ -204,5 +206,71 @@ describe('buildDayTimeline', () => {
       now: 0,
     });
     expect(kinds(items)).toEqual(['break', 'appointment:a']);
+  });
+});
+
+describe('findFreeSlots', () => {
+  const input = {
+    dayKey: DAY,
+    zone: ZONE,
+    workday: WORKDAY, // 10:00–19:00, break 13:00–14:00
+    stepMinutes: 30,
+    duration: 60,
+    busy: [] as { start: string; end: string }[],
+    now: 0,
+  };
+  const labels = (slots: string[]) =>
+    slots.map((s) => {
+      const d = new Date(new Date(s).getTime() + 6 * 3_600_000);
+      return `${String(d.getUTCHours()).padStart(2, '0')}:${String(d.getUTCMinutes()).padStart(2, '0')}`;
+    });
+
+  it('fits the visit inside working hours around the break', () => {
+    expect(labels(findFreeSlots(input))).toEqual([
+      '10:00',
+      '10:30',
+      '11:00',
+      '11:30',
+      '12:00',
+      '14:00',
+      '14:30',
+      '15:00',
+      '15:30',
+      '16:00',
+      '16:30',
+      '17:00',
+      '17:30',
+      '18:00',
+    ]);
+  });
+
+  it('skips busy time and starts already passed', () => {
+    const slots = labels(
+      findFreeSlots({
+        ...input,
+        busy: [{ start: local('15:00'), end: local('16:30') }],
+        now: nowAt('11:10'),
+      }),
+    );
+    expect(slots).toEqual(['11:30', '12:00', '14:00', '16:30', '17:00', '17:30', '18:00']);
+  });
+
+  it('is empty on a day off or when the visit is longer than the day', () => {
+    expect(findFreeSlots({ ...input, workday: { ...WORKDAY, enabled: false } })).toEqual([]);
+    expect(findFreeSlots({ ...input, duration: 10 * 60 })).toEqual([]);
+  });
+});
+
+describe('groupByDayPart', () => {
+  it('splits morning, afternoon and evening by the local hour', () => {
+    const groups = groupByDayPart(
+      [local('10:00'), local('11:30'), local('14:00'), local('17:30')],
+      ZONE,
+    );
+    expect(groups.map((g) => [g.part, g.slots.length])).toEqual([
+      ['morning', 2],
+      ['afternoon', 1],
+      ['evening', 1],
+    ]);
   });
 });

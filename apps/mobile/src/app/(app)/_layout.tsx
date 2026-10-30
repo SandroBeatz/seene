@@ -34,6 +34,8 @@ export default function AppLayout() {
       {/* Full-height sheets; the grabber is drawn in content so iOS and Android match. */}
       <Stack.Screen name="(modals)/appointment/[appointmentId]/index" options={sheet} />
       <Stack.Screen name="(modals)/appointment/[appointmentId]/note" options={sheet} />
+      <Stack.Screen name="(modals)/appointment/[appointmentId]/services" options={sheet} />
+      <Stack.Screen name="(modals)/appointment/[appointmentId]/reschedule" options={sheet} />
       <Stack.Screen
         name="(modals)/appointment-form"
         options={{ presentation: 'modal', title: t('navigation.appointmentForm') }}
