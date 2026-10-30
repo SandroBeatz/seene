@@ -8,7 +8,6 @@ export {
   useDeleteClientMutation,
   useToggleClientFavoriteMutation,
   useClientSummariesQuery,
-  useImportClientsMutation,
   useMergeClientsMutation,
 } from './model/queries';
 export { isNewClient } from './lib/derive';
@@ -34,11 +33,7 @@ export {
   type DuplicateCandidate,
   type DuplicateReason,
 } from './lib/duplicates';
-export {
-  contactToCard,
-  importCandidates,
-  type ImportCandidate,
-} from './lib/contacts';
+export { contactToCard } from './lib/contacts';
 export { recallCandidates, recallState, type RecallState, type RecallVisit } from './lib/recall';
 export type {
   Client,

@@ -7,22 +7,25 @@
 import { useMemo, useState } from 'react';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Linking, Pressable, RefreshControl, ScrollView, View } from 'react-native';
+import { Alert, FlatList, Linking, Pressable, RefreshControl, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { useDismissAttentionMutation } from '@/entities/attention';
 import {
   CLIENT_SEGMENTS,
+  contactToCard,
   inSegment,
   isNewClient,
   matchesClientQuery,
   type ClientSegment,
 } from '@/entities/client';
 import { useUserId } from '@/entities/session';
+import { usePhoneCountry } from '@/features/client-form';
 import { errorMessageKey, normalizeError } from '@/shared/api/errors';
 import { formatTime } from '@/shared/lib/formats';
 import { isSupportedLocale, pluralCategory } from '@/shared/lib/i18n';
 import { whatsappUrl } from '@/shared/lib/phone';
+import { pickPhoneBookContact } from '@/shared/lib/phone-book';
 import {
   Avatar,
   EmptyState,
@@ -52,6 +55,7 @@ export function ClientList() {
   const insets = useSafeAreaInsets();
   const locale = isSupportedLocale(i18n.language) ? i18n.language : 'en';
   const list = useClientList();
+  const { country: phoneCountry } = usePhoneCountry();
   const dismiss = useDismissAttentionMutation(useUserId() ?? '');
   const [segment, setSegment] = useState<ClientSegment>('all');
   const [query, setQuery] = useState('');
@@ -79,12 +83,30 @@ export function ClientList() {
   }, [list.rows, segment, query, t]);
 
   const openNew = () => router.push('/client/new');
-  const openImport = () => router.push('/client/import');
+  const fromPhoneBook = async () => {
+    try {
+      const contact = await pickPhoneBookContact();
+      const card = contact ? contactToCard(contact, phoneCountry) : null;
+      if (!card) return;
+      router.push({
+        pathname: '/client/new',
+        params: {
+          firstName: card.first_name,
+          lastName: card.last_name ?? '',
+          phone: card.phone ?? '',
+          birthDay: card.birth_day ? String(card.birth_day) : '',
+          birthMonth: card.birth_month ? String(card.birth_month) : '',
+        },
+      });
+    } catch {
+      Alert.alert(t('actions.failedTitle'), t('actions.failedMessage'));
+    }
+  };
 
   const importButton = (
     <Pressable
       accessibilityRole="button"
-      onPress={openImport}
+      onPress={() => void fromPhoneBook()}
       style={({ pressed }) => [styles.import, pressed && styles.pressed]}>
       <Icon name="contacts" size="sm" color="content.primary" />
       <Text variant="bodyStrong">{t('clients.fromContacts')}</Text>

@@ -10,7 +10,6 @@ import {
   getClient,
   listClients,
   listClientSummaries,
-  importClients,
   mergeClients,
   setClientFavorite,
   updateClient,
@@ -101,17 +100,6 @@ export function useToggleClientFavoriteMutation(userId: string) {
       if (context?.previous) qc.setQueryData(key, context.previous);
     },
     onSettled: () => qc.invalidateQueries({ queryKey: key }),
-  });
-}
-
-export function useImportClientsMutation(userId: string) {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (dtos: CreateClientDto[]) => importClients(userId, dtos),
-    onSettled: () => {
-      qc.invalidateQueries({ queryKey: clientKeys.all(userId) });
-      qc.invalidateQueries({ queryKey: clientKeys.summaries(userId) });
-    },
   });
 }
 

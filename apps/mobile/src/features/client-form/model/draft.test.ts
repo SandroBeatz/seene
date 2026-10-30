@@ -5,7 +5,14 @@ jest.mock('@/shared/api/supabase', () => ({ supabase: {} }));
 
 /* eslint-disable import/first -- must be imported after the mock is registered */
 import type { Client } from '@/entities/client';
-import { cardFromDraft, draftFromClient, draftInitials, emptyDraft, whatsappSeed } from './draft';
+import {
+  cardFromDraft,
+  draftFromClient,
+  draftInitials,
+  emptyDraft,
+  whatsappSeed,
+  withCard,
+} from './draft';
 /* eslint-enable import/first */
 
 const draft = (patch: Partial<ReturnType<typeof emptyDraft>> = {}) => ({
@@ -108,5 +115,25 @@ describe('draftFromClient', () => {
     expect(whatsappSeed(draft({ phone: '555' }))).toBe('');
     expect(draftInitials({ firstName: 'айгерим', lastName: 'касымова' })).toBe('АК');
     expect(draftInitials({ firstName: '', lastName: '' })).toBe('');
+  });
+});
+
+describe('withCard', () => {
+  it('fills the draft from a phone book contact in its own country', () => {
+    const result = withCard(emptyDraft('KG', 'rose'), {
+      first_name: 'Елена',
+      last_name: 'Ворон',
+      phone: '14165550182',
+      birth_day: 3,
+      birth_month: 9,
+    });
+    expect(result).toMatchObject({
+      firstName: 'Елена',
+      lastName: 'Ворон',
+      phone: '416 555 0182',
+      phoneCountry: 'CA',
+      birthday: { day: 3, month: 9 },
+      avatarColor: 'rose',
+    });
   });
 });

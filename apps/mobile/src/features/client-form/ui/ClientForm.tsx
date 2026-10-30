@@ -16,14 +16,13 @@ import {
   useCreateClientMutation,
   useUpdateClientMutation,
   type Client,
+  type ClientCardDto,
 } from '@/entities/client';
 import { useUserId } from '@/entities/session';
 import { normalizeError } from '@/shared/api/errors';
 import { AVATAR_COLOR_KEYS, AVATAR_GRADIENTS } from '@/shared/config/palettes';
 import {
   dialCode,
-  nationalDisplay,
-  phoneCountry,
   resolvePhoneInput,
   type CountryCode,
 } from '@/shared/lib/phone';
@@ -46,6 +45,7 @@ import {
   emptyDraft,
   MESSENGERS,
   whatsappSeed,
+  withCard,
   type ClientDraft,
   type Messenger,
 } from '../model/draft';
@@ -58,6 +58,8 @@ export interface ClientFormProps {
   client?: Client;
   /** The country a new phone is typed in. */
   defaultCountry: CountryCode;
+  /** A new client started from a phone book contact. */
+  prefill?: ClientCardDto | null;
 }
 
 const MESSENGER_ICON: Record<Messenger, IconName> = {
@@ -66,7 +68,7 @@ const MESSENGER_ICON: Record<Messenger, IconName> = {
   instagram: 'instagram',
 };
 
-export function ClientForm({ client, defaultCountry }: ClientFormProps) {
+export function ClientForm({ client, defaultCountry, prefill }: ClientFormProps) {
   const { t } = useTranslation();
   const { theme } = useUnistyles();
   const insets = useSafeAreaInsets();
@@ -75,11 +77,11 @@ export function ClientForm({ client, defaultCountry }: ClientFormProps) {
   const update = useUpdateClientMutation(userId);
   const deleteClient = useDeleteClient();
 
-  const [draft, setDraft] = useState<ClientDraft>(() =>
-    client
-      ? draftFromClient(client, defaultCountry, 'lavender')
-      : emptyDraft(defaultCountry, 'lavender'),
-  );
+  const [draft, setDraft] = useState<ClientDraft>(() => {
+    if (client) return draftFromClient(client, defaultCountry, 'lavender');
+    const empty = emptyDraft(defaultCountry, 'lavender');
+    return prefill ? withCard(empty, prefill) : empty;
+  });
   const [countryOpen, setCountryOpen] = useState(false);
   const [birthdayOpen, setBirthdayOpen] = useState(false);
   const [noteOpen, setNoteOpen] = useState(!!draft.notes);
@@ -98,18 +100,7 @@ export function ClientForm({ client, defaultCountry }: ClientFormProps) {
     try {
       const contact = await pickPhoneBookContact();
       const card = contact ? contactToCard(contact, draft.phoneCountry) : null;
-      if (!card) return;
-      setDraft((current) => ({
-        ...current,
-        firstName: card.first_name,
-        lastName: card.last_name ?? '',
-        phone: card.phone ? nationalDisplay(card.phone) : current.phone,
-        phoneCountry: phoneCountry(card.phone) ?? current.phoneCountry,
-        birthday:
-          card.birth_day && card.birth_month
-            ? { day: card.birth_day, month: card.birth_month }
-            : current.birthday,
-      }));
+      if (card) setDraft((current) => withCard(current, card));
     } catch {
       Alert.alert(t('actions.failedTitle'), t('actions.failedMessage'));
     }
@@ -181,7 +172,11 @@ export function ClientForm({ client, defaultCountry }: ClientFormProps) {
         bottomOffset={96}>
         <View style={styles.avatarBlock}>
           <View style={[styles.avatarShadow, !initials && styles.avatarEmpty]}>
-            <Avatar name={initials || '?'} color={draft.avatarColor} size="xxxl" />
+            <Avatar
+              name={`${draft.firstName} ${draft.lastName}`.trim() || '?'}
+              color={draft.avatarColor}
+              size="xxxl"
+            />
           </View>
           <View
             accessibilityRole="radiogroup"

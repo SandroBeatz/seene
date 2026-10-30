@@ -38,7 +38,6 @@ export default function AppLayout() {
       <Stack.Screen name="(modals)/appointment/[appointmentId]/reschedule" options={sheet} />
       <Stack.Screen name="(modals)/appointment/[appointmentId]/checkout" options={sheet} />
       <Stack.Screen name="(modals)/client/new" options={sheet} />
-      <Stack.Screen name="(modals)/client/import" options={sheet} />
       <Stack.Screen name="(modals)/client/[clientId]/merge" options={sheet} />
       <Stack.Screen name="(modals)/client/[clientId]/note" options={sheet} />
       <Stack.Screen name="(modals)/client/[clientId]/edit" options={sheet} />
