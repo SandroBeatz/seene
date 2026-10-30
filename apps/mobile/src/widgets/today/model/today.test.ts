@@ -6,6 +6,7 @@ jest.mock('@/shared/api/supabase', () => ({ supabase: {} }));
 
 /* eslint-disable import/first -- must be imported after the mock is registered */
 import { attentionKey, buildAttentionItems } from './attention';
+import { firstSteps, greetingPeriod } from './first-steps';
 import { recallState } from './recall';
 import { summarizeDay } from './summary';
 /* eslint-enable import/first */
@@ -184,5 +185,49 @@ describe('recallState', () => {
   it('is never due with a booking ahead, and ignores future visits', () => {
     expect(recallState([day(9), day(30), day(51)], true, now)?.due).toBe(false);
     expect(recallState([day(9), day(30), day(120)], false, now)).toBeNull();
+  });
+});
+
+describe('firstSteps', () => {
+  const priced = { is_active: true, price: 1800 };
+  const profile = { avatar_url: 'a', cover_url: 'c', bio: 'Мастер маникюра' };
+
+  it('starts at 0 of 3 after onboarding', () => {
+    const state = firstSteps({
+      services: [{ is_active: true, price: 0 }, { is_active: true, price: 0 }, priced],
+      clientCount: 0,
+      profile: { avatar_url: null, cover_url: null, bio: null },
+    });
+    expect(state.doneCount).toBe(0);
+    expect(state.complete).toBe(false);
+    expect(state.steps[0]).toEqual({ id: 'prices', done: false, unpriced: 2 });
+  });
+
+  it('ignores inactive unpriced services and a blank bio', () => {
+    const state = firstSteps({
+      services: [priced, { is_active: false, price: 0 }],
+      clientCount: 1,
+      profile: { ...profile, bio: '   ' },
+    });
+    expect(state.steps.map((s) => s.done)).toEqual([true, true, false]);
+  });
+
+  it('is complete when all three are done', () => {
+    expect(firstSteps({ services: [priced], clientCount: 3, profile }).complete).toBe(true);
+  });
+});
+
+describe('greetingPeriod', () => {
+  it('splits the day', () => {
+    expect([4, 5, 11, 12, 16, 17, 22, 23].map(greetingPeriod)).toEqual([
+      'night',
+      'morning',
+      'morning',
+      'day',
+      'day',
+      'evening',
+      'evening',
+      'night',
+    ]);
   });
 });

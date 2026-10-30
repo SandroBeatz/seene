@@ -22,7 +22,8 @@ export default function HomeStackLayout() {
       }}>
       <Stack.Screen
         name="index"
-        options={{ title: t('tabs.today'), headerLargeTitle: process.env.EXPO_OS === 'ios' }}
+        // "Сегодня" draws its own header (avatar, greeting, analytics).
+        options={{ title: t('tabs.today'), headerShown: false }}
       />
     </Stack>
   );

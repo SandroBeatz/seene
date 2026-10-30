@@ -1,4 +1,5 @@
-/** "Сегодня" widget — public barrel. UI lands in Phase 2; the model is built and tested. */
+/** "Сегодня" widget — public barrel. */
+export { TodayScreen } from './ui/TodayScreen';
 export { summarizeDay, type DaySummary, type DaySegment } from './model/summary';
 export { recallState, type RecallState } from './model/recall';
 export {
@@ -12,3 +13,4 @@ export {
   type AttentionAction,
   type RecallCandidate,
 } from './model/attention';
+export { firstSteps, greetingPeriod, type FirstStepsState } from './model/first-steps';

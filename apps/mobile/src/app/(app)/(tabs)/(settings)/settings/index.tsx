@@ -71,6 +71,14 @@ export default function SettingsScreen() {
 
       <Divider />
       <Button label={t('auth.logOut')} variant="danger" onPress={() => void signOut()} fullWidth />
+
+      {__DEV__ ? (
+        <Button
+          label={t('uikit.openCatalog')}
+          variant="ghost"
+          onPress={() => router.push('/uikit')}
+        />
+      ) : null}
     </ScreenScrollView>
   );
 }

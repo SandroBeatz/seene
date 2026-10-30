@@ -101,6 +101,27 @@ export const GLYPHS = {
   ),
   // Content
   chat: stroke('medium', <Path d="M3.5 20.5l1.3-4.2A8.5 8.5 0 1 1 8 19.4z" />),
+  note: stroke(
+    'regular',
+    <>
+      <Path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 4v-4h0A1.5 1.5 0 0 1 4 14.5z" />
+      <Path d="M8 8h8M8 11.5h5" />
+    </>,
+  ),
+  blocked: stroke(
+    'regular',
+    <>
+      <Circle cx={12} cy={12} r={8.5} />
+      <Path d="M6 18L18 6" />
+    </>,
+  ),
+  unconfirmed: stroke(
+    'medium',
+    <>
+      <Circle cx={12} cy={12} r={9} />
+      <Path d="M12 11v5.5M12 7.5h.01" />
+    </>,
+  ),
   link: stroke(
     'bold',
     <>

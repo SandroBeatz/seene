@@ -3,6 +3,7 @@
  * column): 7 days, Monday-first, each with enabled + start/end wall-clock times and
  * optional breaks. Wall-clock strings are `HH:mm` in the master's timezone.
  */
+import type { Database } from '@/shared/api/database.types';
 import type { SpecializationKey } from '@/shared/config/specializations';
 import type { TimeFormat } from '../config/time-format';
 
@@ -81,3 +82,28 @@ export interface CompleteOnboardingPayload {
   booking_default_status: 'pending' | 'confirmed';
   services: OnboardingServiceInput[];
 }
+
+type ProfileRow = Database['public']['Tables']['master_profile']['Row'];
+type SettingsRow = Database['public']['Tables']['master_settings']['Row'];
+
+/** The profile fields the app screens read (`getMasterProfile`). */
+export type MasterProfile = Pick<
+  ProfileRow,
+  | 'id'
+  | 'first_name'
+  | 'last_name'
+  | 'username'
+  | 'avatar_url'
+  | 'cover_url'
+  | 'bio'
+  | 'schedule'
+  | 'whatsapp'
+  | 'telegram'
+  | 'instagram'
+  | 'phone'
+  | 'address'
+  | 'city'
+>;
+
+/** Display settings (`getMasterSettings`). */
+export type MasterSettings = Pick<SettingsRow, 'currency' | 'time_format' | 'date_format'>;

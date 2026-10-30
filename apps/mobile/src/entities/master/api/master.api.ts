@@ -5,7 +5,33 @@
  */
 import { supabase } from '@/shared/api/supabase';
 import type { Json } from '@/shared/api/database.types';
-import type { CompleteOnboardingPayload } from '../model/types';
+import type { CompleteOnboardingPayload, MasterProfile, MasterSettings } from '../model/types';
+
+const PROFILE_COLUMNS =
+  'id, first_name, last_name, username, avatar_url, cover_url, bio, schedule, whatsapp, telegram, instagram, phone, address, city';
+const SETTINGS_COLUMNS = 'currency, time_format, date_format';
+
+/** The master's own profile (the fields the app screens read), or null before onboarding. */
+export async function getMasterProfile(userId: string): Promise<MasterProfile | null> {
+  const { data, error } = await supabase
+    .from('master_profile')
+    .select(PROFILE_COLUMNS)
+    .eq('user_id', userId)
+    .maybeSingle();
+  if (error) throw error;
+  return data;
+}
+
+/** The master's display settings (currency, clock), or null before onboarding. */
+export async function getMasterSettings(userId: string): Promise<MasterSettings | null> {
+  const { data, error } = await supabase
+    .from('master_settings')
+    .select(SETTINGS_COLUMNS)
+    .eq('user_id', userId)
+    .maybeSingle();
+  if (error) throw error;
+  return data;
+}
 
 /** Globally-unique username check via the `check_username_available` RPC. */
 export async function checkUsernameAvailable(username: string): Promise<boolean> {
