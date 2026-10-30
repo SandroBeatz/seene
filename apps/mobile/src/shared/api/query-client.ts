@@ -28,7 +28,7 @@ export const queryClient = new QueryClient({
 
 /**
  * What goes to disk: the default (successful queries), minus queries marked
- * `meta: { persist: false }` — data that must not outlive the screen (the phone book).
+ * `meta: { persist: false }` — device data that must not outlive the screen.
  */
 export const persistDehydrateOptions = {
   shouldDehydrateQuery: (query: Query) =>

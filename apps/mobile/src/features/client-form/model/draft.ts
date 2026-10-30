@@ -77,6 +77,21 @@ export function draftFromClient(
   };
 }
 
+/** The draft with a phone book contact's name, phone and birthday filled in. */
+export function withCard(draft: ClientDraft, card: ClientCardDto): ClientDraft {
+  return {
+    ...draft,
+    firstName: card.first_name,
+    lastName: card.last_name ?? '',
+    phone: card.phone ? nationalDisplay(card.phone) : draft.phone,
+    phoneCountry: phoneCountry(card.phone) ?? draft.phoneCountry,
+    birthday:
+      card.birth_day && card.birth_month
+        ? { day: card.birth_day, month: card.birth_month }
+        : draft.birthday,
+  };
+}
+
 /** WhatsApp starts as the client's phone, the way people usually have it. */
 export function whatsappSeed(draft: ClientDraft): string {
   const phone = resolvePhoneInput(draft.phone, draft.phoneCountry).canonical;

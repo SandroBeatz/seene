@@ -2,3 +2,4 @@
 export { ClientForm, type ClientFormProps } from './ui/ClientForm';
 export { usePhoneCountry } from './model/usePhoneCountry';
 export { useDeleteClient } from './model/useDeleteClient';
+export { ClientNoteEditor } from './ui/ClientNoteEditor';

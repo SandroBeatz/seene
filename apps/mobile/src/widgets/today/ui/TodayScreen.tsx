@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { router } from 'expo-router';
 import { DateTime } from 'luxon';
 import { useTranslation } from 'react-i18next';
-import { RefreshControl, View } from 'react-native';
+import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { errorMessageKey, normalizeError } from '@/shared/api/errors';
@@ -21,6 +21,7 @@ import {
   Text,
   type ContextMenuAnchor,
   type IconName,
+  useRefreshControl,
 } from '@/shared/ui';
 import { getAppointmentPhase } from '@/entities/appointment';
 import { ATTENTION_MENU } from '../model/attention';
@@ -60,6 +61,9 @@ export function TodayScreen() {
   });
   const [note, setNote] = useState<{ clientName: string; text: string } | null>(null);
   const [menu, setMenu] = useState<Menu | null>(null);
+  const refreshControl = useRefreshControl(() =>
+    Promise.all([today.refetch(), attention.refetch()]),
+  );
 
   const top = { paddingTop: insets.top + theme.space[2.5] };
 
@@ -118,7 +122,6 @@ export function TodayScreen() {
     locale,
     formatNumber: (n) => numberFormat.format(n),
   };
-  const refetchAll = () => Promise.all([today.refetch(), attention.refetch()]);
 
   return (
     <>
@@ -126,9 +129,7 @@ export function TodayScreen() {
         contentContainerStyle={[styles.content, top]}
         // No native header: the top safe area is padded by hand, identically on Android.
         contentInsetAdjustmentBehavior="never"
-        refreshControl={
-          <RefreshControl refreshing={today.isRefetching} onRefresh={() => void refetchAll()} />
-        }>
+        refreshControl={refreshControl}>
         <TodayHeader
           firstName={firstName}
           lastName={today.profile?.last_name ?? ''}
@@ -190,7 +191,11 @@ export function TodayScreen() {
         anchor={menu?.anchor ?? null}
         preview={
           menu?.kind === 'attention' ? (
-            <AttentionCardView card={menu.card} width={menu.anchor.width} format={attentionFormat} />
+            <AttentionCardView
+              card={menu.card}
+              width={menu.anchor.width}
+              format={attentionFormat}
+            />
           ) : menu ? (
             <VisitEventPreview
               visit={menu.visit}
@@ -208,7 +213,10 @@ export function TodayScreen() {
           if (menu?.kind === 'attention') {
             act.cardMenu(menu.card, key as (typeof ATTENTION_MENU)['recall']['regular'][number]);
           } else if (menu) {
-            act.scheduleMenu(menu.visit, key as (typeof SCHEDULE_MENU)['upcoming']['regular'][number]);
+            act.scheduleMenu(
+              menu.visit,
+              key as (typeof SCHEDULE_MENU)['upcoming']['regular'][number],
+            );
           }
         }}
       />
@@ -238,11 +246,7 @@ const MENU_ICON: Record<string, IconName> = {
   no_show: 'noShow',
 };
 
-function menuItems(
-  menu: Menu | null,
-  now: number,
-  t: ReturnType<typeof useTranslation>['t'],
-) {
+function menuItems(menu: Menu | null, now: number, t: ReturnType<typeof useTranslation>['t']) {
   if (!menu) return [];
   const groups =
     menu.kind === 'schedule'

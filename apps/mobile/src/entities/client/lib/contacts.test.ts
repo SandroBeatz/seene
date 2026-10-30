@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import { contactToCard, importCandidates } from './contacts';
+import { contactToCard } from './contacts';
 
 describe('contactToCard', () => {
   it('takes the name and the first valid number in the master country', () => {
@@ -31,27 +31,5 @@ describe('contactToCard', () => {
     });
     expect(contactToCard({ id: '1', fullName: 'Салон', phones: [] }, 'KG')).toMatchObject({ first_name: 'Салон', phone: null });
     expect(contactToCard({ id: '1', phones: [{ number: '+996555123456' }] }, 'KG')).toBeNull();
-  });
-});
-
-describe('importCandidates', () => {
-  it('marks known numbers, drops repeated ones and sorts by name', () => {
-    const rows = importCandidates(
-      [
-        { id: 'b', givenName: 'Бермет', phones: [{ number: '0700 88 21 40' }] },
-        { id: 'a', givenName: 'Айгерим', phones: [{ number: '0555 12 34 56' }] },
-        { id: 'a2', givenName: 'Айгерим (работа)', phones: [{ number: '+996 555 12 34 56' }] },
-        { id: 'c', givenName: 'Без номера' },
-        { id: 'd', givenName: 'Чужой формат', phones: [{ number: '(555) 564-8583' }] },
-      ],
-      [{ phone: null, whatsapp: '996700882140' }],
-      'KG',
-    );
-    expect(rows.map((r) => [r.contactId, r.phone, r.exists, r.unreadable])).toEqual([
-      ['a', '996555123456', false, false],
-      ['c', null, false, false],
-      ['b', '996700882140', true, false],
-      ['d', null, false, true],
-    ]);
   });
 });

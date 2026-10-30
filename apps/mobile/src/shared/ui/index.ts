@@ -59,6 +59,7 @@ export {
 export { Avatar, initialsOf, type AvatarProps, type AvatarSize, type AvatarTone } from './Avatar';
 export { GlassSurface, type GlassSurfaceProps } from './GlassSurface';
 export { VipBadge, type VipBadgeProps } from './VipBadge';
+export { NoteSheet, type NoteSheetLabels, type NoteSheetProps } from './NoteSheet';
 export {
   FloatingTabBar,
   FloatingTabBarItem,
@@ -102,4 +103,5 @@ export {
 } from './hooks/useScrollFade';
 export { useReducedMotion } from './hooks/useReducedMotion';
 export { useNow } from './hooks/useNow';
+export { useRefreshControl } from './hooks/useRefreshControl';
 export { useReduceTransparency } from './hooks/useReduceTransparency';

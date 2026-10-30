@@ -58,7 +58,11 @@ export function FormScreen({
   const keyboardGap = theme.space[3];
 
   return (
-    <View style={[styles.root, { paddingTop: topPad, backgroundColor: theme.colors.bg.canvas }]}>
+    // Kept as a real view: in a form sheet, react-native-screens pins a ScrollView that
+    // is a direct child of the screen to the top and stretches it over the header.
+    <View
+      style={[styles.root, { paddingTop: topPad, backgroundColor: theme.colors.bg.canvas }]}
+      collapsable={false}>
       {header ? <View style={padded && styles.gutter}>{header}</View> : null}
       <KeyboardAwareScrollView
         style={[styles.scroll, style]}

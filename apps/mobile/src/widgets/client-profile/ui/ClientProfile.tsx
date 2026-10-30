@@ -7,7 +7,7 @@ import { useRef, useState } from 'react';
 import { router } from 'expo-router';
 import { DateTime } from 'luxon';
 import { useTranslation } from 'react-i18next';
-import { Alert, Linking, Pressable, RefreshControl, Share, View } from 'react-native';
+import { Alert, Linking, Pressable, Share, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { getAppointmentPhase } from '@/entities/appointment';
@@ -29,6 +29,7 @@ import {
   VipBadge,
   type ContextMenuAnchor,
   type ContextMenuItem,
+  useRefreshControl,
 } from '@/shared/ui';
 import { clientSince } from '../model/profile';
 import { useClientProfile, type ProfileVisit } from '../model/useClientProfile';
@@ -44,6 +45,7 @@ export function ClientProfile({ clientId }: { clientId: string }) {
   const deleteClient = useDeleteClient();
   const moreRef = useRef<View>(null);
   const [menu, setMenu] = useState<ContextMenuAnchor | null>(null);
+  const refreshControl = useRefreshControl(profile.refetch);
 
   const top = { paddingTop: insets.top + theme.space[1.5] };
   const monthNames = t('monthsGenitive', { returnObjects: true }) as string[];
@@ -68,7 +70,11 @@ export function ClientProfile({ clientId }: { clientId: string }) {
             accessibilityLabel={t('clients.profile.more')}
             onPress={() =>
               moreRef.current?.measureInWindow((x, y, width, height) =>
-                setMenu({ x: x + width - MENU_WIDTH, y: y + height + theme.space[2], width: MENU_WIDTH }),
+                setMenu({
+                  x: x + width - MENU_WIDTH,
+                  y: y + height + theme.space[2],
+                  width: MENU_WIDTH,
+                }),
               )
             }
           />
@@ -130,6 +136,8 @@ export function ClientProfile({ clientId }: { clientId: string }) {
   };
   const edit = () =>
     router.push({ pathname: '/client/[clientId]/edit', params: { clientId: client.id } });
+  const editNote = () =>
+    router.push({ pathname: '/client/[clientId]/note', params: { clientId: client.id } });
   const share = () =>
     void Share.share({
       message: [name, client.phone ? formatPhone(client.phone) : null].filter(Boolean).join('\n'),
@@ -155,17 +163,21 @@ export function ClientProfile({ clientId }: { clientId: string }) {
       <ScreenScrollView
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 130 }]}
         contentInsetAdjustmentBehavior="never"
-        refreshControl={
-          <RefreshControl refreshing={profile.isRefetching} onRefresh={() => void profile.refetch()} />
-        }>
+        refreshControl={refreshControl}>
         <View style={styles.identity}>
           <Avatar name={name} color={client.avatar_color} size="xxl" />
           <View style={styles.grow}>
             <View style={styles.nameLine}>
-              <Text variant="stat" numberOfLines={1} style={styles.shrink} accessibilityRole="header">
+              <Text
+                variant="stat"
+                numberOfLines={1}
+                style={styles.shrink}
+                accessibilityRole="header">
                 {name}
               </Text>
-              {client.is_favorite ? <VipBadge accessibilityLabel={t('clients.list.vipA11y')} /> : null}
+              {client.is_favorite ? (
+                <VipBadge accessibilityLabel={t('clients.list.vipA11y')} />
+              ) : null}
             </View>
             {client.phone ? (
               <Text variant="subhead" color="secondary" tabularNums>
@@ -238,7 +250,7 @@ export function ClientProfile({ clientId }: { clientId: string }) {
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={t('clients.profile.noteA11y')}
-            onPress={edit}
+            onPress={editNote}
             style={({ pressed }) => [styles.note, pressed && styles.pressed]}>
             <Icon name="note" size="md" color="content.tertiary" />
             <View style={styles.grow}>
@@ -254,7 +266,7 @@ export function ClientProfile({ clientId }: { clientId: string }) {
         ) : (
           <Pressable
             accessibilityRole="button"
-            onPress={edit}
+            onPress={editNote}
             style={({ pressed }) => [styles.addNote, pressed && styles.pressed]}>
             <Icon name="note" size="md" color="content.secondary" />
             <Text variant="subhead" color="secondary">
@@ -393,7 +405,9 @@ function VisitCard({
   const { appointment } = visit;
   const phase = getAppointmentPhase(appointment, now);
   const ahead = phase === 'upcoming' || phase === 'unconfirmed' || phase === 'request';
-  const end = new Date(Date.parse(appointment.start_at) + appointment.duration * 60_000).toISOString();
+  const end = new Date(
+    Date.parse(appointment.start_at) + appointment.duration * 60_000,
+  ).toISOString();
   return (
     <Pressable
       accessibilityRole="button"

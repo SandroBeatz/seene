@@ -234,27 +234,6 @@
       },
       "notFound": "Client not found. They may have been deleted."
     },
-    "import": {
-      "title": "From contacts",
-      "search": "Name or number",
-      "selectAll": "Select all",
-      "clearAll": "Clear",
-      "noPhone": "No number",
-      "exists": "Already in your list",
-      "pick": "Choose contacts",
-      "submit_one": "Add {{count}} client",
-      "submit_other": "Add {{count}} clients",
-      "deniedTitle": "No access to contacts",
-      "deniedText": "Allow Seene to see your contacts in the phone settings, then choose whom to add.",
-      "openSettings": "Open settings",
-      "limited": "Seene only sees the contacts you shared.",
-      "limitedMore": "Choose more",
-      "empty": "Your phone book has no contacts with a name.",
-      "loading": "Reading contacts…",
-      "done_one": "{{count}} client added",
-      "done_other": "{{count}} clients added",
-      "unreadable": "Number not recognised — added without it"
-    },
     "fromContacts": "Add from phone contacts",
     "pickContact": "Pick from phone contacts",
     "merge": {
