@@ -341,6 +341,7 @@ export const shadow = {
   tabBar: '0px 8px 24px rgba(0, 0, 0, 0.08)',
   tabAction: '0px 12px 28px rgba(0, 0, 0, 0.14)',
   menu: '0px 16px 40px rgba(0, 0, 0, 0.16), 0px 2px 6px rgba(0, 0, 0, 0.06)',
+  panel: '0px -8px 24px rgba(0, 0, 0, 0.05)',
   bubble: '0px 12px 30px rgba(0, 0, 0, 0.18)',
   bubbleDark: '0px 12px 30px rgba(0, 0, 0, 0.22)',
   pop: '0px 10px 26px rgba(0, 0, 0, 0.14)',

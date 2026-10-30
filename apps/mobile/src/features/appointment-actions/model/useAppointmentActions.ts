@@ -96,8 +96,15 @@ export function useAppointmentActions(ctx: AppointmentActionContext | null) {
           params: { appointmentId: id },
         });
       case 'reschedule':
+        return router.push({
+          pathname: '/appointment/[appointmentId]/reschedule',
+          params: { appointmentId: id },
+        });
       case 'edit':
-        return router.push({ pathname: '/appointment-form', params: { appointmentId: id } });
+        return router.push({
+          pathname: '/appointment/[appointmentId]/services',
+          params: { appointmentId: id },
+        });
       case 'book_again':
         return router.push({
           pathname: '/quick-create',

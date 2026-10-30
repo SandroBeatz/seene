@@ -796,5 +796,55 @@
       "sensitiveSkin": "Peau sensible",
       "runsLate": "Souvent en retard"
     }
-  }
+  },
+  "servicesSheet": {
+    "title": "Prestations",
+    "back": "Retour au rendez-vous",
+    "search": "Rechercher une prestation",
+    "all": "Toutes",
+    "other": "Autre",
+    "noCategory": "Sans catégorie",
+    "nothing": "Aucun résultat",
+    "pickOne": "Choisissez des prestations",
+    "badDuration": "La durée doit être de 5 minutes à 24 heures.",
+    "count_one": "{{count}} prestation",
+    "count_few": "{{count}} prestations",
+    "count_many": "{{count}} prestations",
+    "count_other": "{{count}} prestations",
+    "asListed": "Comme dans la grille",
+    "canChange": "Modifiable pour ce rendez-vous",
+    "minutes": "min",
+    "durationA11y": "Durée de ce rendez-vous, minutes",
+    "priceA11y": "Prix de ce rendez-vous, {{currency}}"
+  },
+  "reschedule": {
+    "title": "Déplacer",
+    "back": "Retour au rendez-vous",
+    "now": "Actuellement : {{when}}",
+    "zone": "votre fuseau : {{zone}}",
+    "parts": {
+      "morning": "Matin",
+      "afternoon": "Après-midi",
+      "evening": "Soir"
+    },
+    "full": "Ce jour est complet.",
+    "dayOff": "Jour de repos — vous pouvez saisir l’heure.",
+    "manual": "Saisir l’heure",
+    "pick": "Choisissez un horaire",
+    "submit": "Déplacer · {{when}}"
+  },
+  "months": [
+    "Janvier",
+    "Février",
+    "Mars",
+    "Avril",
+    "Mai",
+    "Juin",
+    "Juillet",
+    "Août",
+    "Septembre",
+    "Octobre",
+    "Novembre",
+    "Décembre"
+  ]
 }
