@@ -118,6 +118,7 @@ export function ServicesEditor({
         title={t('servicesSheet.title')}
         leading="back"
         leadingLabel={t('servicesSheet.back')}
+        spacer
       />
 
       <View style={styles.search}>

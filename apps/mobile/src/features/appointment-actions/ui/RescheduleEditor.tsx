@@ -137,7 +137,9 @@ export function RescheduleEditor({
         leadingLabel={t('reschedule.back')}
       />
 
-      <ScrollView contentContainerStyle={[styles.content, { paddingBottom: 140 + insets.bottom }]}>
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        contentContainerStyle={[styles.content, { paddingBottom: 140 + insets.bottom }]}>
         <Text variant="footnote" color="secondary">
           {t('reschedule.now', { when: label(appointment.start_at) })}
         </Text>

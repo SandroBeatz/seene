@@ -141,6 +141,7 @@ export function CheckoutEditor({
       <SheetChrome title={t('checkout.title')} leading="back" leadingLabel={t('checkout.back')} />
 
       <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={[styles.content, { paddingBottom: 120 + insets.bottom }]}
         keyboardShouldPersistTaps="handled">
         <Text variant="footnote" color="tertiary" align="center" numberOfLines={1}>

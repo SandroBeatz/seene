@@ -6,8 +6,11 @@
  * drawn in content (`SheetHeader`), the menu as an alert.
  *
  * Render it once, first, in the sheet's content column. The route must show the
- * native header on iOS (the app layout's sheet options do). iOS 26 lays the bar
- * over the content, so on iOS the chrome is also a spacer of the bar's height.
+ * native header on iOS (the app layout's sheet options do). The bar is translucent
+ * and lies over the content, like on pages: a sheet's scroll view takes
+ * `contentInsetAdjustmentBehavior="automatic"` so its content starts under the bar
+ * and scrolls beneath it. Content pinned above the scroll (a search field) needs
+ * `spacer`, which pushes it below the bar.
  */
 import { router, Stack } from 'expo-router';
 import { useHeaderHeight } from 'expo-router/react-navigation';
@@ -40,6 +43,8 @@ export interface SheetChromeProps {
   action?: SheetChromeAction;
   /** A trailing "⋯" with these items; ignored when `action` is set. */
   menu?: { label: string; cancelLabel: string; items: SheetChromeAction[] };
+  /** iOS: reserve the bar's height in the column (content that doesn't scroll under it). */
+  spacer?: boolean;
 }
 
 export function SheetChrome({
@@ -49,6 +54,7 @@ export function SheetChrome({
   onLeadingPress = () => router.back(),
   action,
   menu,
+  spacer = false,
 }: SheetChromeProps) {
   const { theme } = useUnistyles();
   const menuAction = (item: SheetChromeAction) => (
@@ -64,7 +70,7 @@ export function SheetChrome({
   if (process.env.EXPO_OS === 'ios') {
     return (
       <>
-        <View style={{ height: headerHeight }} />
+        {spacer ? <View style={{ height: headerHeight }} /> : null}
         <Stack.Screen options={{ title }} />
         <Stack.Toolbar placement="left">
           <Stack.Toolbar.Button

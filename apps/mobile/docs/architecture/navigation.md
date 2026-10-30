@@ -47,7 +47,6 @@ src/app/
 │   ├── settings/services.tsx           /settings/services, pushed over the tab bar
 │   ├── (tabs)/
 │   │   ├── _layout.tsx                 the only NativeTabs integration point
-│   │   ├── create.tsx                  the "+" slot (disabled tab → create menu)
 │   │   ├── (home)/_layout.tsx          nested Stack; canonical / entry
 │   │   ├── (calendar)/_layout.tsx      nested Stack; /calendar
 │   │   ├── (clients)/_layout.tsx       nested Stack; /clients
@@ -78,7 +77,7 @@ origin navigator matters, as it does for the appointment route shared by Home an
 | `Stack.Protected`    | Makes auth, onboarding, app, restoration, and dev routes available only while their guards are true | Access depends on session/application state                        |
 | Application `Stack`  | Keeps Native Tabs as the base; pushed screens and route modals are siblings above it                | A screen pushed from a tab, or presented above the whole tab bar   |
 | Nested tab `Stack`   | The tab root's native header (large title, toolbar, search)                                         | A tab root needs native header configuration                       |
-| `NativeTabs`         | Four primary destinations + the "+" create slot                                                   | A destination is a peer users switch between frequently            |
+| `NativeTabs`         | Four primary destinations; the floating "+" create card sits over the bar                          | A destination is a peer users switch between frequently            |
 | Shared route group   | One appointment detail implementation in Home and Calendar stacks                                   | The same screen must retain the navigator context that opened it   |
 | Route modal          | Deep-linkable editing, checkout, and multi-step creation                                            | The overlay is navigation state or owns multiple screens           |
 | `Modal` / `Sheet` UI | Blocking confirmation or transient picker/preview                                                   | The overlay is local UI state and is not a navigable workflow      |

@@ -57,8 +57,7 @@ src/app/
 │   ├── clients/[clientId].tsx  # client profile, pushed over the tab bar
 │   ├── settings/               # profile, services — pushed over the tab bar
 │   ├── (tabs)/
-│   │   ├── _layout.tsx         # NativeTabs: Сегодня·Календарь·Клиенты·Меню + "+" slot
-│   │   ├── create.tsx          # the "+" slot's placeholder route (opens the create menu)
+│   │   ├── _layout.tsx         # NativeTabs: Сегодня·Календарь·Клиенты·Меню + floating "+"
 │   │   ├── (home)/             # nested Stack + canonical /
 │   │   ├── (calendar)/         # nested Stack + /calendar
 │   │   ├── (clients)/          # nested Stack + /clients

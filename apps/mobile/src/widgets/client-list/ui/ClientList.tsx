@@ -173,7 +173,8 @@ export function ClientList() {
       </Stack.Toolbar>
       <Stack.SearchBar
         placeholder={t('clients.list.search')}
-        placement="stacked"
+        // iOS 26: a search button in the bar next to "add" that opens a focused field.
+        placement="integratedButton"
         autoCapitalize="none"
         onChangeText={(e) => setQuery(e.nativeEvent.text)}
         onCancelButtonPress={() => setQuery('')}
@@ -255,9 +256,12 @@ export function ClientList() {
   }
 
   return (
-    <View style={styles.root}>
+    // The list is the screen's first view, so the large title collapses into the bar
+    // as it scrolls and comes back at the top.
+    <>
       {chrome}
       <FlatList
+        style={styles.root}
         data={items}
         contentInsetAdjustmentBehavior="automatic"
         keyExtractor={(item) => item.key}
@@ -305,7 +309,7 @@ export function ClientList() {
           );
         }}
       />
-    </View>
+    </>
   );
 }
 

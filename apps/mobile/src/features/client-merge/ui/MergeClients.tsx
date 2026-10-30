@@ -85,7 +85,7 @@ export function MergeClients({ client }: { client: Client }) {
     // Kept as a real view: a form sheet (react-native-screens) pins a ScrollView that
     // is a direct child of the screen to the top and stretches it over the header.
     <View style={styles.root} collapsable={false}>
-      <SheetChrome title={t('clients.merge.title')} leadingLabel={t('clients.form.close')} />
+      <SheetChrome title={t('clients.merge.title')} leadingLabel={t('clients.form.close')} spacer />
       <Text variant="footnote" color="secondary" style={styles.hint}>
         {t('clients.merge.hint', { name: keepName })}
       </Text>

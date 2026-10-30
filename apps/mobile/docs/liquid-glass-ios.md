@@ -128,10 +128,11 @@ Liquid Glass is **build-time gated**, not just runtime:
 ### 7.1 Native tab bar (automatic — current)
 
 `src/app/(app)/(tabs)/_layout.tsx` uses `NativeTabs`: Сегодня · Календарь · Клиенты · Меню with SF
-Symbols and a token `tintColor`, no background. The round "+" on the right is the system search
-slot (`role="search"`, `sf="plus"`): iOS 26 draws it apart from the bar. The tab is `disabled`, so
-a tap never selects it; the `tabPress` listener opens the create menu (`features/create-menu`, a
-native action sheet). Apple doesn't let a tab bar item carry a pop-up menu, hence the sheet.
+Symbols and a token `tintColor`, no background, full width. The "+" floats over the bar's right
+end (`features/create-menu`, explicit glass: a `GlassSurface` button). A tap grows a `GlassSurface`
+card out of the button's corner with a spring — Перерыв, Новый клиент, and "Новая запись" as the
+main button; a tap outside folds it back. Apple doesn't let a tab bar item carry such a card,
+hence a floating button rather than a tab.
 
 Screens pushed from a tab (client profile, settings pages, analytics) are routes of the app stack
 `src/app/(app)/_layout.tsx`, not of the tab's own stack, so they slide over the bar instead of
@@ -209,7 +210,7 @@ guessing APIs from memory (per [AGENTS.md](../AGENTS.md)):
 | Path                                           | Role                                               |
 | ---------------------------------------------- | -------------------------------------------------- |
 | `src/app/(app)/(tabs)/_layout.tsx`             | Native tabs + the "+" slot                         |
-| `src/features/create-menu/`                    | The "+" action sheet                               |
+| `src/features/create-menu/`                    | The floating "+" and its create card (glass)      |
 | `src/shared/ui/SheetChrome/`                   | Native sheet bar items (iOS), SheetHeader fallback |
 | `src/shared/ui/NavigationHeaderBackground/`    | Tokened gradient behind native Stack chrome        |
 | `src/shared/ui/GlassSurface/GlassSurface.tsx`  | Shared glass primitive: guard + tokened fallback   |

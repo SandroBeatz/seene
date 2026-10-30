@@ -21,11 +21,7 @@ import {
 import { useUserId } from '@/entities/session';
 import { normalizeError } from '@/shared/api/errors';
 import { AVATAR_COLOR_KEYS, AVATAR_GRADIENTS } from '@/shared/config/palettes';
-import {
-  dialCode,
-  resolvePhoneInput,
-  type CountryCode,
-} from '@/shared/lib/phone';
+import { dialCode, resolvePhoneInput, type CountryCode } from '@/shared/lib/phone';
 import { pickPhoneBookContact } from '@/shared/lib/phone-book';
 import {
   Avatar,
@@ -124,7 +120,9 @@ export function ClientForm({ client, defaultCountry, prefill }: ClientFormProps)
       onError: (error: unknown) => {
         const kind = normalizeError(error).kind;
         Alert.alert(
-          kind === 'duplicate_phone' ? t('clients.form.errors.duplicate') : t('actions.failedTitle'),
+          kind === 'duplicate_phone'
+            ? t('clients.form.errors.duplicate')
+            : t('actions.failedTitle'),
           kind === 'duplicate_phone' ? undefined : t('actions.failedMessage'),
         );
       },
@@ -160,6 +158,7 @@ export function ClientForm({ client, defaultCountry, prefill }: ClientFormProps)
 
       <KeyboardAwareScrollView
         style={styles.scroll}
+        contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={[styles.content, { paddingBottom: 120 + insets.bottom }]}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
@@ -198,7 +197,9 @@ export function ClientForm({ client, defaultCountry, prefill }: ClientFormProps)
             })}
           </View>
           <Text variant="caption" color="tertiary">
-            {t('clients.form.avatarCaption', { name: t(`clients.form.colors.${draft.avatarColor}`) })}
+            {t('clients.form.avatarCaption', {
+              name: t(`clients.form.colors.${draft.avatarColor}`),
+            })}
           </Text>
         </View>
 
@@ -312,11 +313,18 @@ export function ClientForm({ client, defaultCountry, prefill }: ClientFormProps)
             <Pressable
               accessibilityRole="button"
               onPress={() => setBirthdayOpen(true)}
-              style={({ pressed }) => [styles.grow, styles.birthdayMain, pressed && styles.pressed]}>
+              style={({ pressed }) => [
+                styles.grow,
+                styles.birthdayMain,
+                pressed && styles.pressed,
+              ]}>
               <Text variant="caption" color="tertiary">
                 {t('clients.form.birthday')}
               </Text>
-              <Text variant="callout" color={birthdayLabel ? 'primary' : 'tertiary'} numberOfLines={1}>
+              <Text
+                variant="callout"
+                color={birthdayLabel ? 'primary' : 'tertiary'}
+                numberOfLines={1}>
                 {birthdayLabel || t('clients.form.birthdayPlaceholder')}
               </Text>
             </Pressable>

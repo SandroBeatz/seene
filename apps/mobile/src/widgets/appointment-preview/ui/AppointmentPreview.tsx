@@ -81,6 +81,8 @@ export function AppointmentPreview({ appointmentId }: { appointmentId: string })
       <SheetChrome
         title=""
         leadingLabel={t('common.close')}
+        // Loading and error states don't scroll; the loaded visit scrolls under the bar.
+        spacer={!data}
         menu={
           data
             ? {
@@ -126,6 +128,7 @@ export function AppointmentPreview({ appointmentId }: { appointmentId: string })
         <>
           <ScrollView
             style={styles.scroll}
+            contentInsetAdjustmentBehavior="automatic"
             contentContainerStyle={[styles.content, { paddingBottom: sheetBottom + 68 + 32 }]}
             showsVerticalScrollIndicator={false}>
             <StatusPill
