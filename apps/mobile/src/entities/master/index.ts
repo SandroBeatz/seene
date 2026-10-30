@@ -2,8 +2,11 @@
  * onboarding feature composes them with the session store. */
 export { defaultTimeFormatForCountry, type TimeFormat } from './config/time-format';
 export { completeOnboarding, importAvatar } from './api/master.api';
-export { toStoredSchedule } from './lib/schedule';
+export { toStoredSchedule, parseStoredSchedule, scheduleForWeekday } from './lib/schedule';
 export {
+  masterKeys,
+  useMasterProfileQuery,
+  useMasterSettingsQuery,
   useUsernameAvailability,
   isUsernameSyntaxValid,
   MIN_USERNAME_LENGTH,
@@ -11,6 +14,8 @@ export {
 export { WEEKDAYS } from './model/types';
 export type {
   CompleteOnboardingPayload,
+  MasterProfile,
+  MasterSettings,
   OnboardingServiceInput,
   StoredSchedule,
   Weekday,

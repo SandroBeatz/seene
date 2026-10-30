@@ -633,17 +633,57 @@
     "UZS": "Sum"
   },
   "today": {
-    "profileCreated": {
-      "title": "Profile created",
-      "text": "Now finish your page. Clients book more readily when there’s a photo and a description.",
-      "todo": {
-        "avatar": "Avatar",
-        "cover": "Cover",
-        "about": "Description",
-        "contacts": "Contacts"
+    "openMenu": "Profile and menu",
+    "greeting": {
+      "morning": "Good morning",
+      "day": "Good afternoon",
+      "evening": "Good evening",
+      "night": "Good night"
+    },
+    "visits_one": "visit",
+    "visits_few": "visits",
+    "visits_many": "visits",
+    "visits_other": "visits",
+    "ofPlanned": "of {{amount}}",
+    "summaryHint": "Opens analytics",
+    "earnedA11y": "Earned {{earned}} of {{planned}} {{currency}}",
+    "segmentsA11y": "{{count}} {{visits}}: {{passed}} done, {{current}} now, {{ahead}} ahead",
+    "firstSteps": {
+      "title": "First steps",
+      "progress": "{{done}} of {{total}}",
+      "prices": {
+        "title": "Check your prices",
+        "subtitle_one": "{{count}} service without a price",
+        "subtitle_few": "{{count}} services without a price",
+        "subtitle_many": "{{count}} services without a price",
+        "subtitle_other": "{{count}} services without a price"
       },
-      "fill": "Fill in profile · 2 min",
-      "later": "Later"
+      "clients": {
+        "title": "Add clients",
+        "subtitle": "From your phone contacts"
+      },
+      "profile": {
+        "title": "Complete your profile",
+        "subtitle": "Photo, cover, bio, contacts"
+      }
+    },
+    "schedule": {
+      "title": "Schedule",
+      "empty": "No appointments yet",
+      "freeFrom": "Free from {{from}} to {{to}}",
+      "dayOff": "Day off today",
+      "breakUntil": "Break until {{time}}",
+      "personal": "Personal time",
+      "personalNamed": "{{name}} · personal time",
+      "allDay": "All day",
+      "unconfirmed": "Not confirmed",
+      "unknownClient": "Client",
+      "nowA11y": "Now {{time}}"
+    },
+    "note": {
+      "open": "Appointment note",
+      "close": "Close note",
+      "from": "Booking note · {{name}}"
     }
   }
 }

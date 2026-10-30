@@ -17,3 +17,6 @@ export interface Sale extends SaleRow {
   payment_type: PaymentTypeRef | null;
   items: SaleItem[];
 }
+
+/** A sale reduced to what day totals need (`listSaleAmountsByRange`). */
+export type SaleAmount = Pick<SaleRow, 'appointment_id' | 'amount'>;

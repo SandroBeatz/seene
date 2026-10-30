@@ -3,7 +3,7 @@
  * are written by the `complete_appointment` RPC in Phase 3). Owner-scoped by RLS.
  */
 import { supabase } from '@/shared/api/supabase';
-import type { Sale } from '../model/types';
+import type { Sale, SaleAmount } from '../model/types';
 
 const SELECT_WITH_RELATIONS = '*, payment_type:payment_type(name, color), items:sale_item(*)';
 
@@ -16,4 +16,20 @@ export async function getSaleByAppointment(appointmentId: string): Promise<Sale 
     .maybeSingle();
   if (error) throw error;
   return (data as unknown as Sale | null) ?? null;
+}
+
+/** Paid amounts whose `paid_at` (= the visit's start) falls in [from, to). */
+export async function listSaleAmountsByRange(
+  userId: string,
+  from: string,
+  to: string,
+): Promise<SaleAmount[]> {
+  const { data, error } = await supabase
+    .from('sale')
+    .select('appointment_id, amount')
+    .eq('user_id', userId)
+    .gte('paid_at', from)
+    .lt('paid_at', to);
+  if (error) throw error;
+  return data;
 }

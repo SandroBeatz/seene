@@ -312,6 +312,10 @@ export const typography = {
     textTransform: 'uppercase',
   },
   micro: { fontFamily: fontFamily.semibold, fontSize: 10, lineHeight: 13, letterSpacing: 0 },
+  /** Personal-time label on the schedule. */
+  captionMedium: { fontFamily: fontFamily.medium, fontSize: 12, lineHeight: 17, letterSpacing: 0 },
+  /** Client name on a schedule event card. */
+  eventTitle: { fontFamily: fontFamily.semibold, fontSize: 12.5, lineHeight: 16, letterSpacing: 0 },
   /** Inactive tab label (the active one is `micro`). */
   microMedium: { fontFamily: fontFamily.medium, fontSize: 10, lineHeight: 13, letterSpacing: 0 },
 } as const;

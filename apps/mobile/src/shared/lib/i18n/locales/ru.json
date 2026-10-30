@@ -633,17 +633,57 @@
     "UZS": "Сум"
   },
   "today": {
-    "profileCreated": {
-      "title": "Профиль создан",
-      "text": "Осталось оформить страницу. С фото и описанием клиенты записываются охотнее.",
-      "todo": {
-        "avatar": "Аватарка",
-        "cover": "Обложка",
-        "about": "Описание",
-        "contacts": "Контакты"
+    "openMenu": "Профиль и меню",
+    "greeting": {
+      "morning": "Доброе утро",
+      "day": "Добрый день",
+      "evening": "Добрый вечер",
+      "night": "Доброй ночи"
+    },
+    "visits_one": "запись",
+    "visits_few": "записи",
+    "visits_many": "записей",
+    "visits_other": "записи",
+    "ofPlanned": "из {{amount}}",
+    "summaryHint": "Открывает аналитику",
+    "earnedA11y": "Заработано {{earned}} из {{planned}} {{currency}}",
+    "segmentsA11y": "{{count}} {{visits}}: прошли {{passed}}, сейчас {{current}}, впереди {{ahead}}",
+    "firstSteps": {
+      "title": "Первые шаги",
+      "progress": "{{done}} из {{total}}",
+      "prices": {
+        "title": "Проверьте цены",
+        "subtitle_one": "{{count}} услуга без цены",
+        "subtitle_few": "{{count}} услуги без цены",
+        "subtitle_many": "{{count}} услуг без цены",
+        "subtitle_other": "{{count}} услуги без цены"
       },
-      "fill": "Заполнить профиль · 2 мин",
-      "later": "Позже"
+      "clients": {
+        "title": "Добавьте клиентов",
+        "subtitle": "Из контактов телефона"
+      },
+      "profile": {
+        "title": "Заполните профиль",
+        "subtitle": "Аватарка, обложка, описание, контакты"
+      }
+    },
+    "schedule": {
+      "title": "Расписание",
+      "empty": "Записей пока нет",
+      "freeFrom": "Свободно с {{from}} до {{to}}",
+      "dayOff": "Сегодня выходной",
+      "breakUntil": "Перерыв до {{time}}",
+      "personal": "Личное время",
+      "personalNamed": "{{name}} · личное время",
+      "allDay": "Весь день",
+      "unconfirmed": "Не подтверждена",
+      "unknownClient": "Клиент",
+      "nowA11y": "Сейчас {{time}}"
+    },
+    "note": {
+      "open": "Заметка к записи",
+      "close": "Закрыть заметку",
+      "from": "Заметка при записи · {{name}}"
     }
   }
 }

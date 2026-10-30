@@ -633,17 +633,57 @@
     "UZS": "Sum"
   },
   "today": {
-    "profileCreated": {
-      "title": "Profil créé",
-      "text": "Il reste à soigner votre page. Avec une photo et une description, les clients réservent plus volontiers.",
-      "todo": {
-        "avatar": "Avatar",
-        "cover": "Couverture",
-        "about": "Description",
-        "contacts": "Contacts"
+    "openMenu": "Profil et menu",
+    "greeting": {
+      "morning": "Bonjour",
+      "day": "Bon après-midi",
+      "evening": "Bonsoir",
+      "night": "Bonne nuit"
+    },
+    "visits_one": "rendez-vous",
+    "visits_few": "rendez-vous",
+    "visits_many": "rendez-vous",
+    "visits_other": "rendez-vous",
+    "ofPlanned": "sur {{amount}}",
+    "summaryHint": "Ouvre les statistiques",
+    "earnedA11y": "{{earned}} gagnés sur {{planned}} {{currency}}",
+    "segmentsA11y": "{{count}} {{visits}} : {{passed}} passés, {{current}} en cours, {{ahead}} à venir",
+    "firstSteps": {
+      "title": "Premiers pas",
+      "progress": "{{done}} sur {{total}}",
+      "prices": {
+        "title": "Vérifiez vos prix",
+        "subtitle_one": "{{count}} prestation sans prix",
+        "subtitle_few": "{{count}} prestations sans prix",
+        "subtitle_many": "{{count}} prestations sans prix",
+        "subtitle_other": "{{count}} prestations sans prix"
       },
-      "fill": "Compléter le profil · 2 min",
-      "later": "Plus tard"
+      "clients": {
+        "title": "Ajoutez des clients",
+        "subtitle": "Depuis les contacts du téléphone"
+      },
+      "profile": {
+        "title": "Complétez votre profil",
+        "subtitle": "Photo, couverture, description, contacts"
+      }
+    },
+    "schedule": {
+      "title": "Planning",
+      "empty": "Aucun rendez-vous pour l’instant",
+      "freeFrom": "Libre de {{from}} à {{to}}",
+      "dayOff": "Jour de repos",
+      "breakUntil": "Pause jusqu’à {{time}}",
+      "personal": "Temps personnel",
+      "personalNamed": "{{name}} · temps personnel",
+      "allDay": "Toute la journée",
+      "unconfirmed": "Non confirmé",
+      "unknownClient": "Client",
+      "nowA11y": "Maintenant {{time}}"
+    },
+    "note": {
+      "open": "Note du rendez-vous",
+      "close": "Fermer la note",
+      "from": "Note de réservation · {{name}}"
     }
   }
 }
