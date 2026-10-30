@@ -12,7 +12,7 @@ export default function UIKitNavigationScreen() {
         title={t('uikit.navigation.stack')}
         description={t('uikit.navigation.stackDescription')}
         recommendation={t('uikit.recommended.stack')}
-        source="src/app/(app)/(tabs)/(settings)/_layout.tsx"
+        source="src/app/(app)/_layout.tsx"
         code={'<Stack.Screen name="settings/profile" />'}
         action={
           <Link href="/settings/profile" asChild>
@@ -33,7 +33,7 @@ export default function UIKitNavigationScreen() {
         title={t('uikit.navigation.dynamic')}
         description={t('uikit.navigation.dynamicDescription')}
         recommendation={t('uikit.recommended.dynamic')}
-        source="src/app/(app)/(tabs)/(clients)/clients/[clientId].tsx"
+        source="src/app/(app)/clients/[clientId].tsx"
         code={"router.push({ pathname: '/clients/[clientId]', params: { clientId } })"}
         action={
           <Link

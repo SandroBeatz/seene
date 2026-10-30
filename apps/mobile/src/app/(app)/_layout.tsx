@@ -1,14 +1,19 @@
 import { type NativeStackNavigationOptions, Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useUnistyles } from 'react-native-unistyles';
-import { NavigationHeaderBackground } from '@/shared/ui/NavigationHeaderBackground';
+import { useStackScreenOptions } from '@/shared/ui';
 
 export const unstable_settings = { anchor: '(tabs)' };
 
-/** Protected application stack: tabs are the base, route modals are siblings. */
+/**
+ * Protected application stack: the tabs are the base; every screen pushed from a
+ * tab (client profile, settings pages, analytics) and every modal is a sibling, so
+ * it covers the tab bar instead of sitting under it.
+ */
 export default function AppLayout() {
   const { t } = useTranslation();
   const { theme } = useUnistyles();
+  const stackOptions = useStackScreenOptions();
   const sheet: NativeStackNavigationOptions = {
     presentation: 'formSheet',
     headerShown: false,
@@ -19,18 +24,16 @@ export default function AppLayout() {
   };
 
   return (
-    <Stack
-      screenOptions={{
-        headerBackButtonDisplayMode: 'minimal',
-        headerTransparent: process.env.EXPO_OS === 'ios',
-        headerShadowVisible: false,
-        headerTintColor: theme.colors.content.primary,
-        headerBackground: () => <NavigationHeaderBackground />,
-        statusBarStyle: theme.name === 'dark' ? 'light' : 'dark',
-        contentStyle: { backgroundColor: theme.colors.bg.canvas },
-      }}>
+    <Stack screenOptions={stackOptions}>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="analytics" options={{ title: t('tabs.analytics') }} />
+      {/* The profile draws its own back and "⋯" buttons. */}
+      <Stack.Screen
+        name="clients/[clientId]"
+        options={{ title: t('navigation.clientDetails'), headerShown: false }}
+      />
+      <Stack.Screen name="settings/profile" options={{ title: t('navigation.profileSettings') }} />
+      <Stack.Screen name="settings/services" options={{ title: t('services.title') }} />
       {/* Full-height sheets; the grabber is drawn in content so iOS and Android match. */}
       <Stack.Screen name="(modals)/appointment/[appointmentId]/index" options={sheet} />
       <Stack.Screen name="(modals)/appointment/[appointmentId]/note" options={sheet} />

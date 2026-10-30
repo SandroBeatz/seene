@@ -52,16 +52,17 @@ src/app/
 │   ├── onboarding/             # index → profile → professions (one route per step)
 │   └── welcome.tsx             # legacy redirect
 ├── (app)/
-│   ├── _layout.tsx             # protected Stack: tabs + analytics + modal siblings
+│   ├── _layout.tsx             # protected Stack: tabs + pushed screens + modal siblings
 │   ├── analytics.tsx           # opened from "Сегодня", not a tab
+│   ├── clients/[clientId].tsx  # client profile, pushed over the tab bar
+│   ├── settings/               # profile, services — pushed over the tab bar
 │   ├── (tabs)/
-│   │   ├── _layout.tsx         # headless tabs + FloatingTabBar (Сегодня·Календарь·＋·Клиенты·Меню)
+│   │   ├── _layout.tsx         # NativeTabs: Сегодня·Календарь·Клиенты·Меню + "+" slot
+│   │   ├── create.tsx          # the "+" slot's placeholder route (opens the create menu)
 │   │   ├── (home)/             # nested Stack + canonical /
 │   │   ├── (calendar)/         # nested Stack + /calendar
-│   │   ├── (clients)/          # nested Stack + dynamic client route
-│   │   ├── (settings)/         # nested Stack + pushed settings routes
-│   │   └── (home,calendar)/appointments/[appointmentId].tsx
-│   │                           # one shared route in two tab Stacks
+│   │   ├── (clients)/          # nested Stack + /clients
+│   │   └── (settings)/         # nested Stack + /settings
 │   └── (modals)/
 │       ├── appointment-form.tsx
 │       ├── checkout/[appointmentId].tsx

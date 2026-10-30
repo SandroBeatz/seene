@@ -40,17 +40,18 @@ src/app/
 │   ├── onboarding.tsx                  /onboarding
 │   └── welcome.tsx                     legacy /welcome redirect
 ├── (app)/                              signed in with an active profile
-│   ├── _layout.tsx                     tabs base + sibling modal presentations
+│   ├── _layout.tsx                     tabs base + pushed screens + sibling modals
+│   ├── analytics.tsx                   /analytics, pushed from "Сегодня"
+│   ├── clients/[clientId].tsx          /clients/[clientId], pushed over the tab bar
+│   ├── settings/profile.tsx            /settings/profile, pushed over the tab bar
+│   ├── settings/services.tsx           /settings/services, pushed over the tab bar
 │   ├── (tabs)/
 │   │   ├── _layout.tsx                 the only NativeTabs integration point
+│   │   ├── create.tsx                  the "+" slot (disabled tab → create menu)
 │   │   ├── (home)/_layout.tsx          nested Stack; canonical / entry
 │   │   ├── (calendar)/_layout.tsx      nested Stack; /calendar
-│   │   ├── (clients)/_layout.tsx       nested Stack; /clients and dynamic details
-│   │   ├── (analytics)/_layout.tsx     nested Stack; /analytics
-│   │   ├── (settings)/_layout.tsx      nested Stack; /settings and pushed screens
-│   │   └── (home,calendar)/
-│   │       └── appointments/[appointmentId].tsx
-│   │                                      shared appointment details route
+│   │   ├── (clients)/_layout.tsx       nested Stack; /clients
+│   │   └── (settings)/_layout.tsx      nested Stack; /settings
 │   └── (modals)/
 │       ├── appointment-form.tsx           standard route modal
 │       ├── checkout/[appointmentId].tsx   native form sheet
@@ -75,14 +76,18 @@ origin navigator matters, as it does for the appointment route shared by Home an
 | -------------------- | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
 | Root `Stack`         | Providers and mutually exclusive session branches                                                   | Always; it is the app shell                                        |
 | `Stack.Protected`    | Makes auth, onboarding, app, restoration, and dev routes available only while their guards are true | Access depends on session/application state                        |
-| Application `Stack`  | Keeps Native Tabs as the base and presents route modals as siblings                                 | A screen must push or present above the whole tab navigator        |
-| Nested tab `Stack`   | Native headers, push history, entity detail routes inside a selected tab                            | A tab has more than one route or needs native header configuration |
-| `NativeTabs`         | The five primary destinations                                                                       | A destination is a peer users switch between frequently            |
+| Application `Stack`  | Keeps Native Tabs as the base; pushed screens and route modals are siblings above it                | A screen pushed from a tab, or presented above the whole tab bar   |
+| Nested tab `Stack`   | The tab root's native header (large title, toolbar, search)                                         | A tab root needs native header configuration                       |
+| `NativeTabs`         | Four primary destinations + the "+" create slot                                                   | A destination is a peer users switch between frequently            |
 | Shared route group   | One appointment detail implementation in Home and Calendar stacks                                   | The same screen must retain the navigator context that opened it   |
 | Route modal          | Deep-linkable editing, checkout, and multi-step creation                                            | The overlay is navigation state or owns multiple screens           |
 | `Modal` / `Sheet` UI | Blocking confirmation or transient picker/preview                                                   | The overlay is local UI state and is not a navigable workflow      |
 
-There is no Drawer. The current information architecture already has five primary tab destinations
+Detail screens are not routes of a tab's Stack: a screen pushed there would sit under the tab bar.
+They are routes of the application Stack, so the push slides over the bar and Back reveals it
+again — the native "hides bottom bar when pushed" behaviour.
+
+There is no Drawer. The current information architecture already has four primary tab destinations
 and no secondary global destination set that warrants another persistent navigator. Add a Drawer
 only after a product scenario defines what it owns; do not add one as a capability demo.
 

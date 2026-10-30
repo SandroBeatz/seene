@@ -60,16 +60,6 @@ export { Avatar, initialsOf, type AvatarProps, type AvatarSize, type AvatarTone 
 export { GlassSurface, type GlassSurfaceProps } from './GlassSurface';
 export { VipBadge, type VipBadgeProps } from './VipBadge';
 export { NoteSheet, type NoteSheetLabels, type NoteSheetProps } from './NoteSheet';
-export {
-  FloatingTabBar,
-  FloatingTabBarItem,
-  FloatingTabBarAction,
-  FloatingTabBarVisibility,
-  useFloatingTabBarInset,
-  type FloatingTabBarProps,
-  type FloatingTabBarItemProps,
-  type FloatingTabBarActionProps,
-} from './FloatingTabBar';
 export { ListItem, type ListItemProps, type ListItemSize } from './ListItem';
 export { GroupedCard, type GroupedCardProps, type GroupedCardVariant } from './GroupedCard';
 export { SectionLabel, type SectionLabelProps } from './SectionLabel';
@@ -105,3 +95,4 @@ export { useReducedMotion } from './hooks/useReducedMotion';
 export { useNow } from './hooks/useNow';
 export { useRefreshControl } from './hooks/useRefreshControl';
 export { useReduceTransparency } from './hooks/useReduceTransparency';
+export { useStackScreenOptions } from './hooks/useStackScreenOptions';

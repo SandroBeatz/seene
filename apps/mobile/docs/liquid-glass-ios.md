@@ -41,11 +41,9 @@ status: proposed
 
 When we use a **native** navigator/control, iOS 26 applies Liquid Glass itself. No glass API calls.
 
-- **Native tabs** — `NativeTabs` from `expo-router/unstable-native-tabs`. **Not used since
-  2026-10-30:** the design's bar has a raised "new appointment" button in the middle, which the
-  native tab bar can't host, so the app draws its own (§7.1). If native tabs come back, the rule
-  that makes glass work: **do not set `backgroundColor`** on `NativeTabs` (any background opts the
-  bar out of the system material); `tintColor` + SF Symbols are fine.
+- **Native tabs** — `NativeTabs` from `expo-router/unstable-native-tabs` (§7.1). The rule that
+  makes glass work: **do not set `backgroundColor`** on `NativeTabs` (any background opts the bar
+  out of the system material); `tintColor` + SF Symbols are fine.
 - **Native stack headers / search / sheets** — driven by `react-native-screens` (already a dep) via
   Expo Router's native `Stack`, `Stack.Screen` `headerSearchBarOptions`, and form-sheet
   presentation. Seene's regular Stacks pass `NavigationHeaderBackground` to the supported
@@ -127,14 +125,18 @@ Liquid Glass is **build-time gated**, not just runtime:
 
 ## 7. Usage
 
-### 7.1 Floating tab bar (explicit — current)
+### 7.1 Native tab bar (automatic — current)
 
-`src/app/(app)/(tabs)/_layout.tsx` uses Expo Router's headless tabs (`expo-router/ui`): a hidden
-`TabList` declares the routes and `FloatingTabBar` (`src/shared/ui/FloatingTabBar/`) renders the
-design's capsule — Сегодня · Календарь · ＋ · Клиенты · Меню — with `TabTrigger asChild` items. The
-capsule is a `GlassSurface` (explicit path, so it falls back on iOS < 26 / Android / Reduce
-Transparency); the raised "+" sits above it as a sibling so the glass never clips it. The bar shows
-on tab roots only, and `ScreenScrollView` pads its content by `useFloatingTabBarInset()`.
+`src/app/(app)/(tabs)/_layout.tsx` uses `NativeTabs`: Сегодня · Календарь · Клиенты · Меню with SF
+Symbols and a token `tintColor`, no background. The round "+" on the right is the system search
+slot (`role="search"`, `sf="plus"`): iOS 26 draws it apart from the bar. The tab is `disabled`, so
+a tap never selects it; the `tabPress` listener opens the create menu (`features/create-menu`, a
+native action sheet). Apple doesn't let a tab bar item carry a pop-up menu, hence the sheet.
+
+Screens pushed from a tab (client profile, settings pages, analytics) are routes of the app stack
+`src/app/(app)/_layout.tsx`, not of the tab's own stack, so they slide over the bar instead of
+sitting under it. Each tab sets `disableAutomaticContentInsets`: its Stack screens own their
+insets; inside a tab the safe-area bottom already includes the bar.
 
 ### 7.2 Floating glass surface (explicit)
 
@@ -192,8 +194,8 @@ guessing APIs from memory (per [AGENTS.md](../AGENTS.md)):
 
 | Path                                           | Role                                               |
 | ---------------------------------------------- | -------------------------------------------------- |
-| `src/app/(app)/(tabs)/_layout.tsx`             | Headless tabs wired to the floating tab bar        |
-| `src/shared/ui/FloatingTabBar/`                | Glass capsule tab bar + raised action, insets      |
+| `src/app/(app)/(tabs)/_layout.tsx`             | Native tabs + the "+" slot                         |
+| `src/features/create-menu/`                    | The "+" action sheet                               |
 | `src/shared/ui/NavigationHeaderBackground/`    | Tokened gradient behind native Stack chrome        |
 | `src/shared/ui/GlassSurface/GlassSurface.tsx`  | Shared glass primitive: guard + tokened fallback   |
 | `src/shared/ui/hooks/useReduceTransparency.ts` | Tracks the OS Reduce Transparency setting          |
