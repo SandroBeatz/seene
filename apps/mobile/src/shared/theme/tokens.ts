@@ -235,6 +235,13 @@ export const fontFamily = {
  * letterSpacing is in px (the design's em values × font size).
  */
 export const typography = {
+  /** The amount on the checkout sheet. */
+  amount: {
+    fontFamily: fontFamily.displayBold,
+    fontSize: 44,
+    lineHeight: 50,
+    letterSpacing: -0.88,
+  },
   display: {
     fontFamily: fontFamily.displayBold,
     fontSize: 30,

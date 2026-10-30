@@ -1,6 +1,3 @@
-// Generated from the live Supabase schema (project foxqkomqtpbxyeqqwzpm).
-// Regenerate with: bunx supabase gen types typescript --project-id foxqkomqtpbxyeqqwzpm
-// (or the Supabase MCP generate_typescript_types tool). Do NOT hand-edit.
 export type Json =
   | string
   | number
@@ -925,8 +922,10 @@ export type Database = {
         Args: {
           p_amount: number
           p_appointment_id: string
+          p_duration?: number
           p_items: Json
           p_payment_type_id: string
+          p_start_at?: string
         }
         Returns: string
       }

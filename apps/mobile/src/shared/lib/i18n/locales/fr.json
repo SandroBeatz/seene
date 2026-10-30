@@ -351,7 +351,6 @@
     "appointmentDetails": "Rendez-vous",
     "appointmentForm": "Modifier le rendez-vous",
     "appointmentNote": "Note",
-    "checkout": "Encaissement",
     "clientDetails": "Client",
     "profileSettings": "Profil",
     "sharedRoute": "Route partagée",
@@ -367,8 +366,7 @@
     "calendar": "Les données d’agenda ne sont pas encore implémentées. Cet écran possède déjà sa Stack native.",
     "clients": "Les données client ne sont pas encore implémentées. Utilisez l’action pour inspecter la route dynamique.",
     "analytics": "Les données statistiques ne sont pas encore implémentées.",
-    "profileSettings": "Les réglages du profil seront ajoutés avec la fonctionnalité Réglages.",
-    "checkout": "Le paiement et la finalisation restent volontairement hors de cet exemple de navigation."
+    "profileSettings": "Les réglages du profil seront ajoutés avec la fonctionnalité Réglages."
   },
   "settings": {
     "theme": "Thème",
@@ -832,6 +830,28 @@
     "manual": "Saisir l’heure",
     "pick": "Choisissez un horaire",
     "submit": "Déplacer · {{when}}"
+  },
+  "checkout": {
+    "title": "Terminer la visite",
+    "back": "Retour au rendez-vous",
+    "amountA11y": "Montant à payer, {{currency}}",
+    "planned": "Prévu {{amount}} ·",
+    "restore": "Rétablir",
+    "canChange": "Montant du rendez-vous, modifiable",
+    "method": "Moyen de paiement",
+    "methods": {
+      "cash": "Espèces",
+      "card": "Carte"
+    },
+    "time": "Heure de la visite",
+    "asPlanned": "Comme prévu",
+    "plannedTime": "Prévu {{range}}",
+    "change": "Modifier",
+    "done": "OK",
+    "start": "Début",
+    "end": "Fin",
+    "timeNote": "Si la visite a fini plus tôt ou plus tard, corrigez l'heure : votre planning et vos stats resteront justes.",
+    "submit": "Terminer · {{amount}}"
   },
   "months": [
     "Janvier",

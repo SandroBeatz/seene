@@ -1,6 +1,11 @@
-/** Sale query hooks (read-only in Phase 2). */
-import { useQuery } from '@tanstack/react-query';
-import { getSaleByAppointment, listSaleAmountsByRange } from '../api/sale.api';
+/** Sale query hooks and the checkout mutation. */
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  completeAppointment,
+  getSaleByAppointment,
+  listSaleAmountsByRange,
+} from '../api/sale.api';
+import type { CompleteAppointmentDto } from './types';
 
 export const saleKeys = {
   byAppointment: (appointmentId: string) => ['sale-by-appointment', appointmentId] as const,
@@ -23,5 +28,20 @@ export function useSaleByAppointmentQuery(appointmentId: string | undefined) {
     queryKey: saleKeys.byAppointment(appointmentId ?? ''),
     queryFn: () => getSaleByAppointment(appointmentId!),
     enabled: !!appointmentId,
+  });
+}
+
+/**
+ * Checkout. Invalidates the sale caches; the caller also refreshes the appointment
+ * caches (another entity) in `onSettled`.
+ */
+export function useCompleteAppointmentMutation(userId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (dto: CompleteAppointmentDto) => completeAppointment(dto),
+    onSettled: (_id, _error, dto) => {
+      qc.invalidateQueries({ queryKey: saleKeys.all(userId) });
+      qc.invalidateQueries({ queryKey: saleKeys.byAppointment(dto.appointmentId) });
+    },
   });
 }
