@@ -25,7 +25,7 @@ import { useUserId } from '@/entities/session';
 import type { ServiceWithCategory } from '@/entities/service';
 import { formatAmount, formatTime } from '@/shared/lib/formats';
 import { formatDurationLabel, type AppLocale } from '@/shared/lib/i18n';
-import { Button, Icon, IconButton, Skeleton, Text, TimePicker, useNow } from '@/shared/ui';
+import { Button, Icon, SheetChrome, Skeleton, Text, TimePicker, useNow } from '@/shared/ui';
 import {
   clockOf,
   defaultMethodId,
@@ -138,19 +138,7 @@ export function CheckoutEditor({
     // Kept as a real view: a form sheet (react-native-screens) pins a ScrollView that
     // is a direct child of the screen to the top and stretches it over the header.
     <View style={styles.root} collapsable={false}>
-      <View style={styles.grabber} />
-      <View style={styles.header}>
-        <IconButton
-          icon="chevronLeft"
-          accessibilityLabel={t('checkout.back')}
-          variant="ghost"
-          onPress={() => router.back()}
-        />
-        <Text variant="calloutStrong" align="center" style={styles.title}>
-          {t('checkout.title')}
-        </Text>
-        <View style={styles.headerSpacer} />
-      </View>
+      <SheetChrome title={t('checkout.title')} leading="back" leadingLabel={t('checkout.back')} />
 
       <ScrollView
         contentContainerStyle={[styles.content, { paddingBottom: 120 + insets.bottom }]}
@@ -178,7 +166,10 @@ export function CheckoutEditor({
               <Text variant="footnote" color="tertiary" tabularNums>
                 {t('checkout.planned', { amount: formatAmount(planned, { currency, locale }) })}
               </Text>
-              <Pressable accessibilityRole="button" hitSlop={8} onPress={() => setAmountInput(null)}>
+              <Pressable
+                accessibilityRole="button"
+                hitSlop={8}
+                onPress={() => setAmountInput(null)}>
                 <Text variant="footnoteStrong" color="brand">
                   {t('checkout.restore')}
                 </Text>
@@ -294,22 +285,6 @@ export function CheckoutEditor({
 
 const styles = StyleSheet.create((theme) => ({
   root: { flex: 1, backgroundColor: theme.colors.bg.elevated },
-  grabber: {
-    alignSelf: 'center',
-    marginTop: theme.space[2],
-    width: 36,
-    height: 5,
-    borderRadius: 3,
-    backgroundColor: theme.colors.border.default,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingTop: theme.space[1.5],
-    paddingHorizontal: theme.space[3],
-  },
-  title: { flex: 1 },
-  headerSpacer: { width: theme.sizing.iconButton },
   content: { paddingTop: theme.space[4], paddingHorizontal: theme.space[4] },
   amountRow: {
     marginTop: theme.space[1.5],

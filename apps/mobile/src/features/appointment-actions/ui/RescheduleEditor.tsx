@@ -25,7 +25,7 @@ import { formatTime } from '@/shared/lib/formats';
 import type { AppLocale } from '@/shared/lib/i18n';
 import { dayBounds, findFreeSlots, groupByDayPart, weekdayIndex } from '@/shared/lib/scheduling';
 import { deviceTimeZone, toUtcIsoFromWallClock } from '@/shared/lib/time-zone';
-import { Button, IconButton, Skeleton, Text, TimePicker, useNow } from '@/shared/ui';
+import { Button, SheetChrome, Skeleton, Text, TimePicker, useNow } from '@/shared/ui';
 
 /** How far ahead the strip goes. */
 const DAYS_AHEAD = 60;
@@ -131,19 +131,11 @@ export function RescheduleEditor({
     // Kept as a real view: a form sheet (react-native-screens) pins a ScrollView that
     // is a direct child of the screen to the top and stretches it over the header.
     <View style={styles.root} collapsable={false}>
-      <View style={styles.grabber} />
-      <View style={styles.header}>
-        <IconButton
-          icon="chevronLeft"
-          accessibilityLabel={t('reschedule.back')}
-          variant="ghost"
-          onPress={() => router.back()}
-        />
-        <Text variant="calloutStrong" align="center" style={styles.title}>
-          {t('reschedule.title')}
-        </Text>
-        <View style={styles.headerSpacer} />
-      </View>
+      <SheetChrome
+        title={t('reschedule.title')}
+        leading="back"
+        leadingLabel={t('reschedule.back')}
+      />
 
       <ScrollView contentContainerStyle={[styles.content, { paddingBottom: 140 + insets.bottom }]}>
         <Text variant="footnote" color="secondary">
@@ -259,22 +251,6 @@ export function RescheduleEditor({
 
 const styles = StyleSheet.create((theme) => ({
   root: { flex: 1, backgroundColor: theme.colors.bg.elevated },
-  grabber: {
-    alignSelf: 'center',
-    marginTop: theme.space[2],
-    width: 36,
-    height: 5,
-    borderRadius: 3,
-    backgroundColor: theme.colors.border.default,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingTop: theme.space[1.5],
-    paddingHorizontal: theme.space[3],
-  },
-  title: { flex: 1 },
-  headerSpacer: { width: theme.sizing.iconButton },
   content: { paddingTop: theme.space[3], paddingHorizontal: theme.space[4], gap: theme.space[4.5] },
   monthRow: {
     flexDirection: 'row',

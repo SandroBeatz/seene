@@ -21,7 +21,7 @@ import {
 import { isSpecializationKey } from '@/shared/config/specializations';
 import { formatAmount } from '@/shared/lib/formats';
 import { formatDurationLabel, pluralCategory, type AppLocale } from '@/shared/lib/i18n';
-import { Button, Icon, IconButton, SearchField, Text } from '@/shared/ui';
+import { Button, Icon, SearchField, SheetChrome, Text } from '@/shared/ui';
 import {
   categoriesOf,
   directions,
@@ -114,19 +114,11 @@ export function ServicesEditor({
     // Kept as a real view: a form sheet (react-native-screens) pins a ScrollView that
     // is a direct child of the screen to the top and stretches it over the header.
     <View style={styles.root} collapsable={false}>
-      <View style={styles.grabber} />
-      <View style={styles.header}>
-        <IconButton
-          icon="chevronLeft"
-          accessibilityLabel={t('servicesSheet.back')}
-          variant="ghost"
-          onPress={() => router.back()}
-        />
-        <Text variant="calloutStrong" align="center" style={styles.title}>
-          {t('servicesSheet.title')}
-        </Text>
-        <View style={styles.headerSpacer} />
-      </View>
+      <SheetChrome
+        title={t('servicesSheet.title')}
+        leading="back"
+        leadingLabel={t('servicesSheet.back')}
+      />
 
       <View style={styles.search}>
         <SearchField
@@ -320,22 +312,6 @@ export function ServicesEditor({
 
 const styles = StyleSheet.create((theme) => ({
   root: { flex: 1, backgroundColor: theme.colors.bg.elevated },
-  grabber: {
-    alignSelf: 'center',
-    marginTop: theme.space[2],
-    width: 36,
-    height: 5,
-    borderRadius: 3,
-    backgroundColor: theme.colors.border.default,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingTop: theme.space[1.5],
-    paddingHorizontal: theme.space[3],
-  },
-  title: { flex: 1 },
-  headerSpacer: { width: theme.sizing.iconButton },
   search: { paddingTop: theme.space[2], paddingHorizontal: theme.space[4] },
   chipsScroll: { flexGrow: 0 },
   chips: {

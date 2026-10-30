@@ -65,6 +65,7 @@ export { GroupedCard, type GroupedCardProps, type GroupedCardVariant } from './G
 export { SectionLabel, type SectionLabelProps } from './SectionLabel';
 export { StepHeader, type StepHeaderProps } from './StepHeader';
 export { SheetHeader, type SheetHeaderProps } from './SheetHeader';
+export { SheetChrome, type SheetChromeAction, type SheetChromeProps } from './SheetChrome';
 export {
   NativeList,
   type NativeListProps,

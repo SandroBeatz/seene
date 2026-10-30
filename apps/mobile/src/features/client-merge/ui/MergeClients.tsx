@@ -20,7 +20,7 @@ import {
 } from '@/entities/client';
 import { useUserId } from '@/entities/session';
 import { formatPhone } from '@/shared/lib/phone';
-import { Avatar, Icon, IconButton, SearchField, Skeleton, Text } from '@/shared/ui';
+import { Avatar, Icon, SearchField, SheetChrome, Skeleton, Text } from '@/shared/ui';
 
 type Item =
   | { type: 'section'; key: string; label: string }
@@ -85,19 +85,7 @@ export function MergeClients({ client }: { client: Client }) {
     // Kept as a real view: a form sheet (react-native-screens) pins a ScrollView that
     // is a direct child of the screen to the top and stretches it over the header.
     <View style={styles.root} collapsable={false}>
-      <View style={styles.grabber} />
-      <View style={styles.header}>
-        <IconButton
-          icon="close"
-          variant="neutral"
-          accessibilityLabel={t('clients.form.close')}
-          onPress={() => router.back()}
-        />
-        <Text variant="calloutStrong" align="center" style={styles.title}>
-          {t('clients.merge.title')}
-        </Text>
-        <View style={styles.spacer} />
-      </View>
+      <SheetChrome title={t('clients.merge.title')} leadingLabel={t('clients.form.close')} />
       <Text variant="footnote" color="secondary" style={styles.hint}>
         {t('clients.merge.hint', { name: keepName })}
       </Text>
@@ -173,22 +161,6 @@ export function MergeClients({ client }: { client: Client }) {
 
 const styles = StyleSheet.create((theme) => ({
   root: { flex: 1, backgroundColor: theme.colors.bg.elevated },
-  grabber: {
-    alignSelf: 'center',
-    marginTop: theme.space[2],
-    width: 36,
-    height: 5,
-    borderRadius: 3,
-    backgroundColor: theme.colors.border.default,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingTop: theme.space[2],
-    paddingHorizontal: theme.space[4],
-  },
-  title: { flex: 1 },
-  spacer: { width: theme.sizing.iconButton },
   hint: { paddingTop: theme.space[3], paddingHorizontal: theme.space[4] },
   search: { paddingTop: theme.space[3], paddingHorizontal: theme.space[4] },
   skeleton: { padding: theme.space[4], gap: theme.space[3] },

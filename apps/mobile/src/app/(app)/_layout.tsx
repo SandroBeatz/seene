@@ -14,12 +14,20 @@ export default function AppLayout() {
   const { t } = useTranslation();
   const { theme } = useUnistyles();
   const stackOptions = useStackScreenOptions();
+  const isIOS = process.env.EXPO_OS === 'ios';
+  // Full-height sheets. On iOS the sheet shows its native navigation bar — the
+  // screen's `SheetChrome` puts close, the title and actions there (Liquid Glass on
+  // iOS 26) — and the system grabber. Android form sheets have no header; there
+  // `SheetChrome` draws the same chrome in content.
   const sheet: NativeStackNavigationOptions = {
     presentation: 'formSheet',
-    headerShown: false,
+    headerShown: isIOS,
+    headerTransparent: false,
+    headerBackground: undefined,
+    headerStyle: { backgroundColor: theme.colors.bg.elevated },
     sheetAllowedDetents: [1],
     sheetCornerRadius: theme.radius.showcase,
-    sheetGrabberVisible: false,
+    sheetGrabberVisible: isIOS,
     contentStyle: { backgroundColor: theme.colors.bg.elevated },
   };
 
@@ -31,7 +39,6 @@ export default function AppLayout() {
       <Stack.Screen name="clients/[clientId]" options={{ title: '' }} />
       <Stack.Screen name="settings/profile" options={{ title: t('navigation.profileSettings') }} />
       <Stack.Screen name="settings/services" options={{ title: t('services.title') }} />
-      {/* Full-height sheets; the grabber is drawn in content so iOS and Android match. */}
       <Stack.Screen name="(modals)/appointment/[appointmentId]/index" options={sheet} />
       <Stack.Screen name="(modals)/appointment/[appointmentId]/note" options={sheet} />
       <Stack.Screen name="(modals)/appointment/[appointmentId]/services" options={sheet} />

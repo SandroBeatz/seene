@@ -138,7 +138,21 @@ Screens pushed from a tab (client profile, settings pages, analytics) are routes
 sitting under it. Each tab sets `disableAutomaticContentInsets`: its Stack screens own their
 insets; inside a tab the safe-area bottom already includes the bar.
 
-### 7.2 Floating glass surface (explicit)
+### 7.2 Header buttons and sheet chrome (automatic)
+
+Action buttons at the top of a screen are native bar items, never drawn `IconButton`s: a screen
+renders `Stack.Toolbar placement="left|right"` with `Stack.Toolbar.Button` (SF Symbol) or
+`Stack.Toolbar.Menu` + `MenuAction` for a "⋯" — a system menu. Examples: the client profile's
+"⋯", "add client" on the clients list, analytics on "Сегодня". Search is `Stack.SearchBar`.
+
+Route form sheets render `SheetChrome` (`src/shared/ui/SheetChrome/`) first in their content: on
+iOS it sets the sheet's title and puts close/back and the action or "⋯" menu into the sheet's
+native navigation bar (the app layout's sheet options show it), plus a spacer of the bar's
+height, since iOS 26 lays the bar over the content. Android form sheets have no header, so there
+`SheetChrome` draws `SheetHeader` in content. RN `Modal` sheets (onboarding pickers) are not
+routes and keep `SheetHeader`.
+
+### 7.3 Floating glass surface (explicit)
 
 Use the `GlassSurface` primitive (§5) — it hides the guard, fallback, `colorScheme`, and Reduce
 Transparency handling:
@@ -158,7 +172,7 @@ function FloatingBar() {
 Only drop to raw `GlassView` + `isGlassEffectAPIAvailable()` for cases `GlassSurface` can't express
 (e.g. merging elements via `GlassContainer`, below).
 
-### 7.3 Merging multiple glass elements
+### 7.4 Merging multiple glass elements
 
 ```tsx
 import { GlassContainer, GlassView } from 'expo-glass-effect';
@@ -196,6 +210,7 @@ guessing APIs from memory (per [AGENTS.md](../AGENTS.md)):
 | ---------------------------------------------- | -------------------------------------------------- |
 | `src/app/(app)/(tabs)/_layout.tsx`             | Native tabs + the "+" slot                         |
 | `src/features/create-menu/`                    | The "+" action sheet                               |
+| `src/shared/ui/SheetChrome/`                   | Native sheet bar items (iOS), SheetHeader fallback |
 | `src/shared/ui/NavigationHeaderBackground/`    | Tokened gradient behind native Stack chrome        |
 | `src/shared/ui/GlassSurface/GlassSurface.tsx`  | Shared glass primitive: guard + tokened fallback   |
 | `src/shared/ui/hooks/useReduceTransparency.ts` | Tracks the OS Reduce Transparency setting          |

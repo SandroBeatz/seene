@@ -2,9 +2,9 @@
  * The appointment preview sheet (design "Запись · превью": предстоящая, идёт сейчас,
  * ожидает завершения, завершена): status pill, client card with call / WhatsApp /
  * reminder, date, services and price, the note, the ongoing visit's progress, and a
- * glass bottom bar whose actions follow the status. "⋯" holds the rest.
+ * glass bottom bar whose actions follow the status. "⋯" — a native header menu —
+ * holds the rest.
  */
-import { useState } from 'react';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, View } from 'react-native';
@@ -16,7 +16,7 @@ import { errorMessageKey, normalizeError } from '@/shared/api/errors';
 import { DateTime, formatAmount, formatTime } from '@/shared/lib/formats';
 import { formatDurationLabel, isSupportedLocale, pluralCategory } from '@/shared/lib/i18n';
 import { formatPhone } from '@/shared/lib/phone';
-import { EmptyState, ErrorState, IconButton, Skeleton, Text } from '@/shared/ui';
+import { EmptyState, ErrorState, SheetChrome, Skeleton, Text } from '@/shared/ui';
 import { MORE_MENU, relativeDay, statusLabel } from '../model/labels';
 import { usePreview } from '../model/usePreview';
 import {
@@ -24,20 +24,17 @@ import {
   BottomBar,
   ClientCard,
   InfoRow,
-  MoreMenuPopover,
+  MENU_ICON,
+  MENU_SYMBOL,
   StatusPill,
   TimerBar,
 } from './parts';
-
-/** Header row: grabber 8+5, gap 8, buttons 36. The menu opens just under it. */
-const MENU_TOP = 8 + 5 + 8 + 36 + 8;
 
 export function AppointmentPreview({ appointmentId }: { appointmentId: string }) {
   const { t, i18n } = useTranslation();
   const locale = isSupportedLocale(i18n.language) ? i18n.language : 'en';
   const insets = useSafeAreaInsets();
   const preview = usePreview(appointmentId);
-  const [menuOpen, setMenuOpen] = useState(false);
   const data = preview.data;
   const client = preview.client;
 
@@ -81,23 +78,31 @@ export function AppointmentPreview({ appointmentId }: { appointmentId: string })
     // Kept as a real view: a form sheet (react-native-screens) pins a ScrollView that
     // is a direct child of the screen to the top and stretches it over the header.
     <View style={styles.root} collapsable={false}>
-      <View style={styles.grabber} />
-      <View style={styles.header}>
-        <IconButton
-          icon="close"
-          accessibilityLabel={t('common.close')}
-          variant="neutral"
-          onPress={() => router.back()}
-        />
-        {data ? (
-          <IconButton
-            icon="more"
-            accessibilityLabel={t('preview.more')}
-            variant="neutral"
-            onPress={() => setMenuOpen(true)}
-          />
-        ) : null}
-      </View>
+      <SheetChrome
+        title=""
+        leadingLabel={t('common.close')}
+        menu={
+          data
+            ? {
+                label: t('preview.more'),
+                cancelLabel: t('common.cancel'),
+                items: [...MORE_MENU[data.phase].regular, ...MORE_MENU[data.phase].danger].map(
+                  (action) => ({
+                    key: action,
+                    label:
+                      action === 'note' && !data.appointment.notes?.trim()
+                        ? t('preview.menu.addNote')
+                        : t(`preview.menu.${action}`),
+                    sf: MENU_SYMBOL[action],
+                    icon: MENU_ICON[action],
+                    destructive: MORE_MENU[data.phase].danger.includes(action),
+                    onPress: () => actions.run(action),
+                  }),
+                ),
+              }
+            : undefined
+        }
+      />
 
       {preview.isPending ? (
         <View style={styles.content}>
@@ -232,14 +237,6 @@ export function AppointmentPreview({ appointmentId }: { appointmentId: string })
               onAction={actions.run}
             />
           )}
-
-          <MoreMenuPopover
-            menu={menuOpen ? MORE_MENU[data.phase] : null}
-            top={MENU_TOP}
-            hasNote={!!data.appointment.notes?.trim()}
-            onClose={() => setMenuOpen(false)}
-            onSelect={actions.run}
-          />
         </>
       )}
     </View>
@@ -284,20 +281,6 @@ function OngoingProgress({
 
 const styles = StyleSheet.create((theme) => ({
   root: { flex: 1, backgroundColor: theme.colors.bg.elevated },
-  grabber: {
-    alignSelf: 'center',
-    marginTop: theme.space[2],
-    width: 36,
-    height: 5,
-    borderRadius: 3,
-    backgroundColor: theme.colors.border.default,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingTop: theme.space[2],
-    paddingHorizontal: theme.space[4],
-  },
   scroll: { flex: 1 },
   content: {
     paddingTop: theme.space[3.5],
