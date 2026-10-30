@@ -103,4 +103,5 @@ export {
 } from './hooks/useScrollFade';
 export { useReducedMotion } from './hooks/useReducedMotion';
 export { useNow } from './hooks/useNow';
+export { useRefreshControl } from './hooks/useRefreshControl';
 export { useReduceTransparency } from './hooks/useReduceTransparency';

@@ -7,7 +7,7 @@
 import { useMemo, useState } from 'react';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Alert, FlatList, Linking, Pressable, RefreshControl, ScrollView, View } from 'react-native';
+import { Alert, FlatList, Linking, Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { useDismissAttentionMutation } from '@/entities/attention';
@@ -36,6 +36,7 @@ import {
   Skeleton,
   Text,
   VipBadge,
+  useRefreshControl,
 } from '@/shared/ui';
 import { seenOf, type Seen } from '../model/seen';
 import { useClientList, type ClientRow } from '../model/useClientList';
@@ -59,6 +60,7 @@ export function ClientList() {
   const dismiss = useDismissAttentionMutation(useUserId() ?? '');
   const [segment, setSegment] = useState<ClientSegment>('all');
   const [query, setQuery] = useState('');
+  const refreshControl = useRefreshControl(list.refetch);
 
   const items = useMemo<Item[]>(() => {
     const rows = list.rows.filter(
@@ -197,11 +199,18 @@ export function ClientList() {
               accessibilityRole="button"
               accessibilityState={{ selected: on }}
               onPress={() => setSegment(key)}
-              style={({ pressed }) => [styles.filter, on && styles.filterOn, pressed && styles.pressed]}>
+              style={({ pressed }) => [
+                styles.filter,
+                on && styles.filterOn,
+                pressed && styles.pressed,
+              ]}>
               <Text variant="footnoteStrong" color={on ? 'onAccent' : 'primary'}>
                 {t(`clients.list.filters.${key}`)}
               </Text>
-              <Text variant="footnoteStrong" color={on ? 'onAccent' : 'primary'} style={styles.count}>
+              <Text
+                variant="footnoteStrong"
+                color={on ? 'onAccent' : 'primary'}
+                style={styles.count}>
                 {list.counts[key]}
               </Text>
             </Pressable>
@@ -262,9 +271,7 @@ export function ClientList() {
         keyboardDismissMode="on-drag"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={[styles.list, { paddingBottom: insets.bottom + 120 }]}
-        refreshControl={
-          <RefreshControl refreshing={list.isRefetching} onRefresh={() => void list.refetch()} />
-        }
+        refreshControl={refreshControl}
         ListFooterComponent={importButton}
         ListEmptyComponent={
           <Text variant="subhead" color="secondary" align="center" style={styles.nobody}>
@@ -333,7 +340,9 @@ function ClientRowView({
             <Text variant="bodyStrong" numberOfLines={1} style={styles.shrink}>
               {row.name}
             </Text>
-            {client.is_favorite ? <VipBadge accessibilityLabel={t('clients.list.vipA11y')} /> : null}
+            {client.is_favorite ? (
+              <VipBadge accessibilityLabel={t('clients.list.vipA11y')} />
+            ) : null}
             {isNewClient(row.summary?.visits ?? 0) ? (
               <View style={[styles.badge, styles.badgeNew]}>
                 <Text variant="micro" style={styles.badgeNewText}>

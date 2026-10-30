@@ -5,37 +5,28 @@
  * (NativeList.ios.tsx) was pulled — bridging RN rows into a SwiftUI `List` didn't render
  * and ignored our theme; kept in git history as a parked experiment.
  */
-import { Fragment, useState } from 'react';
-import { RefreshControl, View } from 'react-native';
-import { StyleSheet, useUnistyles } from 'react-native-unistyles';
+import { Fragment } from 'react';
+import { View } from 'react-native';
+import { StyleSheet } from 'react-native-unistyles';
 import { Card } from '@/shared/ui/Card';
 import { Divider } from '@/shared/ui/Divider';
+import { useRefreshControl } from '@/shared/ui/hooks/useRefreshControl';
 import { ListItem } from '@/shared/ui/ListItem';
 import { ScreenScrollView } from '@/shared/ui/ScreenScrollView';
 import { Text } from '@/shared/ui/Text';
 import type { NativeListProps } from './types';
 
 export function NativeList({ sections, onRefresh, testID }: NativeListProps) {
-  const { theme } = useUnistyles();
-  const [refreshing, setRefreshing] = useState(false);
-
-  const refreshControl = onRefresh ? (
-    <RefreshControl
-      refreshing={refreshing}
-      tintColor={theme.colors.content.secondary}
-      onRefresh={async () => {
-        setRefreshing(true);
-        try {
-          await onRefresh();
-        } finally {
-          setRefreshing(false);
-        }
-      }}
-    />
-  ) : undefined;
+  const pull = useRefreshControl(async () => {
+    await onRefresh?.();
+  });
+  const refreshControl = onRefresh ? pull : undefined;
 
   return (
-    <ScreenScrollView contentContainerStyle={styles.groups} refreshControl={refreshControl} testID={testID}>
+    <ScreenScrollView
+      contentContainerStyle={styles.groups}
+      refreshControl={refreshControl}
+      testID={testID}>
       {sections.map((section) => (
         <View key={section.key} style={styles.group}>
           {section.title ? (
