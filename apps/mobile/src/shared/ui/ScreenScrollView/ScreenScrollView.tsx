@@ -5,6 +5,7 @@
 import type { ReactNode } from 'react';
 import { ScrollView, type ScrollViewProps } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
+import { useFloatingTabBarInset } from '../FloatingTabBar';
 
 export interface ScreenScrollViewProps extends Omit<
   ScrollViewProps,
@@ -26,11 +27,21 @@ export function ScreenScrollView({
   ...rest
 }: ScreenScrollViewProps) {
   const { theme } = useUnistyles();
+  // On tab roots the floating tab bar covers the bottom; keep the last row clear of it.
+  const tabBarInset = useFloatingTabBarInset();
+  const bottomInset =
+    tabBarInset > 0 ? { paddingBottom: tabBarInset + (padded ? theme.space[8] : 0) } : null;
 
   return (
     <ScrollView
       style={[styles.root, { backgroundColor: theme.colors.bg.canvas }, style]}
-      contentContainerStyle={[styles.content, padded && styles.padded, contentContainerStyle]}
+      contentContainerStyle={[
+        styles.content,
+        padded && styles.padded,
+        bottomInset,
+        contentContainerStyle,
+      ]}
+      scrollIndicatorInsets={tabBarInset > 0 ? { bottom: tabBarInset } : undefined}
       contentInsetAdjustmentBehavior={contentInsetAdjustmentBehavior}
       keyboardShouldPersistTaps={keyboardShouldPersistTaps}
       showsVerticalScrollIndicator={showsVerticalScrollIndicator}

@@ -49,8 +49,9 @@ describe('getAppointmentPhase', () => {
 
 describe('isShownInSchedule', () => {
   it('shows pending, confirmed and completed only', () => {
-    const shown = (['pending', 'confirmed', 'completed', 'cancelled', 'no_show', 'expired'] as const)
-      .filter((status) => isShownInSchedule({ status }));
+    const shown = (
+      ['pending', 'confirmed', 'completed', 'cancelled', 'no_show', 'expired'] as const
+    ).filter((status) => isShownInSchedule({ status }));
     expect(shown).toEqual(['pending', 'confirmed', 'completed']);
   });
 });
@@ -75,7 +76,12 @@ describe('PREVIEW_ACTIONS', () => {
       end: 'cancel',
       timer: false,
     });
-    expect(PREVIEW_ACTIONS.ongoing).toEqual({ start: null, primary: 'complete', end: null, timer: true });
+    expect(PREVIEW_ACTIONS.ongoing).toEqual({
+      start: null,
+      primary: 'complete',
+      end: null,
+      timer: true,
+    });
     expect(PREVIEW_ACTIONS.awaiting).toEqual({
       start: 'no_show',
       primary: 'complete',
@@ -94,7 +100,12 @@ describe('PREVIEW_ACTIONS', () => {
 describe('visitProgress', () => {
   it('counts whole minutes against the plan', () => {
     const p = visitProgress({ start_at: START, duration: 120 }, at('2026-10-27T10:47:30.000Z'));
-    expect(p).toEqual({ elapsedMinutes: 47, plannedMinutes: 120, ratio: 47 / 120, overtime: false });
+    expect(p).toEqual({
+      elapsedMinutes: 47,
+      plannedMinutes: 120,
+      ratio: 47 / 120,
+      overtime: false,
+    });
   });
 
   it('caps the ratio and flags overtime', () => {

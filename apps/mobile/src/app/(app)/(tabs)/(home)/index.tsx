@@ -1,16 +1,15 @@
 import { useState } from 'react';
-import { Link, router } from 'expo-router';
+import { Link, router, Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Pressable, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { ProfileCreatedModal, profileCreatedNotice } from '@/features/onboarding';
-import { Button, Card, GlassSurface, Icon, ScreenScrollView, Text } from '@/shared/ui';
+import { Button, Card, IconButton, ScreenScrollView, Text } from '@/shared/ui';
 
 export default function HomeScreen() {
   const { t } = useTranslation();
   const { theme } = useUnistyles();
-  const insets = useSafeAreaInsets();
+  const isIOS = process.env.EXPO_OS === 'ios';
   // Once, right after onboarding.
   const [profileCreated, setProfileCreated] = useState(profileCreatedNotice.isPending);
 
@@ -21,6 +20,32 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.root}>
+      {/* Analytics left the tab bar; Phase 2 moves this into the designed header. */}
+      <Stack.Screen
+        options={{
+          headerRight: isIOS
+            ? undefined
+            : () => (
+                <IconButton
+                  icon="analytics"
+                  accessibilityLabel={t('tabs.analytics')}
+                  variant="ghost"
+                  onPress={() => router.push('/analytics')}
+                />
+              ),
+        }}
+      />
+      {isIOS ? (
+        <Stack.Toolbar placement="right">
+          <Stack.Toolbar.Button
+            icon="chart.bar"
+            accessibilityLabel={t('tabs.analytics')}
+            tintColor={theme.colors.content.primary}
+            variant="plain"
+            onPress={() => router.push('/analytics')}
+          />
+        </Stack.Toolbar>
+      ) : null}
       <ScreenScrollView contentContainerStyle={styles.content}>
         <Card>
           <Text variant="body" color="secondary">
@@ -44,20 +69,6 @@ export default function HomeScreen() {
         ) : null}
       </ScreenScrollView>
 
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={t('navigation.quickCreate')}
-        onPress={() => router.push('/quick-create')}
-        style={({ pressed }) => [
-          styles.fab,
-          { bottom: insets.bottom + theme.space[16] },
-          pressed && styles.fabPressed,
-        ]}>
-        <GlassSurface isInteractive style={styles.fabGlass}>
-          <Icon name="add" size="lg" color="content.primary" />
-        </GlassSurface>
-      </Pressable>
-
       <ProfileCreatedModal
         visible={profileCreated}
         onFillProfile={() => {
@@ -73,20 +84,4 @@ export default function HomeScreen() {
 const styles = StyleSheet.create((theme) => ({
   root: { flex: 1, backgroundColor: theme.colors.bg.canvas },
   content: { gap: theme.space[4] },
-  fab: {
-    position: 'absolute',
-    right: theme.space[5],
-    width: theme.sizing.avatar.lg,
-    height: theme.sizing.avatar.lg,
-    borderRadius: theme.radius.full,
-    ...theme.elevation[2],
-  },
-  fabPressed: { opacity: 0.8 },
-  fabGlass: {
-    flex: 1,
-    borderRadius: theme.radius.full,
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
-  },
 }));

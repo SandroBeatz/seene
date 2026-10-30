@@ -22,7 +22,7 @@ export default function HomeStackLayout() {
       }}>
       <Stack.Screen
         name="index"
-        options={{ title: t('tabs.home'), headerLargeTitle: process.env.EXPO_OS === 'ios' }}
+        options={{ title: t('tabs.today'), headerLargeTitle: process.env.EXPO_OS === 'ios' }}
       />
     </Stack>
   );

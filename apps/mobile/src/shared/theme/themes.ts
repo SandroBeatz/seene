@@ -136,7 +136,11 @@ export const lightTheme = {
     tone: {
       neutral: { fg: n[950], bg: n[50], dot: n[950] },
       brand: { fg: palette.rose[600], bg: palette.tone.roseSubtle, dot: palette.rose[500] },
-      warning: { fg: palette.tone.amberText, bg: palette.tone.amberSubtle, dot: palette.tone.amberText },
+      warning: {
+        fg: palette.tone.amberText,
+        bg: palette.tone.amberSubtle,
+        dot: palette.tone.amberText,
+      },
       success: { fg: palette.green.base, bg: palette.tone.greenSubtle, dot: palette.green.base },
       danger: { fg: palette.tone.red, bg: palette.tone.redSubtle, dot: palette.tone.red },
       muted: { fg: n[600], bg: n[100], dot: n[600] },
@@ -260,11 +264,27 @@ export const darkTheme = {
     tone: {
       neutral: { fg: n[50], bg: n[850], dot: n[50] },
       brand: { fg: palette.rose[300], bg: palette.rose.darkSubtle, dot: palette.rose.darkDefault },
-      warning: { fg: palette.tone.amberBright, bg: palette.amber.subtleDark, dot: palette.tone.amberBright },
-      success: { fg: palette.green.bright, bg: palette.green.subtleDark, dot: palette.green.bright },
-      danger: { fg: palette.tone.redBright, bg: palette.tone.redSubtleDark, dot: palette.tone.redBright },
+      warning: {
+        fg: palette.tone.amberBright,
+        bg: palette.amber.subtleDark,
+        dot: palette.tone.amberBright,
+      },
+      success: {
+        fg: palette.green.bright,
+        bg: palette.green.subtleDark,
+        dot: palette.green.bright,
+      },
+      danger: {
+        fg: palette.tone.redBright,
+        bg: palette.tone.redSubtleDark,
+        dot: palette.tone.redBright,
+      },
       muted: { fg: n[400], bg: n[800], dot: n[400] },
-      info: { fg: palette.tone.slateBright, bg: palette.tone.slateSubtleDark, dot: palette.tone.slateBright },
+      info: {
+        fg: palette.tone.slateBright,
+        bg: palette.tone.slateSubtleDark,
+        dot: palette.tone.slateBright,
+      },
       summaryNow: palette.tone.roseNow,
     },
   },

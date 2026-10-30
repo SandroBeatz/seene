@@ -52,13 +52,13 @@ src/app/
 │   ├── onboarding/             # index → profile → professions (one route per step)
 │   └── welcome.tsx             # legacy redirect
 ├── (app)/
-│   ├── _layout.tsx             # protected Stack: tabs + modal siblings
+│   ├── _layout.tsx             # protected Stack: tabs + analytics + modal siblings
+│   ├── analytics.tsx           # opened from "Сегодня", not a tab
 │   ├── (tabs)/
-│   │   ├── _layout.tsx         # the only NativeTabs integration
+│   │   ├── _layout.tsx         # headless tabs + FloatingTabBar (Сегодня·Календарь·＋·Клиенты·Меню)
 │   │   ├── (home)/             # nested Stack + canonical /
 │   │   ├── (calendar)/         # nested Stack + /calendar
 │   │   ├── (clients)/          # nested Stack + dynamic client route
-│   │   ├── (analytics)/        # nested Stack
 │   │   ├── (settings)/         # nested Stack + pushed settings routes
 │   │   └── (home,calendar)/appointments/[appointmentId].tsx
 │   │                           # one shared route in two tab Stacks

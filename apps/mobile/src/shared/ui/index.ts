@@ -50,6 +50,16 @@ export {
 export { Card, type CardProps } from './Card';
 export { Avatar, initialsOf, type AvatarProps, type AvatarSize, type AvatarTone } from './Avatar';
 export { GlassSurface, type GlassSurfaceProps } from './GlassSurface';
+export {
+  FloatingTabBar,
+  FloatingTabBarItem,
+  FloatingTabBarAction,
+  FloatingTabBarVisibility,
+  useFloatingTabBarInset,
+  type FloatingTabBarProps,
+  type FloatingTabBarItemProps,
+  type FloatingTabBarActionProps,
+} from './FloatingTabBar';
 export { ListItem, type ListItemProps, type ListItemSize } from './ListItem';
 export { GroupedCard, type GroupedCardProps, type GroupedCardVariant } from './GroupedCard';
 export { SectionLabel, type SectionLabelProps } from './SectionLabel';
