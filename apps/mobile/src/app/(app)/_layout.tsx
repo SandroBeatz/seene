@@ -27,11 +27,8 @@ export default function AppLayout() {
     <Stack screenOptions={stackOptions}>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="analytics" options={{ title: t('tabs.analytics') }} />
-      {/* The profile draws its own back and "⋯" buttons. */}
-      <Stack.Screen
-        name="clients/[clientId]"
-        options={{ title: t('navigation.clientDetails'), headerShown: false }}
-      />
+      {/* No title: the name heads the content; "⋯" is the screen's own toolbar menu. */}
+      <Stack.Screen name="clients/[clientId]" options={{ title: '' }} />
       <Stack.Screen name="settings/profile" options={{ title: t('navigation.profileSettings') }} />
       <Stack.Screen name="settings/services" options={{ title: t('services.title') }} />
       {/* Full-height sheets; the grabber is drawn in content so iOS and Android match. */}

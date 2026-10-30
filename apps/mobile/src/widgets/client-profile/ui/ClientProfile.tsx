@@ -3,12 +3,10 @@
  * numbers, "Записать" with WhatsApp and call, money, the note, when to invite them
  * again, and every visit by day. "⋯" edits, shares or deletes the client.
  */
-import { useRef, useState } from 'react';
-import { router } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import { DateTime } from 'luxon';
 import { useTranslation } from 'react-i18next';
 import { Alert, Linking, Pressable, Share, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { getAppointmentPhase } from '@/entities/appointment';
 import { clientName } from '@/entities/client';
@@ -19,89 +17,47 @@ import { isSupportedLocale, pluralCategory, type AppLocale } from '@/shared/lib/
 import { formatPhone, phoneCallUrl, whatsappUrl } from '@/shared/lib/phone';
 import {
   Avatar,
-  ContextMenu,
   ErrorState,
   Icon,
-  IconButton,
   ScreenScrollView,
   Skeleton,
   Text,
   VipBadge,
-  type ContextMenuAnchor,
-  type ContextMenuItem,
   useRefreshControl,
 } from '@/shared/ui';
 import { clientSince } from '../model/profile';
 import { useClientProfile, type ProfileVisit } from '../model/useClientProfile';
 
-const MENU_WIDTH = 264;
-
 export function ClientProfile({ clientId }: { clientId: string }) {
   const { t, i18n } = useTranslation();
   const { theme } = useUnistyles();
-  const insets = useSafeAreaInsets();
   const locale = isSupportedLocale(i18n.language) ? i18n.language : 'en';
   const profile = useClientProfile(clientId);
   const deleteClient = useDeleteClient();
-  const moreRef = useRef<View>(null);
-  const [menu, setMenu] = useState<ContextMenuAnchor | null>(null);
   const refreshControl = useRefreshControl(profile.refetch);
 
-  const top = { paddingTop: insets.top + theme.space[1.5] };
   const monthNames = t('monthsGenitive', { returnObjects: true }) as string[];
   const weekdays = t('weekdays.short', { returnObjects: true }) as string[];
   const number = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 });
   const money = (amount: number) => formatAmount(amount, { currency: profile.currency, locale });
 
-  const bar = (
-    <View style={[styles.bar, top]}>
-      <IconButton
-        icon="chevronLeft"
-        variant="neutral"
-        accessibilityLabel={t('clients.profile.back')}
-        onPress={() => router.back()}
-      />
-      <View style={styles.grow} />
-      {profile.client ? (
-        <View ref={moreRef} collapsable={false}>
-          <IconButton
-            icon="more"
-            variant="neutral"
-            accessibilityLabel={t('clients.profile.more')}
-            onPress={() =>
-              moreRef.current?.measureInWindow((x, y, width, height) =>
-                setMenu({
-                  x: x + width - MENU_WIDTH,
-                  y: y + height + theme.space[2],
-                  width: MENU_WIDTH,
-                }),
-              )
-            }
-          />
-        </View>
-      ) : null}
-    </View>
-  );
-
   if (profile.isPending) {
     return (
-      <View style={styles.root}>
-        {bar}
+      <ScreenScrollView padded={false} scrollEnabled={false}>
         <View style={styles.skeleton}>
           <Skeleton height={68} width="70%" />
           <Skeleton height={64} radius={theme.radius.block} />
           <Skeleton height={52} radius={theme.radius.full} />
           <Skeleton height={200} radius={theme.radius.block} />
         </View>
-      </View>
+      </ScreenScrollView>
     );
   }
 
   const client = profile.client;
   if (!client) {
     return (
-      <View style={styles.root}>
-        {bar}
+      <ScreenScrollView padded={false} contentContainerStyle={styles.grow}>
         <ErrorState
           message={
             profile.error
@@ -110,7 +66,7 @@ export function ClientProfile({ clientId }: { clientId: string }) {
           }
           onRetry={() => void profile.refetch()}
         />
-      </View>
+      </ScreenScrollView>
     );
   }
 
@@ -150,20 +106,29 @@ export function ClientProfile({ clientId }: { clientId: string }) {
         ? t('clients.profile.cadenceWeeks', { count: Math.round(stats.cadenceDays / 7) })
         : t('clients.profile.cadenceDays', { count: stats.cadenceDays });
 
-  const menuItems: ContextMenuItem[] = [
-    { key: 'edit', label: t('clients.profile.menu.edit'), icon: 'pencil' },
-    { key: 'share', label: t('clients.profile.menu.share'), icon: 'send' },
-    { key: 'merge', label: t('clients.merge.menu'), icon: 'clients' },
-    { key: 'delete', label: t('clients.profile.menu.delete'), icon: 'trash', danger: true },
-  ];
+  const merge = () =>
+    router.push({ pathname: '/client/[clientId]/merge', params: { clientId: client.id } });
 
   return (
     <View style={styles.root}>
-      {bar}
-      <ScreenScrollView
-        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 130 }]}
-        contentInsetAdjustmentBehavior="never"
-        refreshControl={refreshControl}>
+      {/* "⋯": the native header menu (Liquid Glass on iOS 26). */}
+      <Stack.Toolbar placement="right">
+        <Stack.Toolbar.Menu icon="ellipsis" accessibilityLabel={t('clients.profile.more')}>
+          <Stack.Toolbar.MenuAction icon="pencil" onPress={edit}>
+            {t('clients.profile.menu.edit')}
+          </Stack.Toolbar.MenuAction>
+          <Stack.Toolbar.MenuAction icon="square.and.arrow.up" onPress={share}>
+            {t('clients.profile.menu.share')}
+          </Stack.Toolbar.MenuAction>
+          <Stack.Toolbar.MenuAction icon="person.2" onPress={merge}>
+            {t('clients.merge.menu')}
+          </Stack.Toolbar.MenuAction>
+          <Stack.Toolbar.MenuAction icon="trash" destructive onPress={() => deleteClient(client)}>
+            {t('clients.profile.menu.delete')}
+          </Stack.Toolbar.MenuAction>
+        </Stack.Toolbar.Menu>
+      </Stack.Toolbar>
+      <ScreenScrollView contentContainerStyle={styles.content} refreshControl={refreshControl}>
         <View style={styles.identity}>
           <Avatar name={name} color={client.avatar_color} size="xxl" />
           <View style={styles.grow}>
@@ -337,20 +302,6 @@ export function ClientProfile({ clientId }: { clientId: string }) {
           );
         })}
       </ScreenScrollView>
-
-      <ContextMenu
-        anchor={menu}
-        items={menuItems}
-        closeLabel={t('common.close')}
-        onClose={() => setMenu(null)}
-        onSelect={(key) => {
-          if (key === 'edit') edit();
-          else if (key === 'share') share();
-          else if (key === 'merge')
-            router.push({ pathname: '/client/[clientId]/merge', params: { clientId: client.id } });
-          else if (key === 'delete') deleteClient(client);
-        }}
-      />
     </View>
   );
 }
@@ -447,7 +398,6 @@ function VisitCard({
 
 const styles = StyleSheet.create((theme) => ({
   root: { flex: 1, backgroundColor: theme.colors.bg.canvas },
-  bar: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: theme.space[4] },
   grow: { flex: 1, minWidth: 0, gap: 2 },
   shrink: { flexShrink: 1 },
   pressed: { opacity: 0.7 },

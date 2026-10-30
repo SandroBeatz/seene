@@ -1,14 +1,13 @@
 /**
- * The "Клиенты" tab (design "Клиенты"): title with the add button, search by name or
- * phone, filter chips with counts, then the book — VIP first, the rest after — each
+ * The "Клиенты" tab (design "Клиенты"): the native large title with the add button
+ * and search by name or phone, filter chips with counts, then the book — VIP first, the rest after — each
  * row with when the client was last here and how many visits. Clients due for a
  * call get "Позвать": WhatsApp with a ready text.
  */
 import { useMemo, useState } from 'react';
-import { router } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Alert, FlatList, Linking, Pressable, ScrollView, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { useDismissAttentionMutation } from '@/entities/attention';
 import {
@@ -31,8 +30,7 @@ import {
   EmptyState,
   ErrorState,
   Icon,
-  IconButton,
-  SearchField,
+  ScreenScrollView,
   Skeleton,
   Text,
   VipBadge,
@@ -53,7 +51,6 @@ type Item =
 export function ClientList() {
   const { t, i18n } = useTranslation();
   const { theme } = useUnistyles();
-  const insets = useSafeAreaInsets();
   const locale = isSupportedLocale(i18n.language) ? i18n.language : 'en';
   const list = useClientList();
   const { country: phoneCountry } = usePhoneCountry();
@@ -163,92 +160,88 @@ export function ClientList() {
     ]);
   };
 
-  const header = (
-    <View style={[styles.header, { paddingTop: insets.top + theme.space[1] }]}>
-      <View style={styles.titleRow}>
-        <Text variant="pageTitle" accessibilityRole="header" style={styles.grow}>
-          {t('clients.list.title')}
-        </Text>
-        <IconButton
-          icon="userAdd"
-          variant="neutral"
-          size="lg"
+  // Native chrome: the large title comes from the route, "add" and search live in
+  // the header (Liquid Glass on iOS 26).
+  const chrome = (
+    <>
+      <Stack.Toolbar placement="right">
+        <Stack.Toolbar.Button
+          icon="person.badge.plus"
           accessibilityLabel={t('clients.list.add')}
           onPress={openNew}
         />
-      </View>
-      <View style={styles.search}>
-        <SearchField
-          value={query}
-          onChangeText={setQuery}
-          placeholder={t('clients.list.search')}
-          accessibilityLabel={t('clients.list.searchA11y')}
-        />
-      </View>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.filtersScroll}
-        contentContainerStyle={styles.filters}
-        accessibilityLabel={t('clients.list.filtersA11y')}>
-        {CLIENT_SEGMENTS.map((key) => {
-          const on = segment === key;
-          return (
-            <Pressable
-              key={key}
-              accessibilityRole="button"
-              accessibilityState={{ selected: on }}
-              onPress={() => setSegment(key)}
-              style={({ pressed }) => [
-                styles.filter,
-                on && styles.filterOn,
-                pressed && styles.pressed,
-              ]}>
-              <Text variant="footnoteStrong" color={on ? 'onAccent' : 'primary'}>
-                {t(`clients.list.filters.${key}`)}
-              </Text>
-              <Text
-                variant="footnoteStrong"
-                color={on ? 'onAccent' : 'primary'}
-                style={styles.count}>
-                {list.counts[key]}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </ScrollView>
-    </View>
+      </Stack.Toolbar>
+      <Stack.SearchBar
+        placeholder={t('clients.list.search')}
+        placement="stacked"
+        autoCapitalize="none"
+        onChangeText={(e) => setQuery(e.nativeEvent.text)}
+        onCancelButtonPress={() => setQuery('')}
+      />
+    </>
+  );
+
+  const filters = (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      style={styles.filtersScroll}
+      contentContainerStyle={styles.filters}
+      accessibilityLabel={t('clients.list.filtersA11y')}>
+      {CLIENT_SEGMENTS.map((key) => {
+        const on = segment === key;
+        return (
+          <Pressable
+            key={key}
+            accessibilityRole="button"
+            accessibilityState={{ selected: on }}
+            onPress={() => setSegment(key)}
+            style={({ pressed }) => [
+              styles.filter,
+              on && styles.filterOn,
+              pressed && styles.pressed,
+            ]}>
+            <Text variant="footnoteStrong" color={on ? 'onAccent' : 'primary'}>
+              {t(`clients.list.filters.${key}`)}
+            </Text>
+            <Text variant="footnoteStrong" color={on ? 'onAccent' : 'primary'} style={styles.count}>
+              {list.counts[key]}
+            </Text>
+          </Pressable>
+        );
+      })}
+    </ScrollView>
   );
 
   if (list.isPending) {
     return (
-      <View style={styles.root}>
-        {header}
+      <ScreenScrollView padded={false} scrollEnabled={false}>
+        {chrome}
         <View style={styles.skeleton}>
           {[0, 1, 2, 3, 4].map((i) => (
             <Skeleton key={i} height={56} radius={theme.radius.lg} />
           ))}
         </View>
-      </View>
+      </ScreenScrollView>
     );
   }
 
   if (list.error && list.rows.length === 0) {
     return (
-      <View style={styles.root}>
-        {header}
+      <ScreenScrollView padded={false} contentContainerStyle={styles.grow}>
+        {chrome}
         <ErrorState
           message={t(errorMessageKey(normalizeError(list.error)))}
           onRetry={() => void list.refetch()}
         />
-      </View>
+      </ScreenScrollView>
     );
   }
 
   if (list.rows.length === 0) {
     return (
-      <View style={styles.root}>
-        {header}
+      <ScreenScrollView padded={false} contentContainerStyle={styles.grow}>
+        {chrome}
         <EmptyState
           icon="clients"
           title={t('clients.list.emptyTitle')}
@@ -257,21 +250,23 @@ export function ClientList() {
           onAction={openNew}
         />
         <View style={styles.emptyImport}>{importButton}</View>
-      </View>
+      </ScreenScrollView>
     );
   }
 
   return (
     <View style={styles.root}>
-      {header}
+      {chrome}
       <FlatList
         data={items}
+        contentInsetAdjustmentBehavior="automatic"
         keyExtractor={(item) => item.key}
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={[styles.list, { paddingBottom: insets.bottom + 120 }]}
+        contentContainerStyle={styles.list}
         refreshControl={refreshControl}
+        ListHeaderComponent={filters}
         ListFooterComponent={importButton}
         ListEmptyComponent={
           <Text variant="subhead" color="secondary" align="center" style={styles.nobody}>
@@ -381,10 +376,7 @@ function ClientRowView({
 
 const styles = StyleSheet.create((theme) => ({
   root: { flex: 1, backgroundColor: theme.colors.bg.canvas },
-  header: { paddingHorizontal: theme.space[5] },
-  titleRow: { flexDirection: 'row', alignItems: 'center', gap: theme.space[3] },
   grow: { flex: 1 },
-  search: { paddingTop: theme.space[3.5] },
   filtersScroll: { flexGrow: 0, marginHorizontal: -theme.space[5] },
   filters: {
     gap: theme.space[1.5],
@@ -410,7 +402,7 @@ const styles = StyleSheet.create((theme) => ({
   count: { opacity: 0.6 },
   pressed: { opacity: 0.7 },
   skeleton: { padding: theme.space[5], gap: theme.space[3] },
-  list: { paddingHorizontal: theme.space[5], paddingTop: theme.space[1.5] },
+  list: { paddingHorizontal: theme.space[5], paddingBottom: theme.space[8] },
   nobody: { paddingVertical: theme.space[10] },
   section: { marginTop: theme.space[4], marginBottom: theme.space[0.5] },
   hint: {
