@@ -190,6 +190,9 @@ importers:
       i18next:
         specifier: ^26.3.6
         version: 26.3.6(typescript@6.0.3)
+      libphonenumber-js:
+        specifier: ^1.13.14
+        version: 1.13.14
       luxon:
         specifier: ^3.7.2
         version: 3.7.2

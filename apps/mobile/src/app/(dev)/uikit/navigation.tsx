@@ -44,23 +44,6 @@ export default function UIKitNavigationScreen() {
         }
       />
       <UIKitExampleCard
-        title={t('uikit.navigation.shared')}
-        description={t('uikit.navigation.sharedDescription')}
-        recommendation={t('uikit.recommended.shared')}
-        source="src/app/(app)/(tabs)/(home,calendar)/appointments/[appointmentId].tsx"
-        code={'<Link href="/(app)/(tabs)/(home)/appointments/[appointmentId]" />'}
-        action={
-          <Link
-            href={{
-              pathname: '/(app)/(tabs)/(home)/appointments/[appointmentId]',
-              params: { appointmentId: 'uikit-appointment', source: 'uikit' },
-            }}
-            asChild>
-            <Button label={t('uikit.openExample')} variant="secondary" />
-          </Link>
-        }
-      />
-      <UIKitExampleCard
         title={t('uikit.navigation.absoluteRelative')}
         description={t('uikit.navigation.absoluteRelativeDescription')}
         recommendation={t('uikit.recommended.absolute')}

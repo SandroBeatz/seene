@@ -68,8 +68,8 @@ export function TodayScreen() {
 
   const openVisit = (visit: ScheduleVisit) =>
     router.push({
-      pathname: '/(app)/(tabs)/(home)/appointments/[appointmentId]',
-      params: { appointmentId: visit.appointment.id, source: 'home' },
+      pathname: '/appointment/[appointmentId]',
+      params: { appointmentId: visit.appointment.id },
     });
 
   const openNote = (visit: ScheduleVisit) =>

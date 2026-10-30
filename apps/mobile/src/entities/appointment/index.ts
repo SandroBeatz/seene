@@ -5,6 +5,7 @@ export {
   useActionableAppointmentsQuery,
   useAppointmentQuery,
   useClientAppointmentCountQuery,
+  useClientVisitCountQuery,
   useCreateAppointmentMutation,
   useUpdateAppointmentMutation,
   useDeleteAppointmentMutation,
@@ -42,6 +43,7 @@ export type {
   AppointmentStatus,
   EffectiveAppointmentStatus,
   AppointmentSource,
+  AppointmentCancelledBy,
   CreateAppointmentDto,
   UpdateAppointmentDto,
 } from './model/types';

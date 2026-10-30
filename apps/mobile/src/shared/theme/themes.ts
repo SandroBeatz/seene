@@ -79,6 +79,9 @@ export const lightTheme = {
       scrim: palette.translucent.scrim,
       scrimStrong: palette.translucent.scrimStrong,
       scrimLight: palette.translucent.scrimLight,
+      // Behind a popover menu, and the menu's own fill.
+      menuScrim: palette.translucent.scrimMenu,
+      menu: palette.translucent.whiteBar,
       // Floating tab bar fill.
       bar: palette.translucent.whiteBar,
       // Over photos: unchecked selection mark fill, its outline, and the label shade.
@@ -147,6 +150,7 @@ export const lightTheme = {
       info: { fg: palette.tone.slate, bg: palette.tone.slateSubtle, dot: palette.tone.slate },
       summaryNow: palette.tone.roseNow,
     },
+    vip: palette.vip,
   },
   elevation: {
     0: {},
@@ -215,6 +219,8 @@ export const darkTheme = {
       scrim: palette.translucent.scrimDark,
       scrimStrong: palette.translucent.scrimDark,
       scrimLight: palette.translucent.scrim,
+      menuScrim: palette.translucent.scrimMenu,
+      menu: n[800],
       bar: palette.translucent.blackBar,
       onImageDim: palette.translucent.blackDim,
       onImageEdge: palette.translucent.whiteEdge,
@@ -287,6 +293,7 @@ export const darkTheme = {
       },
       summaryNow: palette.tone.roseNow,
     },
+    vip: palette.vip,
   },
   elevation: {
     0: {},

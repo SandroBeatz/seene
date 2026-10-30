@@ -92,4 +92,5 @@ export {
   type ScrollFadeConfig,
 } from './hooks/useScrollFade';
 export { useReducedMotion } from './hooks/useReducedMotion';
+export { useNow } from './hooks/useNow';
 export { useReduceTransparency } from './hooks/useReduceTransparency';
