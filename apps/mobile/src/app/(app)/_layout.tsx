@@ -37,6 +37,8 @@ export default function AppLayout() {
       <Stack.Screen name="(modals)/appointment/[appointmentId]/services" options={sheet} />
       <Stack.Screen name="(modals)/appointment/[appointmentId]/reschedule" options={sheet} />
       <Stack.Screen name="(modals)/appointment/[appointmentId]/checkout" options={sheet} />
+      <Stack.Screen name="(modals)/client/new" options={sheet} />
+      <Stack.Screen name="(modals)/client/[clientId]/edit" options={sheet} />
       <Stack.Screen
         name="(modals)/appointment-form"
         options={{ presentation: 'modal', title: t('navigation.appointmentForm') }}

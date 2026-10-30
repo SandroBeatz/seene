@@ -3,15 +3,32 @@ import type { Database } from '@/shared/api/database.types';
 
 export type Client = Database['public']['Tables']['client']['Row'];
 
-export interface CreateClientDto {
-  phone: string;
+/** The card fields a master edits (design "Новый клиент" / "Редактировать"). */
+export interface ClientCardDto {
   first_name: string;
   last_name?: string | null;
-  email?: string | null;
-  birthday?: string | null; // YYYY-MM-DD
+  /** Canonical E.164 digits, or null. */
+  phone?: string | null;
+  avatar_color?: string | null;
+  whatsapp?: string | null;
+  telegram?: string | null;
+  instagram?: string | null;
+  birth_day?: number | null;
+  birth_month?: number | null;
   notes?: string | null;
-  emoji?: string | null;
   is_favorite?: boolean;
 }
 
-export type UpdateClientDto = Partial<CreateClientDto> & { id: string };
+export type CreateClientDto = ClientCardDto;
+export type UpdateClientDto = Partial<ClientCardDto> & { id: string };
+
+/** Per-client numbers (`client_summaries()`): finished visits, money, the next booking. */
+export interface ClientSummary {
+  clientId: string;
+  visits: number;
+  noShows: number;
+  firstVisit: string | null;
+  lastVisit: string | null;
+  nextVisit: string | null;
+  spent: number;
+}

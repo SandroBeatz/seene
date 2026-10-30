@@ -33,6 +33,12 @@ export default defineEventHandler(async (event) => {
   }
 
   const { user_id: masterUserId, service_ids: serviceIds, client } = link.appointment
+  // An online booking always has the client's phone; a master may later clear it in
+  // the app, and then there is no one to book the new time for.
+  const phone = client.phone
+  if (!phone) {
+    throw createError({ statusCode: 409, message: 'Client has no phone' })
+  }
 
   const [{ data: profile }, { data: settings }, { data: services }] = await Promise.all([
     supabase
@@ -98,7 +104,7 @@ export default defineEventHandler(async (event) => {
     p_username: profile.username,
     p_service_ids: serviceIds,
     p_starts_at: startsAt,
-    p_phone: client.phone,
+    p_phone: phone,
     // Her note to the master moves with the booking.
     p_note: link.appointment.notes ?? undefined,
     p_holder_hash: readHolderHash(event) ?? undefined,
@@ -115,7 +121,7 @@ export default defineEventHandler(async (event) => {
 
   if (created) {
     await sendBookingConfirmation(event, {
-      phone: client.phone,
+      phone,
       profile,
       settings,
       booking,

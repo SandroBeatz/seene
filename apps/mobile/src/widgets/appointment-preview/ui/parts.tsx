@@ -12,7 +12,6 @@ import Animated, {
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
-import Svg, { Defs, LinearGradient, Rect, Stop, Text as SvgText } from 'react-native-svg';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import {
   DESTRUCTIVE_ACTIONS,
@@ -29,6 +28,7 @@ import {
   Text,
   useNow,
   useReducedMotion,
+  VipBadge,
   type IconName,
 } from '@/shared/ui';
 import type { MenuAction, MoreMenu } from '../model/labels';
@@ -77,48 +77,6 @@ export function PulseDot({ color }: { color: string }) {
   return <Animated.View style={[styles.dot, { backgroundColor: color }, animated]} />;
 }
 
-// ---- VIP badge (gradient outline + gradient text) ----
-
-const VIP = { width: 28, height: 14 };
-
-export function VipBadge() {
-  const { t } = useTranslation();
-  const { theme } = useUnistyles();
-  const [from, mid, to] = theme.colors.vip;
-  return (
-    <View accessible accessibilityLabel={t('preview.vip')}>
-      <Svg width={VIP.width} height={VIP.height}>
-        <Defs>
-          <LinearGradient id="vip" x1="0" y1="0" x2="1" y2="0.6">
-            <Stop offset="0" stopColor={from} />
-            <Stop offset="0.55" stopColor={mid} />
-            <Stop offset="1" stopColor={to} />
-          </LinearGradient>
-        </Defs>
-        <Rect
-          x={0.5}
-          y={0.5}
-          width={VIP.width - 1}
-          height={VIP.height - 1}
-          rx={(VIP.height - 1) / 2}
-          fill="none"
-          stroke="url(#vip)"
-        />
-        <SvgText
-          x={VIP.width / 2}
-          y={10}
-          fontSize={8}
-          fontWeight="600"
-          letterSpacing={1}
-          textAnchor="middle"
-          fill="url(#vip)">
-          VIP
-        </SvgText>
-      </Svg>
-    </View>
-  );
-}
-
 // ---- Client card ----
 
 export interface ClientCardProps {
@@ -146,13 +104,13 @@ export function ClientCard({
         accessibilityRole="button"
         onPress={onOpen}
         style={({ pressed }) => [styles.clientRow, pressed && styles.pressed]}>
-        <Avatar name={name} emoji={client?.emoji} size="md" />
+        <Avatar name={name} color={client?.avatar_color} size="md" />
         <View style={styles.grow}>
           <View style={styles.inline}>
             <Text variant="calloutStrong" numberOfLines={1} style={styles.shrink}>
               {name}
             </Text>
-            {client?.is_favorite ? <VipBadge /> : null}
+            {client?.is_favorite ? <VipBadge accessibilityLabel={t('preview.vip')} /> : null}
           </View>
           <Text variant="footnote" color="tertiary" tabularNums numberOfLines={1}>
             {subtitle}

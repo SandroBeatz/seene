@@ -37,6 +37,8 @@ export function invalidateAppointmentCaches(qc: QueryClient, userId: string): vo
   qc.invalidateQueries({ queryKey: appointmentKeys.actionable(userId) });
   qc.invalidateQueries({ queryKey: appointmentKeys.dayCounts(userId) });
   qc.invalidateQueries({ queryKey: ['analytics', userId] });
+  // Visit counts and money per client (client entity's `clientKeys.summaries`).
+  qc.invalidateQueries({ queryKey: ['client-summaries', userId] });
 }
 
 /** Finished and booked visits since `from` (who and when) — client rhythms. */

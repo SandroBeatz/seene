@@ -11,7 +11,7 @@
 import { Pressable, type PressableProps } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { GlassSurface } from '@/shared/ui/GlassSurface';
-import { Icon, type IconName, type IconSize } from '@/shared/ui/Icon';
+import { Icon, type IconName, type IconProps, type IconSize } from '@/shared/ui/Icon';
 
 // 'default' is reserved by Unistyles variants (fallback key) — use 'neutral'.
 export type IconButtonVariant = 'neutral' | 'accent' | 'danger' | 'ghost' | 'glass';
@@ -23,6 +23,8 @@ export interface IconButtonProps extends Omit<PressableProps, 'style' | 'childre
   variant?: IconButtonVariant;
   size?: IconButtonSize;
   iconSize?: IconSize | number;
+  /** Icon colour role, overriding the variant's ("tone.danger.fg" for a red trash). */
+  iconColor?: IconProps['color'];
 }
 
 export function IconButton({
@@ -30,6 +32,7 @@ export function IconButton({
   variant = 'ghost',
   size = 'md',
   iconSize,
+  iconColor: iconColorOverride,
   disabled,
   ...rest
 }: IconButtonProps) {
@@ -38,13 +41,13 @@ export function IconButton({
   const isSolid = variant === 'accent' || variant === 'danger';
   const iconColor = disabled
     ? 'content.disabled'
-    : {
+    : (iconColorOverride ?? {
         neutral: 'content.primary',
         accent: 'accent.onAccent',
         danger: 'feedback.onColor',
         ghost: 'content.primary',
         glass: 'content.primary',
-      }[variant];
+      }[variant]);
   const rippleColor = isSolid
     ? theme.colors.interaction.onSolidPressed
     : theme.colors.interaction.onSurfacePressed;

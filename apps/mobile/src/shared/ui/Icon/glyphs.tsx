@@ -365,6 +365,46 @@ export const GLYPHS = {
       />
     ),
   },
+  // Telegram's paper plane, drawn in its brand blue (design "Новый клиент").
+  telegram: {
+    kind: 'fill',
+    render: () => (
+      <>
+        <Path
+          d="M21 4L3 11l6 2 2 6 3-4 5 4z"
+          fill="none"
+          stroke={brandMarks.telegram}
+          strokeWidth={2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <Path
+          d="M9 13l12-9"
+          fill="none"
+          stroke={brandMarks.telegram}
+          strokeWidth={2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </>
+    ),
+  },
+  instagram: stroke(
+    'regular',
+    <>
+      <Rect x={3} y={3} width={18} height={18} rx={5} />
+      <Circle cx={12} cy={12} r={4} />
+      <Circle cx={17.5} cy={6.5} r={0.6} />
+    </>,
+  ),
+  // A phone handset outline: "Выбрать из контактов телефона".
+  contacts: stroke(
+    'regular',
+    <>
+      <Rect x={5} y={2.5} width={14} height={19} rx={3} />
+      <Path d="M10 18h4" />
+    </>,
+  ),
   apple: {
     kind: 'fill',
     render: (color) => (

@@ -132,6 +132,23 @@ export const clientHues = [
   '#CFCFCB',
 ] as const;
 
+/**
+ * Client avatar backgrounds (design "Новый клиент · фон аватарки"): a 135° gradient
+ * from the light to the deep stop, white initials on top. Stored on
+ * `client.avatar_color` by key.
+ */
+export const avatarGradients = {
+  rose: ['#F6A6C6', '#CF3767'],
+  lavender: ['#C9BEFF', '#7363D6'],
+  peach: ['#FFCBA4', '#E46F55'],
+  mint: ['#A6E8CF', '#23957A'],
+  sky: ['#AED6FF', '#3D74DB'],
+  honey: ['#FFE29A', '#D48E22'],
+  plum: ['#E6AEEC', '#8B3CA6'],
+  sea: ['#93E3E6', '#22849E'],
+  graphite: ['#C4C4CB', '#4A4A53'],
+} as const;
+
 // ---- Non-color primitive scales (shared across themes) ----
 
 /** 4-pt rhythm; half steps (x.5) carry the design's 2/6/10/14/18/22/26/30 values. */
@@ -185,9 +202,9 @@ export const radius = {
 // Control heights & icon/avatar sizing. 44 is the min touch target.
 export const sizing = {
   icon: { xs: 12, mark: 13, sm: 16, base: 18, md: 20, lg: 24, xl: 34 },
-  avatar: { sm: 28, md: 44, lg: 56, xl: 64, xxl: 76 },
+  avatar: { sm: 28, md: 44, lg: 56, xl: 64, xxl: 68, xxxl: 88 },
   /** Initials font size per avatar size. */
-  avatarText: { sm: 11, md: 15, lg: 18, xl: 19, xxl: 26 },
+  avatarText: { sm: 11, md: 15, lg: 18, xl: 19, xxl: 22, xxxl: 30 },
   control: { xs: 30, sm: 36, md: 44, lg: 48, xl: 54 },
   /** Round icon button (back / close). */
   iconButton: 40,
@@ -267,6 +284,8 @@ export const typography = {
     letterSpacing: -0.48,
   },
   stat: { fontFamily: fontFamily.displayBold, fontSize: 20, lineHeight: 24, letterSpacing: -0.4 },
+  /** Tab screen title drawn in content ("Клиенты"). */
+  pageTitle: { fontFamily: fontFamily.displayBold, fontSize: 22, lineHeight: 27, letterSpacing: -0.44 },
   title3: {
     fontFamily: fontFamily.displayBold,
     fontSize: 19,
@@ -346,6 +365,8 @@ export const shadow = {
   bar: '0px 6px 20px rgba(0, 0, 0, 0.06)',
   fab: '0px 6px 20px rgba(0, 0, 0, 0.12)',
   tabBar: '0px 8px 24px rgba(0, 0, 0, 0.08)',
+  /** The big avatar of the client form. */
+  avatar: '0px 8px 20px rgba(0, 0, 0, 0.08)',
   tabAction: '0px 12px 28px rgba(0, 0, 0, 0.14)',
   menu: '0px 16px 40px rgba(0, 0, 0, 0.16), 0px 2px 6px rgba(0, 0, 0, 0.06)',
   panel: '0px -8px 24px rgba(0, 0, 0, 0.05)',
@@ -381,6 +402,7 @@ export const iconStroke = {
 export const brandMarks = {
   google: { blue: '#4285F4', green: '#34A853', yellow: '#FBBC05', red: '#EA4335' },
   whatsapp: '#25D366',
+  telegram: '#229ED9',
 } as const;
 
 /**
@@ -399,3 +421,4 @@ export const MAX_FONT_SCALE = 1.3;
 export type TypographyVariant = keyof typeof typography;
 export type AppointmentStatusColorKey = keyof typeof statusPalette;
 export type ServiceColorKey = keyof typeof servicePalette;
+export type AvatarColorKey = keyof typeof avatarGradients;

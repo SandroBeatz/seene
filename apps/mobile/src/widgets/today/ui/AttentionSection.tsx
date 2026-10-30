@@ -180,7 +180,7 @@ export function AttentionCardView({
             <Icon name="whatsapp" size={14} />
           </View>
         ) : (
-          <Avatar name={text.name} emoji={text.emoji} size="sm" />
+          <Avatar name={text.name} color={text.color} size="sm" />
         )}
         <View style={styles.grow}>
           <View style={styles.nameRow}>
@@ -268,7 +268,7 @@ function describe(card: AttentionCard, format: AttentionFormat, t: T) {
       when: t('preview.day.tomorrow'),
       name: plural('clients', card.appointments.length),
       subtitle: t('today.attention.remindersReady'),
-      emoji: null,
+      color: null,
     };
   }
   if (card.kind === 'recall') {
@@ -282,7 +282,7 @@ function describe(card: AttentionCard, format: AttentionFormat, t: T) {
       subtitle: weeks
         ? plural('cadenceWeeks', Math.round(card.cadenceDays / WEEK))
         : plural('cadenceDays', card.cadenceDays),
-      emoji: card.client?.emoji ?? null,
+      color: card.client?.avatar_color ?? null,
     };
   }
   const visit = card.visit!;
@@ -292,7 +292,7 @@ function describe(card: AttentionCard, format: AttentionFormat, t: T) {
     subtitle: [visit.serviceNames.join(' + '), format.formatNumber(visit.price)]
       .filter(Boolean)
       .join(' · '),
-    emoji: visit.client?.emoji ?? null,
+    color: visit.client?.avatar_color ?? null,
   };
 }
 
