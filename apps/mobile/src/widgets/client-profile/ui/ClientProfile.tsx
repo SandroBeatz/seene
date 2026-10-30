@@ -145,6 +145,7 @@ export function ClientProfile({ clientId }: { clientId: string }) {
   const menuItems: ContextMenuItem[] = [
     { key: 'edit', label: t('clients.profile.menu.edit'), icon: 'pencil' },
     { key: 'share', label: t('clients.profile.menu.share'), icon: 'send' },
+    { key: 'merge', label: t('clients.merge.menu'), icon: 'clients' },
     { key: 'delete', label: t('clients.profile.menu.delete'), icon: 'trash', danger: true },
   ];
 
@@ -333,6 +334,8 @@ export function ClientProfile({ clientId }: { clientId: string }) {
         onSelect={(key) => {
           if (key === 'edit') edit();
           else if (key === 'share') share();
+          else if (key === 'merge')
+            router.push({ pathname: '/client/[clientId]/merge', params: { clientId: client.id } });
           else if (key === 'delete') deleteClient(client);
         }}
       />

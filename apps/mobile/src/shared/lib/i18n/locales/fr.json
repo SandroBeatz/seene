@@ -239,6 +239,48 @@
         "delete": "Supprimer le client"
       },
       "notFound": "Client introuvable. Il a peut-être été supprimé."
+    },
+    "import": {
+      "title": "Depuis les contacts",
+      "search": "Nom ou numéro",
+      "selectAll": "Tout sélectionner",
+      "clearAll": "Effacer",
+      "noPhone": "Sans numéro",
+      "exists": "Déjà dans la liste",
+      "pick": "Choisissez des contacts",
+      "submit_one": "Ajouter {{count}} client",
+      "submit_many": "Ajouter {{count}} clients",
+      "submit_other": "Ajouter {{count}} clients",
+      "deniedTitle": "Pas d’accès aux contacts",
+      "deniedText": "Autorisez Seene à voir vos contacts dans les réglages du téléphone, puis choisissez qui ajouter.",
+      "openSettings": "Ouvrir les réglages",
+      "limited": "Seene ne voit que les contacts que vous avez partagés.",
+      "limitedMore": "En choisir d’autres",
+      "empty": "Votre répertoire n’a aucun contact avec un nom.",
+      "loading": "Lecture des contacts…",
+      "done_one": "{{count}} client ajouté",
+      "done_many": "{{count}} clients ajoutés",
+      "done_other": "{{count}} clients ajoutés",
+      "unreadable": "Numéro non reconnu — ajouté sans"
+    },
+    "fromContacts": "Ajouter depuis les contacts",
+    "pickContact": "Choisir dans les contacts",
+    "merge": {
+      "title": "Fusionner les doublons",
+      "hint": "Choisissez qui fusionner avec « {{name}} ». Visites, paiements et note passent sur cette fiche ; l’autre est supprimée.",
+      "reasons": {
+        "phone": "Même numéro",
+        "name": "Même nom",
+        "firstName": "Prénom proche"
+      },
+      "suggested": "Ressemblants",
+      "others": "Autres clients",
+      "search": "Trouver un client",
+      "none": "Aucun doublon probable — cherchez-le.",
+      "confirmTitle": "Fusionner avec « {{name}} » ?",
+      "confirmText": "Les visites et paiements de « {{merge}} » passent à « {{keep}} », et la fiche « {{merge}} » est supprimée. Action irréversible.",
+      "confirm": "Fusionner",
+      "menu": "Fusionner les doublons"
     }
   },
   "services": {

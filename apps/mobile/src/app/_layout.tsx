@@ -11,7 +11,12 @@ import * as SplashScreen from 'expo-splash-screen';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { UnistylesRuntime, useUnistyles } from 'react-native-unistyles';
 import { useSessionStore } from '@/entities/session';
-import { initQueryManagers, queryClient, queryPersister } from '@/shared/api/query-client';
+import {
+  initQueryManagers,
+  persistDehydrateOptions,
+  queryClient,
+  queryPersister,
+} from '@/shared/api/query-client';
 import { initI18n } from '@/shared/lib/i18n';
 import { useAuthReturnIntent } from '@/shared/lib/navigation/useAuthReturnIntent';
 import { initSentry, wrap } from '@/shared/lib/observability/sentry';
@@ -79,7 +84,10 @@ function RootLayout() {
         <KeyboardProvider>
           <PersistQueryClientProvider
             client={queryClient}
-            persistOptions={{ persister: queryPersister }}>
+            persistOptions={{
+              persister: queryPersister,
+              dehydrateOptions: persistDehydrateOptions,
+            }}>
             <BottomSheetModalProvider>
               <ErrorBoundary>
                 <Stack

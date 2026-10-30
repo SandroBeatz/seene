@@ -59,11 +59,22 @@
       "expo-secure-store",
       "expo-localization",
       "react-native-edge-to-edge",
-      "@sentry/react-native"
+      "@sentry/react-native",
+      [
+        "expo-contacts",
+        {
+          "contactsPermission": "Seene shows your contacts so you can add clients from your phone book."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "locales": {
+      "ru": "./native-locales/ru.json",
+      "fr": "./native-locales/fr.json",
+      "en": "./native-locales/en.json"
     }
   }
 }

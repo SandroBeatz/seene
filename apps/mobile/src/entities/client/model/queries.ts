@@ -10,6 +10,8 @@ import {
   getClient,
   listClients,
   listClientSummaries,
+  importClients,
+  mergeClients,
   setClientFavorite,
   updateClient,
 } from '../api/client.api';
@@ -99,5 +101,33 @@ export function useToggleClientFavoriteMutation(userId: string) {
       if (context?.previous) qc.setQueryData(key, context.previous);
     },
     onSettled: () => qc.invalidateQueries({ queryKey: key }),
+  });
+}
+
+export function useImportClientsMutation(userId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (dtos: CreateClientDto[]) => importClients(userId, dtos),
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: clientKeys.all(userId) });
+      qc.invalidateQueries({ queryKey: clientKeys.summaries(userId) });
+    },
+  });
+}
+
+export function useMergeClientsMutation(userId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ keepId, mergeId }: { keepId: string; mergeId: string }) =>
+      mergeClients(keepId, mergeId),
+    onSettled: (_data, _error, { keepId, mergeId }) => {
+      qc.invalidateQueries({ queryKey: clientKeys.all(userId) });
+      qc.invalidateQueries({ queryKey: clientKeys.summaries(userId) });
+      qc.invalidateQueries({ queryKey: clientKeys.detail(keepId) });
+      qc.removeQueries({ queryKey: clientKeys.detail(mergeId) });
+      // Visits moved between clients: the appointment entity's lists and previews.
+      qc.invalidateQueries({ queryKey: ['appointments', userId] });
+      qc.invalidateQueries({ queryKey: ['appointment'] });
+    },
   });
 }

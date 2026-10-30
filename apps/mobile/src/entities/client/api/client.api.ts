@@ -58,6 +58,28 @@ export async function setClientFavorite(id: string, isFavorite: boolean): Promis
   return data;
 }
 
+/**
+ * Several clients at once (phone book import). A number already in the book is
+ * skipped, not an error: (user_id, phone) is unique.
+ */
+export async function importClients(userId: string, dtos: CreateClientDto[]): Promise<number> {
+  const { data, error } = await supabase
+    .from('client')
+    .upsert(
+      dtos.map((dto) => ({ ...dto, user_id: userId })),
+      { onConflict: 'user_id,phone', ignoreDuplicates: true },
+    )
+    .select('id');
+  if (error) throw error;
+  return data.length;
+}
+
+/** Moves `mergeId`'s visits and sales to `keepId`, fills its gaps, deletes `mergeId`. */
+export async function mergeClients(keepId: string, mergeId: string): Promise<void> {
+  const { error } = await supabase.rpc('merge_clients', { p_keep: keepId, p_merge: mergeId });
+  if (error) throw error;
+}
+
 /** Visits, no-shows, money and the next booking of every client of the caller. */
 export async function listClientSummaries(): Promise<ClientSummary[]> {
   const { data, error } = await supabase.rpc('client_summaries');

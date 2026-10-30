@@ -12,6 +12,7 @@ import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboa
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import {
+  contactToCard,
   useCreateClientMutation,
   useUpdateClientMutation,
   type Client,
@@ -19,7 +20,14 @@ import {
 import { useUserId } from '@/entities/session';
 import { normalizeError } from '@/shared/api/errors';
 import { AVATAR_COLOR_KEYS, AVATAR_GRADIENTS } from '@/shared/config/palettes';
-import { dialCode, resolvePhoneInput, type CountryCode } from '@/shared/lib/phone';
+import {
+  dialCode,
+  nationalDisplay,
+  phoneCountry,
+  resolvePhoneInput,
+  type CountryCode,
+} from '@/shared/lib/phone';
+import { pickPhoneBookContact } from '@/shared/lib/phone-book';
 import {
   Avatar,
   BirthdayPicker,
@@ -84,6 +92,27 @@ export function ClientForm({ client, defaultCountry }: ClientFormProps) {
   const hasName = !!draft.firstName.trim();
   const monthNames = t('monthsGenitive', { returnObjects: true }) as string[];
   const pending = create.isPending || update.isPending;
+
+  const fromPhoneBook = async () => {
+    try {
+      const contact = await pickPhoneBookContact();
+      const card = contact ? contactToCard(contact, draft.phoneCountry) : null;
+      if (!card) return;
+      setDraft((current) => ({
+        ...current,
+        firstName: card.first_name,
+        lastName: card.last_name ?? '',
+        phone: card.phone ? nationalDisplay(card.phone) : current.phone,
+        phoneCountry: phoneCountry(card.phone) ?? current.phoneCountry,
+        birthday:
+          card.birth_day && card.birth_month
+            ? { day: card.birth_day, month: card.birth_month }
+            : current.birthday,
+      }));
+    } catch {
+      Alert.alert(t('actions.failedTitle'), t('actions.failedMessage'));
+    }
+  };
 
   const onPhone = (text: string) => {
     const state = resolvePhoneInput(text, draft.phoneCountry);
@@ -360,6 +389,16 @@ export function ClientForm({ client, defaultCountry }: ClientFormProps) {
               </Text>
             </Pressable>
           )}
+
+          {client ? null : (
+            <Pressable
+              accessibilityRole="button"
+              onPress={() => void fromPhoneBook()}
+              style={({ pressed }) => [styles.pickContact, pressed && styles.pressed]}>
+              <Icon name="contacts" size="sm" color="content.primary" />
+              <Text variant="subheadStrong">{t('clients.pickContact')}</Text>
+            </Pressable>
+          )}
         </View>
       </KeyboardAwareScrollView>
 
@@ -564,6 +603,13 @@ const styles = StyleSheet.create((theme) => ({
     borderColor: theme.colors.border.strong,
   },
   pressed: { opacity: 0.7 },
+  pickContact: {
+    height: theme.sizing.control.lg,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: theme.space[2],
+  },
   footer: {
     paddingTop: theme.space[3],
     paddingHorizontal: theme.space[4],
