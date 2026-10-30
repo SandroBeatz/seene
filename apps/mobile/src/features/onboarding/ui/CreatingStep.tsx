@@ -1,16 +1,16 @@
 /**
  * "Создаём ваш профиль" (design: AppObCreating): the single onboarding write runs
  * while a preview of the master's booking page assembles itself, four status lines
- * tick off and a bar fills. "Дальше →" appears once both the ~5s animation and the
- * write are done; the last status line waits for the write. A failed write swaps the
+ * tick off and a bar fills. "Готово!" takes the bar's place once both the ~5s animation
+ * and the write are done; the last status line waits for the write. A failed write swaps the
  * status lines for the error, "Повторить" and a way back to the review.
  *
  * The keyframes are the design's CSS ones, run as Reanimated CSS animations. The
- * preview card is an illustration on fixed white surfaces, like the welcome hero.
+ * preview card is the client-facing page, so it always renders in the light theme.
  * Reduced motion: everything appears at once.
  */
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, Pressable, View } from 'react-native';
+import { Alert, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import Animated, {
   type CSSAnimationKeyframes,
@@ -19,7 +19,8 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useShallow } from 'zustand/react/shallow';
-import { StyleSheet, useUnistyles } from 'react-native-unistyles';
+import { useAuthAvatar } from '@/entities/session';
+import { ScopedTheme, StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { errorMessageKey } from '@/shared/api/errors';
 import { SERVICE_COLORS } from '@/shared/config/palettes';
 import { timeZoneEntry } from '@/shared/config/time-zones';
@@ -33,7 +34,7 @@ import { useCompleteOnboarding, useEnterApp } from '../model/submit';
 
 /** Seconds at which each status line ticks off (the design's timeline). */
 const STEP_DONE_AT = [1.1, 2.3, 3.2, 4.3] as const;
-/** When "Дальше →" fades in. */
+/** When "Готово!" can appear. */
 const NEXT_AT = 4.9;
 const PREVIEW_SERVICES = 3;
 const CARD_WIDTH = 276;
@@ -119,7 +120,7 @@ function useTimeline(marks: readonly number[]) {
 const MARKS = [...STEP_DONE_AT, NEXT_AT];
 
 export interface CreatingStepProps {
-  /** Back to the review after a failed write (in preview: "Дальше →" too). */
+  /** Back to the review after a failed write (in preview: "Готово!" too). */
   onBack: () => void;
   /** Dev catalog: play the animation over the current draft, write nothing. */
   preview?: boolean;
@@ -127,6 +128,7 @@ export interface CreatingStepProps {
 
 export function CreatingStep({ onBack, preview = false }: CreatingStepProps) {
   const { t, i18n } = useTranslation();
+  const photo = useAuthAvatar();
   const { theme } = useUnistyles();
   const locale = isSupportedLocale(i18n.language) ? i18n.language : 'en';
   const insets = useSafeAreaInsets();
@@ -213,70 +215,80 @@ export function CreatingStep({ onBack, preview = false }: CreatingStepProps) {
               animationTimingFunction: 'ease-in-out',
             },
           ]}>
-          <Animated.View style={[styles.card, entrance('rise', 0.1)]}>
-            <Animated.View style={[styles.cover, entrance('fade', 0.25)]} />
-            <View style={styles.cardBody}>
-              <Animated.View style={[styles.avatarRing, entrance('pop', 0.4)]}>
-                <Avatar name={name} size="xl" tone="brand" />
-              </Animated.View>
-              <Animated.View style={[styles.nameRow, entrance('rise', 0.6)]}>
-                <Text variant="title3" color="ink" numberOfLines={1} style={styles.cardName}>
-                  {name}
-                </Text>
-                <Icon name="verified" size="sm" color="constant.ink" />
-              </Animated.View>
-              <Animated.View style={[styles.tagline, entrance('rise', 0.75)]}>
-                <Text variant="caption" color="secondary" align="center" numberOfLines={1}>
-                  {tagline}
-                </Text>
-              </Animated.View>
-              <Animated.View style={[styles.link, entrance('rise', 1.1)]}>
-                <Icon name="link" size="xs" color="constant.ink" />
-                <Text variant="caption2Strong" color="ink" numberOfLines={1}>
-                  {`getseene.app/${draft.username}`}
-                </Text>
-              </Animated.View>
-              {services.length ? (
-                <View style={styles.services}>
-                  {services.map((service, i) => (
-                    <Animated.View
-                      key={service.id}
-                      style={[styles.serviceRow, entrance('rise', 1.5 + i * 0.25)]}>
-                      <View
-                        style={[
-                          styles.dot,
-                          { backgroundColor: SERVICE_COLORS[serviceColorKey(service)] },
-                        ]}
-                      />
-                      <Text
-                        variant="caption"
-                        color="ink"
-                        numberOfLines={1}
-                        style={styles.serviceName}>
-                        {serviceName(service, locale)}
-                      </Text>
-                      <Text variant="caption" color="secondary">
-                        {formatDurationLabel(service.duration, t)}
-                      </Text>
-                    </Animated.View>
-                  ))}
-                </View>
-              ) : null}
-              <Animated.View style={[styles.book, entrance('rise', 2.5)]}>
-                <Text variant="footnoteStrong" color="white">
-                  {t('onboarding.creating.book')}
-                </Text>
-              </Animated.View>
-            </View>
-          </Animated.View>
-          <Animated.View style={[styles.bubble, entrance('pop', 3.4)]}>
-            <Text variant="caption2Strong" color="inkSuccess">
-              {t('onboarding.creating.bubbleTitle')}
-            </Text>
-            <Text variant="caption" color="ink">
-              {t('onboarding.creating.bubbleText')}
-            </Text>
-          </Animated.View>
+          {/* A light booking page in either theme: it previews what clients see. */}
+          <ScopedTheme name="light">
+            <Animated.View style={[styles.card, entrance('rise', 0.1)]}>
+              <Animated.View
+                style={[
+                  styles.cover,
+                  // Inline: a gradient from StyleSheet.create is dropped under ScopedTheme.
+                  { experimental_backgroundImage: COVER_GRADIENT },
+                  entrance('fade', 0.25),
+                ]}
+              />
+              <View style={styles.cardBody}>
+                <Animated.View style={[styles.avatarRing, entrance('pop', 0.4)]}>
+                  <Avatar name={name} imageUrl={photo} size="xl" tone="brand" />
+                </Animated.View>
+                <Animated.View style={[styles.nameRow, entrance('rise', 0.6)]}>
+                  <Text variant="title3" color="ink" numberOfLines={1} style={styles.cardName}>
+                    {name}
+                  </Text>
+                  <Icon name="verified" size="sm" color="constant.ink" />
+                </Animated.View>
+                <Animated.View style={[styles.tagline, entrance('rise', 0.75)]}>
+                  <Text variant="caption" color="secondary" align="center" numberOfLines={1}>
+                    {tagline}
+                  </Text>
+                </Animated.View>
+                <Animated.View style={[styles.link, entrance('rise', 1.1)]}>
+                  <Icon name="link" size="xs" color="constant.ink" />
+                  <Text variant="caption2Strong" color="ink" numberOfLines={1}>
+                    {`getseene.app/${draft.username}`}
+                  </Text>
+                </Animated.View>
+                {services.length ? (
+                  <View style={styles.services}>
+                    {services.map((service, i) => (
+                      <Animated.View
+                        key={service.id}
+                        style={[styles.serviceRow, entrance('rise', 1.5 + i * 0.25)]}>
+                        <View
+                          style={[
+                            styles.dot,
+                            { backgroundColor: SERVICE_COLORS[serviceColorKey(service)] },
+                          ]}
+                        />
+                        <Text
+                          variant="caption"
+                          color="ink"
+                          numberOfLines={1}
+                          style={styles.serviceName}>
+                          {serviceName(service, locale)}
+                        </Text>
+                        <Text variant="caption" color="secondary">
+                          {formatDurationLabel(service.duration, t)}
+                        </Text>
+                      </Animated.View>
+                    ))}
+                  </View>
+                ) : null}
+                <Animated.View style={[styles.book, entrance('rise', 2.5)]}>
+                  <Text variant="footnoteStrong" color="white">
+                    {t('onboarding.creating.book')}
+                  </Text>
+                </Animated.View>
+              </View>
+            </Animated.View>
+            <Animated.View style={[styles.bubble, entrance('pop', 3.4)]}>
+              <Text variant="caption2Strong" color="inkSuccess">
+                {t('onboarding.creating.bubbleTitle')}
+              </Text>
+              <Text variant="caption" color="ink">
+                {t('onboarding.creating.bubbleText')}
+              </Text>
+            </Animated.View>
+          </ScopedTheme>
         </Animated.View>
       </View>
 
@@ -315,45 +327,40 @@ export function CreatingStep({ onBack, preview = false }: CreatingStepProps) {
           />
         </View>
       ) : (
-        <>
-          <View style={styles.track}>
-            <Animated.View
-              style={[
-                styles.bar,
-                !reduceMotion && {
-                  animationName: fillBar,
-                  animationDuration: '4.6s',
-                  animationTimingFunction: BAR_EASE,
-                  animationDelay: '0.2s',
-                  animationFillMode: 'both',
-                },
-              ]}
-            />
-          </View>
-          <View style={styles.footer}>
-            {canContinue ? (
-              <Animated.View style={entrance('fade', 0)}>
-                {enter.isPending ? (
-                  <ActivityIndicator color={theme.colors.content.primary} />
-                ) : (
-                  <Pressable
-                    accessibilityRole="button"
-                    hitSlop={12}
-                    onPress={() =>
-                      preview
-                        ? onBack()
-                        : enter.mutate(undefined, {
-                            onError: (e) => Alert.alert(t(errorMessageKey(e))),
-                          })
-                    }
-                    style={({ pressed }) => pressed && styles.pressed}>
-                    <Text variant="subheadStrong">{t('onboarding.creating.next')}</Text>
-                  </Pressable>
-                )}
-              </Animated.View>
-            ) : null}
-          </View>
-        </>
+        // The bar runs until both the write and the animation are done, then gives
+        // its place to "Готово!".
+        <View style={styles.finish}>
+          {canContinue ? (
+            <Animated.View style={entrance('rise', 0)}>
+              <Button
+                label={t('onboarding.creating.next')}
+                loading={enter.isPending}
+                onPress={() =>
+                  preview
+                    ? onBack()
+                    : enter.mutate(undefined, {
+                        onError: (e) => Alert.alert(t(errorMessageKey(e))),
+                      })
+                }
+              />
+            </Animated.View>
+          ) : (
+            <View style={styles.track}>
+              <Animated.View
+                style={[
+                  styles.bar,
+                  !reduceMotion && {
+                    animationName: fillBar,
+                    animationDuration: '4.6s',
+                    animationTimingFunction: BAR_EASE,
+                    animationDelay: '0.2s',
+                    animationFillMode: 'both',
+                  },
+                ]}
+              />
+            </View>
+          )}
+        </View>
       )}
     </View>
   );
@@ -419,7 +426,7 @@ const styles = StyleSheet.create((theme) => ({
     overflow: 'hidden',
     boxShadow: theme.shadow.showcase,
   },
-  cover: { height: 74, experimental_backgroundImage: COVER_GRADIENT },
+  cover: { height: 74 },
   cardBody: {
     paddingHorizontal: theme.space[4],
     paddingBottom: theme.space[4],
@@ -521,13 +528,6 @@ const styles = StyleSheet.create((theme) => ({
     backgroundColor: theme.colors.content.primary,
     transformOrigin: 'left',
   },
-  footer: {
-    marginTop: theme.space[3.5],
-    height: theme.sizing.minTouch,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  pressed: { opacity: 0.6 },
+  finish: { height: theme.sizing.control.lg, justifyContent: 'center' },
   actions: { gap: theme.space[1.5] },
 }));
