@@ -22,7 +22,10 @@ import { useReduceTransparency } from '../hooks/useReduceTransparency';
 export interface GlassSurfaceProps extends ViewProps {
   /** Glass material to apply on iOS 26. Ignored by the fallback. @default 'regular' */
   glassEffectStyle?: GlassStyle | GlassEffectStyleConfig;
-  /** Tint for the glass. Pass a theme token (e.g. theme.colors.accent.default), never raw hex. */
+  /**
+   * Tint for the glass. Pass a theme token (e.g. theme.colors.accent.default), never raw
+   * hex. The opaque fallback takes it as its fill, so a dark glass button stays dark.
+   */
   tintColor?: string;
   /** Whether the glass reacts to touches (subtle press deformation). @default false */
   isInteractive?: boolean;
@@ -60,7 +63,9 @@ export function GlassSurface({
   }
 
   return (
-    <View style={[styles.fallback, style]} {...rest}>
+    <View
+      style={[styles.fallback, tintColor ? { backgroundColor: tintColor } : null, style]}
+      {...rest}>
       {children}
     </View>
   );
