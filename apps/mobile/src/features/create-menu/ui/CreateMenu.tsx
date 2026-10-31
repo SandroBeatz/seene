@@ -3,7 +3,12 @@
  * client, and "Новая запись" as the main button. The card grows out of the button's
  * corner with a spring and folds back into it; a tap outside closes it. Both float
  * over content, so both are Liquid Glass (`GlassSurface`, opaque where glass isn't
- * available).
+ * available): the "+" is ink-tinted glass, the card regular glass.
+ *
+ * The card's glass is never under an animated opacity — UIKit drops the blur of a
+ * visual effect whose ancestor is translucent, leaving a flat see-through layer.
+ * Only the scale animates on the card; the material itself materializes natively
+ * (`glassEffectStyle` none → regular, animated) and the rows fade inside it.
  */
 import { useEffect, useState } from 'react';
 import { router } from 'expo-router';
@@ -16,7 +21,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import { StyleSheet } from 'react-native-unistyles';
+import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { Button, GlassSurface, Icon, Text, useReducedMotion, type IconName } from '@/shared/ui';
 
 export interface CreateMenuProps {
@@ -26,6 +31,7 @@ export interface CreateMenuProps {
 
 export function CreateMenu({ bottom }: CreateMenuProps) {
   const { t } = useTranslation();
+  const { theme } = useUnistyles();
   const reducedMotion = useReducedMotion();
   const [open, setOpen] = useState(false);
   // Stays mounted while the card folds back.
@@ -54,7 +60,6 @@ export function CreateMenu({ bottom }: CreateMenuProps) {
   }, [open]);
 
   const cardStyle = useAnimatedStyle(() => ({
-    opacity: progress.value,
     transform: [{ scale: reducedMotion ? 1 : 0.35 + 0.65 * progress.value }],
   }));
   const buttonStyle = useAnimatedStyle(() => ({
@@ -62,10 +67,12 @@ export function CreateMenu({ bottom }: CreateMenuProps) {
     transform: [{ scale: 1 - 0.25 * progress.value }],
   }));
   const scrimStyle = useAnimatedStyle(() => ({ opacity: progress.value }));
+  const contentStyle = scrimStyle;
 
   const show = () => {
     setMounted(true);
-    setOpen(true);
+    // A frame later, so the card mounts without glass and the material animates in.
+    requestAnimationFrame(() => setOpen(true));
   };
 
   const choose = (action: () => void) => {
@@ -94,8 +101,11 @@ export function CreateMenu({ bottom }: CreateMenuProps) {
           accessibilityLabel={t('createMenu.title')}
           accessibilityState={{ expanded: open }}
           onPress={show}>
-          <GlassSurface isInteractive style={styles.buttonGlass}>
-            <Icon name="add" size="lg" color="content.primary" />
+          <GlassSurface
+            isInteractive
+            tintColor={theme.colors.accent.default}
+            style={styles.buttonGlass}>
+            <Icon name="add" size="lg" color="accent.onAccent" />
           </GlassSurface>
         </Pressable>
       </Animated.View>
@@ -105,26 +115,34 @@ export function CreateMenu({ bottom }: CreateMenuProps) {
           style={[styles.card, { bottom }, cardStyle]}
           accessibilityViewIsModal
           pointerEvents={open ? 'auto' : 'none'}>
-          <GlassSurface style={styles.cardGlass}>
-            <Row
-              icon="coffee"
-              title={t('createMenu.block')}
-              subtitle={t('createMenu.blockHint')}
-              onPress={() =>
-                choose(() => Alert.alert(t('createMenu.block'), t('createMenu.blockSoon')))
-              }
-            />
-            <Row
-              icon="userAdd"
-              title={t('createMenu.client')}
-              subtitle={t('createMenu.clientHint')}
-              onPress={() => choose(() => router.push('/client/new'))}
-            />
-            <Button
-              label={t('createMenu.appointment')}
-              leftIcon="calendar"
-              onPress={() => choose(() => router.push('/quick-create'))}
-            />
+          <GlassSurface
+            glassEffectStyle={{
+              style: open ? 'regular' : 'none',
+              animate: !reducedMotion,
+              animationDuration: open ? 0.3 : 0.17,
+            }}
+            style={styles.cardGlass}>
+            <Animated.View style={[styles.cardContent, contentStyle]}>
+              <Row
+                icon="coffee"
+                title={t('createMenu.block')}
+                subtitle={t('createMenu.blockHint')}
+                onPress={() =>
+                  choose(() => Alert.alert(t('createMenu.block'), t('createMenu.blockSoon')))
+                }
+              />
+              <Row
+                icon="userAdd"
+                title={t('createMenu.client')}
+                subtitle={t('createMenu.clientHint')}
+                onPress={() => choose(() => router.push('/client/new'))}
+              />
+              <Button
+                label={t('createMenu.appointment')}
+                leftIcon="calendar"
+                onPress={() => choose(() => router.push('/quick-create'))}
+              />
+            </Animated.View>
           </GlassSurface>
         </Animated.View>
       ) : null}
@@ -174,7 +192,6 @@ const styles = StyleSheet.create((theme) => ({
     borderRadius: BUTTON / 2,
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: theme.shadow.fab,
   },
   card: {
     position: 'absolute',
@@ -183,12 +200,13 @@ const styles = StyleSheet.create((theme) => ({
     // Grows out of the "+" it replaces.
     transformOrigin: 'bottom right',
   },
+  // No boxShadow on glass: the material draws its own edge and shadow, and an RN
+  // shadow under it shows as a second slab around the card.
   cardGlass: {
     borderRadius: theme.radius.showcase + 4,
     padding: theme.space[3],
-    gap: theme.space[1],
-    boxShadow: theme.shadow.menu,
   },
+  cardContent: { gap: theme.space[1] },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -200,8 +218,6 @@ const styles = StyleSheet.create((theme) => ({
   rowIcon: {
     width: 44,
     height: 44,
-    borderRadius: theme.radius.md,
-    backgroundColor: theme.colors.bg.surface,
     alignItems: 'center',
     justifyContent: 'center',
   },
