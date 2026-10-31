@@ -57,6 +57,8 @@ export interface ClientFormProps {
   defaultCountry: CountryCode;
   /** A new client started from a phone book contact. */
   prefill?: ClientCardDto | null;
+  /** Called with the new client before the sheet closes ("Новая запись" picks it). */
+  onCreated?: (client: Client) => void;
 }
 
 const MESSENGER_ICON: Record<Messenger, IconName> = {
@@ -65,7 +67,7 @@ const MESSENGER_ICON: Record<Messenger, IconName> = {
   instagram: 'instagram',
 };
 
-export function ClientForm({ client, defaultCountry, prefill }: ClientFormProps) {
+export function ClientForm({ client, defaultCountry, prefill, onCreated }: ClientFormProps) {
   const { t } = useTranslation();
   const { theme } = useUnistyles();
   const insets = useSafeAreaInsets();
@@ -128,7 +130,14 @@ export function ClientForm({ client, defaultCountry, prefill }: ClientFormProps)
       },
     };
     if (client) update.mutate({ id: client.id, ...result.card }, done);
-    else create.mutate(result.card, done);
+    else
+      create.mutate(result.card, {
+        ...done,
+        onSuccess: (created) => {
+          onCreated?.(created);
+          router.back();
+        },
+      });
   };
 
   const birthdayLabel = draft.birthday

@@ -16,7 +16,9 @@ import {
   inSegment,
   isNewClient,
   matchesClientQuery,
+  seenOf,
   type ClientSegment,
+  type Seen,
 } from '@/entities/client';
 import { useUserId } from '@/entities/session';
 import { usePhoneCountry } from '@/features/client-form';
@@ -36,7 +38,6 @@ import {
   VipBadge,
   useRefreshControl,
 } from '@/shared/ui';
-import { seenOf, type Seen } from '../model/seen';
 import { useClientList, type ClientRow } from '../model/useClientList';
 
 const DAY_MS = 86_400_000;

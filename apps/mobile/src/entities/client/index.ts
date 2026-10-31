@@ -34,6 +34,7 @@ export {
   type DuplicateReason,
 } from './lib/duplicates';
 export { contactToCard } from './lib/contacts';
+export { seenOf, type Seen } from './lib/seen';
 export { recallCandidates, recallState, type RecallState, type RecallVisit } from './lib/recall';
 export type {
   Client,

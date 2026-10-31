@@ -4,7 +4,7 @@
  * master's zone. Pure, `now`-injected.
  */
 import { DateTime } from 'luxon';
-import type { ClientSummary } from '@/entities/client';
+import type { ClientSummary } from '../model/types';
 
 export type Seen =
   | { kind: 'todayAt'; at: string }
@@ -20,7 +20,8 @@ type SeenInput = Pick<ClientSummary, 'lastVisit' | 'nextVisit'> | undefined;
 
 export function seenOf(summary: SeenInput, now: number, zone: string): Seen {
   const today = DateTime.fromMillis(now, { zone }).startOf('day');
-  const dayOf = (iso: string) => DateTime.fromISO(iso, { zone: 'utc' }).setZone(zone).startOf('day');
+  const dayOf = (iso: string) =>
+    DateTime.fromISO(iso, { zone: 'utc' }).setZone(zone).startOf('day');
 
   if (summary?.nextVisit && dayOf(summary.nextVisit).equals(today)) {
     return { kind: 'todayAt', at: summary.nextVisit };

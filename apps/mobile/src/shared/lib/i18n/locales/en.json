@@ -541,17 +541,77 @@
     }
   },
   "quickCreate": {
-    "startTitle": "Quick create",
-    "startDescription": "A full-screen route modal owns this multi-step Stack.",
-    "clientTitle": "Choose client",
-    "clientDescription": "Client selection belongs here when the Clients feature is available.",
-    "servicesTitle": "Choose services",
-    "servicesDescription": "Service selection will use domain data without changing the navigation flow.",
-    "dateTimeTitle": "Date and time",
-    "dateTimeDescription": "Availability selection will be connected in the Calendar phase.",
-    "reviewTitle": "Review",
-    "reviewDescription": "Back pops one step. Finish dismisses the whole modal flow to Home.",
-    "finish": "Finish example"
+    "title": "New appointment",
+    "progressA11y": "Step {{step}} of {{count}}",
+    "next": "Next",
+    "client": {
+      "subtitle": "Choose a client",
+      "search": "Name or phone",
+      "searchA11y": "Find a client",
+      "newTitle": "New client",
+      "newHint": "Name and phone, the rest later",
+      "recent": "Recent",
+      "all": "All clients · {{count}}",
+      "lastVisit": "Visit {{date}}",
+      "today": "Today",
+      "new": "New client"
+    },
+    "services": {
+      "subtitle": "Services",
+      "none": "Choose services",
+      "hint": "You can pick several",
+      "empty": "Your price list is empty — add services in settings."
+    },
+    "time": {
+      "subtitle": "Date and time",
+      "monthA11y": "Open the month calendar",
+      "legendOpen": "open slots",
+      "legendTight": "almost full",
+      "legendOff": "no dot — day off",
+      "hours": "{{from}} – {{to}} · service {{duration}}",
+      "dayOffShort": "day off",
+      "dayOff": "Day off — you can set your own time.",
+      "past": "This day has passed — you can set your own time.",
+      "full": "This day is fully booked — you can set your own time.",
+      "busyA11y": "taken",
+      "shortA11y": "does not fit",
+      "legendBusy": "Struck through — taken",
+      "legendShort": "Dashed — {{duration}} does not fit",
+      "ownAction": "Set your own time",
+      "own": "Own time",
+      "ownA11y": "Start time {{time}}, change",
+      "pick": "Choose a time",
+      "byServices": "{{duration}} by services",
+      "overlapVisit": "Overlaps an appointment: {{name}}, {{time}}",
+      "overlapBlock": "Overlaps personal time at {{time}}",
+      "someone": "client",
+      "done": "Done"
+    },
+    "month": {
+      "title": "Choose a day",
+      "scroll": "scroll down",
+      "legendOff": "grey — day off"
+    },
+    "review": {
+      "subtitle": "Check the appointment",
+      "client": "Client",
+      "services": "Services",
+      "when": "Date and time",
+      "editClient": "Change client",
+      "editServices": "Change services",
+      "editWhen": "Change date and time",
+      "price": "Price for this appointment",
+      "priceA11y": "Price for this appointment, {{currency}}",
+      "priceHint": "From the price list. A change affects only this appointment.",
+      "note": "Appointment note",
+      "notePlaceholder": "For example: nude shade, like last time",
+      "total": "Total {{price}}",
+      "create": "Create"
+    },
+    "created": {
+      "title": "Appointment created",
+      "send": "Send to client"
+    }
   },
   "uikit": {
     "title": "UIKit",
@@ -1119,5 +1179,19 @@
     "blockSoon": "Breaks and time blocks arrive with the calendar.",
     "blockHint": "Block off time in your schedule",
     "clientHint": "Add to your client book"
-  }
+  },
+  "monthsShort": [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+  ]
 }

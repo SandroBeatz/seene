@@ -547,17 +547,77 @@
     }
   },
   "quickCreate": {
-    "startTitle": "Création rapide",
-    "startDescription": "Une modale plein écran contient cette Stack en plusieurs étapes.",
-    "clientTitle": "Choisir le client",
-    "clientDescription": "La sélection du client sera connectée lorsque la fonctionnalité Clients sera disponible.",
-    "servicesTitle": "Choisir les services",
-    "servicesDescription": "Les données métier seront ajoutées sans modifier le flux de navigation.",
-    "dateTimeTitle": "Date et heure",
-    "dateTimeDescription": "La disponibilité sera connectée pendant la phase Agenda.",
-    "reviewTitle": "Vérification",
-    "reviewDescription": "Retour dépile une étape. Terminer ferme tout le flux vers l’accueil.",
-    "finish": "Terminer l’exemple"
+    "title": "Nouveau rendez-vous",
+    "progressA11y": "Étape {{step}} sur {{count}}",
+    "next": "Suivant",
+    "client": {
+      "subtitle": "Choisissez un client",
+      "search": "Nom ou téléphone",
+      "searchA11y": "Trouver un client",
+      "newTitle": "Nouveau client",
+      "newHint": "Nom et téléphone, le reste plus tard",
+      "recent": "Récents",
+      "all": "Tous les clients · {{count}}",
+      "lastVisit": "Visite le {{date}}",
+      "today": "Aujourd'hui",
+      "new": "Nouveau client"
+    },
+    "services": {
+      "subtitle": "Prestations",
+      "none": "Choisissez des prestations",
+      "hint": "Plusieurs possibles",
+      "empty": "Votre carte est vide — ajoutez des prestations dans les réglages."
+    },
+    "time": {
+      "subtitle": "Date et heure",
+      "monthA11y": "Ouvrir le calendrier du mois",
+      "legendOpen": "créneaux libres",
+      "legendTight": "presque complet",
+      "legendOff": "sans point — jour de repos",
+      "hours": "{{from}} – {{to}} · prestation {{duration}}",
+      "dayOffShort": "jour de repos",
+      "dayOff": "Jour de repos — vous pouvez indiquer votre heure.",
+      "past": "Ce jour est passé — vous pouvez indiquer votre heure.",
+      "full": "Ce jour est complet — vous pouvez indiquer votre heure.",
+      "busyA11y": "occupé",
+      "shortA11y": "ne tient pas",
+      "legendBusy": "Barré — occupé",
+      "legendShort": "Pointillés — {{duration}} ne tient pas",
+      "ownAction": "Indiquer mon heure",
+      "own": "Mon heure",
+      "ownA11y": "Heure de début {{time}}, modifier",
+      "pick": "Choisissez une heure",
+      "byServices": "{{duration}} selon les prestations",
+      "overlapVisit": "Chevauche un rendez-vous : {{name}}, {{time}}",
+      "overlapBlock": "Chevauche un temps personnel à {{time}}",
+      "someone": "client",
+      "done": "Terminé"
+    },
+    "month": {
+      "title": "Choisissez un jour",
+      "scroll": "faites défiler",
+      "legendOff": "en gris — jour de repos"
+    },
+    "review": {
+      "subtitle": "Vérifiez le rendez-vous",
+      "client": "Client",
+      "services": "Prestations",
+      "when": "Date et heure",
+      "editClient": "Changer de client",
+      "editServices": "Changer les prestations",
+      "editWhen": "Changer la date et l'heure",
+      "price": "Prix pour ce rendez-vous",
+      "priceA11y": "Prix pour ce rendez-vous, {{currency}}",
+      "priceHint": "Selon la carte. Une modification ne concerne que ce rendez-vous.",
+      "note": "Note du rendez-vous",
+      "notePlaceholder": "Par exemple : teinte nude, comme la dernière fois",
+      "total": "Total {{price}}",
+      "create": "Créer"
+    },
+    "created": {
+      "title": "Rendez-vous créé",
+      "send": "Envoyer au client"
+    }
   },
   "uikit": {
     "title": "UIKit",
@@ -1125,5 +1185,19 @@
     "blockSoon": "Les pauses et les créneaux bloqués arriveront avec le calendrier.",
     "blockHint": "Bloquer un créneau dans l'agenda",
     "clientHint": "Ajouter au carnet de clients"
-  }
+  },
+  "monthsShort": [
+    "janv.",
+    "févr.",
+    "mars",
+    "avr.",
+    "mai",
+    "juin",
+    "juil.",
+    "août",
+    "sept.",
+    "oct.",
+    "nov.",
+    "déc."
+  ]
 }

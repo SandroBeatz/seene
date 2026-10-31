@@ -1,47 +1,21 @@
-import { router, Stack } from 'expo-router';
-import { useTranslation } from 'react-i18next';
-import { useUnistyles } from 'react-native-unistyles';
-import { QuickCreateStep } from '@/widgets/quick-create-flow';
-import { IconButton } from '@/shared/ui';
+import { useEffect } from 'react';
+import { router, useLocalSearchParams } from 'expo-router';
+import { ClientStep, useQuickCreateDraft } from '@/widgets/quick-create-flow';
 
-export default function QuickCreateStartScreen() {
-  const { t } = useTranslation();
-  const { theme } = useUnistyles();
-  const isIOS = process.env.EXPO_OS === 'ios';
+/** Step 1. Opened for a known client ("Записать снова", the client profile): straight to services. */
+export default function QuickCreateClientScreen() {
+  const { clientId } = useLocalSearchParams<{ clientId?: string }>();
+  const setClient = useQuickCreateDraft((s) => s.setClient);
+  const reset = useQuickCreateDraft((s) => s.reset);
 
-  return (
-    <>
-      <Stack.Screen
-        options={{
-          headerLeft: isIOS
-            ? undefined
-            : () => (
-                <IconButton
-                  icon="close"
-                  accessibilityLabel={t('common.close')}
-                  variant="ghost"
-                  onPress={() => router.dismissTo('/')}
-                />
-              ),
-        }}
-      />
-      {isIOS ? (
-        <Stack.Toolbar placement="left">
-          <Stack.Toolbar.Button
-            icon="xmark"
-            accessibilityLabel={t('common.close')}
-            tintColor={theme.colors.content.primary}
-            variant="plain"
-            onPress={() => router.dismissTo('/')}
-          />
-        </Stack.Toolbar>
-      ) : null}
-      <QuickCreateStep
-        title={t('quickCreate.startTitle')}
-        description={t('quickCreate.startDescription')}
-        actionLabel={t('common.continue')}
-        onAction={() => router.push('/quick-create/client')}
-      />
-    </>
-  );
+  useEffect(() => {
+    if (clientId) {
+      setClient(clientId);
+      router.push('/quick-create/services');
+    }
+    // The first step lives as long as the flow: closing it drops the draft.
+    return reset;
+  }, [clientId, setClient, reset]);
+
+  return <ClientStep />;
 }
