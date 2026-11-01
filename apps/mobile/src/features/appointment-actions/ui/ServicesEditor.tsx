@@ -130,39 +130,42 @@ export function ServicesEditor({
         />
       </View>
 
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.chipsScroll}
-        contentContainerStyle={styles.chips}
-        accessibilityRole="tablist">
-        {['all', ...allDirections].map((key) => {
-          const on = direction === key;
-          return (
-            <Pressable
-              key={key}
-              accessibilityRole="tab"
-              accessibilityState={{ selected: on }}
-              onPress={() => {
-                setDirection(key);
-                setCategory('all');
-              }}
-              style={[styles.chip, on && styles.chipOn]}>
-              {key === 'all' ? null : (
-                <View
-                  style={[
-                    styles.dot,
-                    { backgroundColor: on ? theme.colors.accent.onAccent : directionColor(key) },
-                  ]}
-                />
-              )}
-              <Text variant="footnoteStrong" color={on ? 'onAccent' : 'primary'}>
-                {key === 'all' ? t('servicesSheet.all') : directionLabel(key)}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </ScrollView>
+      {/* One direction: nothing to switch between. */}
+      {allDirections.length > 1 ? (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.chipsScroll}
+          contentContainerStyle={styles.chips}
+          accessibilityRole="tablist">
+          {['all', ...allDirections].map((key) => {
+            const on = direction === key;
+            return (
+              <Pressable
+                key={key}
+                accessibilityRole="tab"
+                accessibilityState={{ selected: on }}
+                onPress={() => {
+                  setDirection(key);
+                  setCategory('all');
+                }}
+                style={[styles.chip, on && styles.chipOn]}>
+                {key === 'all' ? null : (
+                  <View
+                    style={[
+                      styles.dot,
+                      { backgroundColor: on ? theme.colors.accent.onAccent : directionColor(key) },
+                    ]}
+                  />
+                )}
+                <Text variant="footnoteStrong" color={on ? 'onAccent' : 'primary'}>
+                  {key === 'all' ? t('servicesSheet.all') : directionLabel(key)}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </ScrollView>
+      ) : null}
 
       {categories.length > 1 && !query.trim() ? (
         <ScrollView
