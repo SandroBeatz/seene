@@ -83,7 +83,8 @@ export function PulseDot({ color }: { color: string }) {
 export interface ClientCardProps {
   client: Client | null;
   subtitle: string;
-  onOpen: () => void;
+  /** A tap on the client: another client for the visit. Left out (a closed visit), the row is still. */
+  onOpen?: () => void;
   onCall: () => void;
   onWhatsApp: () => void;
   onRemind: () => void;
@@ -102,7 +103,9 @@ export function ClientCard({
   return (
     <View style={styles.card}>
       <Pressable
-        accessibilityRole="button"
+        accessibilityRole={onOpen ? 'button' : undefined}
+        accessibilityHint={onOpen ? t('preview.changeClient') : undefined}
+        disabled={!onOpen}
         onPress={onOpen}
         style={({ pressed }) => [styles.clientRow, pressed && styles.pressed]}>
         <Avatar name={name} color={client?.avatar_color} size="md" />
@@ -117,7 +120,7 @@ export function ClientCard({
             {subtitle}
           </Text>
         </View>
-        <Icon name="chevronRight" size="sm" color="content.disabled" />
+        {onOpen ? <Icon name="chevronRight" size="sm" color="content.disabled" /> : null}
       </Pressable>
       <View style={styles.quick}>
         <QuickButton icon="call" label={t('preview.call')} onPress={onCall} />

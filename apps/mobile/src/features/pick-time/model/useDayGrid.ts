@@ -2,7 +2,8 @@
  * The days of "Дата и время": how full each day is (the dot under it) and the grid of
  * the chosen day — every start with its state for a visit of the chosen length.
  * Taken time = visits shown in the schedule, personal time and the schedule's breaks,
- * in the master's zone.
+ * in the master's zone. A visit being moved passes its id as `excludeId`: its own
+ * time is not in its way.
  */
 import { useCallback, useMemo } from 'react';
 import { DateTime } from 'luxon';
@@ -34,6 +35,7 @@ export interface DayGridInput {
   /** First and last day to load, "yyyy-MM-dd". */
   fromKey: string;
   toKey: string;
+  excludeId?: string;
 }
 
 export function useDayGrid({
@@ -45,13 +47,17 @@ export function useDayGrid({
   now,
   fromKey,
   toKey,
+  excludeId,
 }: DayGridInput) {
   const from = dayBounds(fromKey, zone).start;
   const to = dayBounds(toKey, zone).end;
   const visits = useAppointmentsRangeQuery(userId, from, to);
   const blocks = useTimeBlocksRangeQuery(userId, from, to);
 
-  const shown = useMemo(() => (visits.data ?? []).filter(isShownInSchedule), [visits.data]);
+  const shown = useMemo(
+    () => (visits.data ?? []).filter((a) => a.id !== excludeId && isShownInSchedule(a)),
+    [visits.data, excludeId],
+  );
   const busy = useMemo<TimeInterval[]>(
     () => [
       ...shown.map((a) => ({

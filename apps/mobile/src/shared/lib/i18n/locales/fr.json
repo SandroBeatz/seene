@@ -1043,7 +1043,8 @@
       "delete": "Supprimer le rendez-vous"
     },
     "missingTitle": "Aucun rendez-vous",
-    "missing": "Il a été supprimé ou n’est pas disponible."
+    "missing": "Il a été supprimé ou n’est pas disponible.",
+    "changeClient": "Changer de client"
   },
   "actions": {
     "failedTitle": "Échec",
@@ -1093,7 +1094,6 @@
   },
   "servicesSheet": {
     "title": "Prestations",
-    "back": "Retour au rendez-vous",
     "search": "Rechercher une prestation",
     "all": "Toutes",
     "other": "Autre",
@@ -1113,23 +1113,17 @@
   },
   "reschedule": {
     "title": "Déplacer",
-    "back": "Retour au rendez-vous",
     "now": "Actuellement : {{when}}",
-    "zone": "votre fuseau : {{zone}}",
     "parts": {
       "morning": "Matin",
       "afternoon": "Après-midi",
       "evening": "Soir"
     },
-    "full": "Ce jour est complet.",
-    "dayOff": "Jour de repos — vous pouvez saisir l’heure.",
-    "manual": "Saisir l’heure",
     "pick": "Choisissez un horaire",
     "submit": "Déplacer · {{when}}"
   },
   "checkout": {
     "title": "Terminer la visite",
-    "back": "Retour au rendez-vous",
     "amountA11y": "Montant à payer, {{currency}}",
     "planned": "Prévu {{amount}} ·",
     "restore": "Rétablir",

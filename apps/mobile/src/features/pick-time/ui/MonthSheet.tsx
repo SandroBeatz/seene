@@ -1,22 +1,34 @@
 /**
  * "Выберите день" (design "AppNewTimeMonth"): the months ahead as calendars, Monday
  * first, each day with the same dot as the strip; days off and days gone by in grey.
- * A tap picks the day and returns to the time step. A native sheet over the flow.
+ * A tap picks the day and returns to the time picker. A native sheet over it.
  */
 import { useMemo } from 'react';
 import { router } from 'expo-router';
 import { DateTime } from 'luxon';
+import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { SheetChrome, Skeleton, Text, useNow } from '@/shared/ui';
 import { useDayGrid } from '../model/useDayGrid';
-import { useFlowData } from '../model/useFlowData';
-import { DAYS_AHEAD } from './TimeStep';
+import { useTimeContext } from '../model/useTimeContext';
+import { DAYS_AHEAD } from './DayTimePicker';
 
-export function MonthSheet() {
-  const flow = useFlowData();
-  const { t, zone, draft } = flow;
+export interface MonthSheetProps {
+  /** The visit's length, minutes: a day's dot says whether it still fits. */
+  duration: number;
+  /** The visit being moved: its own time doesn't count as taken. */
+  excludeId?: string;
+  /** The day chosen now, "yyyy-MM-dd". */
+  value: string | null;
+  onPick: (dayKey: string) => void;
+}
+
+export function MonthSheet({ duration, excludeId, value, onPick }: MonthSheetProps) {
+  const { t } = useTranslation();
+  const ctx = useTimeContext();
+  const { zone } = ctx;
   const { theme } = useUnistyles();
   const insets = useSafeAreaInsets();
   const now = useNow();
@@ -27,14 +39,15 @@ export function MonthSheet() {
   const lastKey = today.plus({ days: DAYS_AHEAD - 1 }).toISODate()!;
 
   const grid = useDayGrid({
-    userId: flow.userId,
+    userId: ctx.userId,
     zone,
-    schedule: flow.schedule,
-    stepMinutes: flow.stepMinutes,
-    duration: flow.duration,
+    schedule: ctx.schedule,
+    stepMinutes: ctx.stepMinutes,
+    duration,
     now,
     fromKey: firstKey,
     toKey: lastKey,
+    excludeId,
   });
 
   const months = useMemo(() => {
@@ -47,10 +60,10 @@ export function MonthSheet() {
 
   const monthNames = t('months', { returnObjects: true }) as string[];
   const weekdays = t('weekdays.short', { returnObjects: true }) as string[];
-  const chosen = draft.dayKey ?? todayKey;
+  const chosen = value ?? todayKey;
 
   const pick = (key: string) => {
-    draft.setDay(key);
+    onPick(key);
     router.back();
   };
 

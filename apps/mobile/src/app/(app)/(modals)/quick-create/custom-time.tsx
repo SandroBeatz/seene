@@ -1,5 +1,5 @@
-import { CustomTimeSheet } from '@/widgets/quick-create-flow';
+import { QuickCreateOwnTimeSheet } from '@/widgets/quick-create-flow';
 
 export default function QuickCreateCustomTimeScreen() {
-  return <CustomTimeSheet />;
+  return <QuickCreateOwnTimeSheet />;
 }

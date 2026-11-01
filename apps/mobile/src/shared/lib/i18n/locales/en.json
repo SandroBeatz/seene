@@ -1037,7 +1037,8 @@
       "delete": "Delete appointment"
     },
     "missingTitle": "No appointment",
-    "missing": "It was deleted or is unavailable."
+    "missing": "It was deleted or is unavailable.",
+    "changeClient": "Change client"
   },
   "actions": {
     "failedTitle": "Something went wrong",
@@ -1087,7 +1088,6 @@
   },
   "servicesSheet": {
     "title": "Services",
-    "back": "Back to the appointment",
     "search": "Find a service",
     "all": "All",
     "other": "Other",
@@ -1107,23 +1107,17 @@
   },
   "reschedule": {
     "title": "Reschedule",
-    "back": "Back to the appointment",
     "now": "Currently: {{when}}",
-    "zone": "your time zone: {{zone}}",
     "parts": {
       "morning": "Morning",
       "afternoon": "Afternoon",
       "evening": "Evening"
     },
-    "full": "This day is fully booked.",
-    "dayOff": "Day off — you can set a time manually.",
-    "manual": "Set the time manually",
     "pick": "Pick a time",
     "submit": "Move · {{when}}"
   },
   "checkout": {
     "title": "Complete visit",
-    "back": "Back to appointment",
     "amountA11y": "Amount to pay, {{currency}}",
     "planned": "Booked at {{amount}} ·",
     "restore": "Restore",

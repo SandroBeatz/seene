@@ -2,47 +2,69 @@
  * "Своё время" (design "AppNewTimeCustom"): any start on the chosen day — off the
  * grid, outside working hours — on hour and minute wheels; under them the visit's
  * span by its services and a warning when it runs into another visit or personal
- * time. "Готово" puts it into the draft. A native sheet over the flow.
+ * time. "Готово" hands the start back. A native sheet over the time picker.
  */
 import { useMemo, useState } from 'react';
 import { router } from 'expo-router';
 import { DateTime } from 'luxon';
+import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet } from 'react-native-unistyles';
-import { clientName } from '@/entities/client';
+import { clientName, useClientsQuery } from '@/entities/client';
 import { formatDurationLabel } from '@/shared/lib/i18n';
 import { firstOverlap } from '@/shared/lib/scheduling';
 import { toUtcIsoFromWallClock } from '@/shared/lib/time-zone';
 import { Button, Icon, SheetChrome, Text, useNow } from '@/shared/ui';
 import { useDayGrid } from '../model/useDayGrid';
-import { useFlowData } from '../model/useFlowData';
+import { useTimeContext } from '../model/useTimeContext';
 import { ClockWheels } from './ClockWheels';
 
 const MINUTE_STEP = 5;
 const DEFAULT_START = { hour: 10, minute: 0 };
 
-export function CustomTimeSheet() {
-  const flow = useFlowData();
-  const { t, zone, draft } = flow;
+export interface OwnTimeSheetProps {
+  /** The visit's length, minutes. */
+  duration: number;
+  /** The visit being moved: its own time is not a conflict. */
+  excludeId?: string;
+  /** The day the start goes on, "yyyy-MM-dd"; null = today. */
+  dayKey: string | null;
+  /** The start chosen now (UTC ISO): the wheels open on it when it's that day. */
+  value: string | null;
+  onDone: (start: string) => void;
+}
+
+export function OwnTimeSheet({
+  duration,
+  excludeId,
+  dayKey: chosenDay,
+  value,
+  onDone,
+}: OwnTimeSheetProps) {
+  const { t } = useTranslation();
+  const ctx = useTimeContext();
+  const { zone } = ctx;
+  const clients = useClientsQuery(ctx.userId);
   const insets = useSafeAreaInsets();
   const now = useNow();
-  const dayKey = draft.dayKey ?? DateTime.fromMillis(now, { zone }).toISODate()!;
+  const dayKey = chosenDay ?? DateTime.fromMillis(now, { zone }).toISODate()!;
 
   const grid = useDayGrid({
-    userId: flow.userId,
+    userId: ctx.userId,
     zone,
-    schedule: flow.schedule,
-    stepMinutes: flow.stepMinutes,
-    duration: flow.duration,
+    schedule: ctx.schedule,
+    stepMinutes: ctx.stepMinutes,
+    duration,
     now,
     fromKey: dayKey,
     toKey: dayKey,
+    excludeId,
   });
 
   const [clock, setClock] = useState(() => {
-    if (draft.start && flow.dayKeyOf(draft.start) === dayKey) {
-      const local = DateTime.fromISO(draft.start, { zone: 'utc' }).setZone(zone);
+    if (value && ctx.dayKeyOf(value) === dayKey) {
+      const local = DateTime.fromISO(value, { zone: 'utc' }).setZone(zone);
       return { hour: local.hour, minute: local.minute - (local.minute % MINUTE_STEP) };
     }
     const workday = grid.workdayOf(dayKey);
@@ -59,24 +81,24 @@ export function CustomTimeSheet() {
   const conflict = useMemo(() => {
     if (grid.isPending) return null;
     const { visits, blocks } = grid.dayRecords(dayKey);
-    const visit = firstOverlap(start, flow.duration, visits);
+    const visit = firstOverlap(start, duration, visits);
     if (visit) {
-      const client = flow.clients.find((c) => c.id === visit.client_id);
+      const client = clients.data?.find((c) => c.id === visit.client_id);
       return t('quickCreate.time.overlapVisit', {
         name: client ? clientName(client) : t('quickCreate.time.someone'),
-        time: flow.time(visit.start_at),
+        time: ctx.time(visit.start_at),
       });
     }
     const startMs = new Date(start).getTime();
-    const endMs = startMs + flow.duration * 60_000;
+    const endMs = startMs + duration * 60_000;
     const block = blocks.find(
       (b) => startMs < new Date(b.end_at).getTime() && endMs > new Date(b.start_at).getTime(),
     );
-    return block ? t('quickCreate.time.overlapBlock', { time: flow.time(block.start_at) }) : null;
-  }, [grid, start, flow, dayKey, t]);
+    return block ? t('quickCreate.time.overlapBlock', { time: ctx.time(block.start_at) }) : null;
+  }, [grid, start, duration, clients.data, ctx, dayKey, t]);
 
   const done = () => {
-    draft.setStart(start, true);
+    onDone(start);
     router.back();
   };
 
@@ -92,10 +114,10 @@ export function CustomTimeSheet() {
         />
         <View style={styles.span}>
           <Text variant="bodyStrong" tabularNums>
-            {flow.range(start).replace('–', ' – ')}
+            {ctx.range(start, duration).replace('–', ' – ')}
           </Text>
           <Text variant="body" color="tertiary">
-            {`· ${t('quickCreate.time.byServices', { duration: formatDurationLabel(flow.duration, t) })}`}
+            {`· ${t('quickCreate.time.byServices', { duration: formatDurationLabel(duration, t) })}`}
           </Text>
         </View>
         {conflict ? (

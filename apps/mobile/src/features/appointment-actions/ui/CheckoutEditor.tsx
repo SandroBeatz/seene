@@ -138,7 +138,7 @@ export function CheckoutEditor({
     // Kept as a real view: a form sheet (react-native-screens) pins a ScrollView that
     // is a direct child of the screen to the top and stretches it over the header.
     <View style={styles.root} collapsable={false}>
-      <SheetChrome title={t('checkout.title')} leading="back" leadingLabel={t('checkout.back')} />
+      <SheetChrome title={t('checkout.title')} leadingLabel={t('common.close')} />
 
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"

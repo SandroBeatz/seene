@@ -1,5 +1,5 @@
-import { MonthSheet } from '@/widgets/quick-create-flow';
+import { QuickCreateMonthSheet } from '@/widgets/quick-create-flow';
 
 export default function QuickCreateMonthScreen() {
-  return <MonthSheet />;
+  return <QuickCreateMonthSheet />;
 }

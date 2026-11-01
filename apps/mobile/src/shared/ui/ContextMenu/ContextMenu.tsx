@@ -1,13 +1,14 @@
 /**
  * The long-press menu (design "Карточка внимания · долгое нажатие", "Запись в
- * расписании · долгое нажатие"): over a dim scrim, the pressed card lifted where it
+ * расписании · долгое нажатие"): over a lightly blurred dim scrim, the pressed card lifted where it
  * was, the booking note under it, then the action groups — a regular one and a red
  * one. The stack moves up when it would run off the bottom of the screen.
  */
 import { useState, type ReactNode } from 'react';
+import { BlurView } from 'expo-blur';
 import { Modal, Pressable, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { StyleSheet } from 'react-native-unistyles';
+import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { Icon, type IconName } from '@/shared/ui/Icon';
 import { Text } from '@/shared/ui/Text';
 
@@ -40,6 +41,8 @@ export interface ContextMenuProps {
 
 const GAP = 10;
 const EDGE = 16;
+/** Just enough to soften the screen behind, not to hide it. */
+const BLUR_INTENSITY = 12;
 
 export function ContextMenu({
   anchor,
@@ -51,6 +54,7 @@ export function ContextMenu({
   onSelect,
 }: ContextMenuProps) {
   const insets = useSafeAreaInsets();
+  const { theme } = useUnistyles();
   const screen = useWindowDimensions();
   const [height, setHeight] = useState(0);
 
@@ -90,10 +94,7 @@ export function ContextMenu({
     ) : null;
 
   const top = anchor
-    ? Math.max(
-        insets.top + EDGE,
-        Math.min(anchor.y, screen.height - insets.bottom - EDGE - height),
-      )
+    ? Math.max(insets.top + EDGE, Math.min(anchor.y, screen.height - insets.bottom - EDGE - height))
     : 0;
 
   return (
@@ -103,6 +104,12 @@ export function ContextMenu({
       animationType="fade"
       onRequestClose={onClose}
       onDismiss={() => setHeight(0)}>
+      {/* A soft blur under the dim: the screen recedes, the card stays sharp. */}
+      <BlurView
+        intensity={BLUR_INTENSITY}
+        tint={theme.name === 'dark' ? 'dark' : 'light'}
+        style={StyleSheet.absoluteFill}
+      />
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={closeLabel}
