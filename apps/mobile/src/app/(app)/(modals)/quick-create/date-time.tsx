@@ -1,15 +1,5 @@
-import { router } from 'expo-router';
-import { useTranslation } from 'react-i18next';
-import { QuickCreateStep } from '@/widgets/quick-create-flow';
+import { TimeStep } from '@/widgets/quick-create-flow';
 
 export default function QuickCreateDateTimeScreen() {
-  const { t } = useTranslation();
-  return (
-    <QuickCreateStep
-      title={t('quickCreate.dateTimeTitle')}
-      description={t('quickCreate.dateTimeDescription')}
-      actionLabel={t('common.continue')}
-      onAction={() => router.push('/quick-create/review')}
-    />
-  );
+  return <TimeStep />;
 }

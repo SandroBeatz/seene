@@ -3,8 +3,8 @@
  *
  * Built: the day bounds and the day timeline the "Сегодня" schedule and the calendar
  * day view render (appointments, schedule breaks, personal time, the "now" line).
- * Also the free start times of a day (rescheduling, and later the quick-create wizard)
- * grouped into morning / afternoon / evening.
+ * Also the grid of start times of a day with their state ("Новая запись", moving a
+ * visit) and how full a day is.
  *
  * This module must never import from `entities/*` — it composes appointments and
  * time-blocks through minimal structural shapes and therefore lives in `shared`.
@@ -160,7 +160,7 @@ export function buildDayTimeline<A extends TimedRecord, B extends BlockRecord>({
   return timeline;
 }
 
-export interface FreeSlotsInput {
+export interface SlotGridInput {
   dayKey: string;
   zone: string;
   workday: WorkdayHours | null | undefined;
@@ -174,45 +174,6 @@ export interface FreeSlotsInput {
   now: number;
 }
 
-const overlaps = (aStart: number, aEnd: number, b: TimeInterval) =>
-  aStart < ms(b.end) && aEnd > ms(b.start);
-
-/**
- * Start times (UTC ISO) on the working grid where a visit of `duration` fits inside
- * the working hours without touching busy time or a break. Empty on a day off.
- */
-export function findFreeSlots({
-  dayKey,
-  zone,
-  workday,
-  stepMinutes,
-  duration,
-  busy,
-  now,
-}: FreeSlotsInput): string[] {
-  const hours = workingHours(dayKey, zone, workday);
-  if (!hours || stepMinutes <= 0 || duration <= 0) return [];
-  const taken: TimeInterval[] = [
-    ...busy,
-    ...(workday?.breaks ?? []).map((b) => ({
-      start: wallTimeUtc(dayKey, b.start, zone),
-      end: wallTimeUtc(dayKey, b.end, zone),
-    })),
-  ];
-  const slots: string[] = [];
-  const end = ms(hours.end);
-  for (
-    let start = ms(hours.start);
-    start + duration * 60_000 <= end;
-    start += stepMinutes * 60_000
-  ) {
-    const finish = start + duration * 60_000;
-    if (start < now || taken.some((b) => overlaps(start, finish, b))) continue;
-    slots.push(new Date(start).toISOString());
-  }
-  return slots;
-}
-
 export type DayPart = 'morning' | 'afternoon' | 'evening';
 
 /** "Утро" before 12:00, "День" before 17:00, then "Вечер" — by the local hour. */
@@ -222,13 +183,85 @@ export function dayPart(utcIso: string, zone: string): DayPart {
   return hour < 17 ? 'afternoon' : 'evening';
 }
 
-/** Slots grouped by part of day, empty groups dropped, in day order. */
-export function groupByDayPart(
-  slots: readonly string[],
-  zone: string,
-): { part: DayPart; slots: string[] }[] {
-  const order: DayPart[] = ['morning', 'afternoon', 'evening'];
-  return order
-    .map((part) => ({ part, slots: slots.filter((s) => dayPart(s, zone) === part) }))
-    .filter((group) => group.slots.length > 0);
+/** A start on the day's grid: open, taken, or open but too short for the visit. */
+export type SlotState = 'free' | 'busy' | 'short';
+
+export interface GridSlot {
+  /** UTC ISO */
+  start: string;
+  state: SlotState;
+}
+
+/**
+ * Every start on the working grid of a day with its state (design "Запись · 3 из 4"):
+ * `busy` when the step itself is taken (a visit, personal time, a break), `short` when
+ * it is open but the visit doesn't fit before the next taken time or the end of the
+ * day, `free` otherwise. Starts before `now` are left out. Empty on a day off.
+ */
+export function daySlotGrid({
+  dayKey,
+  zone,
+  workday,
+  stepMinutes,
+  duration,
+  busy,
+  now,
+}: SlotGridInput): GridSlot[] {
+  const hours = workingHours(dayKey, zone, workday);
+  if (!hours || stepMinutes <= 0) return [];
+  const open = ms(hours.start);
+  const end = ms(hours.end);
+  const reach = Math.max(duration, 1) * 60_000;
+  // Taken time as numbers, only what can touch the day: callers pass months of it.
+  const taken: [number, number][] = [];
+  const take = (from: number, to: number) => {
+    if (from < end + reach && to > open) taken.push([from, to]);
+  };
+  for (const b of busy) take(ms(b.start), ms(b.end));
+  for (const b of workday?.breaks ?? []) {
+    take(ms(wallTimeUtc(dayKey, b.start, zone)), ms(wallTimeUtc(dayKey, b.end, zone)));
+  }
+  const hits = (from: number, to: number) => taken.some(([s, e]) => from < e && to > s);
+
+  const step = stepMinutes * 60_000;
+  const slots: GridSlot[] = [];
+  for (let start = open; start < end; start += step) {
+    if (start < now) continue;
+    const state: SlotState = hits(start, start + step)
+      ? 'busy'
+      : start + reach > end || hits(start, start + duration * 60_000)
+        ? 'short'
+        : 'free';
+    slots.push({ start: new Date(start).toISOString(), state });
+  }
+  return slots;
+}
+
+/** How full a day is, for the dot under it: none on a day off. */
+export type DayLoad = 'off' | 'open' | 'tight' | 'full';
+
+/** Up to this share of the grid still free reads as "почти занято". */
+const TIGHT_SHARE = 0.3;
+
+/** The dot of a day from its grid (`daySlotGrid` with `now` = 0, the whole day). */
+export function dayLoad(working: boolean, grid: readonly GridSlot[]): DayLoad {
+  if (!working) return 'off';
+  const free = grid.filter((slot) => slot.state === 'free').length;
+  if (free === 0) return 'full';
+  return free / grid.length <= TIGHT_SHARE ? 'tight' : 'open';
+}
+
+/** The first record that the visit [start, start + duration) would overlap. */
+export function firstOverlap<R extends TimedRecord>(
+  startIso: string,
+  duration: number,
+  records: readonly R[],
+): R | null {
+  const start = ms(startIso);
+  const end = start + duration * 60_000;
+  return (
+    [...records]
+      .sort((a, b) => ms(a.start_at) - ms(b.start_at))
+      .find((r) => start < ms(r.start_at) + r.duration * 60_000 && end > ms(r.start_at)) ?? null
+  );
 }

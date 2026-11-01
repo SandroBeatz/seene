@@ -3,6 +3,12 @@
  * direction (profession section) and category, a search, and the visit's duration
  * and price — "Как в прайсе" or set for this appointment only. Pure.
  */
+import {
+  DEFAULT_SERVICE_COLOR,
+  SERVICE_COLORS,
+  SPECIALIZATION_COLORS,
+} from '@/shared/config/palettes';
+import { isSpecializationKey } from '@/shared/config/specializations';
 
 export interface PickableService {
   id: string;
@@ -17,6 +23,12 @@ export interface PickableService {
 
 /** A service without a section falls under "Другое". */
 export const OTHER_DIRECTION = 'other';
+
+/** The dot of a direction: its profession's colour, grey for "Другое". */
+export const directionColor = (direction: string) =>
+  isSpecializationKey(direction)
+    ? SERVICE_COLORS[SPECIALIZATION_COLORS[direction]]
+    : DEFAULT_SERVICE_COLOR;
 
 export const directionOf = (s: Pick<PickableService, 'specialization'>) =>
   s.specialization ?? OTHER_DIRECTION;

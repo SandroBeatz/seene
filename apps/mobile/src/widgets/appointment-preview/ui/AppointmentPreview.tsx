@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet } from 'react-native-unistyles';
-import { PREVIEW_ACTIONS, visitProgress } from '@/entities/appointment';
+import { PREVIEW_ACTIONS, visitProgress, type AppointmentPhase } from '@/entities/appointment';
 import { useAppointmentActions } from '@/features/appointment-actions';
 import { errorMessageKey, normalizeError } from '@/shared/api/errors';
 import { DateTime, formatAmount, formatTime } from '@/shared/lib/formats';
@@ -29,6 +29,19 @@ import {
   StatusPill,
   TimerBar,
 } from './parts';
+
+/**
+ * Visits whose client can still change. A closed one keeps its client: the payment
+ * (or the no-show) belongs to whoever came.
+ */
+const CLIENT_CHANGEABLE = new Set<AppointmentPhase>([
+  'request',
+  'unconfirmed',
+  'overdue',
+  'upcoming',
+  'ongoing',
+  'awaiting',
+]);
 
 export function AppointmentPreview({ appointmentId }: { appointmentId: string }) {
   const { t, i18n } = useTranslation();
@@ -151,13 +164,15 @@ export function AppointmentPreview({ appointmentId }: { appointmentId: string })
               ]
                 .filter(Boolean)
                 .join(' · ')}
-              onOpen={() => {
-                router.dismiss();
-                router.navigate({
-                  pathname: '/clients/[clientId]',
-                  params: { clientId: data.appointment.client_id },
-                });
-              }}
+              onOpen={
+                CLIENT_CHANGEABLE.has(data.phase)
+                  ? () =>
+                      router.push({
+                        pathname: '/appointment/[appointmentId]/client',
+                        params: { appointmentId: data.appointment.id },
+                      })
+                  : undefined
+              }
               onCall={() => actions.run('call')}
               onWhatsApp={() => actions.run('whatsapp')}
               onRemind={() => actions.run('remind')}

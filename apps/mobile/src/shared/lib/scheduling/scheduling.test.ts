@@ -2,8 +2,9 @@ import { describe, expect, it } from '@jest/globals';
 import {
   buildDayTimeline,
   dayBounds,
-  findFreeSlots,
-  groupByDayPart,
+  dayLoad,
+  daySlotGrid,
+  firstOverlap,
   weekdayIndex,
   workingHours,
   type WorkdayHours,
@@ -209,68 +210,61 @@ describe('buildDayTimeline', () => {
   });
 });
 
-describe('findFreeSlots', () => {
-  const input = {
+describe('daySlotGrid', () => {
+  const base = {
     dayKey: DAY,
     zone: ZONE,
-    workday: WORKDAY, // 10:00–19:00, break 13:00–14:00
-    stepMinutes: 30,
-    duration: 60,
-    busy: [] as { start: string; end: string }[],
+    workday: WORKDAY,
+    stepMinutes: 60,
+    duration: 120,
     now: 0,
   };
-  const labels = (slots: string[]) =>
-    slots.map((s) => {
-      const d = new Date(new Date(s).getTime() + 6 * 3_600_000);
-      return `${String(d.getUTCHours()).padStart(2, '0')}:${String(d.getUTCMinutes()).padStart(2, '0')}`;
-    });
+  const states = (busy: { start: string; end: string }[], extra = {}) =>
+    daySlotGrid({ ...base, busy, ...extra }).map(
+      (s) => `${new Date(s.start).getUTCHours() + 6}:${s.state}`,
+    );
 
-  it('fits the visit inside working hours around the break', () => {
-    expect(labels(findFreeSlots(input))).toEqual([
-      '10:00',
-      '10:30',
-      '11:00',
-      '11:30',
-      '12:00',
-      '14:00',
-      '14:30',
-      '15:00',
-      '15:30',
-      '16:00',
-      '16:30',
-      '17:00',
-      '17:30',
-      '18:00',
+  it('marks taken steps busy and too-short openings short', () => {
+    expect(states([{ start: local('10:00'), end: local('11:00') }])).toEqual([
+      '10:busy',
+      '11:free',
+      '12:short', // runs into the 13:00 break
+      '13:busy', // the break
+      '14:free',
+      '15:free',
+      '16:free',
+      '17:free',
+      '18:short', // past the end of the day
     ]);
   });
 
-  it('skips busy time and starts already passed', () => {
-    const slots = labels(
-      findFreeSlots({
-        ...input,
-        busy: [{ start: local('15:00'), end: local('16:30') }],
-        now: nowAt('11:10'),
-      }),
-    );
-    expect(slots).toEqual(['11:30', '12:00', '14:00', '16:30', '17:00', '17:30', '18:00']);
+  it('ignores taken time on other days', () => {
+    const yesterday = { start: local('09:00', '2026-10-26'), end: local('20:00', '2026-10-26') };
+    const tomorrow = { start: local('09:00', '2026-10-28'), end: local('20:00', '2026-10-28') };
+    expect(states([yesterday, tomorrow])).toEqual(states([]));
   });
 
-  it('is empty on a day off or when the visit is longer than the day', () => {
-    expect(findFreeSlots({ ...input, workday: { ...WORKDAY, enabled: false } })).toEqual([]);
-    expect(findFreeSlots({ ...input, duration: 10 * 60 })).toEqual([]);
+  it('drops starts before now and is empty on a day off', () => {
+    expect(states([], { now: nowAt('16:30') })).toEqual(['17:free', '18:short']);
+    expect(daySlotGrid({ ...base, workday: { ...WORKDAY, enabled: false }, busy: [] })).toEqual([]);
   });
 });
 
-describe('groupByDayPart', () => {
-  it('splits morning, afternoon and evening by the local hour', () => {
-    const groups = groupByDayPart(
-      [local('10:00'), local('11:30'), local('14:00'), local('17:30')],
-      ZONE,
-    );
-    expect(groups.map((g) => [g.part, g.slots.length])).toEqual([
-      ['morning', 2],
-      ['afternoon', 1],
-      ['evening', 1],
-    ]);
+describe('dayLoad', () => {
+  const slot = (state: 'free' | 'busy' | 'short') => ({ start: local('10:00'), state });
+  it('reads the share of free starts', () => {
+    expect(dayLoad(false, [])).toBe('off');
+    expect(dayLoad(true, [slot('busy'), slot('short')])).toBe('full');
+    expect(dayLoad(true, [slot('free'), slot('busy'), slot('busy'), slot('busy')])).toBe('tight');
+    expect(dayLoad(true, [slot('free'), slot('free'), slot('busy')])).toBe('open');
+  });
+});
+
+describe('firstOverlap', () => {
+  it('finds the earliest visit the new one touches', () => {
+    const visits = [visit('b', '12:30', 60), visit('a', '10:00', 60)];
+    expect(firstOverlap(local('11:15'), 120, visits)?.id).toBe('b');
+    expect(firstOverlap(local('11:00'), 60, visits)).toBeNull();
+    expect(firstOverlap(local('09:30'), 60, visits)?.id).toBe('a');
   });
 });

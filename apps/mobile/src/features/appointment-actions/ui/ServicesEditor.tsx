@@ -13,17 +13,12 @@ import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { useUpdateAppointmentMutation, type Appointment } from '@/entities/appointment';
 import { useUserId } from '@/entities/session';
 import type { ServiceWithCategory } from '@/entities/service';
-import {
-  DEFAULT_SERVICE_COLOR,
-  SERVICE_COLORS,
-  SPECIALIZATION_COLORS,
-} from '@/shared/config/palettes';
-import { isSpecializationKey } from '@/shared/config/specializations';
 import { formatAmount } from '@/shared/lib/formats';
 import { formatDurationLabel, pluralCategory, type AppLocale } from '@/shared/lib/i18n';
 import { Button, Icon, SearchField, SheetChrome, Text } from '@/shared/ui';
 import {
   categoriesOf,
+  directionColor,
   directions,
   groupServices,
   OTHER_DIRECTION,
@@ -40,11 +35,6 @@ export interface ServicesEditorProps {
   currencyLabel: string;
   locale: AppLocale;
 }
-
-const directionColor = (direction: string) =>
-  isSpecializationKey(direction)
-    ? SERVICE_COLORS[SPECIALIZATION_COLORS[direction]]
-    : DEFAULT_SERVICE_COLOR;
 
 export function ServicesEditor({
   appointment,
@@ -114,12 +104,7 @@ export function ServicesEditor({
     // Kept as a real view: a form sheet (react-native-screens) pins a ScrollView that
     // is a direct child of the screen to the top and stretches it over the header.
     <View style={styles.root} collapsable={false}>
-      <SheetChrome
-        title={t('servicesSheet.title')}
-        leading="back"
-        leadingLabel={t('servicesSheet.back')}
-        spacer
-      />
+      <SheetChrome title={t('servicesSheet.title')} leadingLabel={t('common.close')} spacer />
 
       <View style={styles.search}>
         <SearchField
@@ -130,39 +115,42 @@ export function ServicesEditor({
         />
       </View>
 
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.chipsScroll}
-        contentContainerStyle={styles.chips}
-        accessibilityRole="tablist">
-        {['all', ...allDirections].map((key) => {
-          const on = direction === key;
-          return (
-            <Pressable
-              key={key}
-              accessibilityRole="tab"
-              accessibilityState={{ selected: on }}
-              onPress={() => {
-                setDirection(key);
-                setCategory('all');
-              }}
-              style={[styles.chip, on && styles.chipOn]}>
-              {key === 'all' ? null : (
-                <View
-                  style={[
-                    styles.dot,
-                    { backgroundColor: on ? theme.colors.accent.onAccent : directionColor(key) },
-                  ]}
-                />
-              )}
-              <Text variant="footnoteStrong" color={on ? 'onAccent' : 'primary'}>
-                {key === 'all' ? t('servicesSheet.all') : directionLabel(key)}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </ScrollView>
+      {/* One direction: nothing to switch between. */}
+      {allDirections.length > 1 ? (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.chipsScroll}
+          contentContainerStyle={styles.chips}
+          accessibilityRole="tablist">
+          {['all', ...allDirections].map((key) => {
+            const on = direction === key;
+            return (
+              <Pressable
+                key={key}
+                accessibilityRole="tab"
+                accessibilityState={{ selected: on }}
+                onPress={() => {
+                  setDirection(key);
+                  setCategory('all');
+                }}
+                style={[styles.chip, on && styles.chipOn]}>
+                {key === 'all' ? null : (
+                  <View
+                    style={[
+                      styles.dot,
+                      { backgroundColor: on ? theme.colors.accent.onAccent : directionColor(key) },
+                    ]}
+                  />
+                )}
+                <Text variant="footnoteStrong" color={on ? 'onAccent' : 'primary'}>
+                  {key === 'all' ? t('servicesSheet.all') : directionLabel(key)}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </ScrollView>
+      ) : null}
 
       {categories.length > 1 && !query.trim() ? (
         <ScrollView

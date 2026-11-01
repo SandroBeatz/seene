@@ -54,13 +54,14 @@ src/app/
 │   └── (modals)/
 │       ├── appointment-form.tsx           standard route modal
 │       ├── checkout/[appointmentId].tsx   native form sheet
-│       └── quick-create/                   fullscreen modal with nested Stack
-│           ├── _layout.tsx
-│           ├── index.tsx
-│           ├── client.tsx
-│           ├── services.tsx
-│           ├── date-time.tsx
-│           └── review.tsx
+│       └── quick-create/                   "Новая запись": form sheet with nested Stack
+│           ├── _layout.tsx                 iOS: native bar per step; Android: modal
+│           ├── index.tsx                   1 · client (`?clientId=` skips to services)
+│           ├── services.tsx                2 · services
+│           ├── date-time.tsx               3 · day strip + slot grid
+│           ├── custom-time.tsx             "Своё время" sheet over step 3
+│           ├── month.tsx                   month calendar sheet over step 3
+│           └── review.tsx                  4 · review → create
 └── (dev)/                             compiled route, accessible only in development
     └── uikit/                         catalog and executable navigation examples
 ```
@@ -135,10 +136,10 @@ protected launch or deep link
   → profile ready: original protected route, otherwise /
   → switch Native Tabs
   → open shared /appointments/:id in the current tab Stack
-  → present /quick-create above all tabs
-  → push client → services → date-time → review inside modal Stack
-  → Back pops one modal step; close dismisses to the origin
-  → finish uses dismissTo('/') to close the complete flow
+  → present /quick-create above all tabs (a sheet with its own Stack)
+  → push client → services → date-time → review inside the sheet's Stack
+  → Back pops one step; close (and "Создать") pops the sheet off the app Stack
+  → a deep-linked flow has nothing under it and gives way to /
   → sign out; protected history is removed; /sign-in becomes available
 ```
 
@@ -174,7 +175,7 @@ differs from iOS.
 | Pattern              | Configuration                                               | Use                                                     |
 | -------------------- | ----------------------------------------------------------- | ------------------------------------------------------- |
 | Standard modal       | `presentation: 'modal'`                                     | Focused create/edit screen that returns to its origin   |
-| Fullscreen modal     | `presentation: 'fullScreenModal'` + nested Stack            | Long, focused, multi-step workflow such as quick create |
+| Sheet + nested Stack | iOS `formSheet` (detent 1) + nested Stack; Android `modal`  | Multi-step creation ("Новая запись"): native bar, Back  |
 | Form sheet           | `presentation: 'formSheet'`, numeric detents `[0.45, 0.85]` | Compact checkout flow                                   |
 | React Native `Modal` | Local `visible` state                                       | Blocking confirmation only                              |
 | Gorhom `Sheet`       | Ref-controlled transient overlay                            | Preview, picker, or action sheet without route identity |
