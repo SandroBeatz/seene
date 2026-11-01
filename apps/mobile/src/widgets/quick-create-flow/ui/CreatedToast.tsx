@@ -1,12 +1,12 @@
 /**
  * "Запись создана" (design "После создания: тост «Отправить клиенту»"): a dark card
- * over the top of "Сегодня" with who and when, and "Отправить клиенту" — WhatsApp
+ * at the top of the screen the flow closed to, with who and when, and "Отправить клиенту" — WhatsApp
  * with the details. Closes by its cross, after the send, or by itself.
  */
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Linking, Pressable, View } from 'react-native';
-import Animated, { FadeOutUp, SlideInUp } from 'react-native-reanimated';
+import Animated, { Easing, FadeInUp, FadeOutUp } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet } from 'react-native-unistyles';
 import { whatsappUrl } from '@/shared/lib/phone';
@@ -15,6 +15,15 @@ import { useCreatedAppointment } from '../model/created.store';
 
 /** Long enough to reach for "Отправить клиенту". */
 const VISIBLE_MS = 10_000;
+
+// A short settle from just above, no spring: the toast confirms, it doesn't bounce.
+const ENTERING = FadeInUp.duration(280)
+  .easing(Easing.out(Easing.cubic))
+  .withInitialValues({
+    opacity: 0,
+    transform: [{ translateY: -12 }],
+  });
+const EXITING = FadeOutUp.duration(180);
 
 export function CreatedToast() {
   const { t } = useTranslation();
@@ -30,10 +39,11 @@ export function CreatedToast() {
 
   if (!created) return null;
 
+  const phone = created.phone;
   const send = () => {
     dismiss();
-    if (!created.phone) return Alert.alert(t('actions.noPhone'));
-    void Linking.openURL(whatsappUrl(created.phone, created.message)).catch(() =>
+    if (!phone) return;
+    void Linking.openURL(whatsappUrl(phone, created.message)).catch(() =>
       Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')),
     );
   };
@@ -41,8 +51,8 @@ export function CreatedToast() {
   return (
     <Animated.View
       key={created.appointmentId}
-      entering={SlideInUp.springify().damping(18)}
-      exiting={FadeOutUp.duration(180)}
+      entering={ENTERING}
+      exiting={EXITING}
       style={[styles.wrap, { top: insets.top + 8 }]}
       accessibilityLiveRegion="polite">
       <View style={styles.card}>
@@ -66,15 +76,18 @@ export function CreatedToast() {
             <Icon name="close" size="base" color="content.onDarkMuted" />
           </Pressable>
         </View>
-        <Pressable
-          accessibilityRole="button"
-          onPress={send}
-          style={({ pressed }) => [styles.send, pressed && styles.pressed]}>
-          <Icon name="whatsapp" size="md" />
-          <Text variant="bodyStrong" color="ink">
-            {t('quickCreate.created.send')}
-          </Text>
-        </Pressable>
+        {/* No number to write to: the card only confirms. */}
+        {phone ? (
+          <Pressable
+            accessibilityRole="button"
+            onPress={send}
+            style={({ pressed }) => [styles.send, pressed && styles.pressed]}>
+            <Icon name="whatsapp" size="md" />
+            <Text variant="bodyStrong" color="ink">
+              {t('quickCreate.created.send')}
+            </Text>
+          </Pressable>
+        ) : null}
       </View>
     </Animated.View>
   );

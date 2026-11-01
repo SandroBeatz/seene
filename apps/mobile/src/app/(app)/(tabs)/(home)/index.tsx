@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { router } from 'expo-router';
 import { ProfileCreatedModal, profileCreatedNotice } from '@/features/onboarding';
-import { CreatedToast } from '@/widgets/quick-create-flow';
 import { TodayScreen } from '@/widgets/today';
 
 export default function HomeScreen() {
@@ -16,7 +15,6 @@ export default function HomeScreen() {
   return (
     <>
       <TodayScreen />
-      <CreatedToast />
       <ProfileCreatedModal
         visible={profileCreated}
         onFillProfile={() => {
