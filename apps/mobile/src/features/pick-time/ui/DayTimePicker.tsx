@@ -3,9 +3,9 @@
  * month calendar), a strip of days with a dot for how full each is, then the chosen
  * day's grid by morning / afternoon / evening — struck through when taken, dashed
  * when open but the visit doesn't fit — and "Указать своё время". Controlled: the
- * screen keeps the day and the start ("Новая запись", moving a visit).
+ * screen keeps the day and the start ("Новая запись", moving a visit, "Личное время").
  */
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, type ReactNode } from 'react';
 import { DateTime } from 'luxon';
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, View } from 'react-native';
@@ -22,9 +22,18 @@ const DAY_WIDTH = 46;
 const DAY_GAP = 4;
 const PARTS: DayPart[] = ['morning', 'afternoon', 'evening'];
 
+/** What is being placed: a client's visit or the master's own time. */
+export type TimePurpose = 'visit' | 'personal';
+
 export interface DayTimePickerProps {
   /** The visit's length, minutes. */
   duration: number;
+  /** Labels the length by what it is ("услуга 1 ч" / "на 1 ч"). Default `visit`. */
+  purpose?: TimePurpose;
+  /** Controls between the days and the day's grid ("Весь день", "Сколько"). */
+  between?: ReactNode;
+  /** Only the day is asked ("Весь день"): no grid and no own time. */
+  dayOnly?: boolean;
   /** The visit being moved: its own time doesn't count as taken. */
   excludeId?: string;
   /** "yyyy-MM-dd"; null = not chosen yet: the first day with room gets picked. */
@@ -41,6 +50,9 @@ export interface DayTimePickerProps {
 
 export function DayTimePicker({
   duration,
+  purpose = 'visit',
+  between,
+  dayOnly = false,
   excludeId,
   dayKey: chosenDay,
   start: chosen,
@@ -126,7 +138,7 @@ export function DayTimePicker({
     : null;
   const durationLabel = formatDurationLabel(duration, t);
   const hoursLabel = workday?.enabled
-    ? t('quickCreate.time.hours', {
+    ? t(purpose === 'personal' ? 'personalTime.when.hours' : 'quickCreate.time.hours', {
         from: workday.start,
         to: workday.end,
         duration: durationLabel,
@@ -208,93 +220,99 @@ export function DayTimePicker({
         </Text>
       </View>
 
-      <View style={styles.dayHead}>
-        <Text variant="headline">{ctx.dayLabel(dayKey)}</Text>
-        <Text variant="footnote" color="tertiary" numberOfLines={1} style={styles.shrink}>
-          {hoursLabel}
-        </Text>
-      </View>
+      {between}
 
-      {groups === null ? (
-        <Skeleton height={180} radius={12} />
-      ) : groups.length === 0 ? (
-        <Text variant="footnote" color="tertiary" style={styles.noSlots}>
-          {!workday?.enabled
-            ? t('quickCreate.time.dayOff')
-            : dayKey < todayKey
-              ? t('quickCreate.time.past')
-              : t('quickCreate.time.full')}
-        </Text>
-      ) : (
+      {dayOnly ? null : (
         <>
-          {groups.map((group) => (
-            <View key={group.part} style={styles.group}>
-              <Text variant="footnote" color="tertiary">
-                {t(`reschedule.parts.${group.part}`)}
-              </Text>
-              <View style={styles.grid}>
-                {group.slots.map((slot) => {
-                  const on = slot.start === chosen && !ownTime;
-                  return (
-                    <Pressable
-                      key={slot.start}
-                      accessibilityRole="button"
-                      accessibilityState={{ selected: on, disabled: slot.state !== 'free' }}
-                      accessibilityLabel={`${ctx.time(slot.start)}${slot.state === 'free' ? '' : `, ${t(`quickCreate.time.${slot.state}A11y`)}`}`}
-                      disabled={slot.state !== 'free'}
-                      onPress={() => pickSlot(slot)}
-                      style={[
-                        styles.slot,
-                        slot.state === 'busy' && styles.slotBusy,
-                        slot.state === 'short' && styles.slotShort,
-                        on && styles.slotOn,
-                      ]}>
-                      <Text
-                        variant="bodyLarge"
-                        color={on ? 'onAccent' : slot.state === 'free' ? 'primary' : 'disabled'}
-                        tabularNums
-                        style={slot.state === 'busy' ? styles.struck : undefined}>
-                        {ctx.time(slot.start)}
-                      </Text>
-                    </Pressable>
-                  );
-                })}
-              </View>
-            </View>
-          ))}
-          <View style={styles.legend}>
-            <Text variant="footnote" color="tertiary">
-              {t('quickCreate.time.legendBusy')}
-            </Text>
-            <Text variant="footnote" color="tertiary">
-              {t('quickCreate.time.legendShort', { duration: durationLabel })}
+          <View style={styles.dayHead}>
+            <Text variant="headline">{ctx.dayLabel(dayKey)}</Text>
+            <Text variant="footnote" color="tertiary" numberOfLines={1} style={styles.shrink}>
+              {hoursLabel}
             </Text>
           </View>
-        </>
-      )}
 
-      {ownTime && chosen ? (
-        <Pressable
-          accessibilityRole="button"
-          onPress={onOpenOwnTime}
-          style={({ pressed }) => [styles.own, styles.ownOn, pressed && styles.pressed]}>
-          <Icon name="clock" size="base" color="content.primary" />
-          <Text variant="bodyStrong" style={styles.grow}>
-            {t('quickCreate.time.own')}
-          </Text>
-          <Text variant="bodyStrong" tabularNums>
-            {ctx.range(chosen, duration).replace('–', ' – ')}
-          </Text>
-          <Icon name="pencil" size="sm" color="content.primary" />
-        </Pressable>
-      ) : (
-        <Pressable
-          accessibilityRole="button"
-          onPress={onOpenOwnTime}
-          style={({ pressed }) => [styles.own, pressed && styles.pressed]}>
-          <Icon name="clock" size="base" color="content.primary" />
-          <Text variant="bodyStrong">{t('quickCreate.time.ownAction')}</Text>
-        </Pressable>
+          {groups === null ? (
+            <Skeleton height={180} radius={12} />
+          ) : groups.length === 0 ? (
+            <Text variant="footnote" color="tertiary" style={styles.noSlots}>
+              {!workday?.enabled
+                ? t('quickCreate.time.dayOff')
+                : dayKey < todayKey
+                  ? t('quickCreate.time.past')
+                  : t('quickCreate.time.full')}
+            </Text>
+          ) : (
+            <>
+              {groups.map((group) => (
+                <View key={group.part} style={styles.group}>
+                  <Text variant="footnote" color="tertiary">
+                    {t(`reschedule.parts.${group.part}`)}
+                  </Text>
+                  <View style={styles.grid}>
+                    {group.slots.map((slot) => {
+                      const on = slot.start === chosen && !ownTime;
+                      return (
+                        <Pressable
+                          key={slot.start}
+                          accessibilityRole="button"
+                          accessibilityState={{ selected: on, disabled: slot.state !== 'free' }}
+                          accessibilityLabel={`${ctx.time(slot.start)}${slot.state === 'free' ? '' : `, ${t(`quickCreate.time.${slot.state}A11y`)}`}`}
+                          disabled={slot.state !== 'free'}
+                          onPress={() => pickSlot(slot)}
+                          style={[
+                            styles.slot,
+                            slot.state === 'busy' && styles.slotBusy,
+                            slot.state === 'short' && styles.slotShort,
+                            on && styles.slotOn,
+                          ]}>
+                          <Text
+                            variant="bodyLarge"
+                            color={on ? 'onAccent' : slot.state === 'free' ? 'primary' : 'disabled'}
+                            tabularNums
+                            style={slot.state === 'busy' ? styles.struck : undefined}>
+                            {ctx.time(slot.start)}
+                          </Text>
+                        </Pressable>
+                      );
+                    })}
+                  </View>
+                </View>
+              ))}
+              <View style={styles.legend}>
+                <Text variant="footnote" color="tertiary">
+                  {t('quickCreate.time.legendBusy')}
+                </Text>
+                <Text variant="footnote" color="tertiary">
+                  {t('quickCreate.time.legendShort', { duration: durationLabel })}
+                </Text>
+              </View>
+            </>
+          )}
+
+          {ownTime && chosen ? (
+            <Pressable
+              accessibilityRole="button"
+              onPress={onOpenOwnTime}
+              style={({ pressed }) => [styles.own, styles.ownOn, pressed && styles.pressed]}>
+              <Icon name="clock" size="base" color="content.primary" />
+              <Text variant="bodyStrong" style={styles.grow}>
+                {t('quickCreate.time.own')}
+              </Text>
+              <Text variant="bodyStrong" tabularNums>
+                {ctx.range(chosen, duration).replace('–', ' – ')}
+              </Text>
+              <Icon name="pencil" size="sm" color="content.primary" />
+            </Pressable>
+          ) : (
+            <Pressable
+              accessibilityRole="button"
+              onPress={onOpenOwnTime}
+              style={({ pressed }) => [styles.own, pressed && styles.pressed]}>
+              <Icon name="clock" size="base" color="content.primary" />
+              <Text variant="bodyStrong">{t('quickCreate.time.ownAction')}</Text>
+            </Pressable>
+          )}
+        </>
       )}
     </View>
   );

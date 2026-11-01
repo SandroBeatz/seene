@@ -1170,7 +1170,6 @@
     "appointment": "New appointment",
     "block": "Break",
     "client": "New client",
-    "blockSoon": "Breaks and time blocks arrive with the calendar.",
     "blockHint": "Block off time in your schedule",
     "clientHint": "Add to your client book"
   },
@@ -1187,5 +1186,33 @@
     "Oct",
     "Nov",
     "Dec"
-  ]
+  ],
+  "personalTime": {
+    "title": "Personal time",
+    "when": {
+      "subtitle": "When",
+      "allDay": "All day",
+      "allDayHint": "A day off, holiday or sick leave",
+      "allDayShort": "all day",
+      "length": "How long",
+      "hours": "{{from}} – {{to}} · for {{duration}}",
+      "closedSpan": "Online booking will be closed at this time",
+      "closedDay": "Online booking will be closed this day"
+    },
+    "what": {
+      "subtitle": "What it is",
+      "name": "Name",
+      "namePlaceholder": "For example, lunch or a day off",
+      "quick": "Quick pick",
+      "presets": [
+        "Lunch",
+        "Errands",
+        "Study",
+        "Sport",
+        "Doctor",
+        "Travel"
+      ],
+      "create": "Create"
+    }
+  }
 }

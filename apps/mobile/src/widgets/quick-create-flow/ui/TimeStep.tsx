@@ -7,9 +7,9 @@ import { ScrollView, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import { DayTimePicker } from '@/features/pick-time';
 import { formatDurationLabel } from '@/shared/lib/i18n';
+import { FlowStepFooter } from '@/shared/ui';
 import { useFlowData } from '../model/useFlowData';
 import { StepChrome } from './StepChrome';
-import { StepFooter } from './StepFooter';
 
 export function TimeStep() {
   const flow = useFlowData();
@@ -36,7 +36,7 @@ export function TimeStep() {
         />
       </ScrollView>
 
-      <StepFooter
+      <FlowStepFooter
         title={
           chosen
             ? `${flow.dayLabel(flow.dayKeyOf(chosen))}, ${flow.range(chosen)}`

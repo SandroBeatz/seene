@@ -64,6 +64,13 @@ export { ListItem, type ListItemProps, type ListItemSize } from './ListItem';
 export { GroupedCard, type GroupedCardProps, type GroupedCardVariant } from './GroupedCard';
 export { SectionLabel, type SectionLabelProps } from './SectionLabel';
 export { StepHeader, type StepHeaderProps } from './StepHeader';
+export {
+  FlowStepChrome,
+  FlowStepFooter,
+  useCloseFlow,
+  type FlowStepChromeProps,
+  type FlowStepFooterProps,
+} from './FlowStep';
 export { SheetHeader, type SheetHeaderProps } from './SheetHeader';
 export { SheetChrome, type SheetChromeAction, type SheetChromeProps } from './SheetChrome';
 export {

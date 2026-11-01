@@ -1,14 +1,14 @@
 /**
  * Selectable choice (duration presets, weekdays, filters). Selected = ink fill with
  * inverse text; idle = outlined. `dashed` is the "add / custom" affordance.
- * shape: md = 12pt radius (presets), field = 14pt radius (weekday row).
+ * shape: md = 12pt radius (presets), field = 14pt radius (weekday row), pill = round ends.
  */
 import { Pressable, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import { Icon, type IconName } from '@/shared/ui/Icon';
 import { Text } from '@/shared/ui/Text';
 
-export type ChipShape = 'md' | 'field';
+export type ChipShape = 'md' | 'field' | 'pill';
 
 export interface ChipProps {
   label: string;
@@ -64,6 +64,7 @@ const styles = StyleSheet.create((theme) => ({
       shape: {
         md: { borderRadius: theme.radius.md },
         field: { borderRadius: theme.radius.field },
+        pill: { borderRadius: theme.radius.full, paddingHorizontal: theme.space[3.5] },
       },
       selected: {
         true: {

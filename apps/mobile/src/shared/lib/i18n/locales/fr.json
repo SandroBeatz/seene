@@ -1176,7 +1176,6 @@
     "appointment": "Nouveau rendez-vous",
     "block": "Pause",
     "client": "Nouveau client",
-    "blockSoon": "Les pauses et les créneaux bloqués arriveront avec le calendrier.",
     "blockHint": "Bloquer un créneau dans l'agenda",
     "clientHint": "Ajouter au carnet de clients"
   },
@@ -1193,5 +1192,33 @@
     "oct.",
     "nov.",
     "déc."
-  ]
+  ],
+  "personalTime": {
+    "title": "Temps personnel",
+    "when": {
+      "subtitle": "Quand",
+      "allDay": "Toute la journée",
+      "allDayHint": "Jour de repos, vacances ou arrêt maladie",
+      "allDayShort": "toute la journée",
+      "length": "Durée",
+      "hours": "{{from}} – {{to}} · pour {{duration}}",
+      "closedSpan": "La réservation en ligne sera fermée à ce moment",
+      "closedDay": "La réservation en ligne sera fermée ce jour-là"
+    },
+    "what": {
+      "subtitle": "De quoi s'agit-il",
+      "name": "Nom",
+      "namePlaceholder": "Par exemple, déjeuner ou jour de repos",
+      "quick": "Choix rapide",
+      "presets": [
+        "Déjeuner",
+        "Affaires perso",
+        "Études",
+        "Sport",
+        "Médecin",
+        "Trajet"
+      ],
+      "create": "Créer"
+    }
+  }
 }

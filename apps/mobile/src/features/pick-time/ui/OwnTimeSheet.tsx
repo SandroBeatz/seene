@@ -19,6 +19,7 @@ import { Button, Icon, SheetChrome, Text, useNow } from '@/shared/ui';
 import { useDayGrid } from '../model/useDayGrid';
 import { useTimeContext } from '../model/useTimeContext';
 import { ClockWheels } from './ClockWheels';
+import type { TimePurpose } from './DayTimePicker';
 
 const MINUTE_STEP = 5;
 const DEFAULT_START = { hour: 10, minute: 0 };
@@ -26,6 +27,8 @@ const DEFAULT_START = { hour: 10, minute: 0 };
 export interface OwnTimeSheetProps {
   /** The visit's length, minutes. */
   duration: number;
+  /** "2 ч по услугам" for a visit, just "1 ч" for own time. Default `visit`. */
+  purpose?: TimePurpose;
   /** The visit being moved: its own time is not a conflict. */
   excludeId?: string;
   /** The day the start goes on, "yyyy-MM-dd"; null = today. */
@@ -37,6 +40,7 @@ export interface OwnTimeSheetProps {
 
 export function OwnTimeSheet({
   duration,
+  purpose = 'visit',
   excludeId,
   dayKey: chosenDay,
   value,
@@ -118,7 +122,11 @@ export function OwnTimeSheet({
             {ctx.range(start, duration).replace('–', ' – ')}
           </Text>
           <Text variant="body" color="tertiary">
-            {`· ${t('quickCreate.time.byServices', { duration: formatDurationLabel(duration, t) })}`}
+            {`· ${
+              purpose === 'personal'
+                ? formatDurationLabel(duration, t)
+                : t('quickCreate.time.byServices', { duration: formatDurationLabel(duration, t) })
+            }`}
           </Text>
         </View>
         {conflict ? (

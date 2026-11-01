@@ -1,14 +1,15 @@
 /**
- * The bar under a step (design "Запись · N из 4"): what is chosen so far on the left
- * ("1 услуга · 3 200 сом", "2 ч · Наращивание ногтей") and the ink "Далее →" /
- * "Создать ✓" on the right, greyed until the step has an answer.
+ * The bar under a step of a flow ("Новая запись", "Личное время"): what is chosen so
+ * far on the left ("1 услуга · 3 200 сом", "Пт 31 окт · 13:00–14:00") and the ink
+ * "Далее →" / "Создать ✓" on the right, greyed until the step has an answer.
  */
 import { ActivityIndicator, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
-import { Icon, Text, type IconName } from '@/shared/ui';
+import { Icon, type IconName } from '@/shared/ui/Icon';
+import { Text } from '@/shared/ui/Text';
 
-export interface StepFooterProps {
+export interface FlowStepFooterProps {
   title: string;
   subtitle?: string;
   actionLabel: string;
@@ -18,7 +19,7 @@ export interface StepFooterProps {
   onAction: () => void;
 }
 
-export function StepFooter({
+export function FlowStepFooter({
   title,
   subtitle,
   actionLabel,
@@ -26,7 +27,7 @@ export function StepFooter({
   disabled = false,
   loading = false,
   onAction,
-}: StepFooterProps) {
+}: FlowStepFooterProps) {
   const { theme } = useUnistyles();
   const insets = useSafeAreaInsets();
   return (

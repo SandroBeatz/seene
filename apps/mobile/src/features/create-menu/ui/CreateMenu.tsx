@@ -13,7 +13,7 @@
 import { useEffect, useState } from 'react';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Alert, BackHandler, Pressable, View } from 'react-native';
+import { BackHandler, Pressable, View } from 'react-native';
 import Animated, {
   runOnJS,
   useAnimatedStyle,
@@ -127,9 +127,7 @@ export function CreateMenu({ bottom }: CreateMenuProps) {
                 icon="coffee"
                 title={t('createMenu.block')}
                 subtitle={t('createMenu.blockHint')}
-                onPress={() =>
-                  choose(() => Alert.alert(t('createMenu.block'), t('createMenu.blockSoon')))
-                }
+                onPress={() => choose(() => router.push('/personal-time'))}
               />
               <Row
                 icon="userAdd"

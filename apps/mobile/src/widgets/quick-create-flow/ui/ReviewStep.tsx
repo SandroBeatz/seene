@@ -15,11 +15,10 @@ import { clientName } from '@/entities/client';
 import { parseAmount } from '@/features/appointment-actions';
 import { formatDurationLabel } from '@/shared/lib/i18n';
 import { formatPhone } from '@/shared/lib/phone';
-import { Avatar, Icon, Text, type IconName } from '@/shared/ui';
+import { Avatar, FlowStepFooter, Icon, Text, useCloseFlow, type IconName } from '@/shared/ui';
 import { useCreatedAppointment } from '../model/created.store';
 import { useFlowData } from '../model/useFlowData';
-import { StepChrome, useCloseFlow } from './StepChrome';
-import { StepFooter } from './StepFooter';
+import { StepChrome } from './StepChrome';
 
 const NOTE_MAX_LENGTH = 500;
 
@@ -163,7 +162,7 @@ export function ReviewStep() {
         </View>
       </KeyboardAwareScrollView>
 
-      <StepFooter
+      <FlowStepFooter
         title={t('quickCreate.review.total', { price: flow.money(price) })}
         subtitle={`${shortDay} · ${flow.range(start)}`}
         actionLabel={t('quickCreate.review.create')}
