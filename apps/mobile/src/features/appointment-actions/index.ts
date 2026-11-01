@@ -9,6 +9,7 @@ export { ServicesEditor, type ServicesEditorProps } from './ui/ServicesEditor';
 export { CheckoutEditor, type CheckoutEditorProps } from './ui/CheckoutEditor';
 export {
   categoriesOf,
+  directionColor,
   directions,
   groupServices,
   parseAmount,

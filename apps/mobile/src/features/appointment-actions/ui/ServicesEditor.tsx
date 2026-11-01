@@ -13,17 +13,12 @@ import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { useUpdateAppointmentMutation, type Appointment } from '@/entities/appointment';
 import { useUserId } from '@/entities/session';
 import type { ServiceWithCategory } from '@/entities/service';
-import {
-  DEFAULT_SERVICE_COLOR,
-  SERVICE_COLORS,
-  SPECIALIZATION_COLORS,
-} from '@/shared/config/palettes';
-import { isSpecializationKey } from '@/shared/config/specializations';
 import { formatAmount } from '@/shared/lib/formats';
 import { formatDurationLabel, pluralCategory, type AppLocale } from '@/shared/lib/i18n';
 import { Button, Icon, SearchField, SheetChrome, Text } from '@/shared/ui';
 import {
   categoriesOf,
+  directionColor,
   directions,
   groupServices,
   OTHER_DIRECTION,
@@ -40,11 +35,6 @@ export interface ServicesEditorProps {
   currencyLabel: string;
   locale: AppLocale;
 }
-
-const directionColor = (direction: string) =>
-  isSpecializationKey(direction)
-    ? SERVICE_COLORS[SPECIALIZATION_COLORS[direction]]
-    : DEFAULT_SERVICE_COLOR;
 
 export function ServicesEditor({
   appointment,

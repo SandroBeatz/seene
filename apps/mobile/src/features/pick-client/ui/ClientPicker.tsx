@@ -48,6 +48,8 @@ export function ClientPicker({ onPick, onNew, selectedId = null }: ClientPickerP
   const zone = parseStoredSchedule(profile.data?.schedule)?.timezone ?? deviceTimeZone();
   const now = useNow();
   const [query, setQuery] = useState('');
+  // Callers pass a fresh arrow each render: the list only cares whether the row is there.
+  const hasNew = !!onNew;
 
   const seenLabel = useCallback(
     (seen: Seen): string => {
@@ -101,7 +103,7 @@ export function ClientPicker({ onPick, onNew, selectedId = null }: ClientPickerP
       });
     };
     return [
-      ...(onNew ? [{ type: 'new', key: 'new' } as Item] : []),
+      ...(hasNew ? [{ type: 'new', key: 'new' } as Item] : []),
       ...(recent.length
         ? [
             { type: 'section', key: 'recent', label: t('quickCreate.client.recent') } as Item,
@@ -119,7 +121,7 @@ export function ClientPicker({ onPick, onNew, selectedId = null }: ClientPickerP
           ]
         : []),
     ];
-  }, [clients.data, summaries, query, now, zone, t, seenLabel, onNew]);
+  }, [clients.data, summaries, query, now, zone, t, seenLabel, hasNew]);
 
   return (
     <>

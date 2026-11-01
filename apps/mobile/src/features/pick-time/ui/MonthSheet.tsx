@@ -52,11 +52,15 @@ export function MonthSheet({ duration, excludeId, value, onPick }: MonthSheetPro
 
   const months = useMemo(() => {
     const out: DateTime[] = [];
-    for (let m = today.startOf('month'); m.toISODate()! <= lastKey; m = m.plus({ months: 1 })) {
+    for (
+      let m = DateTime.fromISO(firstKey, { zone });
+      m.toISODate()! <= lastKey;
+      m = m.plus({ months: 1 })
+    ) {
       out.push(m);
     }
     return out;
-  }, [today, lastKey]);
+  }, [firstKey, lastKey, zone]);
 
   const monthNames = t('months', { returnObjects: true }) as string[];
   const weekdays = t('weekdays.short', { returnObjects: true }) as string[];

@@ -4,7 +4,7 @@
  * span by its services and a warning when it runs into another visit or personal
  * time. "Готово" hands the start back. A native sheet over the time picker.
  */
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { router } from 'expo-router';
 import { DateTime } from 'luxon';
 import { useTranslation } from 'react-i18next';
@@ -78,7 +78,8 @@ export function OwnTimeSheet({
   const [year, month, day] = dayKey.split('-').map(Number);
   const start = toUtcIsoFromWallClock({ year, month, day, ...clock }, zone);
 
-  const conflict = useMemo(() => {
+  // Cheap (one day's records): worked out on each render, no memo to keep in sync.
+  const conflict = (() => {
     if (grid.isPending) return null;
     const { visits, blocks } = grid.dayRecords(dayKey);
     const visit = firstOverlap(start, duration, visits);
@@ -95,7 +96,7 @@ export function OwnTimeSheet({
       (b) => startMs < new Date(b.end_at).getTime() && endMs > new Date(b.start_at).getTime(),
     );
     return block ? t('quickCreate.time.overlapBlock', { time: ctx.time(block.start_at) }) : null;
-  }, [grid, start, duration, clients.data, ctx, dayKey, t]);
+  })();
 
   const done = () => {
     onDone(start);

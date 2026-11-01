@@ -22,10 +22,12 @@ export function ChangeClientSheet({ appointment }: ChangeClientSheetProps) {
   const { t } = useTranslation();
   const userId = useUserId() ?? '';
   const update = useUpdateAppointmentMutation(userId);
-  const { mutate } = update;
+  const { mutate, isPending } = update;
 
   const choose = useCallback(
     (clientId: string) => {
+      // A second tap while the first one saves.
+      if (isPending) return;
       if (clientId === appointment.client_id) return router.back();
       mutate(
         { id: appointment.id, client_id: clientId },
@@ -35,7 +37,7 @@ export function ChangeClientSheet({ appointment }: ChangeClientSheetProps) {
         },
       );
     },
-    [appointment.id, appointment.client_id, mutate, t],
+    [appointment.id, appointment.client_id, isPending, mutate, t],
   );
 
   // Back from "Новый клиент" with the client just made: that's the pick.

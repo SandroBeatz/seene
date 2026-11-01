@@ -9,26 +9,16 @@ import { Pressable, ScrollView, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import {
   categoriesOf,
+  directionColor,
   directions,
   groupServices,
   OTHER_DIRECTION,
 } from '@/features/appointment-actions';
-import {
-  DEFAULT_SERVICE_COLOR,
-  SERVICE_COLORS,
-  SPECIALIZATION_COLORS,
-} from '@/shared/config/palettes';
-import { isSpecializationKey } from '@/shared/config/specializations';
 import { formatDurationLabel, pluralCategory } from '@/shared/lib/i18n';
 import { Icon, SearchField, Skeleton, Text } from '@/shared/ui';
 import { useFlowData } from '../model/useFlowData';
 import { StepChrome } from './StepChrome';
 import { StepFooter } from './StepFooter';
-
-const directionColor = (direction: string) =>
-  isSpecializationKey(direction)
-    ? SERVICE_COLORS[SPECIALIZATION_COLORS[direction]]
-    : DEFAULT_SERVICE_COLOR;
 
 export function ServicesStep() {
   const flow = useFlowData();
