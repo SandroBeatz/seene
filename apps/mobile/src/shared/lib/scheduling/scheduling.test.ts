@@ -82,11 +82,10 @@ describe('buildDayTimeline', () => {
       i.kind === 'appointment' || i.kind === 'block' ? `${i.kind}:${i.record.id}` : i.kind,
     );
 
-  it('reproduces the designed day: visits, break, now line under the ongoing visit, personal time', () => {
+  it('reproduces the designed day: visits, now line under the ongoing visit, personal time', () => {
     const items = buildDayTimeline({
       dayKey: DAY,
       zone: ZONE,
-      workday: WORKDAY,
       appointments: [
         visit('dinara', '16:00', 90),
         visit('maria', '10:00', 90),
@@ -100,7 +99,6 @@ describe('buildDayTimeline', () => {
     expect(kinds(items)).toEqual([
       'appointment:maria',
       'appointment:alexey',
-      'break',
       'appointment:aigerim',
       'now',
       'appointment:dinara',
@@ -113,7 +111,6 @@ describe('buildDayTimeline', () => {
     const [item] = buildDayTimeline({
       dayKey: DAY,
       zone: ZONE,
-      workday: null,
       appointments: [visit('a', '10:00', 90)],
       blocks: [],
       now: 0,
@@ -125,19 +122,17 @@ describe('buildDayTimeline', () => {
     const items = buildDayTimeline({
       dayKey: DAY,
       zone: ZONE,
-      workday: WORKDAY,
-      appointments: [],
+      appointments: [visit('a', '10:00', 60)],
       blocks: [],
       now: nowAt('12:00', '2026-10-28'),
     });
-    expect(kinds(items)).toEqual(['break']);
+    expect(kinds(items)).toEqual(['appointment:a']);
   });
 
   it('puts the now line first before the day starts and last after it ends', () => {
     const input = {
       dayKey: DAY,
       zone: ZONE,
-      workday: null,
       appointments: [visit('a', '10:00', 60)],
       blocks: [],
     };
@@ -151,23 +146,10 @@ describe('buildDayTimeline', () => {
     ]);
   });
 
-  it('has no breaks on a day off', () => {
-    const items = buildDayTimeline({
-      dayKey: DAY,
-      zone: ZONE,
-      workday: { ...WORKDAY, enabled: false },
-      appointments: [],
-      blocks: [],
-      now: 0,
-    });
-    expect(items).toEqual([]);
-  });
-
   it('keeps visits crossing midnight and drops other days', () => {
     const items = buildDayTimeline({
       dayKey: DAY,
       zone: ZONE,
-      workday: null,
       appointments: [
         visit('late-yesterday', '23:30', 60, '2026-10-26'),
         visit('tomorrow', '10:00', 60, '2026-10-28'),
@@ -182,7 +164,6 @@ describe('buildDayTimeline', () => {
     const items = buildDayTimeline({
       dayKey: DAY,
       zone: ZONE,
-      workday: null,
       appointments: [visit('a', '09:00', 60)],
       blocks: [
         block('trip', local('12:00', '2026-10-26'), local('12:00', '2026-10-29')),
@@ -195,18 +176,6 @@ describe('buildDayTimeline', () => {
       start: '2026-10-26T18:00:00.000Z',
       end: '2026-10-27T18:00:00.000Z',
     });
-  });
-
-  it('orders a break before a visit starting at the same minute', () => {
-    const items = buildDayTimeline({
-      dayKey: DAY,
-      zone: ZONE,
-      workday: WORKDAY,
-      appointments: [visit('a', '13:00', 30)],
-      blocks: [],
-      now: 0,
-    });
-    expect(kinds(items)).toEqual(['break', 'appointment:a']);
   });
 });
 

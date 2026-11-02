@@ -1,9 +1,9 @@
 /**
  * Building blocks of the appointment preview (design "Запись · превью"): status
- * pill, client card, info rows, the glass bottom bar and its timer variant, the
+ * pill, client card, the "add" row, the glass bottom bar and its timer variant, the
  * "⋯" menu and the VIP badge.
  */
-import { useEffect, type ReactNode } from 'react';
+import { useEffect } from 'react';
 import type { SFSymbol } from 'expo-symbols';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
@@ -151,46 +151,7 @@ function QuickButton({
   );
 }
 
-// ---- Info rows ----
-
-export interface InfoRowProps {
-  icon: IconName;
-  /** Small caption above the title (the note's "Заметка"). */
-  caption?: string;
-  title: ReactNode;
-  subtitle?: ReactNode;
-  accessibilityLabel?: string;
-  onPress: () => void;
-}
-
-export function InfoRow({
-  icon,
-  caption,
-  title,
-  subtitle,
-  accessibilityLabel,
-  onPress,
-}: InfoRowProps) {
-  return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={accessibilityLabel}
-      onPress={onPress}
-      style={({ pressed }) => [styles.card, styles.infoRow, pressed && styles.pressed]}>
-      <Icon name={icon} size="md" color="content.tertiary" />
-      <View style={styles.grow}>
-        {caption ? (
-          <Text variant="caption" color="tertiary">
-            {caption}
-          </Text>
-        ) : null}
-        {title}
-        {subtitle}
-      </View>
-      <Icon name="chevronRight" size="sm" color="content.disabled" />
-    </Pressable>
-  );
-}
+// ---- Add row ----
 
 export function AddRow({
   icon,
@@ -390,12 +351,6 @@ const styles = StyleSheet.create((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     gap: theme.space[1],
-  },
-  infoRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: theme.space[3],
-    padding: theme.space[3.5],
   },
   addRow: {
     height: theme.sizing.row.sm,

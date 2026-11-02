@@ -888,14 +888,14 @@
       "empty": "No appointments yet",
       "freeFrom": "Free from {{from}} to {{to}}",
       "dayOff": "Day off today",
-      "breakUntil": "Break until {{time}}",
       "personal": "Personal time",
       "personalNamed": "{{name}} · personal time",
       "allDay": "All day",
       "unconfirmed": "Not confirmed",
       "unknownClient": "Client",
       "nowA11y": "Now {{time}}",
-      "menuA11y": "Appointment actions"
+      "menuA11y": "Appointment actions",
+      "blockA11y": "Personal time: {{text}}"
     },
     "note": {
       "open": "Appointment note",
@@ -1215,6 +1215,20 @@
         "Travel"
       ],
       "create": "Create"
+    },
+    "preview": {
+      "unnamed": "No name",
+      "closedSpan": "Online booking is closed at this time",
+      "missing": "This personal time no longer exists"
+    },
+    "actions": {
+      "rename": "Edit name",
+      "reschedule": "Move",
+      "delete": "Delete"
+    },
+    "deleteConfirm": {
+      "title": "Delete personal time?",
+      "message": "This time will open for online booking again."
     }
   }
 }

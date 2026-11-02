@@ -1,13 +1,11 @@
 /**
  * "Расписание" card (design "Таб · Сегодня"): the day as a timeline — visits tinted
- * with their service colour, schedule breaks hatched, personal time in grey and the
- * green "now" line. Ended visits are dimmed; unconfirmed ones get a dashed outline in
+ * with their service colour, personal time in grey and the green "now" line. Ended visits are dimmed; unconfirmed ones get a dashed outline in
  * their colour and a warning mark. An empty day shows the free hours.
  */
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
-import Svg, { Line } from 'react-native-svg';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { scheduleCardLook, type Appointment } from '@/entities/appointment';
 import type { TimeBlock } from '@/entities/time-block';
@@ -34,6 +32,9 @@ export interface DayScheduleCardProps {
   onOpenNote: (visit: ScheduleVisit) => void;
   /** Long press: the menu, anchored where the event is and with its time range. */
   onMenu: (visit: ScheduleVisit, anchor: ContextMenuAnchor, range: string) => void;
+  onOpenBlock: (block: TimeBlock) => void;
+  /** Long press on personal time: its menu; `text` is what the row says. */
+  onBlockMenu: (block: TimeBlock, anchor: ContextMenuAnchor, text: string) => void;
 }
 
 export function DayScheduleCard({
@@ -48,6 +49,8 @@ export function DayScheduleCard({
   onOpenVisit,
   onOpenNote,
   onMenu,
+  onOpenBlock,
+  onBlockMenu,
 }: DayScheduleCardProps) {
   const { t } = useTranslation();
   const time = (iso: string) => formatTime(iso, { zone, timeFormat });
@@ -82,28 +85,21 @@ export function DayScheduleCard({
                   />
                 );
               }
-              case 'break':
-                return (
-                  <BreakRow
-                    key={`break-${item.start}`}
-                    label={time(item.start)}
-                    text={t('today.schedule.breakUntil', { time: time(item.end) })}
-                    dimmed={new Date(item.end).getTime() <= now}
-                  />
-                );
-              case 'block':
+              case 'block': {
+                const text = item.record.notes?.trim()
+                  ? t('today.schedule.personalNamed', { name: item.record.notes.trim() })
+                  : t('today.schedule.personal');
                 return (
                   <BlockRow
                     key={item.record.id}
                     label={item.allDay ? t('today.schedule.allDay') : time(item.start)}
-                    text={
-                      item.record.notes?.trim()
-                        ? t('today.schedule.personalNamed', { name: item.record.notes.trim() })
-                        : t('today.schedule.personal')
-                    }
+                    text={text}
                     dimmed={new Date(item.end).getTime() <= now}
+                    onPress={() => onOpenBlock(item.record)}
+                    onLongPress={(anchor) => onBlockMenu(item.record, anchor, text)}
                   />
                 );
+              }
               case 'now':
                 return <NowLine key="now" label={time(item.at)} />;
             }
@@ -311,49 +307,58 @@ function EventContent({
   );
 }
 
-function BreakRow({ label, text, dimmed }: { label: string; text: string; dimmed: boolean }) {
-  const { theme } = useUnistyles();
+function BlockRow({
+  label,
+  text,
+  dimmed,
+  onPress,
+  onLongPress,
+}: {
+  label: string;
+  text: string;
+  dimmed: boolean;
+  onPress: () => void;
+  onLongPress: (anchor: ContextMenuAnchor) => void;
+}) {
+  const { t } = useTranslation();
+  const ref = useRef<View>(null);
   return (
     <View style={[styles.row, dimmed && styles.dimmedStrong]}>
       <Text variant="caption2" color="secondary" tabularNums style={styles.slimTime}>
         {label}
       </Text>
-      <View style={styles.slim}>
-        {/* 135° stripes every 11pt, 6pt of them inked — the design's repeating gradient. */}
-        <Svg style={StyleSheet.absoluteFill} pointerEvents="none">
-          {HATCH_OFFSETS.map((x) => (
-            <Line
-              key={x}
-              x1={x}
-              y1={SLIM_HEIGHT}
-              x2={x + SLIM_HEIGHT}
-              y2={0}
-              stroke={theme.colors.border.default}
-              strokeWidth={HATCH_STROKE}
-            />
-          ))}
-        </Svg>
-        <Text variant="caption" color="secondary">
-          {text}
-        </Text>
-      </View>
+      <Pressable
+        ref={ref}
+        accessibilityRole="button"
+        accessibilityLabel={t('today.schedule.blockA11y', { text: `${label}, ${text}` })}
+        onPress={onPress}
+        onLongPress={() =>
+          ref.current?.measureInWindow((x, y, width) => onLongPress({ x, y, width }))
+        }
+        style={({ pressed }) => [styles.slim, styles.block, pressed && styles.pressed]}>
+        <BlockContent text={text} />
+      </Pressable>
     </View>
   );
 }
 
-function BlockRow({ label, text, dimmed }: { label: string; text: string; dimmed: boolean }) {
+/** Personal time as drawn on the timeline — the lifted card of its long-press menu. */
+export function BlockEventPreview({ text }: { text: string }) {
   return (
-    <View style={[styles.row, dimmed && styles.dimmedStrong]}>
-      <Text variant="caption2" color="secondary" tabularNums style={styles.slimTime}>
-        {label}
-      </Text>
-      <View style={[styles.slim, styles.block]}>
-        <Icon name="blocked" size={13} color="content.secondary" />
-        <Text variant="captionMedium" color="secondary" numberOfLines={1} style={styles.shrink}>
-          {text}
-        </Text>
-      </View>
+    <View style={[styles.slim, styles.block, styles.lifted]}>
+      <BlockContent text={text} />
     </View>
+  );
+}
+
+function BlockContent({ text }: { text: string }) {
+  return (
+    <>
+      <Icon name="blocked" size={13} color="content.secondary" />
+      <Text variant="captionMedium" color="secondary" numberOfLines={1} style={styles.shrink}>
+        {text}
+      </Text>
+    </>
   );
 }
 
@@ -376,12 +381,6 @@ function NowLine({ label }: { label: string }) {
 
 const TIME_COLUMN = 36;
 const SLIM_HEIGHT = 30;
-/** Stripe period 11pt along the row; a 6pt band measured along it is 6·sin45° thick. */
-const HATCH_STEP = 11;
-const HATCH_STROKE = 6 * Math.SQRT1_2;
-/** Enough stripes for the widest phone row; the rounded box clips the rest. */
-const HATCH_OFFSETS = Array.from({ length: 60 }, (_, i) => i * HATCH_STEP - SLIM_HEIGHT);
-
 const styles = StyleSheet.create((theme) => ({
   card: {
     padding: theme.space[3.5],

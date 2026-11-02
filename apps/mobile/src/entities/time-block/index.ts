@@ -2,6 +2,7 @@
 export {
   timeBlockKeys,
   useTimeBlocksRangeQuery,
+  useTimeBlockQuery,
   useCreateTimeBlockMutation,
   useUpdateTimeBlockMutation,
   useDeleteTimeBlockMutation,

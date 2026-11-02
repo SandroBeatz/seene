@@ -894,14 +894,14 @@
       "empty": "Aucun rendez-vous pour l’instant",
       "freeFrom": "Libre de {{from}} à {{to}}",
       "dayOff": "Jour de repos",
-      "breakUntil": "Pause jusqu’à {{time}}",
       "personal": "Temps personnel",
       "personalNamed": "{{name}} · temps personnel",
       "allDay": "Toute la journée",
       "unconfirmed": "Non confirmé",
       "unknownClient": "Client",
       "nowA11y": "Maintenant {{time}}",
-      "menuA11y": "Actions du rendez-vous"
+      "menuA11y": "Actions du rendez-vous",
+      "blockA11y": "Temps personnel : {{text}}"
     },
     "note": {
       "open": "Note du rendez-vous",
@@ -1221,6 +1221,20 @@
         "Trajet"
       ],
       "create": "Créer"
+    },
+    "preview": {
+      "unnamed": "Sans nom",
+      "closedSpan": "La réservation en ligne est fermée à ce moment",
+      "missing": "Ce temps personnel n'existe plus"
+    },
+    "actions": {
+      "rename": "Modifier le nom",
+      "reschedule": "Déplacer",
+      "delete": "Supprimer"
+    },
+    "deleteConfirm": {
+      "title": "Supprimer ce temps personnel ?",
+      "message": "Ce créneau sera de nouveau ouvert à la réservation en ligne."
     }
   }
 }

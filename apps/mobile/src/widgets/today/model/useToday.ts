@@ -90,7 +90,6 @@ export function useToday() {
     const timeline = buildDayTimeline({
       dayKey,
       zone,
-      workday,
       appointments: visits,
       blocks: (blocks.data ?? []) as TimeBlock[],
       now,
@@ -119,7 +118,6 @@ export function useToday() {
     profile.data,
     dayKey,
     zone,
-    workday,
     now,
   ]);
 

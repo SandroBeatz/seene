@@ -2,8 +2,8 @@
  * The days of "Дата и время": how full each day is (the dot under it) and the grid of
  * the chosen day — every start with its state for a visit of the chosen length.
  * Taken time = visits shown in the schedule, personal time and the schedule's breaks,
- * in the master's zone. A visit being moved passes its id as `excludeId`: its own
- * time is not in its way.
+ * in the master's zone. A visit or personal time being moved passes its id as
+ * `excludeId`: its own time is not in its way.
  */
 import { useCallback, useMemo } from 'react';
 import { DateTime } from 'luxon';
@@ -58,15 +58,19 @@ export function useDayGrid({
     () => (visits.data ?? []).filter((a) => a.id !== excludeId && isShownInSchedule(a)),
     [visits.data, excludeId],
   );
+  const otherBlocks = useMemo(
+    () => (blocks.data ?? []).filter((b) => b.id !== excludeId),
+    [blocks.data, excludeId],
+  );
   const busy = useMemo<TimeInterval[]>(
     () => [
       ...shown.map((a) => ({
         start: a.start_at,
         end: new Date(appointmentEndMs(a)).toISOString(),
       })),
-      ...(blocks.data ?? []).map((b) => ({ start: b.start_at, end: b.end_at })),
+      ...otherBlocks.map((b) => ({ start: b.start_at, end: b.end_at })),
     ],
-    [shown, blocks.data],
+    [shown, otherBlocks],
   );
 
   const workdayOf = useCallback(
@@ -101,10 +105,10 @@ export function useDayGrid({
         new Date(start) < new Date(bounds.end) && new Date(end) > new Date(bounds.start);
       return {
         visits: shown.filter((a) => inDay(a.start_at, new Date(appointmentEndMs(a)).toISOString())),
-        blocks: (blocks.data ?? []).filter((b) => inDay(b.start_at, b.end_at)),
+        blocks: otherBlocks.filter((b) => inDay(b.start_at, b.end_at)),
       };
     },
-    [shown, blocks.data, zone],
+    [shown, otherBlocks, zone],
   );
 
   return {

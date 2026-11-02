@@ -24,6 +24,7 @@ export {
   type IconSize,
   type IconWeight,
 } from './Icon';
+export { InfoRow, type InfoRowProps } from './InfoRow';
 export { Input, type InputProps, type InputSize } from './Input';
 export {
   BirthdayPicker,

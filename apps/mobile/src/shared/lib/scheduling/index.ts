@@ -41,7 +41,6 @@ export interface BlockRecord {
 
 export type TimelineItem<A extends TimedRecord, B extends BlockRecord> =
   | ({ kind: 'appointment'; record: A } & TimeInterval)
-  | ({ kind: 'break' } & TimeInterval)
   | ({ kind: 'block'; record: B; allDay: boolean } & TimeInterval)
   | { kind: 'now'; at: string };
 
@@ -81,13 +80,12 @@ const ms = (iso: string) => new Date(iso).getTime();
 const maxIso = (a: string, b: string) => (ms(a) >= ms(b) ? a : b);
 const minIso = (a: string, b: string) => (ms(a) <= ms(b) ? a : b);
 
-/** Same-start order: all-day personal time, then breaks, then personal time, then visits. */
-const KIND_ORDER = { block: 1, break: 2, appointment: 3 } as const;
+/** Same-start order: personal time, then visits. */
+const KIND_ORDER = { block: 1, appointment: 2 } as const;
 
 export interface BuildDayTimelineInput<A extends TimedRecord, B extends BlockRecord> {
   dayKey: string;
   zone: string;
-  workday: WorkdayHours | null | undefined;
   /** Already filtered to what the schedule shows. */
   appointments: readonly A[];
   blocks: readonly B[];
@@ -96,14 +94,13 @@ export interface BuildDayTimelineInput<A extends TimedRecord, B extends BlockRec
 
 /**
  * The day as one ordered list. Appointments and personal time that overlap the day
- * are kept (a block spilling over midnight is clipped to the day); schedule breaks
- * come from the working day. The "now" line is added on the current day only, before
- * the first item that starts after now — so it sits under an ongoing visit.
+ * are kept (a block spilling over midnight is clipped to the day). The "now" line is
+ * added on the current day only, before the first item that starts after now — so it
+ * sits under an ongoing visit.
  */
 export function buildDayTimeline<A extends TimedRecord, B extends BlockRecord>({
   dayKey,
   zone,
-  workday,
   appointments,
   blocks,
   now,
@@ -118,16 +115,6 @@ export function buildDayTimeline<A extends TimedRecord, B extends BlockRecord>({
     const end = new Date(ms(record.start_at) + record.duration * 60_000).toISOString();
     if (overlapsDay(record.start_at, end)) {
       items.push({ kind: 'appointment', record, start: record.start_at, end });
-    }
-  }
-
-  if (workday?.enabled) {
-    for (const range of workday.breaks) {
-      items.push({
-        kind: 'break',
-        start: wallTimeUtc(dayKey, range.start, zone),
-        end: wallTimeUtc(dayKey, range.end, zone),
-      });
     }
   }
 
