@@ -7,7 +7,7 @@
 import { useEffect, useState } from 'react';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Alert, Pressable, ScrollView, TextInput, View } from 'react-native';
+import { Alert, Pressable, ScrollView, View } from 'react-native';
 import { useQueryClient } from '@tanstack/react-query';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
@@ -26,7 +26,16 @@ import { useUserId } from '@/entities/session';
 import type { ServiceWithCategory } from '@/entities/service';
 import { formatAmount, formatTime } from '@/shared/lib/formats';
 import { formatDurationLabel, type AppLocale } from '@/shared/lib/i18n';
-import { Button, Icon, SheetChrome, Skeleton, Text, TimePicker, useNow } from '@/shared/ui';
+import {
+  AmountInput,
+  Button,
+  Icon,
+  SheetChrome,
+  Skeleton,
+  Text,
+  TimePicker,
+  useNow,
+} from '@/shared/ui';
 import {
   clockOf,
   defaultMethodId,
@@ -154,11 +163,10 @@ export function CheckoutEditor({
         </Text>
 
         <View style={styles.amountRow}>
-          <TextInput
+          <AmountInput
             accessibilityLabel={t('checkout.amountA11y', { currency: currencyLabel })}
             value={amountInput ?? number.format(planned)}
             onChangeText={setAmountInput}
-            keyboardType="number-pad"
             selectTextOnFocus
             style={styles.amountInput}
           />
@@ -192,7 +200,7 @@ export function CheckoutEditor({
           <Text variant="bodyMedium" style={styles.grow}>
             {t('checkout.tip')}
           </Text>
-          <TextInput
+          <AmountInput
             accessibilityLabel={t('checkout.tipA11y', { currency: currencyLabel })}
             value={tipInput}
             onChangeText={(text) => {
@@ -201,7 +209,6 @@ export function CheckoutEditor({
             }}
             placeholder="0"
             placeholderTextColor={theme.colors.content.tertiary}
-            keyboardType="number-pad"
             style={styles.tipInput}
           />
           <Text variant="subhead" color="tertiary">
@@ -321,8 +328,6 @@ const styles = StyleSheet.create((theme) => ({
     gap: theme.space[2],
   },
   amountInput: {
-    minWidth: 60,
-    padding: 0,
     textAlign: 'center',
     color: theme.colors.content.primary,
     ...theme.typography.amount,
@@ -348,7 +353,6 @@ const styles = StyleSheet.create((theme) => ({
   },
   tipInput: {
     minWidth: 48,
-    padding: 0,
     textAlign: 'right',
     color: theme.colors.content.primary,
     ...theme.typography.bodyStrong,

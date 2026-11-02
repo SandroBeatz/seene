@@ -24,7 +24,17 @@ import {
 } from '@/entities/expense';
 import { useMoneyContext } from '@/entities/master';
 import { useUserId } from '@/entities/session';
-import { Button, Chip, Icon, MonthGrid, SheetChrome, Switch, Text, useNow } from '@/shared/ui';
+import {
+  AmountInput,
+  Button,
+  Chip,
+  Icon,
+  MonthGrid,
+  SheetChrome,
+  Switch,
+  Text,
+  useNow,
+} from '@/shared/ui';
 
 const NOTE_MAX_LENGTH = 200;
 
@@ -122,7 +132,7 @@ export function ExpenseForm({ expense, initialDay }: ExpenseFormProps) {
         contentContainerStyle={[styles.content, { paddingBottom: 96 + insets.bottom }]}
         keyboardShouldPersistTaps="handled">
         <View style={styles.amountRow}>
-          <TextInput
+          <AmountInput
             accessibilityLabel={t('expenses.amountA11y', { currency: money.currencyLabel })}
             autoFocus={!expense}
             value={amountInput}
@@ -132,7 +142,6 @@ export function ExpenseForm({ expense, initialDay }: ExpenseFormProps) {
             }}
             placeholder="0"
             placeholderTextColor={theme.colors.content.disabled}
-            keyboardType="number-pad"
             style={styles.amountInput}
           />
           <Text variant="title2" color="tertiary">
@@ -245,8 +254,6 @@ const styles = StyleSheet.create((theme) => ({
     gap: theme.space[2],
   },
   amountInput: {
-    minWidth: 60,
-    padding: 0,
     textAlign: 'center',
     color: theme.colors.content.primary,
     ...theme.typography.amount,
