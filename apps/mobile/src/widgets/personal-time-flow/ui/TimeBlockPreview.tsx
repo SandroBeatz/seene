@@ -1,6 +1,6 @@
 /**
  * Personal time from the schedule, in the shape of the visit preview: what it is and
- * when — each row goes to where it changes — and "Перенести" / "Удалить".
+ * when — each row goes to where it changes — "Перенести" below and "Удалить" in the bar.
  */
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +11,7 @@ import { useTimeBlockQuery } from '@/entities/time-block';
 import { useTimeContext } from '@/features/pick-time';
 import { useTimeBlockActions } from '@/features/time-block-actions';
 import { formatDurationLabel } from '@/shared/lib/i18n';
-import { Button, EmptyState, InfoRow, SheetChrome, Skeleton, Text, useNow } from '@/shared/ui';
+import { ActionBar, EmptyState, InfoRow, SheetChrome, Skeleton, Text, useNow } from '@/shared/ui';
 
 export function TimeBlockPreview({ blockId }: { blockId: string }) {
   const { t } = useTranslation();
@@ -29,12 +29,27 @@ export function TimeBlockPreview({ blockId }: { blockId: string }) {
 
   return (
     <View style={styles.root} collapsable={false}>
-      <SheetChrome title={t('personalTime.title')} leadingLabel={t('common.close')} />
+      <SheetChrome
+        title={t('personalTime.title')}
+        leadingLabel={t('common.close')}
+        action={
+          block
+            ? {
+                key: 'delete',
+                label: t('personalTime.actions.delete'),
+                sf: 'trash',
+                icon: 'trash',
+                destructive: true,
+                onPress: () => actions.run(block, 'delete'),
+              }
+            : undefined
+        }
+      />
       {block ? (
         <>
           <ScrollView
             contentInsetAdjustmentBehavior="automatic"
-            contentContainerStyle={[styles.content, { paddingBottom: 110 + insets.bottom }]}
+            contentContainerStyle={[styles.content, { paddingBottom: 116 + insets.bottom }]}
             showsVerticalScrollIndicator={false}>
             <InfoRow
               icon="pencil"
@@ -69,27 +84,14 @@ export function TimeBlockPreview({ blockId }: { blockId: string }) {
             ) : null}
           </ScrollView>
 
-          <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 16) }]}>
-            <View style={styles.grow}>
-              <Button
-                label={t('personalTime.actions.reschedule')}
-                variant="secondary"
-                leftIcon="reschedule"
-                fullWidth
-                onPress={() => actions.run(block, 'reschedule')}
-              />
-            </View>
-            <View style={styles.grow}>
-              <Button
-                label={t('personalTime.actions.delete')}
-                variant="danger"
-                leftIcon="trashBin"
-                fullWidth
-                loading={actions.isDeleting}
-                onPress={() => actions.run(block, 'delete')}
-              />
-            </View>
-          </View>
+          <ActionBar
+            primary={{
+              label: t('personalTime.actions.reschedule'),
+              icon: 'reschedule',
+              onPress: () => actions.run(block, 'reschedule'),
+            }}
+            bottom={Math.max(insets.bottom - 6, 16)}
+          />
         </>
       ) : query.isPending || actions.isDeleting ? (
         <View style={styles.loading}>
@@ -107,17 +109,4 @@ const styles = StyleSheet.create((theme) => ({
   content: { paddingTop: theme.space[3], paddingHorizontal: theme.space[4], gap: theme.space[3] },
   loading: { paddingTop: 100, paddingHorizontal: theme.space[4] },
   hint: { paddingHorizontal: theme.space[1] },
-  grow: { flex: 1 },
-  footer: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    flexDirection: 'row',
-    gap: theme.space[2],
-    paddingTop: theme.space[3],
-    paddingHorizontal: theme.space[4],
-    backgroundColor: theme.colors.bg.elevated,
-    boxShadow: theme.shadow.panel,
-  },
 }));
