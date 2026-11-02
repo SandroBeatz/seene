@@ -33,7 +33,12 @@ import { useAttention, type AttentionCard } from '../model/useAttention';
 import { useToday, type ScheduleVisit } from '../model/useToday';
 import { useTodayActions } from '../model/useTodayActions';
 import { AttentionCardView, AttentionSection, type AttentionFormat } from './AttentionSection';
-import { BlockEventPreview, DayScheduleCard, VisitEventPreview } from './DayScheduleCard';
+import {
+  BlockEventPreview,
+  DayScheduleCard,
+  VisitEventPreview,
+  type BlockLook,
+} from './DayScheduleCard';
 import { DaySummaryCard } from './DaySummaryCard';
 import { FirstStepsCard } from './FirstStepsCard';
 import { NoteBubble } from './NoteBubble';
@@ -179,7 +184,7 @@ export function TodayScreen() {
           onOpenBlock={(block) =>
             router.push({ pathname: '/time-block/[blockId]', params: { blockId: block.id } })
           }
-          onBlockMenu={(block, anchor, text) => setMenu({ kind: 'block', block, anchor, text })}
+          onBlockMenu={(block, anchor, look) => setMenu({ kind: 'block', block, anchor, look })}
         />
       </ScreenScrollView>
 
@@ -194,7 +199,7 @@ export function TodayScreen() {
               format={attentionFormat}
             />
           ) : menu?.kind === 'block' ? (
-            <BlockEventPreview text={menu.text} />
+            <BlockEventPreview look={menu.look} />
           ) : menu ? (
             <VisitEventPreview
               visit={menu.visit}
@@ -228,7 +233,7 @@ export function TodayScreen() {
 type Menu =
   | { kind: 'attention'; card: AttentionCard; anchor: ContextMenuAnchor }
   | { kind: 'schedule'; visit: ScheduleVisit; anchor: ContextMenuAnchor; range: string }
-  | { kind: 'block'; block: TimeBlock; anchor: ContextMenuAnchor; text: string };
+  | { kind: 'block'; block: TimeBlock; anchor: ContextMenuAnchor; look: BlockLook };
 
 const MENU_ICON: Record<string, IconName> = {
   confirm: 'check',

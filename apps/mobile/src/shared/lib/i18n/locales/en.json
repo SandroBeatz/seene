@@ -889,7 +889,6 @@
       "freeFrom": "Free from {{from}} to {{to}}",
       "dayOff": "Day off today",
       "personal": "Personal time",
-      "personalNamed": "{{name}} · personal time",
       "allDay": "All day",
       "unconfirmed": "Not confirmed",
       "unknownClient": "Client",

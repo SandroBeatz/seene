@@ -1,7 +1,8 @@
 /**
  * "Расписание" card (design "Таб · Сегодня"): the day as a timeline — visits tinted
- * with their service colour, personal time in grey and the green "now" line. Ended visits are dimmed; unconfirmed ones get a dashed outline in
- * their colour and a warning mark. An empty day shows the free hours.
+ * with their service colour, personal time in grey and the green "now" line. Ended
+ * ones are dimmed; unconfirmed visits get a dashed outline in their colour and a
+ * warning mark. An empty day shows the free hours.
  */
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -16,6 +17,12 @@ import { Icon, Text, type ContextMenuAnchor } from '@/shared/ui';
 import type { ScheduleVisit } from '../model/useToday';
 
 type Item = TimelineItem<Appointment, TimeBlock>;
+
+/** What a personal time row says: "13:30–15:00" and "Учёба". */
+export interface BlockLook {
+  range: string;
+  name: string;
+}
 
 export interface DayScheduleCardProps {
   /** "Вторник, 27 октября · 5 записей". */
@@ -33,8 +40,8 @@ export interface DayScheduleCardProps {
   /** Long press: the menu, anchored where the event is and with its time range. */
   onMenu: (visit: ScheduleVisit, anchor: ContextMenuAnchor, range: string) => void;
   onOpenBlock: (block: TimeBlock) => void;
-  /** Long press on personal time: its menu; `text` is what the row says. */
-  onBlockMenu: (block: TimeBlock, anchor: ContextMenuAnchor, text: string) => void;
+  /** Long press on personal time: its menu, with the row as drawn. */
+  onBlockMenu: (block: TimeBlock, anchor: ContextMenuAnchor, look: BlockLook) => void;
 }
 
 export function DayScheduleCard({
@@ -86,17 +93,20 @@ export function DayScheduleCard({
                 );
               }
               case 'block': {
-                const text = item.record.notes?.trim()
-                  ? t('today.schedule.personalNamed', { name: item.record.notes.trim() })
-                  : t('today.schedule.personal');
+                const look = {
+                  range: item.allDay
+                    ? t('today.schedule.allDay')
+                    : `${time(item.start)}–${time(item.end)}`,
+                  name: item.record.notes?.trim() || t('today.schedule.personal'),
+                };
                 return (
                   <BlockRow
                     key={item.record.id}
                     label={item.allDay ? t('today.schedule.allDay') : time(item.start)}
-                    text={text}
+                    look={look}
                     dimmed={new Date(item.end).getTime() <= now}
                     onPress={() => onOpenBlock(item.record)}
-                    onLongPress={(anchor) => onBlockMenu(item.record, anchor, text)}
+                    onLongPress={(anchor) => onBlockMenu(item.record, anchor, look)}
                   />
                 );
               }
@@ -278,7 +288,7 @@ function EventContent({
           <View
             accessible
             accessibilityLabel={t('today.schedule.unconfirmed')}
-            style={styles.unconfirmed}>
+            style={styles.headMark}>
             <Icon name="unconfirmed" size={14} color="tone.warning.fg" />
           </View>
         ) : null}
@@ -309,13 +319,13 @@ function EventContent({
 
 function BlockRow({
   label,
-  text,
+  look,
   dimmed,
   onPress,
   onLongPress,
 }: {
   label: string;
-  text: string;
+  look: BlockLook;
   dimmed: boolean;
   onPress: () => void;
   onLongPress: (anchor: ContextMenuAnchor) => void;
@@ -323,40 +333,47 @@ function BlockRow({
   const { t } = useTranslation();
   const ref = useRef<View>(null);
   return (
-    <View style={[styles.row, dimmed && styles.dimmedStrong]}>
-      <Text variant="caption2" color="secondary" tabularNums style={styles.slimTime}>
+    <View style={[styles.row, dimmed && styles.dimmed]}>
+      <Text variant="caption2" color="secondary" tabularNums style={styles.time}>
         {label}
       </Text>
       <Pressable
         ref={ref}
         accessibilityRole="button"
-        accessibilityLabel={t('today.schedule.blockA11y', { text: `${label}, ${text}` })}
+        accessibilityLabel={t('today.schedule.blockA11y', { text: `${look.range}, ${look.name}` })}
         onPress={onPress}
         onLongPress={() =>
           ref.current?.measureInWindow((x, y, width) => onLongPress({ x, y, width }))
         }
-        style={({ pressed }) => [styles.slim, styles.block, pressed && styles.pressed]}>
-        <BlockContent text={text} />
+        style={({ pressed }) => [styles.event, styles.block, pressed && styles.pressed]}>
+        <BlockContent look={look} />
       </Pressable>
     </View>
   );
 }
 
 /** Personal time as drawn on the timeline — the lifted card of its long-press menu. */
-export function BlockEventPreview({ text }: { text: string }) {
+export function BlockEventPreview({ look }: { look: BlockLook }) {
   return (
-    <View style={[styles.slim, styles.block, styles.lifted]}>
-      <BlockContent text={text} />
+    <View style={[styles.event, styles.block, styles.lifted]}>
+      <BlockContent look={look} />
     </View>
   );
 }
 
-function BlockContent({ text }: { text: string }) {
+function BlockContent({ look }: { look: BlockLook }) {
   return (
     <>
-      <Icon name="blocked" size={13} color="content.secondary" />
-      <Text variant="captionMedium" color="secondary" numberOfLines={1} style={styles.shrink}>
-        {text}
+      <View style={styles.eventHead}>
+        <Text variant="microMedium" color="tertiary" tabularNums>
+          {look.range}
+        </Text>
+        <View style={styles.headMark}>
+          <Icon name="coffee" size={14} color="content.tertiary" />
+        </View>
+      </View>
+      <Text variant="eventTitle" numberOfLines={1}>
+        {look.name}
       </Text>
     </>
   );
@@ -380,7 +397,6 @@ function NowLine({ label }: { label: string }) {
 }
 
 const TIME_COLUMN = 36;
-const SLIM_HEIGHT = 30;
 const styles = StyleSheet.create((theme) => ({
   card: {
     padding: theme.space[3.5],
@@ -394,9 +410,7 @@ const styles = StyleSheet.create((theme) => ({
   list: { marginTop: theme.space[3.5], gap: theme.space[1.5] },
   row: { flexDirection: 'row', gap: theme.space[2.5] },
   dimmed: { opacity: 0.7 },
-  dimmedStrong: { opacity: 0.6 },
   time: { width: TIME_COLUMN, paddingTop: 2 },
-  slimTime: { width: TIME_COLUMN, paddingTop: theme.space[2] },
   event: {
     flex: 1,
     minWidth: 0,
@@ -411,7 +425,8 @@ const styles = StyleSheet.create((theme) => ({
   lifted: { flex: 0 },
   bar: { position: 'absolute', left: 0, top: 0, bottom: 0, width: 4 },
   eventHead: { flexDirection: 'row', alignItems: 'center', gap: theme.space[1.5] },
-  unconfirmed: { marginLeft: 'auto' },
+  /** The mark at the end of the time line. */
+  headMark: { marginLeft: 'auto' },
   nameRow: { flexDirection: 'row', alignItems: 'center', gap: theme.space[1] },
   shrink: { flexShrink: 1 },
   noteButton: {
@@ -430,16 +445,6 @@ const styles = StyleSheet.create((theme) => ({
     borderWidth: 1.5,
     borderColor: theme.colors.bg.elevated,
     backgroundColor: theme.colors.brand.default,
-  },
-  slim: {
-    flex: 1,
-    height: SLIM_HEIGHT,
-    borderRadius: theme.radius.segment,
-    overflow: 'hidden',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: theme.space[1.5],
-    paddingHorizontal: theme.space[3],
   },
   block: { backgroundColor: theme.colors.bg.sunken },
   now: { flexDirection: 'row', alignItems: 'center', gap: theme.space[2], marginVertical: 2 },

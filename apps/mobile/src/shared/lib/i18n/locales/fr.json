@@ -895,7 +895,6 @@
       "freeFrom": "Libre de {{from}} à {{to}}",
       "dayOff": "Jour de repos",
       "personal": "Temps personnel",
-      "personalNamed": "{{name}} · temps personnel",
       "allDay": "Toute la journée",
       "unconfirmed": "Non confirmé",
       "unknownClient": "Client",

@@ -901,7 +901,6 @@
       "freeFrom": "Свободно с {{from}} до {{to}}",
       "dayOff": "Сегодня выходной",
       "personal": "Личное время",
-      "personalNamed": "{{name}} · личное время",
       "allDay": "Весь день",
       "unconfirmed": "Не подтверждена",
       "unknownClient": "Клиент",
