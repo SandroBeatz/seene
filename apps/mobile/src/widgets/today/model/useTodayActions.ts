@@ -5,22 +5,15 @@
  * leaves on every device.
  */
 import { router } from 'expo-router';
-import { DateTime } from 'luxon';
 import { useTranslation } from 'react-i18next';
 import { Alert, Linking } from 'react-native';
 import { useDismissAttentionMutation } from '@/entities/attention';
 import { useUserId } from '@/entities/session';
-import {
-  useAppointmentActions,
-  type AppointmentActionContext,
-  type AppointmentActionKey,
-} from '@/features/appointment-actions';
-import { formatAmount, formatTime } from '@/shared/lib/formats';
+import { useVisitActions, type ScheduleMenuAction } from '@/features/appointment-actions';
 import type { AppLocale } from '@/shared/lib/i18n';
 import { phoneCallUrl } from '@/shared/lib/phone';
 import { reminderKey, type AttentionAction, type AttentionMenuAction } from './attention';
 import type { AttentionCard, AttentionVisit } from './useAttention';
-import type { ScheduleMenuAction } from './schedule-menu';
 
 const DAY_MS = 86_400_000;
 /** "Позже" on "Пора позвать". */
@@ -42,7 +35,7 @@ export interface TodayActionsInput {
 export function useTodayActions(input: TodayActionsInput) {
   const { t } = useTranslation();
   const userId = useUserId() ?? '';
-  const actions = useAppointmentActions();
+  const actions = useVisitActions(input);
   const dismissMutation = useDismissAttentionMutation(userId);
 
   const dismiss = (key: string, until: string | null) =>
@@ -50,41 +43,7 @@ export function useTodayActions(input: TodayActionsInput) {
       onError: () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')),
     });
   const inDays = (days: number) => new Date(input.now + days * DAY_MS).toISOString();
-
-  /** The message context of a visit ("сегодня, в 16:00", "Маникюр", "2 400 сом"). */
-  const contextOf = (visit: AttentionVisit): AppointmentActionContext => {
-    const local = DateTime.fromISO(visit.appointment.start_at, { zone: 'utc' })
-      .setZone(input.zone)
-      .setLocale(input.locale);
-    const days = Math.round(
-      local.startOf('day').diff(DateTime.fromISO(input.todayKey, { zone: input.zone }), 'days')
-        .days,
-    );
-    const date =
-      days === 0
-        ? t('preview.day.today')
-        : days === 1
-          ? t('preview.day.tomorrow')
-          : local.toFormat('d MMMM');
-    return {
-      appointment: visit.appointment,
-      clientFirstName: visit.client?.first_name ?? '',
-      phone: visit.client?.phone ?? '',
-      when: t('preview.when', {
-        date: date.toLocaleLowerCase(input.locale),
-        time: formatTime(visit.appointment.start_at, {
-          zone: input.zone,
-          timeFormat: input.timeFormat,
-        }),
-      }),
-      services: visit.serviceNames.join(', '),
-      price: formatAmount(visit.price, { currency: input.currency, locale: input.locale }),
-    };
-  };
-
-  const run = (visit: AttentionVisit | null, action: AppointmentActionKey) => {
-    if (visit) actions.runFor(contextOf(visit), action);
-  };
+  const run = actions.run;
 
   const invite = (card: AttentionCard) => {
     if (card.kind !== 'recall' || !card.client) return;

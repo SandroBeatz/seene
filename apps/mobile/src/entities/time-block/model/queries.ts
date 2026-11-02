@@ -3,7 +3,7 @@
  * unavailability on the calendar, so mutations invalidate the block ranges and the
  * calendar day counts on `onSettled`.
  */
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   createTimeBlock,
   deleteTimeBlock,
@@ -29,6 +29,32 @@ export function useTimeBlocksRangeQuery(userId: string, from: string, to: string
     queryKey: timeBlockKeys.range(userId, from, to),
     queryFn: () => listTimeBlocksByRange(userId, from, to),
     enabled: !!userId && !!from && !!to,
+  });
+}
+
+/**
+ * Several ranges at once, each cached on its own. A block spanning two ranges comes
+ * back once: only the first range keeps it.
+ */
+export function useTimeBlocksRangesQuery(
+  userId: string,
+  ranges: readonly { start: string; end: string }[],
+) {
+  return useQueries({
+    queries: ranges.map(({ start, end }) => ({
+      queryKey: timeBlockKeys.range(userId, start, end),
+      queryFn: () => listTimeBlocksByRange(userId, start, end),
+      enabled: !!userId,
+    })),
+    combine: (results) => {
+      const byId = new Map(results.flatMap((r) => r.data ?? []).map((b) => [b.id, b]));
+      return {
+        data: [...byId.values()],
+        isPending: results.some((r) => r.isPending),
+        error: results.find((r) => r.isError)?.error ?? null,
+        refetch: () => Promise.all(results.map((r) => r.refetch())),
+      };
+    },
   });
 }
 

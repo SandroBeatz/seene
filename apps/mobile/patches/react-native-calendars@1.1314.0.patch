@@ -1,0 +1,53 @@
+diff --git a/src/timeline/Packer.js b/src/timeline/Packer.js
+index ba99d938af6a8e2c026420a093c2ac43eee680f9..078c6a68e8b34637f707ab08be02254bcfce2df2 100644
+--- a/src/timeline/Packer.js
++++ b/src/timeline/Packer.js
+@@ -1,17 +1,18 @@
+ import inRange from 'lodash/inRange';
+ import XDate from 'xdate';
+ import constants from '../commons/constants';
+-export const HOUR_BLOCK_HEIGHT = 100;
++export const HOUR_BLOCK_HEIGHT = 48;
+ const OVERLAP_EVENTS_SPACINGS = 10;
+ const RIGHT_EDGE_SPACING = 10;
+ function buildEvent(event, left, width, { dayStart = 0, hourBlockHeight = HOUR_BLOCK_HEIGHT }) {
+     const startTime = new XDate(event.start);
+     const endTime = event.end ? new XDate(event.end) : new XDate(startTime).addHours(1);
+-    const dayStartTime = new XDate(startTime).clearTime();
++    // Wall clock, like the hour labels: elapsed hours are off by one on a DST day.
++    const hoursOf = time => time.getHours() + time.getMinutes() / 60 + time.getSeconds() / 3600;
+     return {
+         ...event,
+-        top: (dayStartTime.diffHours(startTime) - dayStart) * hourBlockHeight,
+-        height: startTime.diffHours(endTime) * hourBlockHeight,
++        top: (hoursOf(startTime) - dayStart) * hourBlockHeight,
++        height: (hoursOf(endTime) - hoursOf(startTime)) * hourBlockHeight,
+         width,
+         left
+     };
+diff --git a/src/timeline/Timeline.js b/src/timeline/Timeline.js
+index b7e02da2532f8e040bb2e14b122f690b94a56a0e..c1a1a622464494eb0b9f696af78b793b61c33466 100644
+--- a/src/timeline/Timeline.js
++++ b/src/timeline/Timeline.js
+@@ -71,7 +71,7 @@ const Timeline = (props) => {
+         else {
+             onEventPress?.(event);
+         }
+-    }, [onEventPress, eventTapped]);
++    }, [onEventPress, eventTapped, packedEvents]);
+     const renderEvents = (dayIndex) => {
+         const events = packedEvents[dayIndex].map((event, eventIndex) => {
+             const onEventPress = () => _onEventPress(dayIndex, eventIndex);
+diff --git a/src/timeline-list/useTimelinePages.js b/src/timeline-list/useTimelinePages.js
+index 000a15673446218dbd5f056f2e7eda4088ab9365..e74b0da106154b75e21b86b9a4dd6182223cae68 100644
+--- a/src/timeline-list/useTimelinePages.js
++++ b/src/timeline-list/useTimelinePages.js
+@@ -46,7 +46,7 @@ const UseTimelinePages = ({ date, listRef, numberOfDays, shouldFixRTL }) => {
+         resetPages: useCallback(resetPages, []),
+         resetPagesDebounce: useCallback(debounce(resetPages, 500, { leading: false, trailing: true }), []),
+         scrollToPage: useCallback(scrollToPage, []),
+-        scrollToPageDebounce: useCallback(debounce(scrollToPage, 250, { leading: false, trailing: true }), []),
++        scrollToPageDebounce: useCallback(debounce(scrollToPage, 0, { leading: false, trailing: true }), []),
+         pagesRef,
+         pages,
+         shouldResetPages,

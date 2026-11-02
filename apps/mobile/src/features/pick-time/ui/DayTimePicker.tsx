@@ -42,6 +42,8 @@ export interface DayTimePickerProps {
   start: string | null;
   /** The start came from "Своё время", not from the grid. */
   ownTime: boolean;
+  /** Picked by itself once the grid shows it free for this visit's length. */
+  preferredStart?: string | null;
   onDay: (dayKey: string) => void;
   onStart: (start: string | null) => void;
   onOpenMonth: () => void;
@@ -57,6 +59,7 @@ export function DayTimePicker({
   dayKey: chosenDay,
   start: chosen,
   ownTime,
+  preferredStart,
   onDay,
   onStart,
   onOpenMonth,
@@ -144,6 +147,11 @@ export function DayTimePicker({
         duration: durationLabel,
       })
     : t('quickCreate.time.dayOffShort');
+
+  const preferredFits = slots?.some((s) => s.start === preferredStart && s.state === 'free');
+  useEffect(() => {
+    if (preferredStart && !chosen && preferredFits) onStart(preferredStart);
+  }, [preferredStart, chosen, preferredFits, onStart]);
 
   const pickSlot = (slot: GridSlot) => {
     if (slot.state !== 'free') return;

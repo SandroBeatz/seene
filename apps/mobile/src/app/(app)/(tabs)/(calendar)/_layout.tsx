@@ -1,16 +1,16 @@
 import { Stack } from 'expo-router';
-import { useTranslation } from 'react-i18next';
 import { useStackScreenOptions } from '@/shared/ui';
 
 export const unstable_settings = { initialRouteName: 'calendar' };
 
 export default function CalendarStackLayout() {
-  const { t } = useTranslation();
   return (
     <Stack screenOptions={useStackScreenOptions()}>
+      {/* No title: the screens draw the month in this header. */}
+      <Stack.Screen name="calendar" options={{ title: '' }} />
       <Stack.Screen
-        name="calendar"
-        options={{ title: t('tabs.calendar'), headerLargeTitle: process.env.EXPO_OS === 'ios' }}
+        name="calendar-day"
+        options={{ title: '', headerBackButtonDisplayMode: 'default' }}
       />
     </Stack>
   );

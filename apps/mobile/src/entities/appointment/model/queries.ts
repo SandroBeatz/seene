@@ -3,7 +3,13 @@
  * change ranges, the actionable list, calendar day counts, a client's appointment
  * count, and analytics, so every mutation invalidates that whole set on `onSettled`.
  */
-import { type QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  type QueryClient,
+  useMutation,
+  useQueries,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import {
   countClientAppointments,
   countClientVisits,
@@ -58,6 +64,29 @@ export function useAppointmentsRangeQuery(userId: string, from: string, to: stri
     queryKey: appointmentKeys.range(userId, from, to),
     queryFn: () => listAppointmentsByRange(userId, from, to),
     enabled: !!userId && !!from && !!to,
+  });
+}
+
+/**
+ * Several ranges at once, each cached on its own (`appointmentKeys.range`), merged in
+ * order — the calendar asks for whole months as they come into view.
+ */
+export function useAppointmentsRangesQuery(
+  userId: string,
+  ranges: readonly { start: string; end: string }[],
+) {
+  return useQueries({
+    queries: ranges.map(({ start, end }) => ({
+      queryKey: appointmentKeys.range(userId, start, end),
+      queryFn: () => listAppointmentsByRange(userId, start, end),
+      enabled: !!userId,
+    })),
+    combine: (results) => ({
+      data: results.flatMap((r) => r.data ?? []),
+      isPending: results.some((r) => r.isPending),
+      error: results.find((r) => r.isError)?.error ?? null,
+      refetch: () => Promise.all(results.map((r) => r.refetch())),
+    }),
   });
 }
 

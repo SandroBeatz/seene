@@ -532,7 +532,6 @@
   },
   "placeholders": {
     "home": "La base de navigation est prête. Les données produit arrivent dans les prochaines phases.",
-    "calendar": "Les données d’agenda ne sont pas encore implémentées. Cet écran possède déjà sa Stack native.",
     "clients": "Les données client ne sont pas encore implémentées. Utilisez l’action pour inspecter la route dynamique.",
     "analytics": "Les données statistiques ne sont pas encore implémentées.",
     "profileSettings": "Les réglages du profil seront ajoutés avec la fonctionnalité Réglages."
@@ -854,6 +853,14 @@
     "RUB": "Rouble",
     "UZS": "Sum"
   },
+  "calendar": {
+    "today": "Aujourd’hui",
+    "noVisits": "Aucun rendez-vous",
+    "dayOff": "Jour de repos",
+    "addVisit": "+ Rendez-vous",
+    "awaitingReply": "En attente",
+    "newAt": "Nouveau rendez-vous à {{time}}"
+  },
   "today": {
     "openMenu": "Profil et menu",
     "greeting": {
@@ -891,6 +898,7 @@
     },
     "schedule": {
       "title": "Planning",
+      "ongoing": "En cours",
       "empty": "Aucun rendez-vous pour l’instant",
       "freeFrom": "Libre de {{from}} à {{to}}",
       "dayOff": "Jour de repos",

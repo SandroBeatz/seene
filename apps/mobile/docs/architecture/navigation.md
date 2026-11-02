@@ -48,7 +48,7 @@ src/app/
 │   ├── (tabs)/
 │   │   ├── _layout.tsx                 the only NativeTabs integration point
 │   │   ├── (home)/_layout.tsx          nested Stack; canonical / entry
-│   │   ├── (calendar)/_layout.tsx      nested Stack; /calendar
+│   │   ├── (calendar)/_layout.tsx      nested Stack; /calendar (month), /calendar-day?date= (day)
 │   │   ├── (clients)/_layout.tsx       nested Stack; /clients
 │   │   └── (settings)/_layout.tsx      nested Stack; /settings
 │   └── (modals)/

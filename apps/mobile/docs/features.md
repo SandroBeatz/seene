@@ -66,6 +66,15 @@ day counts via `appointment_day_counts` RPC.
   `react-native-calendars` (Wix) — `Timeline` (day/week time-grid), `Agenda`/`CalendarList`
   (month + list), `markedDates` for day dots. Map appointments/time-blocks → Timeline events with
   status colors. Spike Timeline slot-tap/drag early (Q-UX-1, resolved).
+- **Built (`widgets/calendar`, design "Таб · Календарь", "Календарь, день"):** month = a `FlatList`
+  of `Calendar` grids (`CalendarList` forces one height on every month); day = `CalendarProvider` +
+  `WeekCalendar` + `TimelineList`, days swiped sideways. No week view, no search yet (the design has
+  no results screen). An empty half-hour cell shows nothing until touched: then a dashed outline and
+  an accent tint, and a tap starts quick-create on that day, with the time picked if the services
+  fit there (never unchecked). No cells while records load or failed, or past the picker's 90 days. Library limits worked around, see the
+  code comments: `patches/react-native-calendars@*.patch` sets the hour to the design's 48 pt, drops a 250 ms
+  delay on tap, draws events by wall clock (DST) and fixes stale `onEventPress`; it has a device-clock "now" line (hidden when the device and master zones differ) and no
+  long press, so touches are handled inside `renderEvent` (`onEventPress` serves screen readers).
 
 ## 5. Quick create (appointment / time off wizard)
 

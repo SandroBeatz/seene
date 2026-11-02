@@ -20,25 +20,29 @@ import {
   Skeleton,
   Text,
   type ContextMenuAnchor,
-  type IconName,
   useRefreshControl,
 } from '@/shared/ui';
-import { getAppointmentPhase } from '@/entities/appointment';
 import type { TimeBlock } from '@/entities/time-block';
-import { useTimeBlockActions, type TimeBlockAction } from '@/features/time-block-actions';
+import {
+  BlockEventPreview,
+  SCHEDULE_MENU,
+  VisitEventPreview,
+  menuRows,
+  scheduleMenuRows,
+  type BlockLook,
+} from '@/features/appointment-actions';
+import {
+  timeBlockMenuRows,
+  useTimeBlockActions,
+  type TimeBlockAction,
+} from '@/features/time-block-actions';
 import { ATTENTION_MENU } from '../model/attention';
 import { greetingPeriod } from '../model/first-steps';
-import { SCHEDULE_MENU } from '../model/schedule-menu';
 import { useAttention, type AttentionCard } from '../model/useAttention';
 import { useToday, type ScheduleVisit } from '../model/useToday';
 import { useTodayActions } from '../model/useTodayActions';
 import { AttentionCardView, AttentionSection, type AttentionFormat } from './AttentionSection';
-import {
-  BlockEventPreview,
-  DayScheduleCard,
-  VisitEventPreview,
-  type BlockLook,
-} from './DayScheduleCard';
+import { DayScheduleCard } from './DayScheduleCard';
 import { DaySummaryCard } from './DaySummaryCard';
 import { FirstStepsCard } from './FirstStepsCard';
 import { NoteBubble } from './NoteBubble';
@@ -235,50 +239,11 @@ type Menu =
   | { kind: 'schedule'; visit: ScheduleVisit; anchor: ContextMenuAnchor; range: string }
   | { kind: 'block'; block: TimeBlock; anchor: ContextMenuAnchor; look: BlockLook };
 
-const MENU_ICON: Record<string, IconName> = {
-  confirm: 'check',
-  complete: 'completeVisit',
-  edit: 'pencil',
-  reschedule: 'reschedule',
-  propose_time: 'send',
-  book_again: 'repeat',
-  whatsapp: 'whatsapp',
-  call: 'call',
-  open_client: 'userCircle',
-  invite: 'whatsapp',
-  dismiss: 'check',
-  snooze: 'clock',
-  decline: 'close',
-  cancel: 'cancelCircle',
-  no_show: 'noShow',
-  rename: 'pencil',
-  delete: 'trashBin',
-};
-
 function menuItems(menu: Menu | null, now: number, t: ReturnType<typeof useTranslation>['t']) {
   if (!menu) return [];
-  if (menu.kind === 'block') {
-    const blockItem = (key: TimeBlockAction, danger = false) => ({
-      key,
-      label: t(`personalTime.actions.${key}`),
-      icon: MENU_ICON[key],
-      danger,
-    });
-    return [blockItem('rename'), blockItem('reschedule'), blockItem('delete', true)];
-  }
-  const groups =
-    menu.kind === 'schedule'
-      ? SCHEDULE_MENU[getAppointmentPhase(menu.visit.appointment, now)]
-      : menu.card.kind === 'tomorrow_reminders'
-        ? { regular: [], danger: [] }
-        : ATTENTION_MENU[menu.card.kind];
-  const item = (danger: boolean) => (key: string) => ({
-    key,
-    label: t(`today.attention.menu.${key}`),
-    icon: MENU_ICON[key],
-    danger,
-  });
-  return [...groups.regular.map(item(false)), ...groups.danger.map(item(true))];
+  if (menu.kind === 'block') return timeBlockMenuRows(t);
+  if (menu.kind === 'schedule') return scheduleMenuRows(menu.visit.appointment, now, t);
+  return menu.card.kind === 'tomorrow_reminders' ? [] : menuRows(ATTENTION_MENU[menu.card.kind], t);
 }
 
 function menuNote(menu: Menu | null, label: string) {

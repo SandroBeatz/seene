@@ -24,6 +24,7 @@ import { useSaleAmountsRangeQuery } from '@/entities/sale';
 import { useServicesQuery, type ServiceWithCategory } from '@/entities/service';
 import { useUserId } from '@/entities/session';
 import { useTimeBlocksRangeQuery, type TimeBlock } from '@/entities/time-block';
+import type { ScheduleVisit } from '@/features/appointment-actions';
 import { DEFAULT_SERVICE_COLOR } from '@/shared/config/palettes';
 import { buildDayTimeline, dayBounds, weekdayIndex, workingHours } from '@/shared/lib/scheduling';
 import { deviceTimeZone } from '@/shared/lib/time-zone';
@@ -31,15 +32,7 @@ import { useNow } from '@/shared/ui';
 import { firstSteps } from './first-steps';
 import { summarizeDay } from './summary';
 
-/** An appointment as the schedule draws it. */
-export interface ScheduleVisit {
-  appointment: Appointment;
-  client: Client | undefined;
-  /** Service names, in the appointment's order. */
-  serviceNames: string[];
-  price: number;
-  color: string;
-}
+export type { ScheduleVisit };
 
 export function useToday() {
   const userId = useUserId() ?? '';

@@ -1,28 +1,31 @@
 /**
  * "Расписание" card (design "Таб · Сегодня"): the day as a timeline — visits tinted
- * with their service colour, personal time in grey and the green "now" line. Ended
- * ones are dimmed; unconfirmed visits get a dashed outline in their colour and a
+ * with their service colour, personal time in grey and the green "now" line: between
+ * events, or across the one happening now, at its real time; that one also gets an
+ * hourglass and is drawn as tall as it is long. Ended ones
+ * are dimmed; unconfirmed visits get a dashed outline in their colour and a
  * warning mark. An empty day shows the free hours.
  */
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
-import { scheduleCardLook, type Appointment } from '@/entities/appointment';
+import type { Appointment } from '@/entities/appointment';
 import type { TimeBlock } from '@/entities/time-block';
+import {
+  BlockContent,
+  EventContent,
+  eventCardStyles,
+  visitCardInfo,
+  type BlockLook,
+} from '@/features/appointment-actions';
 import { eventSwatch } from '@/shared/lib/color';
 import { formatTime } from '@/shared/lib/formats';
-import type { TimeInterval, TimelineItem } from '@/shared/lib/scheduling';
-import { Icon, Text, type ContextMenuAnchor } from '@/shared/ui';
+import { ongoingItem, type TimeInterval, type TimelineItem } from '@/shared/lib/scheduling';
+import { Text, type ContextMenuAnchor } from '@/shared/ui';
 import type { ScheduleVisit } from '../model/useToday';
 
 type Item = TimelineItem<Appointment, TimeBlock>;
-
-/** What a personal time row says: "13:30–15:00" and "Учёба". */
-export interface BlockLook {
-  range: string;
-  name: string;
-}
 
 export interface DayScheduleCardProps {
   /** "Вторник, 27 октября · 5 записей". */
@@ -62,6 +65,16 @@ export function DayScheduleCard({
   const { t } = useTranslation();
   const time = (iso: string) => formatTime(iso, { zone, timeFormat });
   const hasEvents = timeline.some((item) => item.kind === 'appointment' || item.kind === 'block');
+  const current = ongoingItem(timeline, now, (a) => a.status === 'confirmed');
+  const nowLabel = time(new Date(now).toISOString());
+  const nowOn = (id: string, start: string, end: string): NowMark | null =>
+    current?.id === id
+      ? {
+          ratio: current.ratio,
+          label: nowLabel,
+          minutes: (new Date(end).getTime() - new Date(start).getTime()) / 60_000,
+        }
+      : null;
 
   return (
     <View style={styles.card}>
@@ -85,6 +98,7 @@ export function DayScheduleCard({
                     label={time(item.start)}
                     range={range}
                     now={now}
+                    nowMark={nowOn(item.record.id, item.start, item.end)}
                     formatAmount={formatAmount}
                     onPress={() => onOpenVisit(visit)}
                     onLongPress={(anchor) => onMenu(visit, anchor, range)}
@@ -93,7 +107,10 @@ export function DayScheduleCard({
                 );
               }
               case 'block': {
+                const startMs = new Date(item.start).getTime();
+                const endMs = new Date(item.end).getTime();
                 const look = {
+                  ongoing: !item.allDay && now >= startMs && now < endMs,
                   range: item.allDay
                     ? t('today.schedule.allDay')
                     : `${time(item.start)}–${time(item.end)}`,
@@ -104,14 +121,15 @@ export function DayScheduleCard({
                     key={item.record.id}
                     label={item.allDay ? '' : time(item.start)}
                     look={look}
-                    dimmed={new Date(item.end).getTime() <= now}
+                    dimmed={endMs <= now}
+                    nowMark={nowOn(item.record.id, item.start, item.end)}
                     onPress={() => onOpenBlock(item.record)}
                     onLongPress={(anchor) => onBlockMenu(item.record, anchor, look)}
                   />
                 );
               }
               case 'now':
-                return <NowLine key="now" label={time(item.at)} />;
+                return current ? null : <NowLine key="now" label={time(item.at)} />;
             }
           })}
         </View>
@@ -131,30 +149,38 @@ export function DayScheduleCard({
   );
 }
 
+/** The "now" line across a row: how far down, the time on its pill, the event's length. */
+interface NowMark {
+  ratio: number;
+  label: string;
+  minutes: number;
+}
+
+/** The current event's height follows its length; a short one keeps its natural height. */
+const POINTS_PER_MINUTE = 1;
+/** A card's height with its text, about. */
+const NATURAL_HEIGHT = 57;
+/** How far down the row the pill stops covering the time at its top. */
+const PILL_CLEARS_LABEL = 25;
+
+const ongoingHeight = (mark: NowMark) => ({ minHeight: mark.minutes * POINTS_PER_MINUTE });
+
+const rowLabel = (label: string, mark: NowMark | null) =>
+  mark &&
+  mark.ratio * Math.max(mark.minutes * POINTS_PER_MINUTE, NATURAL_HEIGHT) < PILL_CLEARS_LABEL
+    ? ''
+    : label;
+
 interface VisitRowProps {
   visit: ScheduleVisit;
   label: string;
   range: string;
   now: number;
+  nowMark: NowMark | null;
   formatAmount: (amount: number) => string;
   onPress: () => void;
   onLongPress: (anchor: ContextMenuAnchor) => void;
   onNote: () => void;
-}
-
-function visitInfo(
-  visit: ScheduleVisit,
-  now: number,
-  formatAmount: (amount: number) => string,
-  unknownClient: string,
-) {
-  return {
-    look: scheduleCardLook(visit.appointment, now),
-    name: visit.client
-      ? [visit.client.first_name, visit.client.last_name].filter(Boolean).join(' ')
-      : unknownClient,
-    details: [visit.serviceNames.join(', '), formatAmount(visit.price)].filter(Boolean).join(' · '),
-  };
 }
 
 function VisitRow({
@@ -162,6 +188,7 @@ function VisitRow({
   label,
   range,
   now,
+  nowMark,
   formatAmount,
   onPress,
   onLongPress,
@@ -171,7 +198,7 @@ function VisitRow({
   const { theme } = useUnistyles();
   const ref = useRef<View>(null);
   const swatch = eventSwatch(visit.color, theme.name);
-  const { look, name, details } = visitInfo(
+  const { look, name, details } = visitCardInfo(
     visit,
     now,
     formatAmount,
@@ -181,7 +208,7 @@ function VisitRow({
   return (
     <View style={[styles.row, look.dimmed && styles.dimmed]}>
       <Text variant="caption2" color="secondary" tabularNums style={styles.time}>
-        {label}
+        {rowLabel(label, nowMark)}
       </Text>
       <Pressable
         ref={ref}
@@ -199,9 +226,10 @@ function VisitRow({
           ref.current?.measureInWindow((x, y, width) => onLongPress({ x, y, width }))
         }
         style={({ pressed }) => [
-          styles.event,
+          eventCardStyles.event,
           { backgroundColor: swatch.fill },
           look.unconfirmed && { borderWidth: 1, borderStyle: 'dashed', borderColor: swatch.bar },
+          nowMark && ongoingHeight(nowMark),
           pressed && styles.pressed,
         ]}>
         <EventContent
@@ -210,110 +238,13 @@ function VisitRow({
           name={name}
           details={details}
           unconfirmed={look.unconfirmed}
+          ongoing={look.ongoing}
           bar={swatch.bar}
           onNote={onNote}
         />
       </Pressable>
+      {nowMark ? <NowAcross mark={nowMark} /> : null}
     </View>
-  );
-}
-
-/** A schedule event as drawn on the timeline — the lifted card of its long-press menu. */
-export function VisitEventPreview({
-  visit,
-  range,
-  now,
-  formatAmount,
-}: {
-  visit: ScheduleVisit;
-  range: string;
-  now: number;
-  formatAmount: (amount: number) => string;
-}) {
-  const { t } = useTranslation();
-  const { theme } = useUnistyles();
-  const swatch = eventSwatch(visit.color, theme.name);
-  const { look, name, details } = visitInfo(
-    visit,
-    now,
-    formatAmount,
-    t('today.schedule.unknownClient'),
-  );
-  return (
-    <View
-      style={[
-        styles.event,
-        styles.lifted,
-        { backgroundColor: swatch.fill },
-        look.unconfirmed && { borderWidth: 1, borderStyle: 'dashed', borderColor: swatch.bar },
-      ]}>
-      <EventContent
-        visit={visit}
-        range={range}
-        name={name}
-        details={details}
-        unconfirmed={look.unconfirmed}
-        bar={swatch.bar}
-      />
-    </View>
-  );
-}
-
-function EventContent({
-  visit,
-  range,
-  name,
-  details,
-  unconfirmed,
-  bar,
-  onNote,
-}: {
-  visit: ScheduleVisit;
-  range: string;
-  name: string;
-  details: string;
-  unconfirmed: boolean;
-  bar: string;
-  onNote?: () => void;
-}) {
-  const { t } = useTranslation();
-  return (
-    <>
-      <View style={[styles.bar, { backgroundColor: bar }]} />
-      <View style={styles.eventHead}>
-        <Text variant="microMedium" color="tertiary" tabularNums>
-          {range}
-        </Text>
-        {unconfirmed ? (
-          <View
-            accessible
-            accessibilityLabel={t('today.schedule.unconfirmed')}
-            style={styles.headMark}>
-            <Icon name="unconfirmed" size={14} color="tone.warning.fg" />
-          </View>
-        ) : null}
-      </View>
-      <View style={styles.nameRow}>
-        <Text variant="eventTitle" numberOfLines={1} style={styles.shrink}>
-          {name}
-        </Text>
-        {visit.appointment.notes?.trim() ? (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t('today.note.open')}
-            hitSlop={10}
-            disabled={!onNote}
-            onPress={onNote}
-            style={styles.noteButton}>
-            <Icon name="note" size={14} color="content.secondary" />
-            <View style={styles.noteDot} />
-          </Pressable>
-        ) : null}
-      </View>
-      <Text variant="caption2" color="secondary" tabularNums numberOfLines={1}>
-        {details}
-      </Text>
-    </>
   );
 }
 
@@ -321,12 +252,14 @@ function BlockRow({
   label,
   look,
   dimmed,
+  nowMark,
   onPress,
   onLongPress,
 }: {
   label: string;
   look: BlockLook;
   dimmed: boolean;
+  nowMark: NowMark | null;
   onPress: () => void;
   onLongPress: (anchor: ContextMenuAnchor) => void;
 }) {
@@ -335,7 +268,7 @@ function BlockRow({
   return (
     <View style={[styles.row, dimmed && styles.dimmed]}>
       <Text variant="caption2" color="secondary" tabularNums style={styles.time}>
-        {label}
+        {rowLabel(label, nowMark)}
       </Text>
       <Pressable
         ref={ref}
@@ -345,37 +278,16 @@ function BlockRow({
         onLongPress={() =>
           ref.current?.measureInWindow((x, y, width) => onLongPress({ x, y, width }))
         }
-        style={({ pressed }) => [styles.event, styles.block, pressed && styles.pressed]}>
+        style={({ pressed }) => [
+          eventCardStyles.event,
+          eventCardStyles.block,
+          nowMark && ongoingHeight(nowMark),
+          pressed && styles.pressed,
+        ]}>
         <BlockContent look={look} />
       </Pressable>
+      {nowMark ? <NowAcross mark={nowMark} /> : null}
     </View>
-  );
-}
-
-/** Personal time as drawn on the timeline — the lifted card of its long-press menu. */
-export function BlockEventPreview({ look }: { look: BlockLook }) {
-  return (
-    <View style={[styles.event, styles.block, styles.lifted]}>
-      <BlockContent look={look} />
-    </View>
-  );
-}
-
-function BlockContent({ look }: { look: BlockLook }) {
-  return (
-    <>
-      <View style={styles.eventHead}>
-        <Text variant="microMedium" color="tertiary" tabularNums>
-          {look.range}
-        </Text>
-        <View style={styles.headMark}>
-          <Icon name="coffee" size={14} color="content.tertiary" />
-        </View>
-      </View>
-      <Text variant="eventTitle" numberOfLines={1}>
-        {look.name}
-      </Text>
-    </>
   );
 }
 
@@ -396,6 +308,15 @@ function NowLine({ label }: { label: string }) {
   );
 }
 
+/** The same line over the row of what's happening now, at how far along it is. */
+function NowAcross({ mark }: { mark: NowMark }) {
+  return (
+    <View pointerEvents="none" style={[styles.across, { top: `${mark.ratio * 100}%` }]}>
+      <NowLine label={mark.label} />
+    </View>
+  );
+}
+
 const TIME_COLUMN = 36;
 const styles = StyleSheet.create((theme) => ({
   card: {
@@ -411,43 +332,9 @@ const styles = StyleSheet.create((theme) => ({
   row: { flexDirection: 'row', gap: theme.space[2.5] },
   dimmed: { opacity: 0.7 },
   time: { width: TIME_COLUMN, paddingTop: 2 },
-  event: {
-    flex: 1,
-    minWidth: 0,
-    gap: 1,
-    paddingVertical: 7,
-    paddingRight: theme.space[2.5],
-    paddingLeft: theme.space[3],
-    borderRadius: theme.radius.md,
-    overflow: 'hidden',
-  },
   pressed: { opacity: 0.7 },
-  lifted: { flex: 0 },
-  bar: { position: 'absolute', left: 0, top: 0, bottom: 0, width: 4 },
-  eventHead: { flexDirection: 'row', alignItems: 'center', gap: theme.space[1.5] },
-  /** The mark at the end of the time line. */
-  headMark: { marginLeft: 'auto' },
-  nameRow: { flexDirection: 'row', alignItems: 'center', gap: theme.space[1] },
-  shrink: { flexShrink: 1 },
-  noteButton: {
-    width: 20,
-    height: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  noteDot: {
-    position: 'absolute',
-    top: 1,
-    right: 0,
-    width: 7,
-    height: 7,
-    borderRadius: 4,
-    borderWidth: 1.5,
-    borderColor: theme.colors.bg.elevated,
-    backgroundColor: theme.colors.brand.default,
-  },
-  block: { backgroundColor: theme.colors.bg.sunken },
-  now: { flexDirection: 'row', alignItems: 'center', gap: theme.space[2], marginVertical: 2 },
+  across: { position: 'absolute', left: 0, right: 0, marginTop: -11 },
+  now: { flexDirection: 'row', alignItems: 'center', marginVertical: 2 },
   nowPill: {
     width: 40,
     height: 18,
