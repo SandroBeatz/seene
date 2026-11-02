@@ -21,7 +21,7 @@ type SlotSettings = {
 
 /**
  * Free slots for every day in [from, to] (YYYY-MM-DD, master's time zone) for a
- * visit of `durationMinutes`. Busy time is appointments, legacy bookings, time
+ * visit of `durationMinutes`. Busy time is appointments, time
  * blocks and slots held by other clients on the details step (`holderHash` is
  * the caller's own hold, which stays free for her); vacation days have no
  * slots. One round trip for the whole range.
@@ -36,7 +36,7 @@ export async function loadDailySlots({
   nowMs = Date.now()
 }: {
   supabase: ReturnType<typeof useServiceSupabase>
-  profile: { id: string; user_id: string; schedule: unknown }
+  profile: { user_id: string; schedule: unknown }
   settings: SlotSettings
   dates: string[]
   durationMinutes: number
@@ -55,7 +55,6 @@ export async function loadDailySlots({
   const [
     { data: appointments, error: appointmentsError },
     { data: timeBlocks, error: timeBlocksError },
-    { data: bookings, error: bookingsError },
     { data: holds, error: holdsError }
   ] = await Promise.all([
     supabase
@@ -72,13 +71,6 @@ export async function loadDailySlots({
       .lt('start_at', rangeEnd)
       .gt('end_at', rangeStart),
     supabase
-      .from('bookings')
-      .select('starts_at, ends_at')
-      .eq('master_id', profile.id)
-      .neq('status', 'cancelled')
-      .lt('starts_at', rangeEnd)
-      .gt('ends_at', rangeStart),
-    supabase
       .from('slot_hold')
       .select('start_at, end_at, holder_hash')
       .eq('master_user_id', profile.user_id)
@@ -87,7 +79,7 @@ export async function loadDailySlots({
       .gte('start_at', rangeStart)
   ])
 
-  if (appointmentsError || timeBlocksError || bookingsError || holdsError) {
+  if (appointmentsError || timeBlocksError || holdsError) {
     throw createError({ statusCode: 500, message: 'Failed to load availability' })
   }
 
@@ -100,7 +92,6 @@ export async function loadDailySlots({
 
   const busyRows: AppointmentRow[] = [
     ...((appointments ?? []) as AppointmentRow[]),
-    ...(bookings ?? []).map((b) => intervalRow(b.starts_at, b.ends_at)),
     ...(holds ?? [])
       .filter((h) => h.holder_hash !== holderHash)
       .map((h) => intervalRow(h.start_at, h.end_at))

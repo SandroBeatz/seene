@@ -23,12 +23,10 @@ that master contact details are public; (b) if solo-master home-address safety e
 concern, we can later expose only `city` + hide exact street via a public view — but **not doing
 this now** per owner.
 
-### Q-DB-2 — How does a public `booking` become an `appointment`?
-Both `create_booking` and `create_appointment_from_booking` RPCs exist; `bookings` is empty; some
-`appointments` carry `source='online_booking'`. The exact flow (does `bookings` get used at all, or
-do public bookings go straight to `appointments`? is there a master-side "requests to confirm"
-inbox?) is unclear. **Question:** what is the intended online-booking → master pipeline, and does
-the mobile app need a dedicated "incoming requests" surface beyond the calendar/actionable list?
+### Q-DB-2 — How does a public `booking` become an `appointment`? — ✅ RESOLVED
+Directly: `create_appointment_from_booking` writes to `appointments` with
+`source='online_booking'`. The legacy `bookings` table and `create_booking` RPC were removed on
+2026-11-02.
 
 ### Q-DB-3 — Revoke `anon` EXECUTE on `complete_appointment`?
 Security advisor flags `complete_appointment` as anon-executable (it checks `auth.uid()` internally,
@@ -94,7 +92,7 @@ currency is display-only. Confirm the supported currency list and that the three
 ## B. Assumptions we proceeded with (correct if wrong)
 
 - **AS-1:** The mobile app is the **master app** only; it does **not** implement the public client
-  booking flow, phone-OTP, `bookings`/`availability`/`otp_codes`, or the two booking RPCs — those
+  booking flow, phone-OTP, `availability`/`otp_codes`, or the booking RPC — those
   stay in the `seene` Nuxt site. It only *displays* online bookings that arrived as `appointments`.
 - **AS-2:** The Supabase schema is **read-only from this repo** for now; no migrations without your
   explicit approval (shared production DB with real data).

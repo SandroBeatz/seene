@@ -158,6 +158,6 @@ peak hour). Read-only; all from the two analytics RPCs. Period persisted locally
 
 ## Not in scope for the mobile app
 
-Public client booking page, availability/`bookings`/`otp_codes` tables, phone-OTP flow (all live
+Public client booking page, availability/`otp_codes` tables, phone-OTP flow (all live
 in the `seene` Nuxt site). CSV/PDF analytics export (hidden on web too). Billing/plans (upgrade
 banner is comparison-only).
