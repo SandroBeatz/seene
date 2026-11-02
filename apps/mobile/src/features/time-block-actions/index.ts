@@ -1,2 +1,6 @@
 /** Time-block actions — public barrel. */
-export { useTimeBlockActions, type TimeBlockAction } from './model/useTimeBlockActions';
+export {
+  timeBlockMenuRows,
+  useTimeBlockActions,
+  type TimeBlockAction,
+} from './model/useTimeBlockActions';

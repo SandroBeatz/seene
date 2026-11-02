@@ -3,6 +3,7 @@ export {
   appointmentKeys,
   invalidateAppointmentCaches,
   useAppointmentsRangeQuery,
+  useAppointmentsRangesQuery,
   useVisitHistoryQuery,
   useActionableAppointmentsQuery,
   useAppointmentQuery,

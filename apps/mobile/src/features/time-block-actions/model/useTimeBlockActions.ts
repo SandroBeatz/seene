@@ -7,8 +7,24 @@ import { useTranslation } from 'react-i18next';
 import { Alert } from 'react-native';
 import { useUserId } from '@/entities/session';
 import { useDeleteTimeBlockMutation, type TimeBlock } from '@/entities/time-block';
+import type { IconName } from '@/shared/ui';
 
 export type TimeBlockAction = 'rename' | 'reschedule' | 'delete';
+
+/** The rows of personal time's long-press menu. */
+export function timeBlockMenuRows(t: (key: string) => string) {
+  const row = (key: TimeBlockAction, icon: IconName, danger = false) => ({
+    key,
+    label: t(`personalTime.actions.${key}`),
+    icon,
+    danger,
+  });
+  return [
+    row('rename', 'pencil'),
+    row('reschedule', 'reschedule'),
+    row('delete', 'trashBin', true),
+  ];
+}
 
 export function useTimeBlockActions({ onDeleted }: { onDeleted?: () => void } = {}) {
   const { t } = useTranslation();

@@ -66,6 +66,12 @@ day counts via `appointment_day_counts` RPC.
   `react-native-calendars` (Wix) — `Timeline` (day/week time-grid), `Agenda`/`CalendarList`
   (month + list), `markedDates` for day dots. Map appointments/time-blocks → Timeline events with
   status colors. Spike Timeline slot-tap/drag early (Q-UX-1, resolved).
+- **Built (`widgets/calendar`, design "Таб · Календарь", "Календарь, день"):** month = a `FlatList`
+  of `Calendar` grids (`CalendarList` forces one height on every month); day = `CalendarProvider` +
+  `WeekCalendar` + `TimelineList`, days swiped sideways. No week view, no search yet (the design has
+  no results screen). Library limits worked around, see the code comments: `Timeline` has a fixed
+  100 pt hour, a device-clock "now" line (hidden when the device and master zones differ) and no
+  long press; `onEventPress` keeps stale events, so presses are handled inside `renderEvent`.
 
 ## 5. Quick create (appointment / time off wizard)
 

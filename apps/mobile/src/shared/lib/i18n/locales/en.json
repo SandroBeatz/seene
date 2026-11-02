@@ -526,7 +526,6 @@
   },
   "placeholders": {
     "home": "The navigation foundation is ready. Product data arrives in the next feature phases.",
-    "calendar": "Calendar data is not implemented yet. This screen already owns a native Stack.",
     "clients": "Client data is not implemented yet. Use the action below to inspect the dynamic route.",
     "analytics": "Analytics data is not implemented yet.",
     "profileSettings": "Profile settings will be implemented with the settings feature."
@@ -847,6 +846,14 @@
     "KZT": "Tenge",
     "RUB": "Ruble",
     "UZS": "Sum"
+  },
+  "calendar": {
+    "today": "Today",
+    "noVisits": "No visits",
+    "dayOff": "Day off",
+    "addVisit": "+ Visit",
+    "awaitingReply": "Awaiting reply",
+    "freeWindow": "+ Free {{range}}"
   },
   "today": {
     "openMenu": "Profile and menu",

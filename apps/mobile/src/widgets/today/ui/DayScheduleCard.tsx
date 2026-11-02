@@ -8,21 +8,22 @@ import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
-import { scheduleCardLook, type Appointment } from '@/entities/appointment';
+import type { Appointment } from '@/entities/appointment';
 import type { TimeBlock } from '@/entities/time-block';
+import {
+  BlockContent,
+  EventContent,
+  eventCardStyles,
+  visitCardInfo,
+  type BlockLook,
+} from '@/features/appointment-actions';
 import { eventSwatch } from '@/shared/lib/color';
 import { formatTime } from '@/shared/lib/formats';
 import type { TimeInterval, TimelineItem } from '@/shared/lib/scheduling';
-import { Icon, Text, type ContextMenuAnchor } from '@/shared/ui';
+import { Text, type ContextMenuAnchor } from '@/shared/ui';
 import type { ScheduleVisit } from '../model/useToday';
 
 type Item = TimelineItem<Appointment, TimeBlock>;
-
-/** What a personal time row says: "13:30–15:00" and "Учёба". */
-export interface BlockLook {
-  range: string;
-  name: string;
-}
 
 export interface DayScheduleCardProps {
   /** "Вторник, 27 октября · 5 записей". */
@@ -142,21 +143,6 @@ interface VisitRowProps {
   onNote: () => void;
 }
 
-function visitInfo(
-  visit: ScheduleVisit,
-  now: number,
-  formatAmount: (amount: number) => string,
-  unknownClient: string,
-) {
-  return {
-    look: scheduleCardLook(visit.appointment, now),
-    name: visit.client
-      ? [visit.client.first_name, visit.client.last_name].filter(Boolean).join(' ')
-      : unknownClient,
-    details: [visit.serviceNames.join(', '), formatAmount(visit.price)].filter(Boolean).join(' · '),
-  };
-}
-
 function VisitRow({
   visit,
   label,
@@ -171,7 +157,7 @@ function VisitRow({
   const { theme } = useUnistyles();
   const ref = useRef<View>(null);
   const swatch = eventSwatch(visit.color, theme.name);
-  const { look, name, details } = visitInfo(
+  const { look, name, details } = visitCardInfo(
     visit,
     now,
     formatAmount,
@@ -199,7 +185,7 @@ function VisitRow({
           ref.current?.measureInWindow((x, y, width) => onLongPress({ x, y, width }))
         }
         style={({ pressed }) => [
-          styles.event,
+          eventCardStyles.event,
           { backgroundColor: swatch.fill },
           look.unconfirmed && { borderWidth: 1, borderStyle: 'dashed', borderColor: swatch.bar },
           pressed && styles.pressed,
@@ -215,105 +201,6 @@ function VisitRow({
         />
       </Pressable>
     </View>
-  );
-}
-
-/** A schedule event as drawn on the timeline — the lifted card of its long-press menu. */
-export function VisitEventPreview({
-  visit,
-  range,
-  now,
-  formatAmount,
-}: {
-  visit: ScheduleVisit;
-  range: string;
-  now: number;
-  formatAmount: (amount: number) => string;
-}) {
-  const { t } = useTranslation();
-  const { theme } = useUnistyles();
-  const swatch = eventSwatch(visit.color, theme.name);
-  const { look, name, details } = visitInfo(
-    visit,
-    now,
-    formatAmount,
-    t('today.schedule.unknownClient'),
-  );
-  return (
-    <View
-      style={[
-        styles.event,
-        styles.lifted,
-        { backgroundColor: swatch.fill },
-        look.unconfirmed && { borderWidth: 1, borderStyle: 'dashed', borderColor: swatch.bar },
-      ]}>
-      <EventContent
-        visit={visit}
-        range={range}
-        name={name}
-        details={details}
-        unconfirmed={look.unconfirmed}
-        bar={swatch.bar}
-      />
-    </View>
-  );
-}
-
-function EventContent({
-  visit,
-  range,
-  name,
-  details,
-  unconfirmed,
-  bar,
-  onNote,
-}: {
-  visit: ScheduleVisit;
-  range: string;
-  name: string;
-  details: string;
-  unconfirmed: boolean;
-  bar: string;
-  onNote?: () => void;
-}) {
-  const { t } = useTranslation();
-  return (
-    <>
-      <View style={[styles.bar, { backgroundColor: bar }]} />
-      <View style={styles.eventHead}>
-        <Text variant="microMedium" color="tertiary" tabularNums>
-          {range}
-        </Text>
-        {unconfirmed ? (
-          <View
-            accessible
-            accessibilityLabel={t('today.schedule.unconfirmed')}
-            style={styles.headMark}>
-            <Icon name="unconfirmed" size={14} color="tone.warning.fg" />
-          </View>
-        ) : null}
-      </View>
-      <View style={styles.nameRow}>
-        <Text variant="eventTitle" numberOfLines={1} style={styles.shrink}>
-          {name}
-        </Text>
-        {visit.appointment.notes?.trim() ? (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t('today.note.open')}
-            hitSlop={10}
-            disabled={!onNote}
-            onPress={onNote}
-            style={styles.noteButton}>
-            <Icon name="note" size={14} color="content.secondary" />
-            <View style={styles.noteDot} />
-          </Pressable>
-        ) : null}
-      </View>
-      <Text variant="caption2" color="secondary" tabularNums numberOfLines={1}>
-        {details}
-      </Text>
-    </>
   );
 }
 
@@ -345,37 +232,14 @@ function BlockRow({
         onLongPress={() =>
           ref.current?.measureInWindow((x, y, width) => onLongPress({ x, y, width }))
         }
-        style={({ pressed }) => [styles.event, styles.block, pressed && styles.pressed]}>
+        style={({ pressed }) => [
+          eventCardStyles.event,
+          eventCardStyles.block,
+          pressed && styles.pressed,
+        ]}>
         <BlockContent look={look} />
       </Pressable>
     </View>
-  );
-}
-
-/** Personal time as drawn on the timeline — the lifted card of its long-press menu. */
-export function BlockEventPreview({ look }: { look: BlockLook }) {
-  return (
-    <View style={[styles.event, styles.block, styles.lifted]}>
-      <BlockContent look={look} />
-    </View>
-  );
-}
-
-function BlockContent({ look }: { look: BlockLook }) {
-  return (
-    <>
-      <View style={styles.eventHead}>
-        <Text variant="microMedium" color="tertiary" tabularNums>
-          {look.range}
-        </Text>
-        <View style={styles.headMark}>
-          <Icon name="coffee" size={14} color="content.tertiary" />
-        </View>
-      </View>
-      <Text variant="eventTitle" numberOfLines={1}>
-        {look.name}
-      </Text>
-    </>
   );
 }
 
@@ -411,42 +275,7 @@ const styles = StyleSheet.create((theme) => ({
   row: { flexDirection: 'row', gap: theme.space[2.5] },
   dimmed: { opacity: 0.7 },
   time: { width: TIME_COLUMN, paddingTop: 2 },
-  event: {
-    flex: 1,
-    minWidth: 0,
-    gap: 1,
-    paddingVertical: 7,
-    paddingRight: theme.space[2.5],
-    paddingLeft: theme.space[3],
-    borderRadius: theme.radius.md,
-    overflow: 'hidden',
-  },
   pressed: { opacity: 0.7 },
-  lifted: { flex: 0 },
-  bar: { position: 'absolute', left: 0, top: 0, bottom: 0, width: 4 },
-  eventHead: { flexDirection: 'row', alignItems: 'center', gap: theme.space[1.5] },
-  /** The mark at the end of the time line. */
-  headMark: { marginLeft: 'auto' },
-  nameRow: { flexDirection: 'row', alignItems: 'center', gap: theme.space[1] },
-  shrink: { flexShrink: 1 },
-  noteButton: {
-    width: 20,
-    height: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  noteDot: {
-    position: 'absolute',
-    top: 1,
-    right: 0,
-    width: 7,
-    height: 7,
-    borderRadius: 4,
-    borderWidth: 1.5,
-    borderColor: theme.colors.bg.elevated,
-    backgroundColor: theme.colors.brand.default,
-  },
-  block: { backgroundColor: theme.colors.bg.sunken },
   now: { flexDirection: 'row', alignItems: 'center', gap: theme.space[2], marginVertical: 2 },
   nowPill: {
     width: 40,
