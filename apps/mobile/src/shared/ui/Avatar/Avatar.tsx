@@ -11,7 +11,7 @@ import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { AVATAR_GRADIENTS, avatarColorFor } from '@/shared/config/palettes';
 import { Text } from '@/shared/ui/Text';
 
-export type AvatarSize = 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | 'xxxl';
+export type AvatarSize = 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | 'profile' | 'xxxl';
 export type AvatarTone = 'hue' | 'brand';
 
 export interface AvatarProps {

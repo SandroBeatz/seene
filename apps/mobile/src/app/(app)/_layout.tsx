@@ -47,6 +47,7 @@ export default function AppLayout() {
           name="settings/profile"
           options={{ title: t('navigation.profileSettings') }}
         />
+        <Stack.Screen name="settings/preferences" options={{ title: t('menuHome.settings') }} />
         <Stack.Screen name="settings/services" options={{ title: t('services.title') }} />
         <Stack.Screen name="settings/expenses" options={{ title: t('expenses.title') }} />
         <Stack.Screen name="(modals)/appointment/[appointmentId]/index" options={sheet} />
@@ -74,6 +75,10 @@ export default function AppLayout() {
         <Stack.Screen
           name="(modals)/analytics-range"
           options={{ ...sheet, sheetAllowedDetents: [0.85] }}
+        />
+        <Stack.Screen
+          name="(modals)/page-qr"
+          options={{ ...sheet, sheetAllowedDetents: [0.64] }}
         />
         <Stack.Screen name="(modals)/client/new" options={sheet} />
         <Stack.Screen name="(modals)/client/[clientId]/merge" options={sheet} />

@@ -112,6 +112,7 @@ export const lightTheme = {
       strong: palette.rose[700],
       subtle: palette.rose[50],
       soft: palette.rose[200],
+      ring: palette.rose.ring,
     },
     // Theme-invariant absolutes — same in light & dark. For brand surfaces that must
     // not flip with the theme (e.g. the Google button is always white).
@@ -247,6 +248,7 @@ export const darkTheme = {
       strong: palette.rose[200],
       subtle: palette.rose.darkSubtle,
       soft: palette.rose[700],
+      ring: palette.rose.darkSubtle,
     },
     // Theme-invariant absolutes — identical to the light theme by design.
     constant: {

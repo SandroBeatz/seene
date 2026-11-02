@@ -1442,5 +1442,20 @@
       "sub": "{{visits}} · last on {{last}}",
       "empty": "No clients in this period"
     }
+  },
+  "menuHome": {
+    "settings": "Settings",
+    "editProfile": "Edit profile",
+    "pageLabel": "Your booking page",
+    "qrA11y": "Page QR code",
+    "shareA11y": "Share link",
+    "work": "Work",
+    "services": "Services and prices",
+    "listAnd": " and ",
+    "qr": {
+      "title": "QR code",
+      "hint": "Clients point their camera here to open your booking page.",
+      "share": "Share link"
+    }
   }
 }

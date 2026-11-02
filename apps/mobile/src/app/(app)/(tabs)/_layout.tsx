@@ -41,7 +41,10 @@ export default function TabsLayout() {
           <NativeTabs.Trigger.Label>{t('tabs.clients')}</NativeTabs.Trigger.Label>
         </NativeTabs.Trigger>
         <NativeTabs.Trigger name="(settings)" disableAutomaticContentInsets>
-          <NativeTabs.Trigger.Icon sf="line.3.horizontal" md="menu" />
+          <NativeTabs.Trigger.Icon
+            sf={{ default: 'square.grid.2x2', selected: 'square.grid.2x2.fill' }}
+            md="grid_view"
+          />
           <NativeTabs.Trigger.Label>{t('tabs.menu')}</NativeTabs.Trigger.Label>
         </NativeTabs.Trigger>
       </NativeTabs>

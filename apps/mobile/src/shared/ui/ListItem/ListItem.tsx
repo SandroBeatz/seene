@@ -1,7 +1,8 @@
 /**
  * Standard row: optional left slot, title + subtitle, optional trailing value and
  * a chevron when pressable (or any custom right accessory, e.g. a Switch).
- * size md = 56pt (settings rows), sm = 52pt (summary/form rows).
+ * size md = 56pt (settings rows), sm = 52pt (summary/form rows), menu = 54pt with a
+ * muted trailing value (the main menu, see MenuRow).
  * `inset` adds the 16pt side padding for free-standing lists; rows inside a
  * GroupedCard use inset={false}. docs/design-system.md §4.2.
  */
@@ -11,7 +12,7 @@ import { StyleSheet } from 'react-native-unistyles';
 import { Icon } from '@/shared/ui/Icon';
 import { Text } from '@/shared/ui/Text';
 
-export type ListItemSize = 'sm' | 'md';
+export type ListItemSize = 'sm' | 'md' | 'menu';
 
 export interface ListItemProps {
   title: string;
@@ -72,7 +73,10 @@ export function ListItem({
       {right ?? (
         <View style={styles.trailing}>
           {trailingText ? (
-            <Text variant="bodyStrong" numberOfLines={1}>
+            <Text
+              variant={size === 'menu' ? 'footnote' : 'bodyStrong'}
+              color={size === 'menu' ? 'tertiary' : 'primary'}
+              numberOfLines={1}>
               {trailingText}
             </Text>
           ) : null}
@@ -103,6 +107,7 @@ const styles = StyleSheet.create((theme) => ({
       size: {
         sm: { minHeight: theme.sizing.row.sm },
         md: { minHeight: theme.sizing.row.md, paddingVertical: theme.space[2] },
+        menu: { minHeight: theme.sizing.row.menu, gap: theme.space[3] },
       },
       inset: {
         true: { paddingHorizontal: theme.space[4] },
@@ -112,6 +117,12 @@ const styles = StyleSheet.create((theme) => ({
   },
   left: { justifyContent: 'center' },
   body: { flex: 1, minWidth: 0, gap: theme.space[0.25] },
-  trailing: { flexDirection: 'row', alignItems: 'center', gap: theme.space[2.5], flexShrink: 1 },
+  trailing: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.space[2.5],
+    flexShrink: 1,
+    variants: { size: { sm: {}, md: {}, menu: { gap: theme.space[3] } } },
+  },
   pressed: { opacity: 0.6 },
 }));
