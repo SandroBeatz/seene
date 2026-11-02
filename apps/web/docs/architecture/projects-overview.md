@@ -131,7 +131,6 @@ Each app is configured independently but **must agree on the Supabase project**.
 | Var                                    | Purpose                                                        |
 | -------------------------------------- | -------------------------------------------------------------- |
 | `NUXT_SUPABASE_URL`                    | Shared Supabase project URL                                    |
-| `NUXT_SUPABASE_PUBLISHABLE_KEY`        | Anon key (client-safe)                                         |
 | `NUXT_SUPABASE_SERVICE_ROLE_KEY`       | Service role — server-only, bypasses RLS for public reads      |
 | `NUXT_PHONE_VERIFICATION_TOKEN_SECRET` | HMAC secret for the phone-OTP token                            |
 | `NUXT_PUBLIC_DASHBOARD_URL`            | Link back to `master.seene` (e.g. for "manage your page" CTAs) |

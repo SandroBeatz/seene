@@ -79,7 +79,8 @@ function resolveSettings(row: MasterSettingsRow | null): MasterSettings {
 
 export default defineEventHandler(async (event) => {
   const username = getRouterParam(event, 'username')
-  const supabase = useSupabase()
+  // Service role: this route selects only the columns the public page shows.
+  const supabase = useServiceSupabase()
 
   if (!username) {
     throw createError({ statusCode: 400, message: 'Username is required' })
@@ -99,10 +100,6 @@ export default defineEventHandler(async (event) => {
 
   const { schedule, ...publicProfile } = profile
   const parsedSchedule = getProfileSchedule(schedule)
-
-  // master_settings has no public read policy (owner-only RLS), so it must be
-  // read with the service-role client. Profile/services are public-readable.
-  const serviceSupabase = useServiceSupabase()
 
   const [
     { data: categories },
@@ -128,15 +125,14 @@ export default defineEventHandler(async (event) => {
       // draft: hidden from the public page until the master sets a price.
       .or('price.gt.0,show_online.eq.true')
       .order('sort_order'),
-    serviceSupabase
+    supabase
       .from('master_settings')
       .select(
         'language, currency, time_format, date_format, online_booking_enabled, booking_default_status, booking_buffer_minutes, booking_min_notice_minutes, calendar_slot_step_minutes, page_theme, page_accent, booking_horizon_days, cancel_window_hours, vacation_from, vacation_until'
       )
       .eq('user_id', profile.user_id)
       .maybeSingle(),
-    // payment_type is owner-only (RLS), so it needs the service-role client.
-    serviceSupabase
+    supabase
       .from('payment_type')
       .select('id, kind, name, color, is_active, sort_order')
       .eq('user_id', profile.user_id)
@@ -149,7 +145,7 @@ export default defineEventHandler(async (event) => {
       .order('sort_order'),
     // Past visits that happened: shown only when the master turned the counter on.
     profile.show_visits_count
-      ? serviceSupabase
+      ? supabase
           .from('appointments')
           .select('id', { count: 'exact', head: true })
           .eq('user_id', profile.user_id)

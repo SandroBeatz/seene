@@ -14,14 +14,11 @@ status: living
 
 ## A. Decisions needed from you (blocking or shaping)
 
-### Q-DB-1 — `master_profile` is world-readable (privacy) — ✅ RESOLVED (accepted)
-**Owner decision (2026-08-19):** public read of the master profile — **including phone and
-address — is intentional**: clients need it to contact/find the master. Keep the public
-`SELECT` policy as-is. No tightening for now.
-*Follow-ups to keep in mind (not blocking):* (a) App/Play Store privacy disclosures must state
-that master contact details are public; (b) if solo-master home-address safety ever becomes a
-concern, we can later expose only `city` + hide exact street via a public view — but **not doing
-this now** per owner.
+### Q-DB-1 — `master_profile` is world-readable (privacy) — ✅ RESOLVED (closed)
+**Owner decision (2026-11-02):** close direct reads with the public key; this replaces the
+2026-08-19 decision to keep them. The public page reads through the web server and still shows
+the address and contact fields it selects, but not `phone`, and the whole table can no longer be
+downloaded. App/Play Store privacy disclosures must state which master contact details are public.
 
 ### Q-DB-2 — How does a public `booking` become an `appointment`? — ✅ RESOLVED
 Directly: `create_appointment_from_booking` writes to `appointments` with

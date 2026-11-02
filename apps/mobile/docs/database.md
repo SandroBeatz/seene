@@ -49,27 +49,13 @@ six fall into two groups:
 
 ## 2. Verified truths that differ from / extend the web docs
 
-### 2.1 RLS is **not** "authenticated-only" — public read policies exist ⚠️
+### 2.1 Public data goes through the web server
 
-The web `data-model.md` "Security model summary" states: *"There are no public (unauthenticated)
-read policies; all access requires a valid Supabase auth session."* **This is false in the live
-DB.** The public booking site added anon-readable policies:
+`master_profile`, `service`, `service_category` and `portfolio_item` are owner-only: a master
+reads and writes only their own rows. The public master page reads them through the web route
+`/api/master/[username]`, with the service role, and gets only the columns the page shows.
 
-| Table | Policy | Effect |
-|---|---|---|
-| `master_profile` | `Public can read master profiles` — `SELECT USING (true)` | **Anyone (anon) can read every master profile** |
-| `service` | `Public can read services` — `SELECT USING (true)` | Anyone can read all services |
-| `service_category` | `Public can read service categories` — `SELECT USING (true)` | Anyone can read all categories |
-| `availability` | `Anyone can view availability` — `SELECT USING (true)` | Anyone can read availability |
-
-Writes remain owner-scoped. On `master_profile` the single `FOR ALL` policy the web docs
-describe has been **split** into: public `SELECT`, plus own-row `INSERT` / `UPDATE` / `DELETE`
-(`auth.uid() = user_id`).
-
-**Privacy implication (risk):** `master_profile` exposes `phone`, `address`, `house_number`,
-`zip_code`, `place_id`, and `contact_email` to unauthenticated clients. Some fields are meant to
-be public (name, `username`, `city`, `specializations`, `avatar_url`, `bio`, socials); **exact
-address + phone likely are not.** See [open-questions.md](./open-questions.md) Q-DB-1.
+One public read policy is left: `availability` (`Anyone can view availability`).
 
 The remaining master-app tables (`appointments`, `client`, `time_block`, `payment_type`, `sale`,
 `sale_item`, `master_settings`) are correctly owner-scoped `auth.uid() = user_id` (sale_item via

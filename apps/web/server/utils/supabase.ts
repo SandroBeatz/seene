@@ -1,11 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from '#shared/types/supabase'
 
-export function useSupabase() {
-  const config = useRuntimeConfig()
-  return createClient<Database>(config.supabaseUrl, config.supabasePublishableKey)
-}
-
 export function useServiceSupabase() {
   const config = useRuntimeConfig()
 
