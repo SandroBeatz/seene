@@ -32,11 +32,10 @@ six fall into two groups:
 | `sale` | 131 | One financial record per completed appointment |
 | `sale_item` | 148 | Per-service line snapshots within a sale |
 
-**Public-booking tables (owned by the `seene` Nuxt site, NOT this app) — 3:**
+**Public-booking tables (owned by the `seene` Nuxt site, NOT this app) — 2:**
 
 | Table | Rows* | Purpose |
 |---|---|---|
-| `bookings` | 0 | Public self-booking requests (keyed to `master_profile.id`, phone-based) |
 | `availability` | 0 | Alternative availability model for the public page (`day_of_week`/`specific_date`) |
 | `otp_codes` | 53 | Phone OTP verification for public booking; RLS on, **no policies** (service-role only) |
 
@@ -62,7 +61,6 @@ DB.** The public booking site added anon-readable policies:
 | `service` | `Public can read services` — `SELECT USING (true)` | Anyone can read all services |
 | `service_category` | `Public can read service categories` — `SELECT USING (true)` | Anyone can read all categories |
 | `availability` | `Anyone can view availability` — `SELECT USING (true)` | Anyone can read availability |
-| `bookings` | `Anyone can create bookings` — `INSERT WITH CHECK (master exists)` | Anyone can insert a booking |
 
 Writes remain owner-scoped. On `master_profile` the single `FOR ALL` policy the web docs
 describe has been **split** into: public `SELECT`, plus own-row `INSERT` / `UPDATE` / `DELETE`
@@ -83,12 +81,12 @@ is needed in the client** — RLS enforces isolation.
 The web `online-booking.md` says the public flow "does not exist yet." At the **database** level
 it partially does, consumed by the `seene` Nuxt site:
 
-- Tables `bookings`, `availability`, `otp_codes`.
-- RPCs `create_booking(...)` and `create_appointment_from_booking(...)` (see §3).
+- Tables `availability`, `otp_codes`.
+- RPC `create_appointment_from_booking(...)` (see §3).
 
-How a public booking becomes a master `appointment` (via `create_appointment_from_booking`,
-producing `source = 'online_booking'`) vs. the intermediate `bookings` table is **not fully
-pinned down** — both paths exist and `bookings` is empty. This is [open-questions.md](./open-questions.md) Q-DB-2.
+A public booking becomes a master `appointment` directly, through
+`create_appointment_from_booking`, with `source = 'online_booking'`. The legacy `bookings` table
+and `create_booking` RPC were removed on 2026-11-02.
 
 ### 2.3 `data-model.md`'s "at a glance" table is incomplete
 
@@ -116,7 +114,6 @@ operations; the mobile app calls a subset via `supabase.rpc(...)` inside the api
 | `complete_onboarding(p_payload jsonb) → uuid` | ✅ | **SECURITY INVOKER** (caller's RLS). One transaction: `master_profile` + `master_settings` + `service[]` (+ `service_category` per distinct name). Raises `already_completed`, `invalid_payload` (22023); username clash = 23505. A service without a price is saved with `price 0, show_online false` (a draft, hidden from the public page). |
 | `specialization_keys() → text[]` | ❌ (CHECKs) | Immutable list of the 14 profession keys shared by both CHECK constraints. |
 | `analytics_period_metrics(p_uid, p_from, p_to) → json` | ❌ (internal) | Scalar-metrics helper; not granted to any role. |
-| `create_booking(p_username, p_service_ids, p_starts_at, p_phone, p_note) → jsonb` | ❌ (public site) | Anon creates a public booking. |
 | `create_appointment_from_booking(p_username, p_service_ids, p_starts_at, p_phone, p_first_name, p_last_name, p_note) → jsonb` | ❌ (public site) | Anon path that materialises an `appointment`. |
 | `rls_auto_enable()` (event trigger fn) | — | Infra: auto-enables RLS on newly created tables. |
 
@@ -176,4 +173,4 @@ mobile app uploads a client-resized square WebP (≤512px) — it needs an image
 Read/write CRUD (RLS-scoped) on the 10 master-app tables + 5 RPCs (`complete_appointment`,
 `get_analytics_v2`, `get_analytics_widgets_v2`, `appointment_day_counts`,
 `check_username_available`) + the `avatars` bucket + Supabase Auth. It does **not** touch
-`bookings`, `availability`, `otp_codes`, or the two booking RPCs.
+`availability`, `otp_codes`, or the booking RPC.

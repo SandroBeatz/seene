@@ -177,53 +177,6 @@ export type Database = {
           },
         ]
       }
-      bookings: {
-        Row: {
-          client_name: string | null
-          client_phone: string
-          created_at: string
-          ends_at: string
-          id: string
-          master_id: string
-          note: string | null
-          service_ids: string[]
-          starts_at: string
-          status: string
-        }
-        Insert: {
-          client_name?: string | null
-          client_phone: string
-          created_at?: string
-          ends_at: string
-          id?: string
-          master_id: string
-          note?: string | null
-          service_ids: string[]
-          starts_at: string
-          status?: string
-        }
-        Update: {
-          client_name?: string | null
-          client_phone?: string
-          created_at?: string
-          ends_at?: string
-          id?: string
-          master_id?: string
-          note?: string | null
-          service_ids?: string[]
-          starts_at?: string
-          status?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "bookings_master_id_fkey"
-            columns: ["master_id"]
-            isOneToOne: false
-            referencedRelation: "master_profile"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       client: {
         Row: {
           avatar_color: string | null
@@ -984,16 +937,6 @@ export type Database = {
           p_phone: string
           p_reminders_consent?: boolean
           p_replaces_hash?: string
-          p_service_ids: string[]
-          p_starts_at: string
-          p_username: string
-        }
-        Returns: Json
-      }
-      create_booking: {
-        Args: {
-          p_note?: string
-          p_phone: string
           p_service_ids: string[]
           p_starts_at: string
           p_username: string

@@ -57,7 +57,7 @@ The Supabase database therefore serves **two different audiences**:
 - The **master app** tables (`master_profile`, `master_settings`, `service`, `service_category`,
   `client`, `appointments`, `time_block`, `payment_type`, `sale`, `sale_item`) — accessed by the
   authenticated master, scoped by `auth.uid()`.
-- The **public booking** tables (`bookings`, `availability`, `otp_codes`) — accessed by the Nuxt
+- The **public booking** tables (`availability`, `otp_codes`) — accessed by the Nuxt
   site on behalf of anonymous clients, via `SECURITY DEFINER` RPCs and service-role server routes.
 
 **This mobile app only owns the master-app tables.** It must, however, understand the public

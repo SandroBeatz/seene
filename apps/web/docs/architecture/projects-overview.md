@@ -68,8 +68,8 @@ authenticates and edits their own data. RLS on every table is `auth.uid() =
 user_id`, so the dashboard can only ever touch the logged-in master's rows.
 
 **`seene` owns** (writes): its own booking/OTP plumbing — the booking tables and
-RPCs under `seene/supabase/migrations/` (`create_booking_rpc`,
-`create_appointment_from_booking`, OTP attempt tracking). It reads master data
+RPCs under `seene/supabase/migrations/` (`create_appointment_from_booking`,
+OTP attempt tracking). It reads master data
 through a **service-role Nitro server** (it has no logged-in user, so it bypasses
 RLS server-side via `NUXT_SUPABASE_SERVICE_ROLE_KEY`) and writes appointments
 only through restricted RPCs, never directly.
