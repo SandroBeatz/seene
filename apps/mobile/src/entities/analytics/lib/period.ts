@@ -71,6 +71,17 @@ export function shiftPeriod(period: Period, direction: 1 | -1, zone: string): Pe
   };
 }
 
+/** A step of the arrows: a custom period stepped into the future stops at today. */
+export function stepPeriod(
+  period: Period,
+  direction: 1 | -1,
+  todayKey: string,
+  zone: string,
+): Period {
+  const next = shiftPeriod(period, direction, zone);
+  return next.unit === 'custom' && next.endKey > todayKey ? { ...next, endKey: todayKey } : next;
+}
+
 /** The future has nothing to show: no stepping past the period holding today. */
 export function canStepForward(period: Period, todayKey: string): boolean {
   return period.endKey < todayKey;

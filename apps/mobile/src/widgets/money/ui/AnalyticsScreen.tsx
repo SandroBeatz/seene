@@ -11,7 +11,7 @@ import { DateTime } from 'luxon';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
-import { useMoneyOverviewQuery, type PeriodUnit } from '@/entities/analytics';
+import { periodDays, useMoneyOverviewQuery, type PeriodUnit } from '@/entities/analytics';
 import { useMoneyContext } from '@/entities/master';
 import { errorMessageKey, normalizeError } from '@/shared/api/errors';
 import { pluralCategory } from '@/shared/lib/i18n';
@@ -62,9 +62,7 @@ export function AnalyticsScreen() {
     if (!data) return null;
     const change = percentChange(data.current.earned, data.previous.earned);
     if (period.unit === 'custom') {
-      const days = Math.round(
-        DateTime.fromISO(period.endKey, { zone: 'utc' }).diff(start, 'days').days,
-      ) + 1;
+      const days = periodDays(period);
       return {
         text: t('money.customDelta', {
           days: t(`money.days_${pluralCategory(days, ctx.locale)}`, { count: days }),

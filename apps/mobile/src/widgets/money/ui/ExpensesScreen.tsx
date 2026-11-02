@@ -23,10 +23,12 @@ import {
   useNow,
   useRefreshControl,
 } from '@/shared/ui';
+import { useDayTitle } from '../model/usePeriod';
 import { ExpenseRow } from './ExpenseRow';
 
+type DayItem = { type: 'day'; key: string; day: string; sum: number };
 type Item =
-  | { type: 'day'; key: string; day: string; sum: number }
+  | DayItem
   | { type: 'row'; key: string; expense: Expense; divided: boolean };
 
 export function ExpensesScreen() {
@@ -47,30 +49,21 @@ export function ExpensesScreen() {
   const total = list.reduce((sum, e) => sum + e.amount, 0);
   const items = useMemo(() => {
     const out: Item[] = [];
-    list.forEach((expense, index) => {
-      const first = list[index - 1]?.spent_on !== expense.spent_on;
-      if (first) {
-        out.push({
-          type: 'day',
-          key: `day-${expense.spent_on}`,
-          day: expense.spent_on,
-          sum: list
-            .filter((e) => e.spent_on === expense.spent_on)
-            .reduce((sum, e) => sum + e.amount, 0),
-        });
+    let header: DayItem | undefined;
+    for (const expense of list) {
+      const first = header?.day !== expense.spent_on;
+      if (first || !header) {
+        header = { type: 'day', key: `day-${expense.spent_on}`, day: expense.spent_on, sum: 0 };
+        out.push(header);
       }
+      header.sum += expense.amount;
       out.push({ type: 'row', key: expense.id, expense, divided: !first });
-    });
+    }
     return out;
   }, [list]);
 
   const months = t('months', { returnObjects: true }) as string[];
-  const genitive = t('monthsGenitive', { returnObjects: true }) as string[];
-  const weekdays = t('weekdays.long', { returnObjects: true }) as string[];
-  const dayTitle = (key: string) => {
-    const date = DateTime.fromISO(key, { zone: 'utc' });
-    return `${date.day} ${genitive[date.month - 1]}, ${weekdays[date.weekday - 1]?.toLowerCase()}`;
-  };
+  const dayTitle = useDayTitle();
   const add = () =>
     router.push(
       offset === 0 ? '/expense/new' : { pathname: '/expense/new', params: { day: toKey } },

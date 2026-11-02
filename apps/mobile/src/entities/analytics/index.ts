@@ -12,6 +12,7 @@ export {
   periodDays,
   periodRange,
   shiftPeriod,
+  stepPeriod,
   type Period,
   type PeriodRange,
   type PeriodUnit,

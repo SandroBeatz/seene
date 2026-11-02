@@ -3,6 +3,7 @@
  * methods, top services, clients, busy days, no-shows. A block with nothing to show
  * is left out, except expenses: its button is how the first one gets added.
  */
+import { useMemo } from 'react';
 import { router } from 'expo-router';
 import { DateTime } from 'luxon';
 import { useTranslation } from 'react-i18next';
@@ -92,9 +93,13 @@ export function AnalyticsSections({ overview }: { overview: MoneyOverview }) {
     .toISO()!;
   const history = useVisitHistoryQuery(userId, historyFrom);
   const dismissed = useDismissedAttentionQuery(userId);
-  const recallCount = recallCandidates(history.data ?? [], now).filter(
-    (c) => !dismissed.data?.has(`recall:${c.clientId}`),
-  ).length;
+  const recallCount = useMemo(
+    () =>
+      recallCandidates(history.data ?? [], now).filter(
+        (c) => !dismissed.data?.has(`recall:${c.clientId}`),
+      ).length,
+    [history.data, dismissed.data, now],
+  );
 
   const {
     current,

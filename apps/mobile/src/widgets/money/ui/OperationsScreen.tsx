@@ -14,7 +14,7 @@ import { useExpensesRangeQuery, type Expense } from '@/entities/expense';
 import { useMoneyContext } from '@/entities/master';
 import { errorMessageKey, normalizeError } from '@/shared/api/errors';
 import { Avatar, Chip, EmptyState, ErrorState, SkeletonList, Text, useRefreshControl } from '@/shared/ui';
-import { usePeriod, usePeriodName } from '../model/usePeriod';
+import { useDayTitle, usePeriod, usePeriodName } from '../model/usePeriod';
 import { ExpenseRow } from './ExpenseRow';
 
 type Filter = 'all' | 'in' | 'out';
@@ -24,8 +24,9 @@ type Operation =
   | { type: 'sale'; day: string; sort: string; sale: SaleOperation }
   | { type: 'expense'; day: string; sort: string; expense: Expense };
 
+type DayItem = { type: 'day'; key: string; day: string; net: number };
 type Item =
-  | { type: 'day'; key: string; day: string; net: number }
+  | DayItem
   | { type: 'row'; key: string; operation: Operation; divided: boolean };
 
 export function OperationsScreen() {
@@ -33,6 +34,7 @@ export function OperationsScreen() {
   const { period, range, userId, zone } = usePeriod();
   const ctx = useMoneyContext(userId);
   const periodName = usePeriodName();
+  const dayTitle = useDayTitle();
   const sales = useSaleOperationsQuery(userId, range.from, range.to);
   const expenses = useExpensesRangeQuery(userId, period.startKey, period.endKey);
   const [filter, setFilter] = useState<Filter>('all');
@@ -58,34 +60,24 @@ export function OperationsScreen() {
     ].sort((a, b) => b.day.localeCompare(a.day) || b.sort.localeCompare(a.sort));
 
     const out: Item[] = [];
-    let index = 0;
-    while (index < operations.length) {
-      const day = operations[index]!.day;
-      const rows = operations.filter((o) => o.day === day);
-      const net = rows.reduce(
-        (sum, o) => sum + (o.type === 'sale' ? o.sale.amount : -o.expense.amount),
-        0,
-      );
-      out.push({ type: 'day', key: `day-${day}`, day, net });
-      rows.forEach((operation, i) =>
-        out.push({
-          type: 'row',
-          key: operation.type === 'sale' ? operation.sale.id : operation.expense.id,
-          operation,
-          divided: i > 0,
-        }),
-      );
-      index += rows.length;
+    let header: DayItem | undefined;
+    for (const operation of operations) {
+      const first = header?.day !== operation.day;
+      if (first || !header) {
+        header = { type: 'day', key: `day-${operation.day}`, day: operation.day, net: 0 };
+        out.push(header);
+      }
+      header.net += operation.type === 'sale' ? operation.sale.amount : -operation.expense.amount;
+      out.push({
+        type: 'row',
+        key: operation.type === 'sale' ? operation.sale.id : operation.expense.id,
+        operation,
+        divided: !first,
+      });
     }
     return out;
   }, [sales.data, expenses.data, filter, zone]);
 
-  const weekdays = t('weekdays.long', { returnObjects: true }) as string[];
-  const genitive = t('monthsGenitive', { returnObjects: true }) as string[];
-  const dayTitle = (key: string) => {
-    const date = DateTime.fromISO(key, { zone: 'utc' });
-    return `${date.day} ${genitive[date.month - 1]}, ${weekdays[date.weekday - 1]?.toLowerCase()}`;
-  };
   const methodLabel = (sale: SaleOperation) => {
     const method = sale.payment_type;
     if (!method) return null;
@@ -96,6 +88,8 @@ export function OperationsScreen() {
 
   const error = sales.error ?? expenses.error;
   const pending = sales.isPending || expenses.isPending;
+  // One half missing would read as a real total, so nothing is listed until both load.
+  const failed = (sales.isError && !sales.data) || (expenses.isError && !expenses.data);
 
   const header = (
     <View>
@@ -139,7 +133,7 @@ export function OperationsScreen() {
       contentInsetAdjustmentBehavior="automatic"
       style={styles.root}
       contentContainerStyle={styles.content}
-      data={items}
+      data={failed ? [] : items}
       keyExtractor={(item) => item.key}
       ListHeaderComponent={header}
       refreshControl={refreshControl}

@@ -215,7 +215,8 @@ from `get_money_clients`. The app only formats and draws (`widgets/money`).
 - **New client:** their first ever completed visit falls in the period; the rest "came back".
 - **Load:** completed minutes / open minutes, counted up to now. Open = working hours minus breaks,
   vacation and personal time. "Free hours" = open minus completed.
-- **Not earned:** `price` of no-shows and of visits cancelled by the client.
+- **Not earned:** no-shows and visits cancelled by the client, at the visit's `price` or, when it
+  has none, the list price of its services.
 
 **Expenses** are the master's own rows with a fixed category. "Повторять каждый месяц" is a chain of
 real rows: the hourly cron `roll_recurring_expenses()` copies the newest row when its next date comes

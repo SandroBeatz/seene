@@ -2,6 +2,7 @@
  * What every money screen reads: the master's zone and currency, the app language,
  * and amounts formatted from them ("51 300 сом", "51 300").
  */
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { currencySymbol, formatAmount } from '@/shared/lib/formats';
 import type { AppLocale } from '@/shared/lib/i18n';
@@ -19,7 +20,10 @@ export function useMoneyContext(userId: string) {
   const locale = (LOCALES.includes(i18n.language) ? i18n.language : 'en') as AppLocale;
   const currency = settings.data?.currency ?? 'EUR';
   const zone = parseStoredSchedule(profile.data?.schedule)?.timezone ?? deviceTimeZone();
-  const number = new Intl.NumberFormat(locale, { maximumFractionDigits: 2 });
+  const number = useMemo(
+    () => new Intl.NumberFormat(locale, { maximumFractionDigits: 2 }),
+    [locale],
+  );
 
   return {
     zone,

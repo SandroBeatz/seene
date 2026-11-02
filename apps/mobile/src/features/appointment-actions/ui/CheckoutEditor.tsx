@@ -328,6 +328,8 @@ const styles = StyleSheet.create((theme) => ({
     gap: theme.space[2],
   },
   amountInput: {
+    // Emptied, the field still has to be big enough to tap back into.
+    minWidth: 60,
     textAlign: 'center',
     color: theme.colors.content.primary,
     ...theme.typography.amount,

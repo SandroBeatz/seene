@@ -6,6 +6,7 @@ import {
   periodDays,
   periodRange,
   shiftPeriod,
+  stepPeriod,
 } from './period';
 
 const ZONE = 'Asia/Bishkek';
@@ -51,6 +52,23 @@ describe('canStepForward', () => {
   it('stops at the period holding today', () => {
     expect(canStepForward(currentPeriod('month', '2026-11-02', ZONE), '2026-11-02')).toBe(false);
     expect(canStepForward(currentPeriod('month', '2026-10-02', ZONE), '2026-11-02')).toBe(true);
+  });
+});
+
+describe('stepPeriod', () => {
+  const custom = { unit: 'custom' as const, startKey: '2026-11-01', endKey: '2026-11-10' };
+
+  it('stops a custom period at today', () => {
+    expect(stepPeriod(custom, 1, '2026-11-12', ZONE)).toEqual({
+      unit: 'custom',
+      startKey: '2026-11-11',
+      endKey: '2026-11-12',
+    });
+  });
+
+  it('keeps the length when the whole step is in the past', () => {
+    expect(stepPeriod(custom, 1, '2026-12-01', ZONE).endKey).toBe('2026-11-20');
+    expect(stepPeriod(custom, -1, '2026-11-12', ZONE).endKey).toBe('2026-10-31');
   });
 });
 

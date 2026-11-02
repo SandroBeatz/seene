@@ -10,7 +10,7 @@ import {
   canStepForward,
   currentPeriod,
   periodRange,
-  shiftPeriod,
+  stepPeriod,
   type Period,
   type PeriodUnit,
 } from '@/entities/analytics';
@@ -23,6 +23,17 @@ const usePeriodStore = create<{ period: Period | null; set: (period: Period) => 
   set: (period) => set({ period }),
 }));
 
+/** "2 ноября, понедельник". */
+export function useDayTitle() {
+  const { t } = useTranslation();
+  const weekdays = t('weekdays.long', { returnObjects: true }) as string[];
+  const genitive = t('monthsGenitive', { returnObjects: true }) as string[];
+  return (key: string) => {
+    const date = DateTime.fromISO(key, { zone: 'utc' });
+    return `${date.day} ${genitive[date.month - 1]}, ${weekdays[date.weekday - 1]?.toLowerCase()}`;
+  };
+}
+
 /** "Октябрь 2026", "26 окт – 1 ноя", "5–18 октября", "2026". */
 export function usePeriodName() {
   const { t } = useTranslation();
@@ -34,6 +45,7 @@ export function usePeriodName() {
     const end = DateTime.fromISO(period.endKey, { zone: 'utc' });
     if (period.unit === 'year') return String(start.year);
     if (period.unit === 'month') return `${months[start.month - 1]} ${start.year}`;
+    if (period.startKey === period.endKey) return `${start.day} ${genitive[start.month - 1]}`;
     if (start.hasSame(end, 'month')) {
       return `${start.day}–${end.day} ${genitive[end.month - 1]}`;
     }
@@ -62,7 +74,7 @@ export function usePeriod() {
     canGoNext: canStepForward(period, todayKey),
     pickUnit: (unit: Exclude<PeriodUnit, 'custom'>) =>
       setPeriod(currentPeriod(unit, todayKey, zone)),
-    step: (direction: 1 | -1) => setPeriod(shiftPeriod(period, direction, zone)),
+    step: (direction: 1 | -1) => setPeriod(stepPeriod(period, direction, todayKey, zone)),
     setPeriod,
   };
 }

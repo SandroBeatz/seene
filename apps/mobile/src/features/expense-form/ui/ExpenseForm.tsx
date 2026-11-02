@@ -57,7 +57,8 @@ export function ExpenseForm({ expense, initialDay }: ExpenseFormProps) {
   const remove = useDeleteExpenseMutation(userId);
 
   const todayKey = DateTime.fromMillis(now, { zone: money.zone }).toISODate()!;
-  const [amountInput, setAmountInput] = useState(expense ? money.number(expense.amount) : '');
+  // Null until typed in: the stored sum may have kopecks, which the digits-only field can't read.
+  const [amountInput, setAmountInput] = useState<string | null>(null);
   const [category, setCategory] = useState<ExpenseCategory>(expense?.category ?? 'materials');
   const [day, setDay] = useState(expense?.spent_on ?? initialDay ?? todayKey);
   const [note, setNote] = useState(expense?.note ?? '');
@@ -67,7 +68,8 @@ export function ExpenseForm({ expense, initialDay }: ExpenseFormProps) {
   const monthsGenitive = t('monthsGenitive', { returnObjects: true }) as string[];
   const parsed = DateTime.fromISO(day, { zone: 'utc' });
   const dayLabel = `${parsed.day} ${monthsGenitive[parsed.month - 1] ?? ''}`;
-  const amount = Number(amountInput.replace(/[^\d]/g, ''));
+  const amount =
+    amountInput === null ? (expense?.amount ?? 0) : Number(amountInput.replace(/[^\d]/g, ''));
   const saving = create.isPending || update.isPending;
 
   const failed = () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage'));
@@ -135,7 +137,7 @@ export function ExpenseForm({ expense, initialDay }: ExpenseFormProps) {
           <AmountInput
             accessibilityLabel={t('expenses.amountA11y', { currency: money.currencyLabel })}
             autoFocus={!expense}
-            value={amountInput}
+            value={amountInput ?? (expense ? money.number(expense.amount) : '')}
             onChangeText={(text) => {
               const digits = text.replace(/[^\d]/g, '');
               setAmountInput(digits ? money.number(Number(digits)) : '');

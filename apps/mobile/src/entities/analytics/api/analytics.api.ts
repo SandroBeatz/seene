@@ -26,20 +26,30 @@ export async function getMoneyClients(from: string, to: string): Promise<PeriodC
   return data as PeriodClient[];
 }
 
+/** PostgREST returns at most this many rows per request (`max_rows`). */
+const PAGE_SIZE = 1000;
+
+/** All sales of the period, page by page: a busy year is more than one response holds. */
 export async function listSaleOperations(
   userId: string,
   from: string,
   to: string,
 ): Promise<SaleOperation[]> {
-  const { data, error } = await supabase
-    .from('sale')
-    .select(
-      'id, appointment_id, amount, tip, paid_at, client:client(first_name, last_name, avatar_color), payment_type:payment_type(kind, name), items:sale_item(name_snapshot)',
-    )
-    .eq('user_id', userId)
-    .gte('paid_at', from)
-    .lt('paid_at', to)
-    .order('paid_at', { ascending: false });
-  if (error) throw error;
-  return data as SaleOperation[];
+  const rows: SaleOperation[] = [];
+  for (let offset = 0; ; offset += PAGE_SIZE) {
+    const { data, error } = await supabase
+      .from('sale')
+      .select(
+        'id, appointment_id, amount, tip, paid_at, client:client(first_name, last_name, avatar_color), payment_type:payment_type(kind, name), items:sale_item(name_snapshot)',
+      )
+      .eq('user_id', userId)
+      .gte('paid_at', from)
+      .lt('paid_at', to)
+      .order('paid_at', { ascending: false })
+      .order('id')
+      .range(offset, offset + PAGE_SIZE - 1);
+    if (error) throw error;
+    rows.push(...(data as SaleOperation[]));
+    if (data.length < PAGE_SIZE) return rows;
+  }
 }
