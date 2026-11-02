@@ -2,7 +2,7 @@ import { type NativeStackNavigationOptions, Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
-import { CreatedToast } from '@/widgets/quick-create-flow';
+import { AppointmentToast } from '@/features/appointment-actions';
 import { useStackScreenOptions } from '@/shared/ui';
 
 export const unstable_settings = { anchor: '(tabs)' };
@@ -90,7 +90,7 @@ export default function AppLayout() {
           }
         />
       </Stack>
-      <CreatedToast />
+      <AppointmentToast />
     </View>
   );
 }
