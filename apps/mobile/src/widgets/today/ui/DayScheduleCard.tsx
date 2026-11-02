@@ -2,7 +2,7 @@
  * "Расписание" card (design "Таб · Сегодня"): the day as a timeline — visits tinted
  * with their service colour, personal time in grey and the green "now" line: between
  * events, or across the one happening now, at its real time; that one also gets an
- * hourglass and is drawn taller, with its text on the side the line isn't on. Ended ones
+ * hourglass and is drawn as tall as it is long. Ended ones
  * are dimmed; unconfirmed visits get a dashed outline in their colour and a
  * warning mark. An empty day shows the free hours.
  */
@@ -67,8 +67,14 @@ export function DayScheduleCard({
   const hasEvents = timeline.some((item) => item.kind === 'appointment' || item.kind === 'block');
   const current = ongoingItem(timeline, now);
   const nowLabel = time(new Date(now).toISOString());
-  const nowOn = (id: string): NowMark | null =>
-    current?.id === id ? { ratio: current.ratio, label: nowLabel } : null;
+  const nowOn = (id: string, start: string, end: string): NowMark | null =>
+    current?.id === id
+      ? {
+          ratio: current.ratio,
+          label: nowLabel,
+          minutes: (new Date(end).getTime() - new Date(start).getTime()) / 60_000,
+        }
+      : null;
 
   return (
     <View style={styles.card}>
@@ -92,7 +98,7 @@ export function DayScheduleCard({
                     label={time(item.start)}
                     range={range}
                     now={now}
-                    nowMark={nowOn(item.record.id)}
+                    nowMark={nowOn(item.record.id, item.start, item.end)}
                     formatAmount={formatAmount}
                     onPress={() => onOpenVisit(visit)}
                     onLongPress={(anchor) => onMenu(visit, anchor, range)}
@@ -116,7 +122,7 @@ export function DayScheduleCard({
                     label={item.allDay ? '' : time(item.start)}
                     look={look}
                     dimmed={endMs <= now}
-                    nowMark={nowOn(item.record.id)}
+                    nowMark={nowOn(item.record.id, item.start, item.end)}
                     onPress={() => onOpenBlock(item.record)}
                     onLongPress={(anchor) => onBlockMenu(item.record, anchor, look)}
                   />
@@ -143,24 +149,27 @@ export function DayScheduleCard({
   );
 }
 
-/** The "now" line across a row: how far down, and the time on its pill. */
+/** The "now" line across a row: how far down, the time on its pill, the event's length. */
 interface NowMark {
   ratio: number;
   label: string;
+  minutes: number;
 }
 
-/** Tall enough that the text always fits on one side of the line. */
-const ONGOING_HEIGHT = 120;
-/** Earlier in the row than this, the pill would cover the row's start time. */
-const PILL_COVERS_LABEL = 0.22;
+/** The current event's height follows its length; a short one keeps its natural height. */
+const POINTS_PER_MINUTE = 1;
+/** A card's height with its text, about. */
+const NATURAL_HEIGHT = 57;
+/** How far down the row the pill stops covering the time at its top. */
+const PILL_CLEARS_LABEL = 25;
+
+const ongoingHeight = (mark: NowMark) => ({ minHeight: mark.minutes * POINTS_PER_MINUTE });
 
 const rowLabel = (label: string, mark: NowMark | null) =>
-  mark && mark.ratio < PILL_COVERS_LABEL ? '' : label;
-
-const textSide = (mark: NowMark) => ({
-  minHeight: ONGOING_HEIGHT,
-  justifyContent: mark.ratio < 0.5 ? ('flex-end' as const) : ('flex-start' as const),
-});
+  mark &&
+  mark.ratio * Math.max(mark.minutes * POINTS_PER_MINUTE, NATURAL_HEIGHT) < PILL_CLEARS_LABEL
+    ? ''
+    : label;
 
 interface VisitRowProps {
   visit: ScheduleVisit;
@@ -220,7 +229,7 @@ function VisitRow({
           eventCardStyles.event,
           { backgroundColor: swatch.fill },
           look.unconfirmed && { borderWidth: 1, borderStyle: 'dashed', borderColor: swatch.bar },
-          nowMark && textSide(nowMark),
+          nowMark && ongoingHeight(nowMark),
           pressed && styles.pressed,
         ]}>
         <EventContent
@@ -272,7 +281,7 @@ function BlockRow({
         style={({ pressed }) => [
           eventCardStyles.event,
           eventCardStyles.block,
-          nowMark && textSide(nowMark),
+          nowMark && ongoingHeight(nowMark),
           pressed && styles.pressed,
         ]}>
         <BlockContent look={look} />
