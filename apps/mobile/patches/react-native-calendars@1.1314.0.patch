@@ -11,3 +11,16 @@ index ba99d938af6a8e2c026420a093c2ac43eee680f9..da4810c771013a0675c337e5ed024580
  const OVERLAP_EVENTS_SPACINGS = 10;
  const RIGHT_EDGE_SPACING = 10;
  function buildEvent(event, left, width, { dayStart = 0, hourBlockHeight = HOUR_BLOCK_HEIGHT }) {
+diff --git a/src/timeline-list/useTimelinePages.js b/src/timeline-list/useTimelinePages.js
+index 000a15673446218dbd5f056f2e7eda4088ab9365..e74b0da106154b75e21b86b9a4dd6182223cae68 100644
+--- a/src/timeline-list/useTimelinePages.js
++++ b/src/timeline-list/useTimelinePages.js
+@@ -46,7 +46,7 @@ const UseTimelinePages = ({ date, listRef, numberOfDays, shouldFixRTL }) => {
+         resetPages: useCallback(resetPages, []),
+         resetPagesDebounce: useCallback(debounce(resetPages, 500, { leading: false, trailing: true }), []),
+         scrollToPage: useCallback(scrollToPage, []),
+-        scrollToPageDebounce: useCallback(debounce(scrollToPage, 250, { leading: false, trailing: true }), []),
++        scrollToPageDebounce: useCallback(debounce(scrollToPage, 0, { leading: false, trailing: true }), []),
+         pagesRef,
+         pages,
+         shouldResetPages,

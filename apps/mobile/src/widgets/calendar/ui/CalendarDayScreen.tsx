@@ -5,7 +5,7 @@
  * opens the same menu as on "Сегодня"; an empty cell lights up under the finger and
  * starts a new appointment at its time.
  */
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { router, Stack } from 'expo-router';
 import { useHeaderHeight } from 'expo-router/react-navigation';
 import { DateTime } from 'luxon';
@@ -18,6 +18,7 @@ import {
   WeekCalendar,
   type CalendarProps,
   type TimelineListProps,
+  type TimelineProps,
   type TimelinePackedEventProps,
 } from 'react-native-calendars';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -80,6 +81,35 @@ const newAppointment = (dayKey: string, start?: string) =>
 type Menu =
   | { kind: 'visit'; visit: ScheduleVisit; anchor: ContextMenuAnchor; range: string }
   | { kind: 'block'; block: TimeBlock; anchor: ContextMenuAnchor; look: BlockLook };
+
+/**
+ * One day's `Timeline`. The library re-renders every page it keeps ready (up to 11) on
+ * each date change, with new props each time, so a tap on a day used to redraw them all
+ * before the page could switch. This one redraws only when its own day changes.
+ */
+const DayPage = memo(
+  function DayPage({
+    timeline,
+    unavailable,
+  }: {
+    timeline: TimelineProps;
+    dayEvents: CalendarTimelineEvent[] | undefined;
+    unavailable: ReturnType<typeof unavailableHours> | undefined;
+    schedule: unknown;
+  }) {
+    return <Timeline {...timeline} unavailableHours={unavailable} />;
+  },
+  (a, b) =>
+    // Pages get reused for other days: two empty days have the same (no) events.
+    String(a.timeline.date) === String(b.timeline.date) &&
+    a.dayEvents === b.dayEvents &&
+    a.schedule === b.schedule &&
+    a.timeline.theme === b.timeline.theme &&
+    a.timeline.renderEvent === b.timeline.renderEvent &&
+    a.timeline.format24h === b.timeline.format24h &&
+    a.timeline.scrollOffset === b.timeline.scrollOffset &&
+    a.timeline.showNowIndicator === b.timeline.showNowIndicator,
+);
 
 export function CalendarDayScreen({ initialDate }: { initialDate?: string }) {
   const { t, i18n } = useTranslation();
@@ -286,9 +316,11 @@ export function CalendarDayScreen({ initialDate }: { initialDate?: string }) {
         );
       }
       return (
-        <Timeline
-          {...timeline}
-          unavailableHours={schedule ? unavailableHours(workday) : undefined}
+        <DayPage
+          timeline={timeline}
+          dayEvents={events[info.item]}
+          unavailable={schedule ? unavailableHours(workday) : undefined}
+          schedule={schedule}
         />
       );
     },
