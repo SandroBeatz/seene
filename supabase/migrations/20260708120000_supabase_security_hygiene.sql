@@ -18,8 +18,8 @@ drop function if exists public.find_client_name_by_phone(uuid, text);
 -- so anon calls always fail -- but there's no reason to expose the RPC to anon.
 revoke execute on function public.complete_appointment(uuid, numeric, uuid, jsonb) from anon;
 
--- 1d. rls_auto_enable is an event-trigger handler, not meant to be called via RPC.
-revoke execute on function public.rls_auto_enable() from anon, authenticated, public;
+-- 1d. Moved to 20261102062000_align_migrations_with_staging: no migration had created
+-- rls_auto_enable() yet, so this revoke failed on an empty database.
 
 -- 1e. otp_codes: RLS enabled with no policies is intentional (service_role only,
 -- via seene/server/api/auth/phone/{send,verify}.post.ts). Document it.
