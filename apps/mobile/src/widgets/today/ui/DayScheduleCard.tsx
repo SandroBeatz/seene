@@ -1,7 +1,8 @@
 /**
  * "Расписание" card (design "Таб · Сегодня"): the day as a timeline — visits tinted
  * with their service colour, personal time in grey and the green "now" line: between
- * events, or along the bottom of the one happening now, which also gets an hourglass. Ended ones
+ * events, or across the one happening now, at its real time; that one also gets an
+ * hourglass and is drawn taller, with its text on the side the line isn't on. Ended ones
  * are dimmed; unconfirmed visits get a dashed outline in their colour and a
  * warning mark. An empty day shows the free hours.
  */
@@ -20,7 +21,7 @@ import {
 } from '@/features/appointment-actions';
 import { eventSwatch } from '@/shared/lib/color';
 import { formatTime } from '@/shared/lib/formats';
-import { ongoingItemId, type TimeInterval, type TimelineItem } from '@/shared/lib/scheduling';
+import { ongoingItem, type TimeInterval, type TimelineItem } from '@/shared/lib/scheduling';
 import { Text, type ContextMenuAnchor } from '@/shared/ui';
 import type { ScheduleVisit } from '../model/useToday';
 
@@ -64,9 +65,10 @@ export function DayScheduleCard({
   const { t } = useTranslation();
   const time = (iso: string) => formatTime(iso, { zone, timeFormat });
   const hasEvents = timeline.some((item) => item.kind === 'appointment' || item.kind === 'block');
-  const current = ongoingItemId(timeline, now);
+  const current = ongoingItem(timeline, now);
   const nowLabel = time(new Date(now).toISOString());
-  const nowOn = (id: string) => (current === id ? nowLabel : null);
+  const nowOn = (id: string): NowMark | null =>
+    current?.id === id ? { ratio: current.ratio, label: nowLabel } : null;
 
   return (
     <View style={styles.card}>
@@ -141,12 +143,31 @@ export function DayScheduleCard({
   );
 }
 
+/** The "now" line across a row: how far down, and the time on its pill. */
+interface NowMark {
+  ratio: number;
+  label: string;
+}
+
+/** Tall enough that the text always fits on one side of the line. */
+const ONGOING_HEIGHT = 120;
+/** Earlier in the row than this, the pill would cover the row's start time. */
+const PILL_COVERS_LABEL = 0.22;
+
+const rowLabel = (label: string, mark: NowMark | null) =>
+  mark && mark.ratio < PILL_COVERS_LABEL ? '' : label;
+
+const textSide = (mark: NowMark) => ({
+  minHeight: ONGOING_HEIGHT,
+  justifyContent: mark.ratio < 0.5 ? ('flex-end' as const) : ('flex-start' as const),
+});
+
 interface VisitRowProps {
   visit: ScheduleVisit;
   label: string;
   range: string;
   now: number;
-  nowMark: string | null;
+  nowMark: NowMark | null;
   formatAmount: (amount: number) => string;
   onPress: () => void;
   onLongPress: (anchor: ContextMenuAnchor) => void;
@@ -178,7 +199,7 @@ function VisitRow({
   return (
     <View style={[styles.row, look.dimmed && styles.dimmed]}>
       <Text variant="caption2" color="secondary" tabularNums style={styles.time}>
-        {label}
+        {rowLabel(label, nowMark)}
       </Text>
       <Pressable
         ref={ref}
@@ -199,7 +220,7 @@ function VisitRow({
           eventCardStyles.event,
           { backgroundColor: swatch.fill },
           look.unconfirmed && { borderWidth: 1, borderStyle: 'dashed', borderColor: swatch.bar },
-          nowMark && styles.withNow,
+          nowMark && textSide(nowMark),
           pressed && styles.pressed,
         ]}>
         <EventContent
@@ -213,7 +234,7 @@ function VisitRow({
           onNote={onNote}
         />
       </Pressable>
-      {nowMark ? <NowAlong label={nowMark} /> : null}
+      {nowMark ? <NowAcross mark={nowMark} /> : null}
     </View>
   );
 }
@@ -229,7 +250,7 @@ function BlockRow({
   label: string;
   look: BlockLook;
   dimmed: boolean;
-  nowMark: string | null;
+  nowMark: NowMark | null;
   onPress: () => void;
   onLongPress: (anchor: ContextMenuAnchor) => void;
 }) {
@@ -238,7 +259,7 @@ function BlockRow({
   return (
     <View style={[styles.row, dimmed && styles.dimmed]}>
       <Text variant="caption2" color="secondary" tabularNums style={styles.time}>
-        {label}
+        {rowLabel(label, nowMark)}
       </Text>
       <Pressable
         ref={ref}
@@ -251,12 +272,12 @@ function BlockRow({
         style={({ pressed }) => [
           eventCardStyles.event,
           eventCardStyles.block,
-          nowMark && styles.withNow,
+          nowMark && textSide(nowMark),
           pressed && styles.pressed,
         ]}>
         <BlockContent look={look} />
       </Pressable>
-      {nowMark ? <NowAlong label={nowMark} /> : null}
+      {nowMark ? <NowAcross mark={nowMark} /> : null}
     </View>
   );
 }
@@ -278,11 +299,11 @@ function NowLine({ label }: { label: string }) {
   );
 }
 
-/** The same line in the strip kept free at the bottom of what's happening now. */
-function NowAlong({ label }: { label: string }) {
+/** The same line over the row of what's happening now, at how far along it is. */
+function NowAcross({ mark }: { mark: NowMark }) {
   return (
-    <View pointerEvents="none" style={styles.along}>
-      <NowLine label={label} />
+    <View pointerEvents="none" style={[styles.across, { top: `${mark.ratio * 100}%` }]}>
+      <NowLine label={mark.label} />
     </View>
   );
 }
@@ -303,9 +324,8 @@ const styles = StyleSheet.create((theme) => ({
   dimmed: { opacity: 0.7 },
   time: { width: TIME_COLUMN, paddingTop: 2 },
   pressed: { opacity: 0.7 },
-  along: { position: 'absolute', left: 0, right: 0, bottom: 2 },
-  withNow: { paddingBottom: 26 },
-  now: { flexDirection: 'row', alignItems: 'center', gap: theme.space[2], marginVertical: 2 },
+  across: { position: 'absolute', left: 0, right: 0, marginTop: -11 },
+  now: { flexDirection: 'row', alignItems: 'center', marginVertical: 2 },
   nowPill: {
     width: 40,
     height: 18,
