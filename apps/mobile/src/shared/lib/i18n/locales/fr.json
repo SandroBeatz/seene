@@ -533,7 +533,6 @@
   "placeholders": {
     "home": "La base de navigation est prête. Les données produit arrivent dans les prochaines phases.",
     "clients": "Les données client ne sont pas encore implémentées. Utilisez l’action pour inspecter la route dynamique.",
-    "analytics": "Les données statistiques ne sont pas encore implémentées.",
     "profileSettings": "Les réglages du profil seront ajoutés avec la fonctionnalité Réglages."
   },
   "settings": {
@@ -1150,7 +1149,9 @@
     "start": "Début",
     "end": "Fin",
     "timeNote": "Si la visite a fini plus tôt ou plus tard, corrigez l'heure : votre planning et vos stats resteront justes.",
-    "submit": "Terminer · {{amount}}"
+    "submit": "Terminer · {{amount}}",
+    "tip": "Pourboire",
+    "tipA11y": "Pourboire, {{currency}}"
   },
   "months": [
     "Janvier",
@@ -1246,6 +1247,201 @@
     "deleteConfirm": {
       "title": "Supprimer ce temps personnel ?",
       "message": "Ce créneau sera de nouveau ouvert à la réservation en ligne."
+    }
+  },
+  "expenses": {
+    "title": "Dépenses",
+    "newTitle": "Nouvelle dépense",
+    "editTitle": "Dépense",
+    "add": "Ajouter une dépense",
+    "more": "Plus",
+    "amountA11y": "Montant, {{currency}}",
+    "category": "Catégorie",
+    "date": "Date",
+    "todayDate": "Aujourd’hui, {{date}}",
+    "notePlaceholder": "Pour quoi (facultatif)",
+    "repeat": "Répéter chaque mois",
+    "repeatOn": "Chaque mois",
+    "total": "Total du mois",
+    "empty": "Aucune dépense pour l’instant",
+    "emptyHint": "Ajoutez fournitures, loyer et autres frais pour voir ce qu’il vous reste.",
+    "deleteTitle": "Supprimer cette dépense ?",
+    "deleteRepeatText": "Elle ne se répétera plus. Les mois passés restent.",
+    "categories": {
+      "materials": "Fournitures",
+      "rent": "Loyer",
+      "tools": "Outils",
+      "ads": "Publicité",
+      "education": "Formation",
+      "transport": "Transport",
+      "other": "Autre"
+    },
+    "categoryNames": {
+      "materials": "Fournitures",
+      "rent": "Loyer",
+      "tools": "Outils",
+      "ads": "Publicité",
+      "education": "Formation",
+      "transport": "Transport",
+      "other": "Autre"
+    }
+  },
+  "money": {
+    "menuSection": "Argent",
+    "menuFinance": "Finances",
+    "earned": "Gagné",
+    "units": {
+      "week": "Semaine",
+      "month": "Mois",
+      "year": "Année",
+      "custom": "Libre"
+    },
+    "periodA11y": "Période : {{period}}",
+    "prevPeriod": "Période précédente",
+    "nextPeriod": "Période suivante",
+    "pickDates": "Choisir les dates",
+    "prevMonth": "Mois précédent",
+    "nextMonth": "Mois suivant",
+    "more": "{{pct}} % de plus {{than}}",
+    "less": "{{pct}} % de moins {{than}}",
+    "same": "Autant que sur la période précédente",
+    "than": {
+      "week": "que la semaine dernière",
+      "month": "qu’en {{monthIn}}",
+      "year": "qu’en {{year}}"
+    },
+    "vs": {
+      "week": "Flèches : comparaison avec la semaine dernière",
+      "month": "Flèches : comparaison avec {{monthWith}}",
+      "year": "Flèches : comparaison avec {{year}}",
+      "custom": "Flèches : comparaison avec la même durée avant"
+    },
+    "customDelta": "Période libre · {{days}}",
+    "noChange": "sans changement",
+    "days_one": "{{count}} jour",
+    "days_other": "{{count}} jours",
+    "monthsIn": [
+      "janvier",
+      "février",
+      "mars",
+      "avril",
+      "mai",
+      "juin",
+      "juillet",
+      "août",
+      "septembre",
+      "octobre",
+      "novembre",
+      "décembre"
+    ],
+    "monthsWith": [
+      "janvier",
+      "février",
+      "mars",
+      "avril",
+      "mai",
+      "juin",
+      "juillet",
+      "août",
+      "septembre",
+      "octobre",
+      "novembre",
+      "décembre"
+    ],
+    "monthsAccusative": [
+      "janvier",
+      "février",
+      "mars",
+      "avril",
+      "mai",
+      "juin",
+      "juillet",
+      "août",
+      "septembre",
+      "octobre",
+      "novembre",
+      "décembre"
+    ],
+    "tiles": {
+      "visits": "Visites",
+      "avgCheck": "Panier moyen",
+      "noShows": "Absences",
+      "newClients": "Nouveaux clients",
+      "load": "Occupation",
+      "tips": "Pourboires"
+    },
+    "incomeExpenses": "Revenus et dépenses",
+    "allOperations": "Toutes les opérations",
+    "income": "Revenus",
+    "expenses": "Dépenses",
+    "net": "Net",
+    "byCategory": "Dépenses par catégorie",
+    "byCategoryHint": "Où va l’argent",
+    "payments": "Moyens de paiement",
+    "paymentsHint": "Comment les clients paient",
+    "methodNone": "Sans moyen",
+    "topServices": "Meilleures prestations",
+    "bookings_one": "{{count}} rendez-vous",
+    "bookings_other": "{{count}} rendez-vous",
+    "clients": "Clients",
+    "clientsHint": "{{clients}} sur la période",
+    "clientsCount_one": "{{count}} client",
+    "clientsCount_other": "{{count}} clients",
+    "all": "Tous",
+    "cameBackRing": "revenus",
+    "regulars": "Réguliers",
+    "newOnes": "Nouveaux",
+    "recall": "À rappeler : {{count}}",
+    "top3": "Top 3 des clients",
+    "byPeriodSum": "par montant sur la période",
+    "visits_one": "{{count}} visite",
+    "visits_other": "{{count}} visites",
+    "busyDays": "Jours chargés",
+    "peakHour": "Heure de pointe {{from}}–{{to}}",
+    "loadHours": "Heures de travail occupées",
+    "freeWindows": "Heures libres",
+    "hoursShort": "{{count}} h",
+    "lossesTitle": "Absences et annulations",
+    "noShows": "Absences",
+    "clientCancels": "Annulés par le client",
+    "lost": "Non gagné",
+    "range": {
+      "title": "Période libre",
+      "start": "Du",
+      "end": "Au",
+      "last7": "7 derniers jours",
+      "last30": "30 derniers jours",
+      "firstHalf": "Première moitié",
+      "wholeMonth": "Tout {{month}}",
+      "apply": "Afficher · {{days}}"
+    },
+    "operations": {
+      "title": "Opérations",
+      "filter": {
+        "all": "Tout",
+        "in": "Revenus",
+        "out": "Dépenses"
+      },
+      "tip": "pourboire {{amount}}",
+      "empty": "Aucune opération sur cette période"
+    },
+    "periodClients": {
+      "title": "Clients : {{period}}",
+      "tile": {
+        "all": "Total",
+        "back": "Revenus",
+        "new": "Nouveaux"
+      },
+      "chip": {
+        "all": "Tous",
+        "back": "Revenus",
+        "new": "Nouveaux"
+      },
+      "bySum": "Par montant sur la période",
+      "shown": "{{count}} affichés",
+      "newBadge": "Nouveau",
+      "sub": "{{visits}} · dernière le {{last}}",
+      "empty": "Aucun client sur cette période"
     }
   }
 }

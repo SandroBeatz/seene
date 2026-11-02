@@ -49,7 +49,7 @@ confirm) → Review → Create. One `complete_onboarding` write; the app opens o
 Landing after auth. Composes:
 - **Greeting** (name + avatar from session profile).
 - **Overview metrics** — earned / appointments / hours, with a Day/Week/Month switcher
-  (`today`/`this_week`/`this_month`), from `get_analytics_v2`.
+  (`today`/`this_week`/`this_month`), from `get_money_overview`.
 - **Schedule timeline** — today's appointments as a timeline.
 - **Action appointments** — items needing attention (pending, or confirmed & past) with
   Confirm / Complete / etc. inline.

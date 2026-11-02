@@ -84,6 +84,10 @@ export const GLYPHS = {
       <Path d="M15.5 5.2a3.5 3.5 0 0 1 0 6.6M18 14.8c1.8.8 3 2.6 3.5 5.2" />
     </>,
   ),
+  receipt: stroke(
+    'regular',
+    <Path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6" />,
+  ),
   analytics: stroke('regular', <Path d="M4 20V10M10 20V4M16 20v-7M22 20H2" />),
   bell: stroke(
     'regular',

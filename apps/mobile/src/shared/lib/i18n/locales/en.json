@@ -527,7 +527,6 @@
   "placeholders": {
     "home": "The navigation foundation is ready. Product data arrives in the next feature phases.",
     "clients": "Client data is not implemented yet. Use the action below to inspect the dynamic route.",
-    "analytics": "Analytics data is not implemented yet.",
     "profileSettings": "Profile settings will be implemented with the settings feature."
   },
   "settings": {
@@ -1144,7 +1143,9 @@
     "start": "Start",
     "end": "End",
     "timeNote": "If the visit ended earlier or later, adjust the time so your schedule and stats stay accurate.",
-    "submit": "Complete · {{amount}}"
+    "submit": "Complete · {{amount}}",
+    "tip": "Tip",
+    "tipA11y": "Tip, {{currency}}"
   },
   "months": [
     "January",
@@ -1240,6 +1241,201 @@
     "deleteConfirm": {
       "title": "Delete personal time?",
       "message": "This time will open for online booking again."
+    }
+  },
+  "expenses": {
+    "title": "Expenses",
+    "newTitle": "New expense",
+    "editTitle": "Expense",
+    "add": "Add expense",
+    "more": "More",
+    "amountA11y": "Amount, {{currency}}",
+    "category": "Category",
+    "date": "Date",
+    "todayDate": "Today, {{date}}",
+    "notePlaceholder": "What was it for (optional)",
+    "repeat": "Repeat every month",
+    "repeatOn": "Every month",
+    "total": "Total this month",
+    "empty": "No expenses yet",
+    "emptyHint": "Add supplies, rent and other costs to see what you actually keep.",
+    "deleteTitle": "Delete this expense?",
+    "deleteRepeatText": "It will stop repeating. Past months stay.",
+    "categories": {
+      "materials": "Supplies",
+      "rent": "Rent",
+      "tools": "Tools",
+      "ads": "Ads",
+      "education": "Training",
+      "transport": "Transport",
+      "other": "Other"
+    },
+    "categoryNames": {
+      "materials": "Supplies",
+      "rent": "Rent",
+      "tools": "Tools",
+      "ads": "Ads",
+      "education": "Training",
+      "transport": "Transport",
+      "other": "Other"
+    }
+  },
+  "money": {
+    "menuSection": "Money",
+    "menuFinance": "Finances",
+    "earned": "Earned",
+    "units": {
+      "week": "Week",
+      "month": "Month",
+      "year": "Year",
+      "custom": "Custom"
+    },
+    "periodA11y": "Period: {{period}}",
+    "prevPeriod": "Previous period",
+    "nextPeriod": "Next period",
+    "pickDates": "Pick dates",
+    "prevMonth": "Previous month",
+    "nextMonth": "Next month",
+    "more": "Up {{pct}}% {{than}}",
+    "less": "Down {{pct}}% {{than}}",
+    "same": "Level with the previous period",
+    "than": {
+      "week": "on last week",
+      "month": "on {{monthIn}}",
+      "year": "on {{year}}"
+    },
+    "vs": {
+      "week": "Arrows compare with last week",
+      "month": "Arrows compare with {{monthWith}}",
+      "year": "Arrows compare with {{year}}",
+      "custom": "Arrows compare with the same length of time before"
+    },
+    "customDelta": "Custom period · {{days}}",
+    "noChange": "no change",
+    "days_one": "{{count}} day",
+    "days_other": "{{count}} days",
+    "monthsIn": [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ],
+    "monthsWith": [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ],
+    "monthsAccusative": [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ],
+    "tiles": {
+      "visits": "Visits",
+      "avgCheck": "Average check",
+      "noShows": "No-shows",
+      "newClients": "New clients",
+      "load": "Load",
+      "tips": "Tips"
+    },
+    "incomeExpenses": "Income and expenses",
+    "allOperations": "All transactions",
+    "income": "Income",
+    "expenses": "Expenses",
+    "net": "Net",
+    "byCategory": "Expenses by category",
+    "byCategoryHint": "Where the money goes",
+    "payments": "Payment methods",
+    "paymentsHint": "How clients pay",
+    "methodNone": "No method",
+    "topServices": "Top services by income",
+    "bookings_one": "{{count}} booking",
+    "bookings_other": "{{count}} bookings",
+    "clients": "Clients",
+    "clientsHint": "{{clients}} in this period",
+    "clientsCount_one": "{{count}} client",
+    "clientsCount_other": "{{count}} clients",
+    "all": "All",
+    "cameBackRing": "came back",
+    "regulars": "Regulars",
+    "newOnes": "New",
+    "recall": "Time to call: {{count}}",
+    "top3": "Top 3 clients",
+    "byPeriodSum": "by sum in this period",
+    "visits_one": "{{count}} visit",
+    "visits_other": "{{count}} visits",
+    "busyDays": "Busy days",
+    "peakHour": "Peak hour {{from}}–{{to}}",
+    "loadHours": "Working hours booked",
+    "freeWindows": "Free hours",
+    "hoursShort": "{{count}} h",
+    "lossesTitle": "No-shows and cancellations",
+    "noShows": "No-shows",
+    "clientCancels": "Cancelled by client",
+    "lost": "Not earned",
+    "range": {
+      "title": "Custom period",
+      "start": "From",
+      "end": "To",
+      "last7": "Last 7 days",
+      "last30": "Last 30 days",
+      "firstHalf": "First half",
+      "wholeMonth": "All of {{month}}",
+      "apply": "Show · {{days}}"
+    },
+    "operations": {
+      "title": "Transactions",
+      "filter": {
+        "all": "All",
+        "in": "Income",
+        "out": "Expenses"
+      },
+      "tip": "tip {{amount}}",
+      "empty": "No transactions in this period"
+    },
+    "periodClients": {
+      "title": "Clients: {{period}}",
+      "tile": {
+        "all": "Total",
+        "back": "Came back",
+        "new": "New"
+      },
+      "chip": {
+        "all": "All",
+        "back": "Came back",
+        "new": "New"
+      },
+      "bySum": "By sum in this period",
+      "shown": "Showing {{count}}",
+      "newBadge": "New",
+      "sub": "{{visits}} · last on {{last}}",
+      "empty": "No clients in this period"
     }
   }
 }

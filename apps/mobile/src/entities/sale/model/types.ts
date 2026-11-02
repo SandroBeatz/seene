@@ -24,7 +24,10 @@ export type SaleAmount = Pick<SaleRow, 'appointment_id' | 'amount'>;
 /** Checkout input for `complete_appointment`. */
 export interface CompleteAppointmentDto {
   appointmentId: string;
+  /** All the client paid, tip included. */
   amount: number;
+  /** The part of `amount` left as a tip. */
+  tip: number;
   paymentTypeId: string | null;
   items: { service_id: string; name: string; price: number }[];
   /** Actual start (UTC ISO), or null to keep the planned one. */

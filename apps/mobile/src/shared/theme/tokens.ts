@@ -257,6 +257,13 @@ export const typography = {
     lineHeight: 50,
     letterSpacing: -0.88,
   },
+  /** "Заработано" on analytics. */
+  heroAmount: {
+    fontFamily: fontFamily.displayBold,
+    fontSize: 40,
+    lineHeight: 44,
+    letterSpacing: -1.2,
+  },
   display: {
     fontFamily: fontFamily.displayBold,
     fontSize: 30,

@@ -1,7 +1,8 @@
 /**
  * Checking out a visit (design "Запись · «Завершить»"): the amount — the
- * appointment's price, editable — the payment method, and the visit's actual time,
- * then `complete_appointment` in one transaction.
+ * appointment's price, editable — an optional tip (not in the design; "Аналитика"
+ * shows tips and they have to come from somewhere), the payment method, and the
+ * visit's actual time, then `complete_appointment` in one transaction.
  */
 import { useEffect, useState } from 'react';
 import { router } from 'expo-router';
@@ -9,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { Alert, Pressable, ScrollView, TextInput, View } from 'react-native';
 import { useQueryClient } from '@tanstack/react-query';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { StyleSheet } from 'react-native-unistyles';
+import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import {
   appointmentKeys,
   invalidateAppointmentCaches,
@@ -62,6 +63,7 @@ export function CheckoutEditor({
   locale,
 }: CheckoutEditorProps) {
   const { t } = useTranslation();
+  const { theme } = useUnistyles();
   const insets = useSafeAreaInsets();
   const qc = useQueryClient();
   const userId = useUserId() ?? '';
@@ -75,6 +77,7 @@ export function CheckoutEditor({
   const number = new Intl.NumberFormat(locale, { maximumFractionDigits: 2 });
 
   const [amountInput, setAmountInput] = useState<string | null>(null);
+  const [tipInput, setTipInput] = useState('');
   const [methodId, setMethodId] = useState<string | null>(null);
   const [visit, setVisit] = useState<VisitWindow>(() => defaultVisitWindow(appointment, now));
   const [timeOpen, setTimeOpen] = useState(false);
@@ -83,6 +86,7 @@ export function CheckoutEditor({
   const active = (methods.data ?? []).filter((m) => m.is_active);
   const chosen = methodId ?? defaultMethodId(methods.data ?? []);
   const amount = amountInput === null ? planned : (parseAmount(amountInput) ?? 0);
+  const tip = parseAmount(tipInput) ?? 0;
 
   // A master who never opened payment settings has no methods yet: seed cash and card.
   const { mutate: seedMethods } = seed;
@@ -117,7 +121,8 @@ export function CheckoutEditor({
     complete.mutate(
       {
         appointmentId: appointment.id,
-        amount,
+        amount: amount + tip,
+        tip,
         paymentTypeId: chosen,
         items,
         startAt: changes.start_at,
@@ -181,6 +186,27 @@ export function CheckoutEditor({
               {t('checkout.canChange')}
             </Text>
           )}
+        </View>
+
+        <View style={styles.tipRow}>
+          <Text variant="bodyMedium" style={styles.grow}>
+            {t('checkout.tip')}
+          </Text>
+          <TextInput
+            accessibilityLabel={t('checkout.tipA11y', { currency: currencyLabel })}
+            value={tipInput}
+            onChangeText={(text) => {
+              const value = parseAmount(text);
+              setTipInput(value === null ? '' : number.format(value));
+            }}
+            placeholder="0"
+            placeholderTextColor={theme.colors.content.tertiary}
+            keyboardType="number-pad"
+            style={styles.tipInput}
+          />
+          <Text variant="subhead" color="tertiary">
+            {currencyLabel}
+          </Text>
         </View>
 
         <Text variant="footnoteStrong" color="secondary" style={styles.section}>
@@ -263,7 +289,7 @@ export function CheckoutEditor({
 
       <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 16) }]}>
         <Button
-          label={t('checkout.submit', { amount: formatAmount(amount, { currency, locale }) })}
+          label={t('checkout.submit', { amount: formatAmount(amount + tip, { currency, locale }) })}
           leftIcon="completeVisit"
           loading={complete.isPending}
           onPress={submit}
@@ -308,6 +334,25 @@ const styles = StyleSheet.create((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     gap: theme.space[1.5],
+  },
+  tipRow: {
+    marginTop: theme.space[4],
+    height: 52,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.space[2],
+    paddingHorizontal: theme.space[3.5],
+    borderRadius: theme.radius.field,
+    borderWidth: 1,
+    borderColor: theme.colors.border.default,
+  },
+  tipInput: {
+    minWidth: 48,
+    padding: 0,
+    textAlign: 'right',
+    color: theme.colors.content.primary,
+    ...theme.typography.bodyStrong,
+    fontVariant: ['tabular-nums'],
   },
   section: { marginTop: theme.space[6], marginBottom: theme.space[2] },
   methods: { flexDirection: 'row', flexWrap: 'wrap', gap: theme.space[2] },
