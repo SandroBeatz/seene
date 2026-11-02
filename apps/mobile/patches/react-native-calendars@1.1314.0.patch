@@ -1,0 +1,13 @@
+diff --git a/src/timeline/Packer.js b/src/timeline/Packer.js
+index ba99d938af6a8e2c026420a093c2ac43eee680f9..da4810c771013a0675c337e5ed0245808f153459 100644
+--- a/src/timeline/Packer.js
++++ b/src/timeline/Packer.js
+@@ -1,7 +1,7 @@
+ import inRange from 'lodash/inRange';
+ import XDate from 'xdate';
+ import constants from '../commons/constants';
+-export const HOUR_BLOCK_HEIGHT = 100;
++export const HOUR_BLOCK_HEIGHT = 48;
+ const OVERLAP_EVENTS_SPACINGS = 10;
+ const RIGHT_EDGE_SPACING = 10;
+ function buildEvent(event, left, width, { dayStart = 0, hourBlockHeight = HOUR_BLOCK_HEIGHT }) {

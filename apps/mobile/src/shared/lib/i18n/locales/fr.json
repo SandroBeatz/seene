@@ -859,7 +859,7 @@
     "dayOff": "Jour de repos",
     "addVisit": "+ Rendez-vous",
     "awaitingReply": "En attente",
-    "freeWindow": "+ Libre {{range}}"
+    "newAt": "Nouveau rendez-vous à {{time}}"
   },
   "today": {
     "openMenu": "Profil et menu",

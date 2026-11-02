@@ -2,7 +2,7 @@ import { describe, expect, it } from '@jest/globals';
 import {
   cellBars,
   daysOfMonth,
-  freeWindows,
+  freeCells,
   groupByDay,
   monthBounds,
   monthRange,
@@ -143,45 +143,27 @@ describe('cellBars', () => {
   });
 });
 
-describe('freeWindows', () => {
-  const work: [number, number] = [600, 1140]; // 10:00–19:00
+describe('freeCells', () => {
+  const work: [number, number] = [600, 720]; // 10:00–12:00
 
-  it('finds gaps of an hour or more, at most two', () => {
-    expect(
-      freeWindows({
-        work,
-        busy: [
-          [660, 690], // leaves 10:00–11:00
-          [750, 780], // 11:30–12:30 ok
-          [840, 900], // 13:00–14:00 ok but third
-        ],
-        after: 0,
-      }),
-    ).toEqual([
-      [600, 660],
-      [690, 750],
-    ]);
+  it('lists the half hours of a free working day', () => {
+    expect(freeCells({ work, busy: [], after: 0 })).toEqual([600, 630, 660, 690]);
   });
 
-  it('skips gaps shorter than an hour', () => {
-    expect(freeWindows({ work, busy: [[630, 1110]], after: 0 })).toEqual([]);
+  it('skips a cell a record touches at all', () => {
+    expect(freeCells({ work, busy: [[615, 640]], after: 0 })).toEqual([660, 690]);
   });
 
-  it('starts after now, on the next quarter', () => {
-    expect(freeWindows({ work, busy: [], after: 14 * 60 + 20 })).toEqual([[14 * 60 + 30, 1140]]);
+  it('keeps cells right next to a record', () => {
+    expect(freeCells({ work, busy: [[630, 660]], after: 0 })).toEqual([600, 660, 690]);
   });
 
-  it('copes with overlapping busy spans', () => {
-    expect(
-      freeWindows({
-        work,
-        busy: [
-          [600, 900],
-          [700, 800],
-        ],
-        after: 0,
-      }),
-    ).toEqual([[900, 1140]]);
+  it('starts after now, on the next line', () => {
+    expect(freeCells({ work, busy: [], after: 620 })).toEqual([630, 660, 690]);
+  });
+
+  it('keeps to the grid and the working day when hours are off it', () => {
+    expect(freeCells({ work: [615, 705], busy: [], after: 0 })).toEqual([630, 660]);
   });
 });
 

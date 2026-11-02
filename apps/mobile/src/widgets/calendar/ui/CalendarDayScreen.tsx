@@ -2,7 +2,8 @@
  * The calendar's day view (design "Календарь, день"), built on `react-native-calendars`:
  * `CalendarProvider` holds the date, `WeekCalendar` is the strip, `TimelineList` the
  * hours — swiped sideways from day to day. A tap on a record opens it, a long press
- * opens the same menu as on "Сегодня"; free windows start a new appointment.
+ * opens the same menu as on "Сегодня"; an empty cell lights up under the finger and
+ * starts a new appointment at its time.
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { router, Stack } from 'expo-router';
@@ -42,7 +43,8 @@ import { isSupportedLocale } from '@/shared/lib/i18n';
 import { ContextMenu, Text, type ContextMenuAnchor } from '@/shared/ui';
 import {
   daysOfMonth,
-  freeWindows,
+  CELL_MINUTES,
+  freeCells,
   monthKeyOf,
   parseHhmm,
   timelineStamp,
@@ -72,8 +74,8 @@ const RIGHT_EDGE = 16;
 
 const openBlock = (block: TimeBlock) =>
   router.push({ pathname: '/time-block/[blockId]', params: { blockId: block.id } });
-const newAppointment = (dayKey: string) =>
-  router.push({ pathname: '/quick-create', params: { dayKey } });
+const newAppointment = (dayKey: string, start?: string) =>
+  router.push({ pathname: '/quick-create', params: { dayKey, start } });
 
 type Menu =
   | { kind: 'visit'; visit: ScheduleVisit; anchor: ContextMenuAnchor; range: string }
@@ -166,25 +168,21 @@ export function CalendarDayScreen({ initialDate }: { initialDate?: string }) {
             return [parseHhmm(b.start), parseHhmm(b.end)] as const;
           }),
         ];
-        for (const [from, to] of freeWindows({ work, busy, after: today ? nowMinutes : 0 })) {
+        for (const from of freeCells({ work, busy, after: today ? nowMinutes : 0 })) {
           list.push({
             id: `free-${day}-${from}`,
             start: timelineStamp(day, from),
-            end: timelineStamp(day, to),
+            end: timelineStamp(day, from + CELL_MINUTES),
             title: '',
             color: 'transparent',
-            meta: {
-              kind: 'free',
-              dayKey: day,
-              label: t('calendar.freeWindow', { range: rangeOf(from, to) }),
-            },
+            meta: { kind: 'free', dayKey: day, minutes: from },
           });
         }
       }
       byDay[day] = list;
     }
     return byDay;
-  }, [monthsKey, index, todayKey, now, nowMinutes, schedule, rangeOf, blockLook, t]);
+  }, [monthsKey, index, todayKey, now, nowMinutes, schedule, rangeOf, blockLook]);
 
   const strip = useMemo<WeekStripState>(() => {
     const working = (day: string) => workMinutes(workdayOf(schedule, day)) !== null;
@@ -216,9 +214,17 @@ export function CalendarDayScreen({ initialDate }: { initialDate?: string }) {
       onVisitMenu: (visit, anchor, range) => setMenu({ kind: 'visit', visit, anchor, range }),
       onBlock: openBlock,
       onBlockMenu: (block, anchor, look) => setMenu({ kind: 'block', block, anchor, look }),
-      onFree: newAppointment,
+      onFree: (dayKey, minutes) =>
+        newAppointment(
+          dayKey,
+          DateTime.fromISO(dayKey, { zone })
+            .set({ hour: Math.floor(minutes / 60), minute: minutes % 60 })
+            .toUTC()
+            .toISO()!,
+        ),
+      clockTime,
     }),
-    [],
+    [zone, clockTime],
   );
 
   const timelineProps = useMemo<TimelineListProps['timelineProps']>(
@@ -267,7 +273,7 @@ export function CalendarDayScreen({ initialDate }: { initialDate?: string }) {
             {info.item >= todayKey ? (
               <Pressable
                 accessibilityRole="button"
-                onPress={() => handlers.onFree(info.item)}
+                onPress={() => newAppointment(info.item)}
                 hitSlop={8}>
                 <Text variant="footnoteStrong">{t('calendar.addVisit')}</Text>
               </Pressable>
@@ -282,7 +288,7 @@ export function CalendarDayScreen({ initialDate }: { initialDate?: string }) {
         />
       );
     },
-    [events, schedule, handlers, t, todayKey],
+    [events, schedule, t, todayKey],
   );
 
   // `Timeline` draws "now" from the device clock: only true when it matches the master's.

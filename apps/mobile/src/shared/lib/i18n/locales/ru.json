@@ -865,7 +865,7 @@
     "dayOff": "Выходной",
     "addVisit": "+ Запись",
     "awaitingReply": "Ждём ответ",
-    "freeWindow": "+ Свободно {{range}}"
+    "newAt": "Новая запись, {{time}}"
   },
   "today": {
     "openMenu": "Профиль и меню",

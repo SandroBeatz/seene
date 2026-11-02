@@ -853,7 +853,7 @@
     "dayOff": "Day off",
     "addVisit": "+ Visit",
     "awaitingReply": "Awaiting reply",
-    "freeWindow": "+ Free {{range}}"
+    "newAt": "New visit at {{time}}"
   },
   "today": {
     "openMenu": "Profile and menu",

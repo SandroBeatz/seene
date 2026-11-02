@@ -69,8 +69,10 @@ day counts via `appointment_day_counts` RPC.
 - **Built (`widgets/calendar`, design "Таб · Календарь", "Календарь, день"):** month = a `FlatList`
   of `Calendar` grids (`CalendarList` forces one height on every month); day = `CalendarProvider` +
   `WeekCalendar` + `TimelineList`, days swiped sideways. No week view, no search yet (the design has
-  no results screen). Library limits worked around, see the code comments: `Timeline` has a fixed
-  100 pt hour, a device-clock "now" line (hidden when the device and master zones differ) and no
+  no results screen). An empty half-hour cell shows nothing until touched: then a dashed outline and
+  an accent tint, and a tap starts quick-create at that time. Library limits worked around, see the
+  code comments: `Timeline`'s hour is a constant (patched to the design's 48 pt in
+  `patches/react-native-calendars@*.patch`), it has a device-clock "now" line (hidden when the device and master zones differ) and no
   long press; `onEventPress` keeps stale events, so presses are handled inside `renderEvent`.
 
 ## 5. Quick create (appointment / time off wizard)

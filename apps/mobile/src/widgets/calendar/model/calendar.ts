@@ -1,16 +1,14 @@
 /**
  * Pure calendar math (design "Таб · Календарь", "Календарь, день"): the months of the
  * list, entries grouped by the master's local day, a month cell's bars and a day's free
- * windows. Times inside a day are minutes from its midnight, on the master's clock.
+ * cells. Times inside a day are minutes from its midnight, on the master's clock.
  */
 import { DateTime } from 'luxon';
 import type { WorkdayHours } from '@/shared/lib/scheduling';
 
 const DAY_MINUTES = 24 * 60;
-/** A shorter gap isn't offered as a free window. */
-const MIN_FREE_MINUTES = 60;
-const MAX_FREE_WINDOWS = 2;
-const FREE_STEP_MINUTES = 15;
+/** The timeline's grid draws a line every half hour. */
+export const CELL_MINUTES = 30;
 /** A cell fits three bars, or two and "+N". */
 const MAX_BARS = 3;
 
@@ -142,27 +140,22 @@ export function workMinutes(workday: WorkdayHours | null | undefined): [number, 
   return from < to ? [from, to] : null;
 }
 
-export interface FreeWindowInput {
+export interface FreeCellInput {
   work: [number, number];
   /** Taken time: visits, personal time, breaks. */
   busy: readonly (readonly [number, number])[];
-  /** Offer nothing before this minute (now, on the current day). */
+  /** Offer nothing starting before this minute (now, on the current day). */
   after: number;
 }
 
-/** The first free stretches of a working day long enough for a visit, at most two. */
-export function freeWindows({ work, busy, after }: FreeWindowInput): [number, number][] {
-  const [open, close] = work;
-  const stepped = Math.ceil(after / FREE_STEP_MINUTES) * FREE_STEP_MINUTES;
-  let cursor = Math.max(open, stepped);
-  const gaps: [number, number][] = [];
-  for (const [from, to] of [...busy].sort((a, b) => a[0] - b[0])) {
-    const end = Math.min(from, close);
-    if (end - cursor >= MIN_FREE_MINUTES) gaps.push([cursor, end]);
-    cursor = Math.max(cursor, to);
+/** Starts of the grid's half-hour cells that are wholly free within a working day. */
+export function freeCells({ work, busy, after }: FreeCellInput): number[] {
+  const first = Math.ceil(Math.max(work[0], after) / CELL_MINUTES) * CELL_MINUTES;
+  const cells: number[] = [];
+  for (let from = first; from + CELL_MINUTES <= work[1]; from += CELL_MINUTES) {
+    if (!busy.some(([a, b]) => from < b && from + CELL_MINUTES > a)) cells.push(from);
   }
-  if (close - cursor >= MIN_FREE_MINUTES) gaps.push([cursor, close]);
-  return gaps.slice(0, MAX_FREE_WINDOWS);
+  return cells;
 }
 
 /**

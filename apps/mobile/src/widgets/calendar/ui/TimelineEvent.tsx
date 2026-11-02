@@ -1,6 +1,7 @@
 /**
  * What the day's `Timeline` draws inside an event (design "Календарь, день"): a visit in
- * its service colour, personal time in grey, or a free window to book into. The press
+ * its service colour, personal time in grey, or an empty cell that lights up under the
+ * finger and books into that time. The press
  * handling lives here: `Timeline`'s own `onEventPress` keeps the events of its first
  * render, and it has no long press.
  */
@@ -17,19 +18,25 @@ import { Text, VipBadge, type ContextMenuAnchor } from '@/shared/ui';
 export type EventMeta =
   | { kind: 'visit'; visit: ScheduleVisit; range: string; dimmed: boolean }
   | { kind: 'block'; block: TimeBlock; look: BlockLook; dimmed: boolean }
-  | { kind: 'free'; dayKey: string; label: string };
+  | { kind: 'free'; dayKey: string; minutes: number };
 
 export type CalendarTimelineEvent = TimelineEventProps & { meta: EventMeta };
 
 /** Below this an event has room for one line. */
 const TWO_LINES_HEIGHT = 44;
+/** Air between events that follow each other. */
+const EVENT_GAP = 2;
+/** A tap that starts a scroll shouldn't flash the cell. */
+const CELL_PRESS_DELAY = 80;
 
 export interface TimelineEventHandlers {
   onVisit: (visit: ScheduleVisit) => void;
   onVisitMenu: (visit: ScheduleVisit, anchor: ContextMenuAnchor, range: string) => void;
   onBlock: (block: TimeBlock) => void;
   onBlockMenu: (block: TimeBlock, anchor: ContextMenuAnchor, look: BlockLook) => void;
-  onFree: (dayKey: string) => void;
+  onFree: (dayKey: string, minutes: number) => void;
+  /** "10:30" for minutes of a day, on the master's clock format. */
+  clockTime: (minutes: number) => string;
 }
 
 export function TimelineEvent({
@@ -47,19 +54,17 @@ export function TimelineEvent({
   const { theme } = useUnistyles();
   const ref = useRef<View>(null);
   const two = height >= TWO_LINES_HEIGHT;
-  const size = { width, height };
+  const size = { width, height: Math.max(height - EVENT_GAP, 0) };
 
   if (meta.kind === 'free') {
     return (
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={meta.label}
-        onPress={() => handlers.onFree(meta.dayKey)}
-        style={({ pressed }) => [styles.free, size, pressed && styles.pressed]}>
-        <Text variant="captionStrong" color="secondary" tabularNums numberOfLines={1}>
-          {meta.label}
-        </Text>
-      </Pressable>
+        accessibilityLabel={t('calendar.newAt', { time: handlers.clockTime(meta.minutes) })}
+        unstable_pressDelay={CELL_PRESS_DELAY}
+        onPress={() => handlers.onFree(meta.dayKey, meta.minutes)}
+        style={({ pressed }) => [styles.cell, { width, height }, pressed && styles.cellOn]}
+      />
     );
   }
 
@@ -181,12 +186,11 @@ const styles = StyleSheet.create((theme) => ({
     backgroundColor: theme.colors.tone.warning.bg,
   },
   pillText: { color: theme.colors.tone.warning.fg },
-  free: {
-    borderRadius: theme.radius.md,
+  cell: { borderRadius: theme.radius.sm },
+  cellOn: {
     borderWidth: 1.5,
     borderStyle: 'dashed',
-    borderColor: theme.colors.border.dashed,
-    alignItems: 'center',
-    justifyContent: 'center',
+    borderColor: theme.colors.brand.default,
+    backgroundColor: theme.colors.brand.subtle,
   },
 }));

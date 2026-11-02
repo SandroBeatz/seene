@@ -17,7 +17,6 @@ onlyBuiltDependencies:
 # so the move to pnpm did not change the iOS/Android build. Drop these on the next
 # `npx expo install --fix` SDK upgrade.
 overrides:
-  'expo-router>@expo/metro-runtime': 57.0.13
   '@expo/cli': 57.0.18
   '@expo/code-signing-certificates': 0.0.6
   '@expo/config': 57.0.9
@@ -78,6 +77,7 @@ overrides:
   'expo-modules-core': 57.0.13
   'expo-modules-jsi': 57.0.5
   'expo-router': 57.0.16
+  'expo-router>@expo/metro-runtime': 57.0.13
   'expo-secure-store': 57.0.1
   'expo-server': 57.0.3
   'expo-splash-screen': 57.0.8
@@ -103,3 +103,4 @@ overrides:
 
 patchedDependencies:
   expo-modules-jsi@57.0.5: apps/mobile/patches/expo-modules-jsi@57.0.5.patch
+  react-native-calendars@1.1314.0: apps/mobile/patches/react-native-calendars@1.1314.0.patch
