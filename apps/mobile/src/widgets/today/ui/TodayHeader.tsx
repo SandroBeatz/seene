@@ -1,12 +1,12 @@
 /**
  * "Сегодня" header (design "Таб · Сегодня"): the master's avatar (→ Меню) and the
- * greeting with their name on the left of the native header, the analytics button
- * on its right — native bar items, so iOS 26 draws the button in Liquid Glass. The
- * bell joins when notifications exist.
+ * greeting with their name on the left of the native header, analytics and
+ * notifications on its right — native bar items side by side, so iOS 26 draws them as one
+ * Liquid Glass capsule. There is no notifications feed yet: the bell says so.
  */
 import { router, Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Pressable, View } from 'react-native';
+import { Alert, Pressable, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import { Avatar, Text } from '@/shared/ui';
 import type { GreetingPeriod } from '../model/first-steps';
@@ -46,6 +46,11 @@ export function TodayHeader({ firstName, lastName, avatarUrl, greeting }: TodayH
           icon="chart.bar.xaxis"
           accessibilityLabel={t('tabs.analytics')}
           onPress={() => router.push('/analytics')}
+        />
+        <Stack.Toolbar.Button
+          icon="bell"
+          accessibilityLabel={t('today.notifications')}
+          onPress={() => Alert.alert(t('today.notifications'), t('today.notificationsEmpty'))}
         />
       </Stack.Toolbar>
     </>

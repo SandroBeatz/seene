@@ -862,6 +862,8 @@
   },
   "today": {
     "openMenu": "Profil et menu",
+    "notifications": "Notifications",
+    "notificationsEmpty": "Aucune notification pour le moment.",
     "greeting": {
       "morning": "Bonjour",
       "day": "Bon après-midi",
