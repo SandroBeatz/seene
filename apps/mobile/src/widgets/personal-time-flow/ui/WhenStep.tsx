@@ -13,7 +13,7 @@ import { TimeFields } from './TimeFields';
 
 export function WhenStep() {
   const { t } = useTranslation();
-  const { draft, dayLabel, span, ready } = usePersonalTime();
+  const { draft, summary, record } = usePersonalTime();
 
   return (
     <View style={styles.root} collapsable={false}>
@@ -30,16 +30,10 @@ export function WhenStep() {
       </ScrollView>
 
       <FlowStepFooter
-        title={
-          draft.allDay
-            ? `${dayLabel} · ${t('personalTime.when.allDayShort')}`
-            : span
-              ? `${dayLabel} · ${span}`
-              : t('quickCreate.time.pick')
-        }
+        title={summary}
         subtitle={t(draft.allDay ? 'personalTime.when.closedDay' : 'personalTime.when.closedSpan')}
         actionLabel={t('quickCreate.next')}
-        disabled={!ready}
+        disabled={!record}
         onAction={() => router.push('/personal-time/what')}
       />
     </View>

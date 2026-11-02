@@ -17,13 +17,16 @@ export interface AppointmentToastData {
 }
 
 interface AppointmentToastState {
-  toast: AppointmentToastData | null;
+  /** `id`: a new one per toast, even with the same text. */
+  toast: (AppointmentToastData & { id: number }) | null;
   show: (toast: AppointmentToastData) => void;
   dismiss: () => void;
 }
 
+let lastId = 0;
+
 export const useAppointmentToast = create<AppointmentToastState>()((set) => ({
   toast: null,
-  show: (toast) => set({ toast }),
+  show: (toast) => set({ toast: { ...toast, id: ++lastId } }),
   dismiss: () => set({ toast: null }),
 }));

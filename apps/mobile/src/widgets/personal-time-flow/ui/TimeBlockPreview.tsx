@@ -11,7 +11,9 @@ import { useTimeBlockQuery } from '@/entities/time-block';
 import { useTimeContext } from '@/features/pick-time';
 import { useTimeBlockActions } from '@/features/time-block-actions';
 import { formatDurationLabel } from '@/shared/lib/i18n';
-import { ActionBar, EmptyState, InfoRow, SheetChrome, Skeleton, Text, useNow } from '@/shared/ui';
+import { ActionBar, InfoRow, SheetChrome, Text, useNow } from '@/shared/ui';
+import { blockMinutes } from '../model/record';
+import { BlockFallback } from './BlockFallback';
 
 export function TimeBlockPreview({ blockId }: { blockId: string }) {
   const { t } = useTranslation();
@@ -23,9 +25,12 @@ export function TimeBlockPreview({ blockId }: { blockId: string }) {
   const block = query.data;
   const name = block?.notes?.trim();
 
-  const minutes = block
-    ? (new Date(block.end_at).getTime() - new Date(block.start_at).getTime()) / 60_000
-    : 0;
+  const minutes = block ? blockMinutes(block) : 0;
+  const firstDay = block ? ctx.dayKeyOf(block.start_at) : '';
+  // The end is exclusive: midnight belongs to the next day.
+  const lastDay = block
+    ? ctx.dayKeyOf(new Date(new Date(block.end_at).getTime() - 1).toISOString())
+    : '';
 
   return (
     <View style={styles.root} collapsable={false}>
@@ -64,7 +69,13 @@ export function TimeBlockPreview({ blockId }: { blockId: string }) {
             />
             <InfoRow
               icon="calendar"
-              title={<Text variant="bodyStrong">{ctx.dayLabel(ctx.dayKeyOf(block.start_at))}</Text>}
+              title={
+                <Text variant="bodyStrong">
+                  {firstDay === lastDay
+                    ? ctx.dayLabel(firstDay)
+                    : `${ctx.dayLabel(firstDay)} – ${ctx.dayLabel(lastDay)}`}
+                </Text>
+              }
               subtitle={
                 <Text variant="footnote" color="tertiary" tabularNums>
                   {block.all_day
@@ -90,15 +101,12 @@ export function TimeBlockPreview({ blockId }: { blockId: string }) {
               icon: 'reschedule',
               onPress: () => actions.run(block, 'reschedule'),
             }}
+            disabled={actions.isDeleting}
             bottom={Math.max(insets.bottom - 6, 16)}
           />
         </>
-      ) : query.isPending || actions.isDeleting ? (
-        <View style={styles.loading}>
-          <Skeleton height={140} radius={16} />
-        </View>
       ) : (
-        <EmptyState title={t('personalTime.preview.missing')} />
+        <BlockFallback query={{ ...query, isPending: query.isPending || actions.isDeleting }} />
       )}
     </View>
   );
@@ -107,6 +115,5 @@ export function TimeBlockPreview({ blockId }: { blockId: string }) {
 const styles = StyleSheet.create((theme) => ({
   root: { flex: 1, backgroundColor: theme.colors.bg.elevated },
   content: { paddingTop: theme.space[3], paddingHorizontal: theme.space[4], gap: theme.space[3] },
-  loading: { paddingTop: 100, paddingHorizontal: theme.space[4] },
   hint: { paddingHorizontal: theme.space[1] },
 }));

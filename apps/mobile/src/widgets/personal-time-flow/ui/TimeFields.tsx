@@ -6,6 +6,7 @@
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
+import { isShownInSchedule, useAppointmentsRangeQuery } from '@/entities/appointment';
 import { DayTimePicker } from '@/features/pick-time';
 import { formatDurationLabel } from '@/shared/lib/i18n';
 import { Chip, Switch, Text } from '@/shared/ui';
@@ -21,7 +22,15 @@ export interface TimeFieldsProps {
 
 export function TimeFields({ excludeId, onOpenMonth, onOpenOwnTime }: TimeFieldsProps) {
   const { t } = useTranslation();
-  const { draft, dayKey } = usePersonalTime();
+  const { ctx, draft, dayKey, record } = usePersonalTime();
+  // The grid shows what is taken; with no grid, the whole day needs saying so.
+  const allDayRange = draft.allDay ? record : null;
+  const visits = useAppointmentsRangeQuery(
+    ctx.userId,
+    allDayRange?.start_at ?? '',
+    allDayRange?.end_at ?? '',
+  );
+  const visitCount = allDayRange ? (visits.data ?? []).filter(isShownInSchedule).length : 0;
 
   const between = (
     <View style={styles.between}>
@@ -39,6 +48,12 @@ export function TimeFields({ excludeId, onOpenMonth, onOpenOwnTime }: TimeFields
         </View>
         <Switch value={draft.allDay} onValueChange={draft.setAllDay} />
       </Pressable>
+
+      {visitCount > 0 ? (
+        <Text variant="footnote" color="warning" style={styles.warning}>
+          {t('personalTime.when.allDayVisits', { count: visitCount })}
+        </Text>
+      ) : null}
 
       {draft.allDay ? null : (
         <View style={styles.lengths}>
@@ -96,6 +111,7 @@ const styles = StyleSheet.create((theme) => ({
     backgroundColor: theme.colors.bg.surface,
   },
   grow: { flex: 1, minWidth: 0, gap: 2 },
+  warning: { marginTop: -theme.space[2], paddingHorizontal: theme.space[1] },
   lengths: { gap: theme.space[1.5] },
   chipsScroll: { marginHorizontal: -theme.space[4], flexGrow: 0 },
   chips: { gap: theme.space[1.5], paddingHorizontal: theme.space[4] },

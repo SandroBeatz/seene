@@ -39,21 +39,22 @@ export function AppointmentToast() {
   const insets = useSafeAreaInsets();
   const toast = useAppointmentToast((s) => s.toast);
   const dismiss = useAppointmentToast((s) => s.dismiss);
-  // The layer goes on top when it mounts, so it comes per toast; it stays a moment
-  // longer for the card to leave.
-  const [layered, setLayered] = useState(false);
-  if (toast && !layered) setLayered(true);
+  // The layer goes on top when it mounts, so each toast gets its own: a sheet opened
+  // since the last one would cover it. It outlives the toast a moment for the card to
+  // leave.
+  const [layerId, setLayerId] = useState<number | null>(null);
+  if (toast && layerId !== toast.id) setLayerId(toast.id);
 
   useEffect(() => {
     if (toast) {
       const timer = setTimeout(dismiss, VISIBLE_MS);
       return () => clearTimeout(timer);
     }
-    const timer = setTimeout(() => setLayered(false), EXIT_MS);
+    const timer = setTimeout(() => setLayerId(null), EXIT_MS);
     return () => clearTimeout(timer);
   }, [toast, dismiss]);
 
-  if (!layered) return null;
+  if (layerId === null) return null;
 
   const phone = toast?.phone;
   const send = () => {
@@ -65,10 +66,10 @@ export function AppointmentToast() {
   };
 
   return (
-    <Layer>
+    <Layer key={layerId}>
       {toast ? (
         <Animated.View
-          key={toast.summary}
+          key={toast.id}
           entering={ENTERING}
           exiting={EXITING}
           style={[styles.wrap, { top: insets.top + 8 }]}
