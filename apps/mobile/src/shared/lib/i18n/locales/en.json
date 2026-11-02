@@ -609,8 +609,7 @@
       "create": "Create"
     },
     "created": {
-      "title": "Appointment created",
-      "send": "Send to client"
+      "title": "Appointment created"
     }
   },
   "uikit": {
@@ -1069,8 +1068,10 @@
     "messages": {
       "reminder": "Hi {{name}}! A reminder of your appointment {{when}}: {{services}}. See you!",
       "details": "Hi {{name}}! You’re booked {{when}}: {{services}}, {{price}}.",
-      "proposeTime": "Hi {{name}}! Unfortunately {{when}} won’t work. Shall we find another time?"
-    }
+      "proposeTime": "Hi {{name}}! Unfortunately {{when}} won’t work. Shall we find another time?",
+      "moved": "Hi {{name}}! Your appointment has been moved to {{when}}: {{services}}, {{price}}."
+    },
+    "sendToClient": "Send to client"
   },
   "note": {
     "title": "Note",
@@ -1114,7 +1115,8 @@
       "evening": "Evening"
     },
     "pick": "Pick a time",
-    "submit": "Move · {{when}}"
+    "submit": "Move · {{when}}",
+    "done": "Appointment moved"
   },
   "checkout": {
     "title": "Complete visit",

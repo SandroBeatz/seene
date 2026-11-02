@@ -615,8 +615,7 @@
       "create": "Créer"
     },
     "created": {
-      "title": "Rendez-vous créé",
-      "send": "Envoyer au client"
+      "title": "Rendez-vous créé"
     }
   },
   "uikit": {
@@ -1075,8 +1074,10 @@
     "messages": {
       "reminder": "Bonjour {{name}} ! Je vous rappelle votre rendez-vous {{when}} : {{services}}. À bientôt !",
       "details": "Bonjour {{name}} ! Vous avez rendez-vous {{when}} : {{services}}, {{price}}.",
-      "proposeTime": "Bonjour {{name}} ! Malheureusement, {{when}} ne sera pas possible. Trouvons un autre horaire ?"
-    }
+      "proposeTime": "Bonjour {{name}} ! Malheureusement, {{when}} ne sera pas possible. Trouvons un autre horaire ?",
+      "moved": "Bonjour {{name}} ! Votre rendez-vous a été déplacé au {{when}} : {{services}}, {{price}}."
+    },
+    "sendToClient": "Envoyer au client"
   },
   "note": {
     "title": "Note",
@@ -1120,7 +1121,8 @@
       "evening": "Soir"
     },
     "pick": "Choisissez un horaire",
-    "submit": "Déplacer · {{when}}"
+    "submit": "Déplacer · {{when}}",
+    "done": "Rendez-vous déplacé"
   },
   "checkout": {
     "title": "Terminer la visite",

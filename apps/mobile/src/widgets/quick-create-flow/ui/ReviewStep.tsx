@@ -12,11 +12,10 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { useCreateAppointmentMutation } from '@/entities/appointment';
 import { clientName } from '@/entities/client';
-import { parseAmount } from '@/features/appointment-actions';
+import { parseAmount, useAppointmentToast } from '@/features/appointment-actions';
 import { formatDurationLabel } from '@/shared/lib/i18n';
 import { formatPhone } from '@/shared/lib/phone';
 import { Avatar, FlowStepFooter, Icon, Text, useCloseFlow, type IconName } from '@/shared/ui';
-import { useCreatedAppointment } from '../model/created.store';
 import { useFlowData } from '../model/useFlowData';
 import { StepChrome } from './StepChrome';
 
@@ -27,7 +26,7 @@ export function ReviewStep() {
   const { t, zone, draft, client } = flow;
   const { theme } = useUnistyles();
   const create = useCreateAppointmentMutation(flow.userId);
-  const showCreated = useCreatedAppointment((s) => s.show);
+  const showToast = useAppointmentToast((s) => s.show);
   const close = useCloseFlow();
 
   const start = draft.start;
@@ -60,10 +59,10 @@ export function ReviewStep() {
         source: 'manual',
       },
       {
-        onSuccess: (appointment) => {
+        onSuccess: () => {
           const when = `${shortDay.toLocaleLowerCase()}, ${flow.range(start)}`;
-          showCreated({
-            appointmentId: appointment.id,
+          showToast({
+            title: t('quickCreate.created.title'),
             summary: `${client.first_name} · ${when}`,
             phone: client.whatsapp ?? client.phone,
             message: t('actions.messages.details', {

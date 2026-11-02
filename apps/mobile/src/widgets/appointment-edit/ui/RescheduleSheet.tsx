@@ -1,6 +1,7 @@
 /**
  * Moving a visit: the same day and time picker as "Новая запись" (no steps), with the
- * visit's own time left free. "Перенести · Пн, 2 ноября, 15:00" saves the new start.
+ * visit's own time left free. "Перенести · Пн, 2 ноября, 15:00" saves the new start and
+ * shows "Запись перенесена" with "Отправить клиенту": the client doesn't know yet.
  */
 import { useEffect } from 'react';
 import { router } from 'expo-router';
@@ -9,8 +10,18 @@ import { useTranslation } from 'react-i18next';
 import { Alert, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet } from 'react-native-unistyles';
-import { useUpdateAppointmentMutation, type Appointment } from '@/entities/appointment';
+import {
+  sumServicePrice,
+  useUpdateAppointmentMutation,
+  type Appointment,
+} from '@/entities/appointment';
+import { useClientQuery } from '@/entities/client';
+import { useMasterSettingsQuery } from '@/entities/master';
+import { useServicesQuery } from '@/entities/service';
+import { useAppointmentToast } from '@/features/appointment-actions';
 import { DayTimePicker, useTimeContext } from '@/features/pick-time';
+import { formatAmount } from '@/shared/lib/formats';
+import { isSupportedLocale } from '@/shared/lib/i18n';
 import { Button, SheetChrome, Skeleton, Text, useNow } from '@/shared/ui';
 import { useRescheduleDraft } from '../model/reschedule.store';
 
@@ -19,11 +30,15 @@ export interface RescheduleSheetProps {
 }
 
 export function RescheduleSheet({ appointment }: RescheduleSheetProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const insets = useSafeAreaInsets();
   const ctx = useTimeContext();
   const now = useNow();
   const update = useUpdateAppointmentMutation(ctx.userId);
+  const client = useClientQuery(appointment.client_id);
+  const services = useServicesQuery(ctx.userId);
+  const settings = useMasterSettingsQuery(ctx.userId);
+  const showToast = useAppointmentToast((s) => s.show);
   const draft = useRescheduleDraft();
   const { begin } = draft;
 
@@ -34,16 +49,49 @@ export function RescheduleSheet({ appointment }: RescheduleSheetProps) {
   useEffect(() => {
     if (!ctx.isPending) begin(appointment.id, firstDay);
   }, [appointment.id, firstDay, begin, ctx.isPending]);
-  const ready = draft.appointmentId === appointment.id && !ctx.isPending;
+  // The toast's text needs the client and the services too.
+  const ready =
+    draft.appointmentId === appointment.id &&
+    !ctx.isPending &&
+    !client.isPending &&
+    !services.isPending;
 
   const when = (iso: string) => `${ctx.dayLabel(ctx.dayKeyOf(iso))}, ${ctx.time(iso)}`;
 
+  const movedToast = (start: string) => {
+    const person = client.data;
+    const span = `${ctx.dayLabel(ctx.dayKeyOf(start)).toLocaleLowerCase()}, ${ctx.range(start, appointment.duration)}`;
+    const picked = (services.data ?? []).filter((s) => appointment.service_ids.includes(s.id));
+    return {
+      title: t('reschedule.done'),
+      summary: person ? `${person.first_name} · ${span}` : span,
+      phone: person?.whatsapp ?? person?.phone ?? null,
+      message: t('actions.messages.moved', {
+        name: person?.first_name ?? '',
+        when: span,
+        services: picked.map((s) => s.name).join(', '),
+        price: formatAmount(appointment.price ?? sumServicePrice(picked), {
+          currency: settings.data?.currency ?? 'EUR',
+          locale: isSupportedLocale(i18n.language) ? i18n.language : 'en',
+        }),
+      }),
+    };
+  };
+
   const save = () => {
-    if (!draft.start) return;
+    const start = draft.start;
+    if (!start) return;
+    // Its own time is free in the grid; picking it moves nothing.
+    if (new Date(start).getTime() === new Date(appointment.start_at).getTime()) {
+      return router.back();
+    }
     update.mutate(
-      { id: appointment.id, start_at: draft.start },
+      { id: appointment.id, start_at: start },
       {
-        onSuccess: () => router.back(),
+        onSuccess: () => {
+          showToast(movedToast(start));
+          router.back();
+        },
         onError: () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')),
       },
     );
