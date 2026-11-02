@@ -30,6 +30,23 @@ const stroke = (weight: IconWeight, body: ReactNode): StrokeGlyph => ({
 });
 
 export const GLYPHS = {
+  // Design "Меню": the page link card.
+  qr: stroke(
+    'regular',
+    <>
+      <Rect x={3.5} y={3.5} width={7} height={7} rx={1.5} />
+      <Rect x={13.5} y={3.5} width={7} height={7} rx={1.5} />
+      <Rect x={3.5} y={13.5} width={7} height={7} rx={1.5} />
+      <Path d="M14 14h2.5v2.5H14zM18 18h2.5v2.5H18zM14 19.5h1M20 14v1.5" />
+    </>,
+  ),
+  share: stroke(
+    'medium',
+    <>
+      <Path d="M12 15V3M7.5 7.5L12 3l4.5 4.5" />
+      <Path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" />
+    </>,
+  ),
   // Navigation
   chevronLeft: stroke('medium', <Path d="M15 6l-6 6 6 6" />),
   chevronRight: stroke('regular', <Path d="M9 6l6 6-6 6" />),

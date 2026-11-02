@@ -10,7 +10,8 @@ export default function SettingsStackLayout() {
     <Stack screenOptions={useStackScreenOptions()}>
       <Stack.Screen
         name="settings/index"
-        options={{ title: t('tabs.menu'), headerLargeTitle: process.env.EXPO_OS === 'ios' }}
+        // No bar in the design: the master's card heads the screen.
+        options={{ title: t('tabs.menu'), headerShown: false }}
       />
     </Stack>
   );

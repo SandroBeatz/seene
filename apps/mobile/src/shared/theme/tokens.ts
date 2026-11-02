@@ -38,6 +38,8 @@ export const palette = {
     500: '#CF3767',
     600: '#B92D5A',
     700: '#9E2449',
+    /** The thin ring around the master's avatar in the menu. */
+    ring: '#F0D3DD',
     darkSubtle: '#3A1622',
     darkDefault: '#E0577F',
   },
@@ -202,14 +204,14 @@ export const radius = {
 // Control heights & icon/avatar sizing. 44 is the min touch target.
 export const sizing = {
   icon: { xs: 12, mark: 13, sm: 16, base: 18, md: 20, lg: 24, xl: 34 },
-  avatar: { sm: 28, md: 44, lg: 56, xl: 64, xxl: 68, xxxl: 88 },
+  avatar: { sm: 28, md: 44, lg: 56, xl: 64, xxl: 68, profile: 84, xxxl: 88 },
   /** Initials font size per avatar size. */
-  avatarText: { sm: 11, md: 15, lg: 18, xl: 19, xxl: 22, xxxl: 30 },
+  avatarText: { sm: 11, md: 15, lg: 18, xl: 19, xxl: 22, profile: 27, xxxl: 30 },
   control: { xs: 30, sm: 36, md: 44, lg: 48, xl: 54 },
   /** Round icon button (back / close). */
   iconButton: 40,
   /** Pressable rows: settings rows, list rows, option rows. */
-  row: { sm: 52, md: 56, lg: 60, xl: 64 },
+  row: { sm: 52, menu: 54, md: 56, lg: 60, xl: 64 },
   codeCell: 58,
   /** Inline create field + its button (category sheet). */
   inlineField: 50,
@@ -375,6 +377,8 @@ export const shadow = {
   tabBar: '0px 8px 24px rgba(0, 0, 0, 0.08)',
   /** The big avatar of the client form. */
   avatar: '0px 8px 20px rgba(0, 0, 0, 0.08)',
+  /** The master's avatar in the menu: a soft rose glow. */
+  avatarGlow: '0px 10px 24px rgba(207, 55, 103, 0.2)',
   menu: '0px 16px 40px rgba(0, 0, 0, 0.16), 0px 2px 6px rgba(0, 0, 0, 0.06)',
   panel: '0px -8px 24px rgba(0, 0, 0, 0.05)',
   bubble: '0px 12px 30px rgba(0, 0, 0, 0.18)',

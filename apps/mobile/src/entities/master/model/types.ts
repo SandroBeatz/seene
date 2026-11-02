@@ -104,6 +104,7 @@ export type MasterProfile = Pick<
   | 'address'
   | 'city'
   | 'country'
+  | 'specializations'
 >;
 
 /** Display settings (`getMasterSettings`). */

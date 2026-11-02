@@ -1448,5 +1448,20 @@
       "sub": "{{visits}} · dernière le {{last}}",
       "empty": "Aucun client sur cette période"
     }
+  },
+  "menuHome": {
+    "settings": "Réglages",
+    "editProfile": "Modifier le profil",
+    "pageLabel": "Votre page de réservation",
+    "qrA11y": "QR code de la page",
+    "shareA11y": "Partager le lien",
+    "work": "Travail",
+    "services": "Prestations et tarifs",
+    "listAnd": " et ",
+    "qr": {
+      "title": "QR code",
+      "hint": "Vos clients scannent ce code pour ouvrir votre page de réservation.",
+      "share": "Partager le lien"
+    }
   }
 }
