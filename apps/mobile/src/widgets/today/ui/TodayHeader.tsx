@@ -1,7 +1,7 @@
 /**
  * "Сегодня" header (design "Таб · Сегодня"): the master's avatar (→ Меню) and the
- * greeting with their name on the left of the native header, notifications and
- * analytics on its right — native bar items side by side, so iOS 26 draws them as one
+ * greeting with their name on the left of the native header, analytics and
+ * notifications on its right — native bar items side by side, so iOS 26 draws them as one
  * Liquid Glass capsule. There is no notifications feed yet: the bell says so.
  */
 import { router, Stack } from 'expo-router';
@@ -43,14 +43,14 @@ export function TodayHeader({ firstName, lastName, avatarUrl, greeting }: TodayH
       </Stack.Toolbar>
       <Stack.Toolbar placement="right">
         <Stack.Toolbar.Button
-          icon="bell"
-          accessibilityLabel={t('today.notifications')}
-          onPress={() => Alert.alert(t('today.notifications'), t('today.notificationsEmpty'))}
-        />
-        <Stack.Toolbar.Button
           icon="chart.bar.xaxis"
           accessibilityLabel={t('tabs.analytics')}
           onPress={() => router.push('/analytics')}
+        />
+        <Stack.Toolbar.Button
+          icon="bell"
+          accessibilityLabel={t('today.notifications')}
+          onPress={() => Alert.alert(t('today.notifications'), t('today.notificationsEmpty'))}
         />
       </Stack.Toolbar>
     </>
