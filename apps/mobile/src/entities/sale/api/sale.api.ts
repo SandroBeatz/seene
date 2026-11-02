@@ -43,6 +43,7 @@ export async function completeAppointment(dto: CompleteAppointmentDto): Promise<
   const { data, error } = await supabase.rpc('complete_appointment', {
     p_appointment_id: dto.appointmentId,
     p_amount: dto.amount,
+    p_tip: dto.tip,
     // The RPC accepts null (no method); the generated type does not say so.
     p_payment_type_id: dto.paymentTypeId as string,
     p_items: dto.items,

@@ -9,6 +9,8 @@ import type { WorkdayHours } from '@/shared/lib/scheduling';
 const DAY_MINUTES = 24 * 60;
 /** The timeline's grid draws a line every half hour. */
 export const CELL_MINUTES = 30;
+/** The timeline shows this much before opening and after closing. */
+const TIMELINE_MARGIN = 120;
 /** A cell fits three bars, or two and "+N". */
 const MAX_BARS = 3;
 
@@ -180,6 +182,28 @@ export function unavailableHours(
     ...(workday?.breaks ?? []).map((b): [number, number] => [parseHhmm(b.start), parseHhmm(b.end)]),
   ];
   return spans.filter(([a, b]) => a < b).map(([a, b]) => ({ start: a / 60, end: b / 60 }));
+}
+
+/**
+ * The hours a day's timeline shows: its working day with two hours either side, stretched
+ * to whatever is booked outside that. A day off has only its records to go by; with none,
+ * or while the schedule is unknown, all of it.
+ */
+export function timelineHours(
+  workday: WorkdayHours | null | undefined,
+  entries: readonly { from: number; to: number }[],
+): { start: number; end: number } {
+  const work = workMinutes(workday);
+  const earliest = entries.length ? Math.min(...entries.map((e) => e.from)) : null;
+  const latest = entries.length ? Math.max(...entries.map((e) => e.to)) : null;
+  const base = work ?? (earliest !== null && latest !== null ? [earliest, latest] : null);
+  if (!base) return { start: 0, end: 24 };
+  const from = Math.min(base[0] - TIMELINE_MARGIN, earliest ?? Infinity);
+  const to = Math.max(base[1] + TIMELINE_MARGIN, latest ?? -Infinity);
+  return {
+    start: Math.max(Math.floor(from / 60), 0),
+    end: Math.min(Math.ceil(to / 60), 24),
+  };
 }
 
 /** Minutes of a day as the timeline's wall-clock string. Midnight at the end stays in the day. */

@@ -38,7 +38,9 @@ export default function AppLayout() {
     <View style={styles.root}>
       <Stack screenOptions={stackOptions}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="analytics" options={{ title: t('tabs.analytics') }} />
+        <Stack.Screen name="analytics/index" options={{ title: t('tabs.analytics') }} />
+        <Stack.Screen name="analytics/operations" options={{ title: t('money.operations.title') }} />
+        <Stack.Screen name="analytics/clients" options={{ title: '' }} />
         {/* No title: the name heads the content; "⋯" is the screen's own toolbar menu. */}
         <Stack.Screen name="clients/[clientId]" options={{ title: '' }} />
         <Stack.Screen
@@ -46,6 +48,7 @@ export default function AppLayout() {
           options={{ title: t('navigation.profileSettings') }}
         />
         <Stack.Screen name="settings/services" options={{ title: t('services.title') }} />
+        <Stack.Screen name="settings/expenses" options={{ title: t('expenses.title') }} />
         <Stack.Screen name="(modals)/appointment/[appointmentId]/index" options={sheet} />
         <Stack.Screen name="(modals)/appointment/[appointmentId]/note" options={sheet} />
         <Stack.Screen name="(modals)/appointment/[appointmentId]/services" options={sheet} />
@@ -60,6 +63,18 @@ export default function AppLayout() {
         />
         <Stack.Screen name="(modals)/appointment/[appointmentId]/client" options={sheet} />
         <Stack.Screen name="(modals)/appointment/[appointmentId]/checkout" options={sheet} />
+        <Stack.Screen
+          name="(modals)/expense/new"
+          options={{ ...sheet, sheetAllowedDetents: [0.82, 1] }}
+        />
+        <Stack.Screen
+          name="(modals)/expense/[expenseId]"
+          options={{ ...sheet, sheetAllowedDetents: [0.82, 1] }}
+        />
+        <Stack.Screen
+          name="(modals)/analytics-range"
+          options={{ ...sheet, sheetAllowedDetents: [0.85] }}
+        />
         <Stack.Screen name="(modals)/client/new" options={sheet} />
         <Stack.Screen name="(modals)/client/[clientId]/merge" options={sheet} />
         <Stack.Screen name="(modals)/client/[clientId]/note" options={sheet} />

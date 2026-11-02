@@ -202,17 +202,26 @@ lives in the `seene` Nuxt site. Online bookings surface here as `appointments` w
 app must **display** these correctly (tags, requests-to-confirm surface) but does not implement the
 public flow. Server-side validation of public bookings is the Nuxt/RPC layer's responsibility.
 
-## 11. Analytics (read-only, server-computed)
+## 11. Analytics and expenses
 
-All metrics come from RPCs (`get_analytics_v2`, `get_analytics_widgets_v2`) — **no client-side
-aggregation**. Two halves:
-- **Filter-driven** (follow the period: Day/Week/Month/Year/Custom, optional Compare vs prior
-  period): earned (`sale.paid_at`), appointments (completed by `start_at`), clients served
-  (distinct), hours worked (Σ duration), avg check (earned/appointments), revenue series.
-- **Fixed-window** (ignore the filter): top services (30d), client mix new/returning by lifetime
-  completed-visit count (90d), busiest days + peak hour (56d).
-- Week starts **Monday**. Deltas are `round((cur−prev)/prev×100)`; prev = 0 → "new" badge.
-- Excluded everywhere: cancelled, no_show, pending, confirmed-not-completed; no refunds.
+Everything on "Аналитика" comes from one RPC, `get_money_overview`; the client list behind "Все"
+from `get_money_clients`. The app only formats and draws (`widgets/money`).
+- **Period:** week, month, year or the master's own dates, half-open `[from, to)` in the master's
+  zone. Week starts **Monday**. The sub-pages read the same period.
+- **Comparison:** the previous period of the same kind. A period still running is compared with the
+  same number of days of the previous one. No percent when the previous value is 0.
+- **Earned:** `sale.amount` by `sale.paid_at`, tip included; `sale.tip` is the tip's part.
+- **Visits:** completed by `start_at`. Average check = earned / visits.
+- **New client:** their first ever completed visit falls in the period; the rest "came back".
+- **Load:** completed minutes / open minutes, counted up to now. Open = working hours minus breaks,
+  vacation and personal time. "Free hours" = open minus completed.
+- **Not earned:** no-shows and visits cancelled by the client, at the visit's `price` or, when it
+  has none, the list price of its services.
+
+**Expenses** are the master's own rows with a built-in category or one of their own ("+ Своя": `expense_category` is the list, `expense.category` holds the key or the name; no renaming). "Повторять каждый месяц" is a chain of
+real rows: the hourly cron `roll_recurring_expenses()` copies the newest row when its next date comes
+in the master's zone. A month can be corrected alone and past months never change. Turning the switch
+off or deleting the newest row ends the chain.
 
 ## 12. Settings (nine sections)
 

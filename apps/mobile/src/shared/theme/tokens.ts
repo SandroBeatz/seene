@@ -250,12 +250,22 @@ export const fontFamily = {
  * letterSpacing is in px (the design's em values × font size).
  */
 export const typography = {
+  /** A number pad's digit, and its smaller "000". */
+  key: { fontFamily: fontFamily.medium, fontSize: 22, lineHeight: 28, letterSpacing: 0 },
+  keyCompact: { fontFamily: fontFamily.medium, fontSize: 18, lineHeight: 24, letterSpacing: 0 },
   /** The amount on the checkout sheet. */
   amount: {
     fontFamily: fontFamily.displayBold,
     fontSize: 44,
     lineHeight: 50,
     letterSpacing: -0.88,
+  },
+  /** "Заработано" on analytics. */
+  heroAmount: {
+    fontFamily: fontFamily.displayBold,
+    fontSize: 40,
+    lineHeight: 44,
+    letterSpacing: -1.2,
   },
   display: {
     fontFamily: fontFamily.displayBold,

@@ -51,6 +51,7 @@ import {
   freeCells,
   monthKeyOf,
   parseHhmm,
+  timelineHours,
   timelineStamp,
   unavailableHours,
   withNeighbours,
@@ -73,7 +74,7 @@ import {
 import { WEEK_HEIGHT, WeekDay, WeekStripContext, type WeekStripState } from './WeekDay';
 
 /** Width of the hours column. */
-const TIME_INSET = 60;
+const TIME_INSET = 52;
 /** Space kept clear at the screen's right edge. */
 const RIGHT_EDGE = 16;
 
@@ -108,6 +109,8 @@ const DayPage = memo(
   (a, b) =>
     a.dayEvents === b.dayEvents &&
     a.schedule === b.schedule &&
+    a.timeline.start === b.timeline.start &&
+    a.timeline.end === b.timeline.end &&
     a.timeline.theme === b.timeline.theme &&
     a.timeline.renderEvent === b.timeline.renderEvent &&
     a.timeline.format24h === b.timeline.format24h &&
@@ -323,6 +326,7 @@ export function CalendarDayScreen({ initialDate }: { initialDate?: string }) {
           fontFamily: theme.typography.caption2.fontFamily,
           fontSize: 11,
           paddingLeft: 0,
+          textAlign: 'right',
         },
         nowIndicatorLine: { backgroundColor: theme.colors.brand.default, height: 2 },
         nowIndicatorKnob: { backgroundColor: theme.colors.brand.default },
@@ -365,17 +369,30 @@ export function CalendarDayScreen({ initialDate }: { initialDate?: string }) {
           </View>
         );
       }
+      const { start, end } = timelineHours(
+        workday,
+        (index.get(info.item) ?? []).filter((e) => !e.allDay),
+      );
+      // The "now" outside these hours has no place to scroll to: the day's first record instead.
+      const nowShown = nowMinutes >= start * 60 && nowMinutes <= end * 60;
       return (
         <DayPage
-          key={key}
-          timeline={timeline}
+          // The library sizes a page once, when it mounts.
+          key={`${key}-${start}-${end}`}
+          timeline={{
+            ...timeline,
+            start,
+            end,
+            scrollToNow: timeline.scrollToNow && nowShown,
+            scrollToFirst: timeline.scrollToFirst || (timeline.scrollToNow && !nowShown),
+          }}
           dayEvents={events[info.item]}
           unavailable={schedule ? unavailableHours(workday) : undefined}
           schedule={schedule}
         />
       );
     },
-    [events, schedule, t, todayKey, lastBookable],
+    [events, index, nowMinutes, schedule, t, todayKey, lastBookable],
   );
 
   // `Timeline` draws "now" from the device clock: only true when it matches the master's.

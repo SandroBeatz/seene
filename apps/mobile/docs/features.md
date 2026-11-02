@@ -49,7 +49,7 @@ confirm) → Review → Create. One `complete_onboarding` write; the app opens o
 Landing after auth. Composes:
 - **Greeting** (name + avatar from session profile).
 - **Overview metrics** — earned / appointments / hours, with a Day/Week/Month switcher
-  (`today`/`this_week`/`this_month`), from `get_analytics_v2`.
+  (`today`/`this_week`/`this_month`), from `get_money_overview`.
 - **Schedule timeline** — today's appointments as a timeline.
 - **Action appointments** — items needing attention (pending, or confirmed & past) with
   Confirm / Complete / etc. inline.
@@ -73,7 +73,7 @@ day counts via `appointment_day_counts` RPC.
   an accent tint, and a tap starts quick-create on that day, with the time picked if the services
   fit there (never unchecked). No cells while records load or failed, or past the picker's 90 days. Library limits worked around, see the
   code comments: `patches/react-native-calendars@*.patch` sets the hour to the design's 48 pt, drops a 250 ms
-  delay on tap, draws events by wall clock (DST) and fixes stale `onEventPress`; it has a device-clock "now" line (hidden when the device and master zones differ) and no
+  delay on tap, draws events by wall clock (DST), fixes stale `onEventPress`, keeps "now" and scrolling right when a page doesn't start at midnight and tightens the hours column; a page shows the working day ±2 hours, stretched to records outside it. The library has a device-clock "now" line (hidden when the device and master zones differ) and no
   long press, so touches are handled inside `renderEvent` (`onEventPress` serves screen readers).
 
 ## 5. Quick create (appointment / time off wizard)

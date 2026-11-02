@@ -6,6 +6,7 @@ import { useSessionStore } from '@/entities/session';
 import { SUPPORTED_LOCALES, useLocaleStore } from '@/shared/lib/i18n';
 import { type ThemeMode, useThemeStore } from '@/shared/theme/theme.store';
 import { Button, Card, Chip, Divider, ListItem, ScreenScrollView, Text } from '@/shared/ui';
+import { MoneyMenuSection } from '@/widgets/money';
 
 const THEME_MODES: ThemeMode[] = ['auto', 'light', 'dark'];
 
@@ -32,6 +33,8 @@ export default function SettingsScreen() {
           onPress={() => router.push('/settings/services')}
         />
       </Card>
+
+      <MoneyMenuSection />
 
       <Card>
         <View style={styles.group}>

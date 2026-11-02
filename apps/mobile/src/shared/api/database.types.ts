@@ -12,6 +12,31 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.5"
   }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       appointments: {
@@ -232,6 +257,69 @@ export type Database = {
           phone?: string
           revoked_at?: string | null
           token_hash?: string
+        }
+        Relationships: []
+      }
+      expense: {
+        Row: {
+          amount: number
+          category: string
+          created_at: string
+          id: string
+          note: string | null
+          repeat_day: number | null
+          repeat_monthly: boolean
+          rolled_over: boolean
+          spent_on: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          category: string
+          created_at?: string
+          id?: string
+          note?: string | null
+          repeat_day?: number | null
+          repeat_monthly?: boolean
+          rolled_over?: boolean
+          spent_on: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          category?: string
+          created_at?: string
+          id?: string
+          note?: string | null
+          repeat_day?: number | null
+          repeat_monthly?: boolean
+          rolled_over?: boolean
+          spent_on?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      expense_category: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -549,6 +637,7 @@ export type Database = {
           id: string
           paid_at: string
           payment_type_id: string | null
+          tip: number
           user_id: string
         }
         Insert: {
@@ -559,6 +648,7 @@ export type Database = {
           id?: string
           paid_at?: string
           payment_type_id?: string | null
+          tip?: number
           user_id: string
         }
         Update: {
@@ -569,6 +659,7 @@ export type Database = {
           id?: string
           paid_at?: string
           payment_type_id?: string | null
+          tip?: number
           user_id?: string
         }
         Relationships: [
@@ -829,10 +920,6 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      analytics_period_metrics: {
-        Args: { p_from: string; p_to: string; p_uid: string }
-        Returns: Json
-      }
       appointment_day_counts: {
         Args: { p_from: string; p_to: string; p_tz: string }
         Returns: {
@@ -868,6 +955,7 @@ export type Database = {
           p_items: Json
           p_payment_type_id: string
           p_start_at?: string
+          p_tip?: number
         }
         Returns: string
       }
@@ -890,25 +978,26 @@ export type Database = {
         }
         Returns: Json
       }
-      get_analytics_v2: {
+      get_money_clients: {
+        Args: { p_from: string; p_to: string }
+        Returns: {
+          amount: number
+          avatar_color: string
+          client_id: string
+          first_name: string
+          is_new: boolean
+          last_name: string
+          last_visit: string
+          visits: number
+        }[]
+      }
+      get_money_overview: {
         Args: {
           p_from: string
           p_granularity?: string
           p_prev_from: string
           p_prev_to: string
           p_to: string
-          p_tz?: string
-        }
-        Returns: Json
-      }
-      get_analytics_widgets_v2: {
-        Args: {
-          p_days_from: string
-          p_days_to: string
-          p_mix_from: string
-          p_mix_to: string
-          p_top_from: string
-          p_top_to: string
           p_tz?: string
         }
         Returns: Json
@@ -927,6 +1016,15 @@ export type Database = {
         Args: { p_keep: string; p_merge: string }
         Returns: undefined
       }
+      money_open_minutes: {
+        Args: { p_from: string; p_to: string; p_tz: string; p_uid: string }
+        Returns: number
+      }
+      money_period_metrics: {
+        Args: { p_from: string; p_to: string; p_tz: string; p_uid: string }
+        Returns: Json
+      }
+      roll_recurring_expenses: { Args: never; Returns: number }
       specialization_keys: { Args: never; Returns: string[] }
       update_sale_details: {
         Args: { p_amount: number; p_items: Json; p_sale_id: string }
@@ -1060,6 +1158,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {},
   },

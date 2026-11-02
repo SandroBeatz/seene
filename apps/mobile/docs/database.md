@@ -90,13 +90,14 @@ operations; the mobile app calls a subset via `supabase.rpc(...)` inside the api
 | RPC | Used by mobile? | Purpose |
 |---|---|---|
 | `complete_appointment(p_appointment_id, p_amount, p_payment_type_id, p_items jsonb) → uuid` | ✅ | Atomic checkout: set status `completed`, insert `sale` + `sale_item[]`. Checks `auth.uid()` ownership; raises `already_completed` / `appointment_not_found`. |
-| `get_analytics_v2(p_from, p_to, p_prev_from, p_prev_to, p_granularity, p_tz) → json` | ✅ | Period metrics + revenue series (current + previous). |
-| `get_analytics_widgets_v2(p_top_from,…, p_tz) → json` | ✅ | Fixed-window widgets: top services (30d), client mix (90d), busiest days (56d). |
+| `get_money_overview(p_from, p_to, p_prev_from, p_prev_to, p_granularity, p_tz) → json` | ✅ | Everything "Аналитика" shows for a period. |
+| `get_money_clients(p_from, p_to) → table` | ✅ | Clients who paid in the period, biggest first. |
 | `appointment_day_counts(p_from, p_to, p_tz) → table(day, cnt)` | ✅ | Per-day appointment counts for calendar dots. |
 | `check_username_available(p_username) → boolean` | ✅ | Username uniqueness check in onboarding/profile. |
 | `complete_onboarding(p_payload jsonb) → uuid` | ✅ | **SECURITY INVOKER** (caller's RLS). One transaction: `master_profile` + `master_settings` + `service[]` (+ `service_category` per distinct name). Raises `already_completed`, `invalid_payload` (22023); username clash = 23505. A service without a price is saved with `price 0, show_online false` (a draft, hidden from the public page). |
 | `specialization_keys() → text[]` | ❌ (CHECKs) | Immutable list of the 14 profession keys shared by both CHECK constraints. |
-| `analytics_period_metrics(p_uid, p_from, p_to) → json` | ❌ (internal) | Scalar-metrics helper; not granted to any role. |
+| `money_period_metrics`, `money_open_minutes` | ❌ (internal) | Helpers of `get_money_overview`; not granted to any role. |
+| `roll_recurring_expenses() → int` | ❌ (cron) | Copies due monthly expenses forward; hourly job `roll-recurring-expenses`. |
 | `create_appointment_from_booking(p_username, p_service_ids, p_starts_at, p_phone, p_first_name, p_last_name, p_note) → jsonb` | ❌ (public site) | Anon path that materialises an `appointment`. |
 | `rls_auto_enable()` (event trigger fn) | — | Infra: auto-enables RLS on newly created tables. |
 
@@ -112,7 +113,7 @@ From `get_advisors(security)`:
 | Level | Finding | Note for mobile |
 |---|---|---|
 | WARN | `complete_appointment` & `create_appointment_from_booking` are **executable by `anon`** | `complete_appointment` should have `anon` EXECUTE revoked (it's a master-only op; it already checks `auth.uid()`, so anon calls fail closed, but the grant is wrong). Q-DB-3. |
-| WARN | Several `SECURITY DEFINER` fns executable by `authenticated` (`get_analytics_v2/widgets`, `appointment_day_counts`, `check_username_available`, `complete_appointment`) | Expected for the RPC pattern; each filters by `auth.uid()` internally. No action, but keep filtering. |
+| WARN | Several `SECURITY DEFINER` fns executable by `authenticated` (`get_money_overview/clients`, `appointment_day_counts`, `check_username_available`, `complete_appointment`) | Expected for the RPC pattern; each filters by `auth.uid()` internally. No action, but keep filtering. |
 | WARN | **Leaked-password protection disabled** in Auth | Recommend enabling (HaveIBeenPwned). Q-DB-4. |
 | INFO | `otp_codes` RLS enabled, no policies | Intentional (service-role only). No action for mobile. |
 
@@ -154,6 +155,6 @@ mobile app uploads a client-resized square WebP (≤512px) — it needs an image
 ## 8. What the mobile app needs from the DB (summary)
 
 Read/write CRUD (RLS-scoped) on the 10 master-app tables + 5 RPCs (`complete_appointment`,
-`get_analytics_v2`, `get_analytics_widgets_v2`, `appointment_day_counts`,
+`get_money_overview`, `get_money_clients`, `appointment_day_counts`,
 `check_username_available`) + the `avatars` bucket + Supabase Auth. It does **not** touch
 `otp_codes` or the booking RPC.

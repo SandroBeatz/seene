@@ -23,3 +23,4 @@ export type {
   DaySchedule,
   TimeRange,
 } from './model/types';
+export { useMoneyContext } from './model/useMoneyContext';
