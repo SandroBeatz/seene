@@ -54,6 +54,12 @@ src/app/
 │   └── (modals)/
 │       ├── appointment-form.tsx           standard route modal
 │       ├── checkout/[appointmentId].tsx   native form sheet
+│       ├── personal-time/                  "Личное время": same shape, two steps
+│       │   ├── _layout.tsx                 iOS: native bar per step; Android: modal
+│       │   ├── index.tsx                   1 · when (day, all day or length + start)
+│       │   ├── what.tsx                    2 · name → create the time block
+│       │   ├── custom-time.tsx             "Своё время" sheet over step 1
+│       │   └── month.tsx                   month calendar sheet over step 1
 │       └── quick-create/                   "Новая запись": form sheet with nested Stack
 │           ├── _layout.tsx                 iOS: native bar per step; Android: modal
 │           ├── index.tsx                   1 · client (`?clientId=` skips to services)
@@ -136,7 +142,7 @@ protected launch or deep link
   → profile ready: original protected route, otherwise /
   → switch Native Tabs
   → open shared /appointments/:id in the current tab Stack
-  → present /quick-create above all tabs (a sheet with its own Stack)
+  → present /quick-create (or /personal-time) above all tabs (a sheet with its own Stack)
   → push client → services → date-time → review inside the sheet's Stack
   → Back pops one step; close (and "Создать") pops the sheet off the app Stack
   → a deep-linked flow has nothing under it and gives way to /
@@ -326,6 +332,7 @@ requires a binary built with the iOS 26 SDK; treat SDK upgrades as a focused com
 | `src/app/(app)/(tabs)/_layout.tsx`                                      | Isolated alpha Native Tabs integration      |
 | `src/app/(app)/(tabs)/(home,calendar)/appointments/[appointmentId].tsx` | Shared entity route                         |
 | `src/app/(app)/(modals)/quick-create/_layout.tsx`                       | Nested modal Stack                          |
+| `src/app/(app)/(modals)/personal-time/_layout.tsx`                      | Nested modal Stack                          |
 | `src/shared/lib/navigation/useAuthReturnIntent.ts`                      | Transient protected deep-link return intent |
 | `src/entities/session/model/session.store.ts`                           | Session/profile restoration state           |
 | `src/shared/ui/NavigationHeaderBackground/`                             | Theme-aware native Stack gradient           |

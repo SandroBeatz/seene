@@ -15,10 +15,9 @@ import {
   OTHER_DIRECTION,
 } from '@/features/appointment-actions';
 import { formatDurationLabel, pluralCategory } from '@/shared/lib/i18n';
-import { Icon, SearchField, Skeleton, Text } from '@/shared/ui';
+import { FlowStepFooter, Icon, SearchField, Skeleton, Text } from '@/shared/ui';
 import { useFlowData } from '../model/useFlowData';
 import { StepChrome } from './StepChrome';
-import { StepFooter } from './StepFooter';
 
 export function ServicesStep() {
   const flow = useFlowData();
@@ -200,7 +199,7 @@ export function ServicesStep() {
         </>
       )}
 
-      <StepFooter
+      <FlowStepFooter
         title={footerTitle}
         subtitle={footerSubtitle}
         actionLabel={t('quickCreate.next')}

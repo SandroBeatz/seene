@@ -68,6 +68,15 @@ export default function AppLayout() {
           name="(modals)/appointment-form"
           options={{ presentation: 'modal', title: t('navigation.appointmentForm') }}
         />
+        {/* "Личное время": like "Новая запись" — a sheet with its own Stack of steps. */}
+        <Stack.Screen
+          name="(modals)/personal-time"
+          options={
+            isIOS
+              ? { ...sheet, headerShown: false, headerBackground: undefined }
+              : { presentation: 'modal', headerShown: false, contentStyle: sheet.contentStyle }
+          }
+        />
         {/* "Новая запись": the same full-height sheet, with its own Stack inside (the steps
           bring the native bar). Android form sheets can't hold a nested Stack: a modal. */}
         <Stack.Screen
