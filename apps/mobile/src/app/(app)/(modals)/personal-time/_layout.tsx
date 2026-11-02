@@ -29,6 +29,8 @@ export default function PersonalTimeLayout() {
         ...stackOptions,
         headerShown: isIOS,
         contentStyle: { backgroundColor: theme.colors.bg.elevated },
+        // Typing the name changes the draft: the grid of the step below sits it out.
+        freezeOnBlur: true,
       }}>
       <Stack.Screen name="index" />
       <Stack.Screen name="what" />

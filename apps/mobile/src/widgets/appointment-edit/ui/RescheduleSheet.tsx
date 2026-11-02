@@ -11,7 +11,7 @@ import { Alert, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet } from 'react-native-unistyles';
 import {
-  sumServicePrice,
+  appointmentTotalPrice,
   useUpdateAppointmentMutation,
   type Appointment,
 } from '@/entities/appointment';
@@ -49,19 +49,17 @@ export function RescheduleSheet({ appointment }: RescheduleSheetProps) {
   useEffect(() => {
     if (!ctx.isPending) begin(appointment.id, firstDay);
   }, [appointment.id, firstDay, begin, ctx.isPending]);
+  const ready = draft.appointmentId === appointment.id && !ctx.isPending;
   // The toast's text needs the client and the services too.
-  const ready =
-    draft.appointmentId === appointment.id &&
-    !ctx.isPending &&
-    !client.isPending &&
-    !services.isPending;
+  const canSave = ready && !client.isPending && !services.isPending;
 
   const when = (iso: string) => `${ctx.dayLabel(ctx.dayKeyOf(iso))}, ${ctx.time(iso)}`;
 
   const movedToast = (start: string) => {
     const person = client.data;
     const span = `${ctx.dayLabel(ctx.dayKeyOf(start)).toLocaleLowerCase()}, ${ctx.range(start, appointment.duration)}`;
-    const picked = (services.data ?? []).filter((s) => appointment.service_ids.includes(s.id));
+    const catalog = services.data ?? [];
+    const picked = appointment.service_ids.flatMap((id) => catalog.find((s) => s.id === id) ?? []);
     return {
       title: t('reschedule.done'),
       summary: person ? `${person.first_name} · ${span}` : span,
@@ -70,7 +68,7 @@ export function RescheduleSheet({ appointment }: RescheduleSheetProps) {
         name: person?.first_name ?? '',
         when: span,
         services: picked.map((s) => s.name).join(', '),
-        price: formatAmount(appointment.price ?? sumServicePrice(picked), {
+        price: formatAmount(appointmentTotalPrice(appointment, picked), {
           currency: settings.data?.currency ?? 'EUR',
           locale: isSupportedLocale(i18n.language) ? i18n.language : 'en',
         }),
@@ -143,7 +141,7 @@ export function RescheduleSheet({ appointment }: RescheduleSheetProps) {
               ? t('reschedule.submit', { when: when(draft.start) })
               : t('reschedule.pick')
           }
-          disabled={!draft.start || !ready}
+          disabled={!draft.start || !canSave}
           loading={update.isPending}
           onPress={save}
           fullWidth

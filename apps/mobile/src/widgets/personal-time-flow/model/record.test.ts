@@ -3,7 +3,7 @@ import type { TimeBlock } from '@/entities/time-block';
 import { draftOfBlock, personalTimeRecord, staysInPlace } from './record';
 
 const ZONE = 'Asia/Bishkek'; // UTC+6
-const base = { start: null, allDay: false, length: 60, title: '' };
+const base = { start: null, allDay: false, length: 60, spanDays: 1, title: '' };
 
 describe('personalTimeRecord', () => {
   it('is null until a start is chosen', () => {
@@ -61,6 +61,7 @@ describe('draftOfBlock', () => {
       dayKey: '2026-11-03',
       allDay: false,
       length: 60,
+      spanDays: 1,
       title: 'Обед',
     });
   });
@@ -68,6 +69,35 @@ describe('draftOfBlock', () => {
   it('keeps a usable length for an all-day block, an empty name for none', () => {
     const allDay = { ...lunch, all_day: true, notes: null, end_at: '2026-11-03T07:00:00Z' };
     expect(draftOfBlock(allDay, ZONE)).toMatchObject({ allDay: true, length: 60, title: '' });
+  });
+});
+
+describe('moving a multi-day all-day block', () => {
+  // 3 days in Bishkek: Nov 2 00:00 .. Nov 5 00:00 local.
+  const vacation = {
+    ...lunch,
+    all_day: true,
+    start_at: '2026-11-01T18:00:00Z',
+    end_at: '2026-11-04T18:00:00Z',
+  };
+
+  it('reads its span', () => {
+    expect(draftOfBlock(vacation, ZONE)).toMatchObject({ dayKey: '2026-11-02', spanDays: 3 });
+  });
+
+  it('keeps the span on the new day', () => {
+    expect(
+      personalTimeRecord({ ...base, allDay: true, spanDays: 3 }, '2026-11-10', ZONE),
+    ).toMatchObject({
+      start_at: '2026-11-09T18:00:00.000Z',
+      end_at: '2026-11-12T18:00:00.000Z',
+      all_day: true,
+    });
+  });
+
+  it('stays in place on its own day', () => {
+    const record = personalTimeRecord({ ...base, allDay: true, spanDays: 3 }, '2026-11-02', ZONE)!;
+    expect(staysInPlace(vacation, record)).toBe(true);
   });
 });
 

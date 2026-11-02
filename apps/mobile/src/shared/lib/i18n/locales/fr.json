@@ -1204,7 +1204,11 @@
       "length": "Durée",
       "hours": "{{from}} – {{to}} · pour {{duration}}",
       "closedSpan": "La réservation en ligne sera fermée à ce moment",
-      "closedDay": "La réservation en ligne sera fermée ce jour-là"
+      "closedDay": "La réservation en ligne sera fermée ce jour-là",
+      "allDayVisits_one": "{{count}} rendez-vous est déjà prévu sur cette période : il reste maintenu, prévenez le client.",
+      "allDayVisits_few": "{{count}} rendez-vous sont déjà prévus sur cette période : ils restent maintenus, prévenez les clients.",
+      "allDayVisits_many": "{{count}} rendez-vous sont déjà prévus sur cette période : ils restent maintenus, prévenez les clients.",
+      "allDayVisits_other": "{{count}} rendez-vous sont déjà prévus sur cette période : ils restent maintenus, prévenez les clients."
     },
     "what": {
       "subtitle": "De quoi s'agit-il",

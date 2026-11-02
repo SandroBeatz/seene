@@ -10,18 +10,20 @@ import {
   useUpdateTimeBlockMutation,
   type TimeBlock,
 } from '@/entities/time-block';
-import { Button, FormScreen, SheetChrome, Skeleton } from '@/shared/ui';
+import { Button, FormScreen, SheetChrome } from '@/shared/ui';
+import { BlockFallback } from './BlockFallback';
 import { NameFields } from './NameFields';
 
 export function TimeBlockNameSheet({ blockId }: { blockId: string }) {
   const { t } = useTranslation();
   const userId = useUserId() ?? '';
-  const block = useTimeBlockQuery(userId, blockId).data;
+  const query = useTimeBlockQuery(userId, blockId);
+  const block = query.data;
 
   return (
     <View style={styles.root} collapsable={false}>
       <SheetChrome title={t('personalTime.what.name')} leadingLabel={t('common.close')} />
-      {block ? <NameForm block={block} userId={userId} /> : <Skeleton height={140} radius={16} />}
+      {block ? <NameForm block={block} userId={userId} /> : <BlockFallback query={query} />}
     </View>
   );
 }

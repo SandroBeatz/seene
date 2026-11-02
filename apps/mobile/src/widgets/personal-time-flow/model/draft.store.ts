@@ -22,6 +22,8 @@ export interface PersonalTimeDraft {
   allDay: boolean;
   /** Minutes. */
   length: number;
+  /** Days an all-day block spans; a move keeps them. */
+  spanDays: number;
   title: string;
 }
 
@@ -29,7 +31,7 @@ interface PersonalTimeState extends PersonalTimeDraft {
   /** Start moving a block: its day, length and name, the new start still to pick. */
   begin: (
     blockId: string,
-    from: Pick<PersonalTimeDraft, 'dayKey' | 'allDay' | 'length' | 'title'>,
+    from: Pick<PersonalTimeDraft, 'dayKey' | 'allDay' | 'length' | 'spanDays' | 'title'>,
   ) => void;
   setDay: (dayKey: string) => void;
   setStart: (start: string | null, ownTime?: boolean) => void;
@@ -46,6 +48,7 @@ const EMPTY: PersonalTimeDraft = {
   ownTime: false,
   allDay: false,
   length: DEFAULT_LENGTH,
+  spanDays: 1,
   title: '',
 };
 
@@ -56,8 +59,10 @@ export const usePersonalTimeDraft = create<PersonalTimeState>()((set) => ({
     set((state) => (state.dayKey === dayKey ? state : { dayKey, start: null, ownTime: false })),
   setStart: (start, ownTime = false) => set({ start, ownTime }),
   setAllDay: (allDay) => set({ allDay }),
-  // Another length: a start from the grid may no longer fit; a typed one stays.
-  setLength: (length) => set((state) => ({ length, start: state.ownTime ? state.start : null })),
+  // Another length: the chosen start may no longer fit, so it is picked again. A typed
+  // one too: only "Своё время" warns about overlaps.
+  setLength: (length) =>
+    set((state) => (state.length === length ? state : { length, start: null, ownTime: false })),
   setTitle: (title) => set({ title }),
   reset: () => set(EMPTY),
 }));

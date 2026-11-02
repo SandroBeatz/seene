@@ -13,16 +13,18 @@ import {
   useUpdateTimeBlockMutation,
   type TimeBlock,
 } from '@/entities/time-block';
-import { FlowStepFooter, SheetChrome, Skeleton, useNow } from '@/shared/ui';
+import { FlowStepFooter, SheetChrome, useNow } from '@/shared/ui';
 import { usePersonalTimeDraft } from '../model/draft.store';
 import { draftOfBlock, staysInPlace } from '../model/record';
 import { usePersonalTime } from '../model/usePersonalTime';
+import { BlockFallback } from './BlockFallback';
 import { TimeFields } from './TimeFields';
 
 export function TimeBlockMoveSheet({ blockId }: { blockId: string }) {
   const { t } = useTranslation();
   const { ctx, draft } = usePersonalTime();
-  const block = useTimeBlockQuery(ctx.userId, blockId).data;
+  const query = useTimeBlockQuery(ctx.userId, blockId);
+  const block = query.data;
   const now = useNow();
   const begin = usePersonalTimeDraft((s) => s.begin);
   const reset = usePersonalTimeDraft((s) => s.reset);
@@ -41,12 +43,12 @@ export function TimeBlockMoveSheet({ blockId }: { blockId: string }) {
   return (
     <View style={styles.root} collapsable={false}>
       <SheetChrome title={t('personalTime.actions.reschedule')} leadingLabel={t('common.close')} />
-      {block && draft.blockId === block.id ? (
+      {!block ? (
+        <BlockFallback query={query} />
+      ) : draft.blockId === block.id ? (
         <MoveForm block={block} />
       ) : (
-        <View style={styles.loading}>
-          <Skeleton height={320} radius={16} />
-        </View>
+        <BlockFallback query={{ ...query, isPending: true }} />
       )}
     </View>
   );
@@ -54,14 +56,15 @@ export function TimeBlockMoveSheet({ blockId }: { blockId: string }) {
 
 function MoveForm({ block }: { block: TimeBlock }) {
   const { t } = useTranslation();
-  const { ctx, draft, dayLabel, span, record } = usePersonalTime();
+  const { ctx, summary, record } = usePersonalTime();
   const update = useUpdateTimeBlockMutation(ctx.userId);
 
   const save = () => {
     if (!record) return;
     if (staysInPlace(block, record)) return router.back();
     update.mutate(
-      { id: block.id, ...record },
+      // Only the time: the name stays whatever it is by now.
+      { id: block.id, start_at: record.start_at, end_at: record.end_at, all_day: record.all_day },
       {
         onSuccess: () => router.back(),
         onError: () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')),
@@ -92,13 +95,7 @@ function MoveForm({ block }: { block: TimeBlock }) {
         />
       </ScrollView>
       <FlowStepFooter
-        title={
-          draft.allDay
-            ? `${dayLabel} · ${t('personalTime.when.allDayShort')}`
-            : span
-              ? `${dayLabel} · ${span}`
-              : t('quickCreate.time.pick')
-        }
+        title={summary}
         actionLabel={t('personalTime.actions.reschedule')}
         actionIcon="check"
         disabled={!record}
@@ -111,7 +108,6 @@ function MoveForm({ block }: { block: TimeBlock }) {
 
 const styles = StyleSheet.create((theme) => ({
   root: { flex: 1, backgroundColor: theme.colors.bg.elevated },
-  loading: { paddingTop: 100, paddingHorizontal: theme.space[4] },
   content: {
     paddingTop: theme.space[3],
     paddingHorizontal: theme.space[4],

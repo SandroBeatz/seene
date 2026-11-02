@@ -1198,7 +1198,11 @@
       "length": "How long",
       "hours": "{{from}} – {{to}} · for {{duration}}",
       "closedSpan": "Online booking will be closed at this time",
-      "closedDay": "Online booking will be closed this day"
+      "closedDay": "Online booking will be closed this day",
+      "allDayVisits_one": "{{count}} visit is already booked in this time: it stays, so let the client know.",
+      "allDayVisits_few": "{{count}} visits are already booked in this time: they stay, so let the clients know.",
+      "allDayVisits_many": "{{count}} visits are already booked in this time: they stay, so let the clients know.",
+      "allDayVisits_other": "{{count}} visits are already booked in this time: they stay, so let the clients know."
     },
     "what": {
       "subtitle": "What it is",

@@ -102,7 +102,7 @@ export function DayScheduleCard({
                 return (
                   <BlockRow
                     key={item.record.id}
-                    label={item.allDay ? t('today.schedule.allDay') : time(item.start)}
+                    label={item.allDay ? '' : time(item.start)}
                     look={look}
                     dimmed={new Date(item.end).getTime() <= now}
                     onPress={() => onOpenBlock(item.record)}
