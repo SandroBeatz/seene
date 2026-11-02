@@ -107,44 +107,6 @@ export type Database = {
         }
         Relationships: []
       }
-      availability: {
-        Row: {
-          day_of_week: number | null
-          end_time: string
-          id: string
-          master_id: string
-          slot_duration: number
-          specific_date: string | null
-          start_time: string
-        }
-        Insert: {
-          day_of_week?: number | null
-          end_time: string
-          id?: string
-          master_id: string
-          slot_duration?: number
-          specific_date?: string | null
-          start_time: string
-        }
-        Update: {
-          day_of_week?: number | null
-          end_time?: string
-          id?: string
-          master_id?: string
-          slot_duration?: number
-          specific_date?: string | null
-          start_time?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "availability_master_id_fkey"
-            columns: ["master_id"]
-            isOneToOne: false
-            referencedRelation: "master_profile"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       booking_link: {
         Row: {
           appointment_id: string
@@ -540,21 +502,6 @@ export type Database = {
           sort_order?: number
           updated_at?: string
           user_id?: string
-        }
-        Relationships: []
-      }
-      phone_verification: {
-        Row: {
-          phone: string
-          verified_at: string
-        }
-        Insert: {
-          phone: string
-          verified_at?: string
-        }
-        Update: {
-          phone?: string
-          verified_at?: string
         }
         Relationships: []
       }

@@ -89,7 +89,7 @@ currency is display-only. Confirm the supported currency list and that the three
 ## B. Assumptions we proceeded with (correct if wrong)
 
 - **AS-1:** The mobile app is the **master app** only; it does **not** implement the public client
-  booking flow, phone-OTP, `availability`/`otp_codes`, or the booking RPC — those
+  booking flow, phone-OTP, `otp_codes`, or the booking RPC — those
   stay in the `seene` Nuxt site. It only *displays* online bookings that arrived as `appointments`.
 - **AS-2:** The Supabase schema is **read-only from this repo** for now; no migrations without your
   explicit approval (shared production DB with real data).

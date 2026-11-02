@@ -32,11 +32,10 @@ six fall into two groups:
 | `sale` | 131 | One financial record per completed appointment |
 | `sale_item` | 148 | Per-service line snapshots within a sale |
 
-**Public-booking tables (owned by the `seene` Nuxt site, NOT this app) — 2:**
+**Public-booking tables (owned by the `seene` Nuxt site, NOT this app) — 1:**
 
 | Table | Rows* | Purpose |
 |---|---|---|
-| `availability` | 0 | Alternative availability model for the public page (`day_of_week`/`specific_date`) |
 | `otp_codes` | 53 | Phone OTP verification for public booking; RLS on, **no policies** (service-role only) |
 
 *Row counts are a 2026-08-19 snapshot from production.
@@ -55,8 +54,6 @@ six fall into two groups:
 reads and writes only their own rows. The public master page reads them through the web route
 `/api/master/[username]`, with the service role, and gets only the columns the page shows.
 
-One public read policy is left: `availability` (`Anyone can view availability`).
-
 The remaining master-app tables (`appointments`, `client`, `time_block`, `payment_type`, `sale`,
 `sale_item`, `master_settings`) are correctly owner-scoped `auth.uid() = user_id` (sale_item via
 an `EXISTS` subquery on its parent sale). The mobile app relies on this: **no per-row auth logic
@@ -67,7 +64,7 @@ is needed in the client** — RLS enforces isolation.
 The web `online-booking.md` says the public flow "does not exist yet." At the **database** level
 it partially does, consumed by the `seene` Nuxt site:
 
-- Tables `availability`, `otp_codes`.
+- Table `otp_codes`.
 - RPC `create_appointment_from_booking(...)` (see §3).
 
 A public booking becomes a master `appointment` directly, through
@@ -159,4 +156,4 @@ mobile app uploads a client-resized square WebP (≤512px) — it needs an image
 Read/write CRUD (RLS-scoped) on the 10 master-app tables + 5 RPCs (`complete_appointment`,
 `get_analytics_v2`, `get_analytics_widgets_v2`, `appointment_day_counts`,
 `check_username_available`) + the `avatars` bucket + Supabase Auth. It does **not** touch
-`availability`, `otp_codes`, or the booking RPC.
+`otp_codes` or the booking RPC.
