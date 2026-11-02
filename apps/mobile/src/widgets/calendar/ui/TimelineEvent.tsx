@@ -1,6 +1,6 @@
 /**
  * What the day's `Timeline` draws inside an event (design "Календарь, день"): a visit in
- * its service colour, personal time in grey, or an empty cell that lights up under the
+ * its service colour, personal time as on "Расписание", or an empty cell that lights up under the
  * finger and books into that time. Touches are handled
  * here: `Timeline`'s own touchable has no long press and no pressed state.
  */
@@ -10,7 +10,12 @@ import { Pressable, View } from 'react-native';
 import type { TimelineEventProps } from 'react-native-calendars';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import type { TimeBlock } from '@/entities/time-block';
-import type { BlockLook, ScheduleVisit } from '@/features/appointment-actions';
+import {
+  BlockContent,
+  eventCardStyles,
+  type BlockLook,
+  type ScheduleVisit,
+} from '@/features/appointment-actions';
 import { eventSwatch } from '@/shared/lib/color';
 import { Icon, Text, VipBadge, type ContextMenuAnchor } from '@/shared/ui';
 
@@ -91,22 +96,20 @@ export function TimelineEvent({
           styles.event,
           two ? styles.eventTall : styles.eventShort,
           size,
-          { backgroundColor: theme.colors.bg.sunken },
+          eventCardStyles.block,
           meta.dimmed && styles.dimmed,
           pressed && styles.pressed,
         ]}>
-        <View style={[styles.bar, { backgroundColor: theme.colors.content.tertiary }]} />
-        <View style={styles.nameRow}>
-          <Text variant="eventTitle" color="secondary" numberOfLines={1} style={styles.shrink}>
-            {two ? look.name : `${look.name} · ${look.range}`}
-          </Text>
-          {look.ongoing ? <OngoingMark /> : null}
-        </View>
         {two ? (
-          <Text variant="caption2" color="secondary" tabularNums numberOfLines={1}>
-            {look.range}
-          </Text>
-        ) : null}
+          <BlockContent look={look} />
+        ) : (
+          <View style={styles.nameRow}>
+            <Text variant="eventTitle" numberOfLines={1} style={styles.shrink}>
+              {`${look.name} · ${look.range}`}
+            </Text>
+            {look.ongoing ? <OngoingMark /> : null}
+          </View>
+        )}
       </Pressable>
     );
   }

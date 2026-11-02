@@ -5,6 +5,7 @@ import {
   freeCells,
   groupByDay,
   monthBounds,
+  timelineHours,
   monthRange,
   monthRows,
   timelineStamp,
@@ -190,6 +191,42 @@ describe('work hours', () => {
 
   it('shades a whole day off', () => {
     expect(unavailableHours(null)).toEqual([{ start: 0, end: 24 }]);
+  });
+});
+
+describe('timelineHours', () => {
+  const workday = { enabled: true, start: '10:00', end: '19:00', breaks: [] };
+  const off = { ...workday, enabled: false };
+
+  it('shows two hours either side of the working day', () => {
+    expect(timelineHours(workday, [])).toEqual({ start: 8, end: 21 });
+  });
+  it('rounds out to whole hours and stays within the day', () => {
+    expect(timelineHours({ ...workday, start: '09:30', end: '18:30' }, [])).toEqual({
+      start: 7,
+      end: 21,
+    });
+    expect(timelineHours({ ...workday, start: '01:00', end: '23:00' }, [])).toEqual({
+      start: 0,
+      end: 24,
+    });
+  });
+  it('stretches to records outside the margin', () => {
+    expect(timelineHours(workday, [{ from: 6 * 60 + 30, to: 7 * 60 }])).toEqual({
+      start: 6,
+      end: 21,
+    });
+    expect(timelineHours(workday, [{ from: 21 * 60, to: 22 * 60 + 10 }])).toEqual({
+      start: 8,
+      end: 23,
+    });
+  });
+  it('goes by the records on a day off', () => {
+    expect(timelineHours(off, [{ from: 12 * 60, to: 13 * 60 }])).toEqual({ start: 10, end: 15 });
+  });
+  it('shows the whole day with nothing to go by', () => {
+    expect(timelineHours(off, [])).toEqual({ start: 0, end: 24 });
+    expect(timelineHours(null, [])).toEqual({ start: 0, end: 24 });
   });
 });
 
