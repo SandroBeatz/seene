@@ -30,7 +30,6 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     supabaseUrl: '',
-    supabasePublishableKey: '',
     supabaseServiceRoleKey: '',
     phoneVerificationTokenSecret: '',
     // Return the one-time code in the API response (NUXT_OTP_EXPOSE_CODE=true).
