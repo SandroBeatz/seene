@@ -19,6 +19,7 @@ import {
   type CalendarProps,
   type TimelineListProps,
   type TimelineProps,
+  type TimelineEventProps,
   type TimelinePackedEventProps,
 } from 'react-native-calendars';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -39,9 +40,11 @@ import {
   useTimeBlockActions,
   type TimeBlockAction,
 } from '@/features/time-block-actions';
+import { DAYS_AHEAD } from '@/features/pick-time';
+import { errorMessageKey, normalizeError } from '@/shared/api/errors';
 import { formatAmount, formatTime } from '@/shared/lib/formats';
 import { isSupportedLocale } from '@/shared/lib/i18n';
-import { ContextMenu, Text, type ContextMenuAnchor } from '@/shared/ui';
+import { ContextMenu, ErrorState, Text, type ContextMenuAnchor } from '@/shared/ui';
 import {
   daysOfMonth,
   CELL_MINUTES,
@@ -63,6 +66,7 @@ import {
 import { dayTitle, daySummary, monthName, weekdayNames } from './labels';
 import {
   TimelineEvent,
+  pressEvent,
   type CalendarTimelineEvent,
   type TimelineEventHandlers,
 } from './TimelineEvent';
@@ -85,7 +89,9 @@ type Menu =
 /**
  * One day's `Timeline`. The library re-renders every page it keeps ready (up to 11) on
  * each date change, with new props each time, so a tap on a day used to redraw them all
- * before the page could switch. This one redraws only when its own day changes.
+ * before the page could switch. This one redraws only when its own day changes. Keyed by
+ * date where it's used, like the library's own pages: a page reused for another day
+ * mounts afresh and scrolls to its time.
  */
 const DayPage = memo(
   function DayPage({
@@ -100,8 +106,6 @@ const DayPage = memo(
     return <Timeline {...timeline} unavailableHours={unavailable} />;
   },
   (a, b) =>
-    // Pages get reused for other days: two empty days have the same (no) events.
-    String(a.timeline.date) === String(b.timeline.date) &&
     a.dayEvents === b.dayEvents &&
     a.schedule === b.schedule &&
     a.timeline.theme === b.timeline.theme &&
@@ -110,6 +114,82 @@ const DayPage = memo(
     a.timeline.scrollOffset === b.timeline.scrollOffset &&
     a.timeline.showNowIndicator === b.timeline.showNowIndicator,
 );
+
+/** A day's events for the timeline. `today` is set on the current day only. */
+function buildDayEvents({
+  day,
+  entries,
+  workday,
+  past,
+  today,
+  bookable,
+  rangeOf,
+  blockLook,
+}: {
+  day: string;
+  entries: readonly CalendarEntry[];
+  workday: ReturnType<typeof workdayOf>;
+  past: boolean;
+  today: { now: number; minutes: number } | null;
+  bookable: boolean;
+  rangeOf: (from: number, to: number) => string;
+  blockLook: (entry: CalendarEntry) => BlockLook;
+}): CalendarTimelineEvent[] {
+  const timed = entries.filter((e) => !e.allDay);
+  const list: CalendarTimelineEvent[] = timed.map((entry) => {
+    const base = {
+      id: entry.id,
+      start: timelineStamp(day, entry.from),
+      end: timelineStamp(day, entry.to),
+      title: '',
+      color: 'transparent',
+    };
+    if (entry.visit) {
+      const look = today ? scheduleCardLook(entry.visit.appointment, today.now) : null;
+      return {
+        ...base,
+        meta: {
+          kind: 'visit' as const,
+          visit: entry.visit,
+          range: rangeOf(entry.from, entry.to),
+          dimmed: look?.dimmed ?? past,
+          ongoing: look?.ongoing ?? false,
+        },
+      };
+    }
+    return {
+      ...base,
+      meta: {
+        kind: 'block' as const,
+        block: entry.block!,
+        look: {
+          ...blockLook(entry),
+          ongoing: !!today && entry.from <= today.minutes && today.minutes < entry.to,
+        },
+        dimmed: past || (!!today && entry.to <= today.minutes),
+      },
+    };
+  });
+
+  const work = workMinutes(workday);
+  if (work && bookable && !past && !entries.some((e) => e.allDay)) {
+    const busy = [
+      ...timed.map((e) => [e.from, e.to] as const),
+      ...(workday?.breaks ?? []).map((b) => [parseHhmm(b.start), parseHhmm(b.end)] as const),
+    ];
+    for (const from of freeCells({ work, busy, after: today?.minutes ?? 0 })) {
+      list.push({
+        id: `free-${day}-${from}`,
+        start: timelineStamp(day, from),
+        end: timelineStamp(day, from + CELL_MINUTES),
+        title: '',
+        color: 'transparent',
+        meta: { kind: 'free', dayKey: day, minutes: from },
+      });
+    }
+  }
+  return list;
+}
 
 export function CalendarDayScreen({ initialDate }: { initialDate?: string }) {
   const { t, i18n } = useTranslation();
@@ -125,7 +205,7 @@ export function CalendarDayScreen({ initialDate }: { initialDate?: string }) {
   useEffect(() => setSelection(date), [date, setSelection]);
 
   const months = withNeighbours([monthKeyOf(date)]);
-  const { index } = useCalendarEntries(clock.userId, zone, months);
+  const entries = useCalendarEntries(clock.userId, zone, months);
   const monthsKey = months.join();
 
   const clockTime = useCallback(
@@ -148,75 +228,43 @@ export function CalendarDayScreen({ initialDate }: { initialDate?: string }) {
     [rangeOf, t],
   );
 
-  // Rebuilt every minute (`now`): that also repaints the timeline's "now" line.
-  const events = useMemo(() => {
+  // Free cells only on what's known and bookable: not over records still loading or
+  // failed to load, and not past where the booking flow's day picker reaches.
+  const { index, isPending, error, refetch } = entries;
+  const canBook = !isPending && !error;
+  const lastBookable = DateTime.fromISO(todayKey)
+    .plus({ days: DAYS_AHEAD - 1 })
+    .toISODate()!;
+
+  const dayEvents = useCallback(
+    (day: string, today: { now: number; minutes: number } | null) =>
+      buildDayEvents({
+        day,
+        entries: index.get(day) ?? [],
+        workday: workdayOf(schedule, day),
+        past: day < todayKey,
+        today,
+        bookable: canBook && day <= lastBookable,
+        rangeOf,
+        blockLook,
+      }),
+    [index, schedule, todayKey, canBook, lastBookable, rangeOf, blockLook],
+  );
+
+  // Other days don't change with the clock, so their pages keep their props.
+  const otherDays = useMemo(() => {
     const byDay: Record<string, CalendarTimelineEvent[]> = {};
     for (const day of monthsKey.split(',').flatMap(daysOfMonth)) {
-      const entries = index.get(day) ?? [];
-      const timed = entries.filter((e) => !e.allDay);
-      const past = day < todayKey;
-      const today = day === todayKey;
-      const list: CalendarTimelineEvent[] = timed.map((entry) => {
-        const base = {
-          id: entry.id,
-          start: timelineStamp(day, entry.from),
-          end: timelineStamp(day, entry.to),
-        };
-        if (entry.visit) {
-          const { appointment } = entry.visit;
-          return {
-            ...base,
-            title: '',
-            color: 'transparent',
-            meta: {
-              kind: 'visit' as const,
-              visit: entry.visit,
-              range: rangeOf(entry.from, entry.to),
-              dimmed: scheduleCardLook(appointment, now).dimmed,
-              ongoing: scheduleCardLook(appointment, now).ongoing,
-            },
-          };
-        }
-        return {
-          ...base,
-          title: '',
-          color: 'transparent',
-          meta: {
-            kind: 'block' as const,
-            block: entry.block!,
-            look: {
-              ...blockLook(entry),
-              ongoing: today && entry.from <= nowMinutes && nowMinutes < entry.to,
-            },
-            dimmed: past || (today && entry.to <= nowMinutes),
-          },
-        };
-      });
-      const workday = workdayOf(schedule, day);
-      const work = workMinutes(workday);
-      const dayIsFull = entries.some((e) => e.allDay);
-      if (work && !past && !dayIsFull) {
-        const busy = [
-          ...timed.map((e) => [e.from, e.to] as const),
-          ...(workday?.breaks ?? []).map((b) => {
-            return [parseHhmm(b.start), parseHhmm(b.end)] as const;
-          }),
-        ];
-        for (const from of freeCells({ work, busy, after: today ? nowMinutes : 0 })) {
-          list.push({
-            id: `free-${day}-${from}`,
-            start: timelineStamp(day, from),
-            end: timelineStamp(day, from + CELL_MINUTES),
-            title: '',
-            color: 'transparent',
-            meta: { kind: 'free', dayKey: day, minutes: from },
-          });
-        }
-      }
-      byDay[day] = list;
+      if (day !== todayKey) byDay[day] = dayEvents(day, null);
     }
     return byDay;
-  }, [monthsKey, index, todayKey, now, nowMinutes, schedule, rangeOf, blockLook]);
+  }, [monthsKey, todayKey, dayEvents]);
+
+  // Today is rebuilt every minute: that also repaints the timeline's "now" line.
+  const events = useMemo(
+    () => ({ ...otherDays, [todayKey]: dayEvents(todayKey, { now, minutes: nowMinutes }) }),
+    [otherDays, todayKey, dayEvents, now, nowMinutes],
+  );
 
   const strip = useMemo<WeekStripState>(() => {
     const working = (day: string) => workMinutes(workdayOf(schedule, day)) !== null;
@@ -224,7 +272,7 @@ export function CalendarDayScreen({ initialDate }: { initialDate?: string }) {
       selected: date,
       todayKey,
       isOff: (day) => schedule !== null && !working(day),
-      hasVisits: (day) => (index.get(day) ?? []).some((e) => e.visit),
+      hasVisits: (day) => (index.get(day) ?? []).some((e) => e.visit && !e.continued),
       a11y: (day) =>
         `${dayTitle(t, day)}, ${daySummary(index.get(day), working(day) || schedule === null, {
           t,
@@ -281,6 +329,8 @@ export function CalendarDayScreen({ initialDate }: { initialDate?: string }) {
         event: { paddingLeft: 0, paddingTop: 0, borderWidth: 0, opacity: 1 },
       } as unknown as CalendarProps['theme'],
       unavailableHoursColor: theme.colors.bg.surface,
+      onEventPress: (event: TimelineEventProps) =>
+        pressEvent((event as CalendarTimelineEvent).meta, handlers),
       renderEvent: (event: TimelinePackedEventProps) => (
         <TimelineEvent
           meta={(event as unknown as CalendarTimelineEvent).meta}
@@ -295,7 +345,7 @@ export function CalendarDayScreen({ initialDate }: { initialDate?: string }) {
 
   const renderItem = useCallback<NonNullable<TimelineListProps['renderItem']>>(
     (props, info) => {
-      const { key: _key, ...timeline } = props as typeof props & { key?: string };
+      const { key, ...timeline } = props as typeof props & { key?: string };
       const workday = workdayOf(schedule, info.item);
       const off = schedule !== null && !workMinutes(workday);
       if (off && !(events[info.item]?.length ?? 0)) {
@@ -304,7 +354,7 @@ export function CalendarDayScreen({ initialDate }: { initialDate?: string }) {
             <Text variant="footnote" color="secondary">
               {t('calendar.dayOff')}
             </Text>
-            {info.item >= todayKey ? (
+            {info.item >= todayKey && info.item <= lastBookable ? (
               <Pressable
                 accessibilityRole="button"
                 onPress={() => newAppointment(info.item)}
@@ -317,6 +367,7 @@ export function CalendarDayScreen({ initialDate }: { initialDate?: string }) {
       }
       return (
         <DayPage
+          key={key}
           timeline={timeline}
           dayEvents={events[info.item]}
           unavailable={schedule ? unavailableHours(workday) : undefined}
@@ -324,7 +375,7 @@ export function CalendarDayScreen({ initialDate }: { initialDate?: string }) {
         />
       );
     },
-    [events, schedule, t, todayKey],
+    [events, schedule, t, todayKey, lastBookable],
   );
 
   // `Timeline` draws "now" from the device clock: only true when it matches the master's.
@@ -401,15 +452,22 @@ export function CalendarDayScreen({ initialDate }: { initialDate?: string }) {
 
           {/* A native tab's safe area includes its bar: the hours stop above it. */}
           <View style={[styles.timeline, { paddingBottom: insets.bottom }]}>
-            <TimelineList
-              events={events}
-              timelineProps={timelineProps}
-              renderItem={renderItem}
-              showNowIndicator={clocksAgree}
-              scrollToNow={clocksAgree}
-              scrollToFirst
-              initialTime={{ hour: 8, minutes: 0 }}
-            />
+            {error && index.size === 0 ? (
+              <ErrorState
+                message={t(errorMessageKey(normalizeError(error)))}
+                onRetry={() => void refetch()}
+              />
+            ) : (
+              <TimelineList
+                events={events}
+                timelineProps={timelineProps}
+                renderItem={renderItem}
+                showNowIndicator={clocksAgree}
+                scrollToNow={clocksAgree}
+                scrollToFirst
+                initialTime={{ hour: 8, minutes: 0 }}
+              />
+            )}
           </View>
         </CalendarProvider>
       </WeekStripContext.Provider>

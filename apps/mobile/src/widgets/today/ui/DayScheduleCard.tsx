@@ -65,7 +65,7 @@ export function DayScheduleCard({
   const { t } = useTranslation();
   const time = (iso: string) => formatTime(iso, { zone, timeFormat });
   const hasEvents = timeline.some((item) => item.kind === 'appointment' || item.kind === 'block');
-  const current = ongoingItem(timeline, now);
+  const current = ongoingItem(timeline, now, (a) => a.status === 'confirmed');
   const nowLabel = time(new Date(now).toISOString());
   const nowOn = (id: string, start: string, end: string): NowMark | null =>
     current?.id === id

@@ -149,15 +149,18 @@ export function buildDayTimeline<A extends TimedRecord, B extends BlockRecord>({
 
 /**
  * The timed item happening at `now` and how far along it is (0–1), for a "now" line
- * drawn across its card. Of overlapping items, the one that started last.
+ * drawn across its card. Of overlapping items, the one that started last. `isCurrent`
+ * leaves out appointments that aren't actually under way (finished early, unconfirmed).
  */
 export function ongoingItem<A extends TimedRecord, B extends BlockRecord>(
   timeline: readonly TimelineItem<A, B>[],
   now: number,
+  isCurrent: (appointment: A) => boolean,
 ): { id: string; ratio: number } | null {
   let found: { id: string; ratio: number; start: number } | null = null;
   for (const item of timeline) {
     if (item.kind === 'now' || (item.kind === 'block' && item.allDay)) continue;
+    if (item.kind === 'appointment' && !isCurrent(item.record)) continue;
     const start = ms(item.start);
     const end = ms(item.end);
     if (now >= start && now < end && (!found || start >= found.start)) {

@@ -94,7 +94,7 @@ patchedDependencies:
     hash: 2863da0709b8e76b66619a27b68f9ebdb351b7f57889627f7982fab18b263c3b
     path: apps/mobile/patches/expo-modules-jsi@57.0.5.patch
   react-native-calendars@1.1314.0:
-    hash: e1e2a499c8a007a6a6634e7c1540a4ba96b73e14ad967d0e2dc0bb488a603eef
+    hash: 3e93f3549a3b490d63993a78f55f475754049904ba9c6526fd31376be2d50f29
     path: apps/mobile/patches/react-native-calendars@1.1314.0.patch
 
 importers:
@@ -222,7 +222,7 @@ importers:
         version: 0.86.2(@babel/core@7.29.0)(@react-native/jest-preset@0.86.2(@babel/core@7.29.0)(react@19.2.3))(@react-native/metro-config@0.87.0(@babel/core@7.29.0))(@types/react@19.2.18)(react@19.2.3)
       react-native-calendars:
         specifier: ^1.1314.0
-        version: 1.1314.0(patch_hash=e1e2a499c8a007a6a6634e7c1540a4ba96b73e14ad967d0e2dc0bb488a603eef)(react-native@0.86.2(@babel/core@7.29.0)(@react-native/jest-preset@0.86.2(@babel/core@7.29.0)(react@19.2.3))(@react-native/metro-config@0.87.0(@babel/core@7.29.0))(@types/react@19.2.18)(react@19.2.3))(react@19.2.3)
+        version: 1.1314.0(patch_hash=3e93f3549a3b490d63993a78f55f475754049904ba9c6526fd31376be2d50f29)(react-native@0.86.2(@babel/core@7.29.0)(@react-native/jest-preset@0.86.2(@babel/core@7.29.0)(react@19.2.3))(@react-native/metro-config@0.87.0(@babel/core@7.29.0))(@types/react@19.2.18)(react@19.2.3))(react@19.2.3)
       react-native-edge-to-edge:
         specifier: 1.8.1
         version: 1.8.1(react-native@0.86.2(@babel/core@7.29.0)(@react-native/jest-preset@0.86.2(@babel/core@7.29.0)(react@19.2.3))(@react-native/metro-config@0.87.0(@babel/core@7.29.0))(@types/react@19.2.18)(react@19.2.3))(react@19.2.3)
@@ -21376,7 +21376,7 @@ snapshots:
 
   react-is@19.3.1: {}
 
-  react-native-calendars@1.1314.0(patch_hash=e1e2a499c8a007a6a6634e7c1540a4ba96b73e14ad967d0e2dc0bb488a603eef)(react-native@0.86.2(@babel/core@7.29.0)(@react-native/jest-preset@0.86.2(@babel/core@7.29.0)(react@19.2.3))(@react-native/metro-config@0.87.0(@babel/core@7.29.0))(@types/react@19.2.18)(react@19.2.3))(react@19.2.3):
+  react-native-calendars@1.1314.0(patch_hash=3e93f3549a3b490d63993a78f55f475754049904ba9c6526fd31376be2d50f29)(react-native@0.86.2(@babel/core@7.29.0)(@react-native/jest-preset@0.86.2(@babel/core@7.29.0)(react@19.2.3))(@react-native/metro-config@0.87.0(@babel/core@7.29.0))(@types/react@19.2.18)(react@19.2.3))(react@19.2.3):
     dependencies:
       hoist-non-react-statics: 3.3.2
       lodash: 4.17.23

@@ -29,6 +29,7 @@ export function TimeStep() {
           dayKey={draft.dayKey}
           start={chosen}
           ownTime={draft.ownTime}
+          preferredStart={draft.preferredStart}
           onDay={draft.setDay}
           onStart={draft.setStart}
           onOpenMonth={() => router.push('/quick-create/month')}

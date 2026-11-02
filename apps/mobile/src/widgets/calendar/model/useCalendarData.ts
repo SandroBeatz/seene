@@ -103,5 +103,8 @@ export function useCalendarEntries(userId: string, zone: string, months: readonl
   const refetch = () =>
     Promise.all([appointments.refetch(), blocks.refetch(), services.refetch(), clients.refetch()]);
 
-  return { index, error, refetch };
+  const isPending =
+    appointments.isPending || blocks.isPending || services.isPending || clients.isPending;
+
+  return { index, isPending, error, refetch };
 }

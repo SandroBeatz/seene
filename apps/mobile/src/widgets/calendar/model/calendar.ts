@@ -58,6 +58,8 @@ export interface DayEntry<V, B> {
   from: number;
   to: number;
   allDay: boolean;
+  /** The rest of a visit that began the day before: takes time, isn't counted again. */
+  continued: boolean;
   visit?: V;
   block?: B;
 }
@@ -73,8 +75,8 @@ interface GroupInput<V, B> {
 const minutesOf = (dt: DateTime) => dt.hour * 60 + dt.minute;
 
 /**
- * Entries by local day, each day sorted by start. A visit belongs to the day it starts
- * on (clipped at midnight); personal time appears on every day it touches.
+ * Entries by local day, each day sorted by start. Visits and personal time appear on
+ * every day they touch, clipped to it.
  */
 export function groupByDay<V, B>({ zone, visits, blocks }: GroupInput<V, B>): DayIndex<V, B> {
   const index = new Map<string, DayEntry<V, B>[]>();
@@ -86,15 +88,19 @@ export function groupByDay<V, B>({ zone, visits, blocks }: GroupInput<V, B>): Da
 
   for (const { value, id, start_at, duration } of visits) {
     const start = DateTime.fromISO(start_at, { zone: 'utc' }).setZone(zone);
-    const from = minutesOf(start);
-    add(start.toFormat('yyyy-MM-dd'), {
-      kind: 'visit',
-      id,
-      from,
-      to: Math.min(from + Math.max(duration, 1), DAY_MINUTES),
-      allDay: false,
-      visit: value,
-    });
+    const end = start.plus({ minutes: Math.max(duration, 1) });
+    for (let day = start.startOf('day'); day < end; day = day.plus({ days: 1 })) {
+      const next = day.plus({ days: 1 });
+      add(day.toFormat('yyyy-MM-dd'), {
+        kind: 'visit',
+        id,
+        from: start > day ? minutesOf(start) : 0,
+        to: end < next ? minutesOf(end) : DAY_MINUTES,
+        allDay: false,
+        continued: start < day,
+        visit: value,
+      });
+    }
   }
 
   for (const { value, id, start_at, end_at, all_day } of blocks) {
@@ -112,6 +118,7 @@ export function groupByDay<V, B>({ zone, visits, blocks }: GroupInput<V, B>): Da
         from: start > day ? minutesOf(start) : 0,
         to: end < next ? minutesOf(end) : DAY_MINUTES,
         allDay: all_day,
+        continued: false,
         block: value,
       });
     }

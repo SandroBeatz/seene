@@ -1,9 +1,8 @@
 /**
  * What the day's `Timeline` draws inside an event (design "Календарь, день"): a visit in
  * its service colour, personal time in grey, or an empty cell that lights up under the
- * finger and books into that time. The press
- * handling lives here: `Timeline`'s own `onEventPress` keeps the events of its first
- * render, and it has no long press.
+ * finger and books into that time. Touches are handled
+ * here: `Timeline`'s own touchable has no long press and no pressed state.
  */
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -37,6 +36,13 @@ export interface TimelineEventHandlers {
   onFree: (dayKey: string, minutes: number) => void;
   /** "10:30" for minutes of a day, on the master's clock format. */
   clockTime: (minutes: number) => string;
+}
+
+/** A tap on an event. Screen readers activate the library's touchable, which calls this. */
+export function pressEvent(meta: EventMeta, handlers: TimelineEventHandlers) {
+  if (meta.kind === 'visit') handlers.onVisit(meta.visit);
+  else if (meta.kind === 'block') handlers.onBlock(meta.block);
+  else handlers.onFree(meta.dayKey, meta.minutes);
 }
 
 export function TimelineEvent({

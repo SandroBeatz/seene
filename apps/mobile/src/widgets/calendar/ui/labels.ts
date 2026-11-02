@@ -33,7 +33,7 @@ export function daySummary(
   working: boolean,
   { t, locale, currency }: SummaryFormat,
 ) {
-  const visits = (entries ?? []).flatMap((e) => e.visit ?? []);
+  const visits = (entries ?? []).filter((e) => !e.continued).flatMap((e) => e.visit ?? []);
   if (visits.length === 0) return working ? t('calendar.noVisits') : t('calendar.dayOff');
   const sum = visits.reduce((total, v) => total + v.price, 0);
   const count = `${visits.length} ${t(`today.visits_${pluralCategory(visits.length, locale)}`)}`;

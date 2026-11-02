@@ -15,6 +15,8 @@ export interface QuickCreateDraft {
   start: string | null;
   /** The start was typed in "Своё время", not picked from the grid. */
   ownTime: boolean;
+  /** The time asked for from the calendar: picked once the grid says the visit fits. */
+  preferredStart: string | null;
   /** Typed price for this appointment; null = as in the price list. */
   price: string | null;
   note: string;
@@ -28,6 +30,7 @@ interface QuickCreateState extends QuickCreateDraft {
   toggleService: (serviceId: string) => void;
   setDay: (dayKey: string) => void;
   setStart: (start: string | null, ownTime?: boolean) => void;
+  setPreferredStart: (start: string | null) => void;
   setPrice: (price: string | null) => void;
   setNote: (note: string) => void;
   reset: () => void;
@@ -39,6 +42,7 @@ const EMPTY: QuickCreateDraft = {
   dayKey: null,
   start: null,
   ownTime: false,
+  preferredStart: null,
   price: null,
   note: '',
   advance: false,
@@ -63,7 +67,8 @@ export const useQuickCreateDraft = create<QuickCreateState>()((set, get) => ({
     })),
   setDay: (dayKey) =>
     set((state) => (state.dayKey === dayKey ? state : { dayKey, start: null, ownTime: false })),
-  setStart: (start, ownTime = false) => set({ start, ownTime }),
+  setStart: (start, ownTime = false) => set({ start, ownTime, preferredStart: null }),
+  setPreferredStart: (preferredStart) => set({ preferredStart }),
   setPrice: (price) => set({ price }),
   setNote: (note) => set({ note }),
   reset: () => set(EMPTY),

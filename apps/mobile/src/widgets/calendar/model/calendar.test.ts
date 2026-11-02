@@ -73,14 +73,18 @@ describe('groupByDay', () => {
     expect(index.has('2026-11-01')).toBe(false);
   });
 
-  it('clips a visit running past midnight', () => {
+  it('carries a visit past midnight into the next day, marked as continued', () => {
     const index = groupByDay({
       zone: BISHKEK,
       visits: [visit('night', '2026-11-02T17:30:00.000Z', 60)],
       blocks: [],
     });
-    expect(index.get('2026-11-02')?.[0]).toMatchObject({ from: 23 * 60 + 30, to: 24 * 60 });
-    expect(index.has('2026-11-03')).toBe(false);
+    expect(index.get('2026-11-02')?.[0]).toMatchObject({
+      from: 23 * 60 + 30,
+      to: 24 * 60,
+      continued: false,
+    });
+    expect(index.get('2026-11-03')?.[0]).toMatchObject({ from: 0, to: 30, continued: true });
   });
 
   it('puts personal time on every day it touches', () => {

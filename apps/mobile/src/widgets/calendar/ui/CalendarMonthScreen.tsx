@@ -77,9 +77,13 @@ export function CalendarMonthScreen() {
   const refreshControl = useRefreshControl(refetch);
 
   const list = useRef<FlatList<string>>(null);
+  const shownRef = useRef(visible);
   const onViewable = useCallback(({ viewableItems }: { viewableItems: ViewToken<string>[] }) => {
     const shown = viewableItems.map((v) => v.item);
-    if (shown.length) setVisible(shown);
+    if (shown.length) {
+      shownRef.current = shown;
+      setVisible(shown);
+    }
   }, []);
 
   const scrollTo = useCallback(
@@ -90,14 +94,15 @@ export function CalendarMonthScreen() {
     [months],
   );
 
-  // Back from the day view: stay on the month that day ended up in.
+  // Back from the day view: stay on the month that day ended up in, once per day opened.
+  const returnedTo = useRef(selected);
   useFocusEffect(
     useCallback(() => {
-      if (selected && !visible.includes(monthKeyOf(selected))) {
+      if (!selected || selected === returnedTo.current) return;
+      returnedTo.current = selected;
+      if (!shownRef.current.includes(monthKeyOf(selected))) {
         scrollTo(monthKeyOf(selected), false);
       }
-      // Only when the screen comes back, not on every scroll.
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selected, scrollTo]),
   );
 
@@ -198,7 +203,8 @@ export function CalendarMonthScreen() {
               month={item}
               isCurrent={item === currentMonth}
               index={index}
-              clock={clock}
+              todayKey={clock.todayKey}
+              schedule={clock.schedule}
               selected={selected}
               format={format}
               calendarTheme={calendarTheme}
@@ -215,7 +221,8 @@ interface MonthSectionProps {
   month: string;
   isCurrent: boolean;
   index: CalendarIndex;
-  clock: CalendarClock;
+  todayKey: string;
+  schedule: CalendarClock['schedule'];
   selected: string | null;
   format: SummaryFormat;
   calendarTheme: NonNullable<CalendarProps['theme']>;
@@ -226,7 +233,8 @@ const MonthSection = memo(function MonthSection({
   month,
   isCurrent,
   index,
-  clock,
+  todayKey,
+  schedule,
   selected,
   format,
   calendarTheme,
@@ -234,7 +242,6 @@ const MonthSection = memo(function MonthSection({
 }: MonthSectionProps) {
   const { t } = format;
   const { theme } = useUnistyles();
-  const { todayKey, schedule } = clock;
 
   const marked = useMemo(() => {
     const barOf = (entry: CalendarEntry): MonthBar => {
@@ -260,7 +267,7 @@ const MonthSection = memo(function MonthSection({
     for (const day of daysOfMonth(month)) {
       const entries = index.get(day);
       const working = workMinutes(workdayOf(schedule, day)) !== null;
-      const { shown, more } = cellBars(entries ?? []);
+      const { shown, more } = cellBars((entries ?? []).filter((e) => !e.continued));
       marks[day] = {
         bars: shown.map(barOf),
         more,

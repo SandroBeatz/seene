@@ -119,6 +119,7 @@ describe('buildDayTimeline', () => {
           now,
         }),
         now,
+        () => true,
       );
 
     it('says how far along the current item is', () => {
@@ -128,6 +129,17 @@ describe('buildDayTimeline', () => {
     it('is empty between items and right at the end', () => {
       expect(line(nowAt('13:59'))).toBeNull();
       expect(line(nowAt('15:30'))).toBeNull();
+    });
+
+    it('skips appointments that are not under way', () => {
+      const items = buildDayTimeline({
+        dayKey: DAY,
+        zone: ZONE,
+        appointments: [visit('aigerim', '14:00', 90)],
+        blocks: [],
+        now: nowAt('14:45'),
+      });
+      expect(ongoingItem(items, nowAt('14:45'), () => false)).toBeNull();
     });
 
     it('picks the item that started last when they overlap', () => {
