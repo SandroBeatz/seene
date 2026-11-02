@@ -65,11 +65,11 @@ export default function AppLayout() {
         <Stack.Screen name="(modals)/appointment/[appointmentId]/checkout" options={sheet} />
         <Stack.Screen
           name="(modals)/expense/new"
-          options={{ ...sheet, sheetAllowedDetents: [0.8, 1] }}
+          options={{ ...sheet, sheetAllowedDetents: [0.82, 1] }}
         />
         <Stack.Screen
           name="(modals)/expense/[expenseId]"
-          options={{ ...sheet, sheetAllowedDetents: [0.8, 1] }}
+          options={{ ...sheet, sheetAllowedDetents: [0.82, 1] }}
         />
         <Stack.Screen
           name="(modals)/analytics-range"

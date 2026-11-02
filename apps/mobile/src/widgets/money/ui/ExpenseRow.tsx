@@ -3,7 +3,7 @@ import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
-import type { Expense } from '@/entities/expense';
+import { expenseCategoryLabel, type Expense } from '@/entities/expense';
 import { Icon, Text } from '@/shared/ui';
 
 export interface ExpenseRowProps {
@@ -27,7 +27,7 @@ export function ExpenseRow({ expense, amount, divided }: ExpenseRowProps) {
       </View>
       <View style={styles.body}>
         <Text variant="subheadStrong" numberOfLines={1}>
-          {t(`expenses.categoryNames.${expense.category}`)}
+          {expenseCategoryLabel(expense.category, t)}
         </Text>
         {subtitle ? (
           <Text variant="caption" color="tertiary" numberOfLines={1}>

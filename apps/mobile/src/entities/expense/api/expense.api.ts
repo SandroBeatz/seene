@@ -1,6 +1,11 @@
 /** Expense api — the only supabase import site for this entity. Owner-scoped by RLS. */
 import { supabase } from '@/shared/api/supabase';
-import type { Expense, ExpenseInput, UpdateExpenseDto } from '../model/types';
+import type {
+  CustomExpenseCategory,
+  Expense,
+  ExpenseInput,
+  UpdateExpenseDto,
+} from '../model/types';
 
 const COLUMNS =
   'id, user_id, category, amount, spent_on, note, repeat_monthly, repeat_day, rolled_over, created_at, updated_at';
@@ -37,6 +42,24 @@ export async function createExpense(userId: string, input: ExpenseInput): Promis
 export async function updateExpense({ id, ...input }: UpdateExpenseDto): Promise<void> {
   const { error } = await supabase.from('expense').update(input).eq('id', id);
   if (error) throw error;
+}
+
+export async function listExpenseCategories(userId: string): Promise<CustomExpenseCategory[]> {
+  const { data, error } = await supabase
+    .from('expense_category')
+    .select('id, name')
+    .eq('user_id', userId)
+    .order('created_at');
+  if (error) throw error;
+  return data;
+}
+
+const UNIQUE_VIOLATION = '23505';
+
+/** Already there under the same name (say, from another device) counts as done. */
+export async function createExpenseCategory(userId: string, name: string): Promise<void> {
+  const { error } = await supabase.from('expense_category').insert({ user_id: userId, name });
+  if (error && error.code !== UNIQUE_VIOLATION) throw error;
 }
 
 export async function deleteExpense(id: string): Promise<void> {

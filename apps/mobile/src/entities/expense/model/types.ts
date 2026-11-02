@@ -1,15 +1,12 @@
-/** Expense domain types. Row `category` is narrowed to the fixed union. */
+/** Expense domain types. */
 import type { Tables } from '@/shared/api/database.types';
-import type { ExpenseCategory } from '../config/categories';
 
-type ExpenseRow = Tables<'expense'>;
-
-export interface Expense extends Omit<ExpenseRow, 'category'> {
-  category: ExpenseCategory;
-}
+export type Expense = Tables<'expense'>;
+export type CustomExpenseCategory = Pick<Tables<'expense_category'>, 'id' | 'name'>;
 
 export interface ExpenseInput {
-  category: ExpenseCategory;
+  /** A built-in key or the name of the master's own category. */
+  category: string;
   amount: number;
   /** "yyyy-MM-dd", the master's calendar day. */
   spent_on: string;

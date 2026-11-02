@@ -302,6 +302,27 @@ export type Database = {
         }
         Relationships: []
       }
+      expense_category: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       master_profile: {
         Row: {
           address: string | null

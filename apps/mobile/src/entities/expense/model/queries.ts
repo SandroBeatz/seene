@@ -5,8 +5,10 @@
 import { useMutation, useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query';
 import {
   createExpense,
+  createExpenseCategory,
   deleteExpense,
   getExpense,
+  listExpenseCategories,
   listExpenses,
   updateExpense,
 } from '../api/expense.api';
@@ -17,6 +19,7 @@ export const expenseKeys = {
   range: (userId: string, fromKey: string, toKey: string) =>
     ['expenses', userId, 'range', fromKey, toKey] as const,
   detail: (userId: string, id: string) => ['expenses', userId, 'detail', id] as const,
+  categories: (userId: string) => ['expenses', userId, 'categories'] as const,
 };
 
 function invalidate(qc: QueryClient, userId: string) {
@@ -37,6 +40,22 @@ export function useExpenseQuery(userId: string, id: string | undefined) {
     queryKey: expenseKeys.detail(userId, id ?? ''),
     queryFn: () => getExpense(id!),
     enabled: !!userId && !!id,
+  });
+}
+
+export function useExpenseCategoriesQuery(userId: string) {
+  return useQuery({
+    queryKey: expenseKeys.categories(userId),
+    queryFn: () => listExpenseCategories(userId),
+    enabled: !!userId,
+  });
+}
+
+export function useCreateExpenseCategoryMutation(userId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (name: string) => createExpenseCategory(userId, name),
+    onSettled: () => qc.invalidateQueries({ queryKey: expenseKeys.categories(userId) }),
   });
 }
 

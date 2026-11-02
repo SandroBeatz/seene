@@ -16,7 +16,10 @@ export interface ChipProps {
   onPress?: () => void;
   icon?: IconName;
   dashed?: boolean;
+  /** Pressed in without being a choice: the "add" chip while its field is open. */
+  active?: boolean;
   shape?: ChipShape;
+  size?: 'sm' | 'md';
   /** Idle label in the muted tone (weekday row: days off read as greyed out). */
   mutedWhenIdle?: boolean;
   accessibilityLabel?: string;
@@ -28,11 +31,13 @@ export function Chip({
   onPress,
   icon,
   dashed = false,
+  active = false,
   shape = 'md',
+  size = 'md',
   mutedWhenIdle = false,
   accessibilityLabel,
 }: ChipProps) {
-  styles.useVariants({ selected, dashed, shape });
+  styles.useVariants({ selected, dashed, shape, active, size });
   const labelColor = selected ? 'onAccent' : mutedWhenIdle ? 'tertiary' : 'primary';
   return (
     <Pressable
@@ -55,12 +60,15 @@ export function Chip({
 
 const styles = StyleSheet.create((theme) => ({
   chip: {
-    height: theme.sizing.control.md,
     paddingHorizontal: theme.space[2],
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
     variants: {
+      size: {
+        sm: { height: theme.sizing.control.sm },
+        md: { height: theme.sizing.control.md },
+      },
       shape: {
         md: { borderRadius: theme.radius.md },
         field: { borderRadius: theme.radius.field },
@@ -77,11 +85,20 @@ const styles = StyleSheet.create((theme) => ({
         },
       },
       dashed: { true: {}, false: {} },
+      active: {
+        true: {
+          borderWidth: 1.5,
+          borderColor: theme.colors.accent.default,
+          backgroundColor: theme.colors.bg.surface,
+        },
+        false: {},
+      },
     },
     compoundVariants: [
       {
         dashed: true,
         selected: false,
+        active: false,
         styles: { borderStyle: 'dashed', borderColor: theme.colors.border.strong },
       },
     ],

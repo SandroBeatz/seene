@@ -218,7 +218,7 @@ from `get_money_clients`. The app only formats and draws (`widgets/money`).
 - **Not earned:** no-shows and visits cancelled by the client, at the visit's `price` or, when it
   has none, the list price of its services.
 
-**Expenses** are the master's own rows with a fixed category. "Повторять каждый месяц" is a chain of
+**Expenses** are the master's own rows with a built-in category or one of their own ("+ Своя": `expense_category` is the list, `expense.category` holds the key or the name; no renaming). "Повторять каждый месяц" is a chain of
 real rows: the hourly cron `roll_recurring_expenses()` copies the newest row when its next date comes
 in the master's zone. A month can be corrected alone and past months never change. Turning the switch
 off or deleting the newest row ends the chain.

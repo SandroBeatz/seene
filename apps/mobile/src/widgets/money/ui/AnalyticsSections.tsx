@@ -13,6 +13,7 @@ import { useMoneyContext } from '@/entities/master';
 import { useVisitHistoryQuery } from '@/entities/appointment';
 import { useDismissedAttentionQuery } from '@/entities/attention';
 import { recallCandidates } from '@/entities/client';
+import { expenseCategoryLabel } from '@/entities/expense';
 import { useUserId } from '@/entities/session';
 import type { MoneyOverview } from '@/entities/analytics';
 import { pluralCategory } from '@/shared/lib/i18n';
@@ -169,7 +170,7 @@ export function AnalyticsSections({ overview }: { overview: MoneyOverview }) {
               <View key={e.category} style={styles.legendRow}>
                 <View style={[styles.dot, { backgroundColor: rank[i % rank.length] }]} />
                 <Text variant="subhead" numberOfLines={1} style={styles.grow}>
-                  {t(`expenses.categoryNames.${e.category}`)}
+                  {expenseCategoryLabel(e.category, t)}
                 </Text>
                 <Text variant="caption" color="tertiary" tabularNums>
                   {`${shareOf(e.amount, spentTotal)}%`}
