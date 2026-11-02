@@ -143,6 +143,7 @@ export function CalendarDayScreen({ initialDate }: { initialDate?: string }) {
               visit: entry.visit,
               range: rangeOf(entry.from, entry.to),
               dimmed: scheduleCardLook(appointment, now).dimmed,
+              ongoing: scheduleCardLook(appointment, now).ongoing,
             },
           };
         }
@@ -153,7 +154,10 @@ export function CalendarDayScreen({ initialDate }: { initialDate?: string }) {
           meta: {
             kind: 'block' as const,
             block: entry.block!,
-            look: blockLook(entry),
+            look: {
+              ...blockLook(entry),
+              ongoing: today && entry.from <= nowMinutes && nowMinutes < entry.to,
+            },
             dimmed: past || (today && entry.to <= nowMinutes),
           },
         };

@@ -1,7 +1,8 @@
 /**
  * "Расписание" card (design "Таб · Сегодня"): the day as a timeline — visits tinted
- * with their service colour, personal time in grey and the green "now" line. Ended
- * ones are dimmed; unconfirmed visits get a dashed outline in their colour and a
+ * with their service colour, personal time in grey and the green "now" line: between
+ * events, or along the bottom of the one happening now, which also gets an hourglass. Ended ones
+ * are dimmed; unconfirmed visits get a dashed outline in their colour and a
  * warning mark. An empty day shows the free hours.
  */
 import { useRef } from 'react';
@@ -19,7 +20,7 @@ import {
 } from '@/features/appointment-actions';
 import { eventSwatch } from '@/shared/lib/color';
 import { formatTime } from '@/shared/lib/formats';
-import type { TimeInterval, TimelineItem } from '@/shared/lib/scheduling';
+import { ongoingItemId, type TimeInterval, type TimelineItem } from '@/shared/lib/scheduling';
 import { Text, type ContextMenuAnchor } from '@/shared/ui';
 import type { ScheduleVisit } from '../model/useToday';
 
@@ -63,6 +64,9 @@ export function DayScheduleCard({
   const { t } = useTranslation();
   const time = (iso: string) => formatTime(iso, { zone, timeFormat });
   const hasEvents = timeline.some((item) => item.kind === 'appointment' || item.kind === 'block');
+  const current = ongoingItemId(timeline, now);
+  const nowLabel = time(new Date(now).toISOString());
+  const nowOn = (id: string) => (current === id ? nowLabel : null);
 
   return (
     <View style={styles.card}>
@@ -86,6 +90,7 @@ export function DayScheduleCard({
                     label={time(item.start)}
                     range={range}
                     now={now}
+                    nowMark={nowOn(item.record.id)}
                     formatAmount={formatAmount}
                     onPress={() => onOpenVisit(visit)}
                     onLongPress={(anchor) => onMenu(visit, anchor, range)}
@@ -94,7 +99,10 @@ export function DayScheduleCard({
                 );
               }
               case 'block': {
+                const startMs = new Date(item.start).getTime();
+                const endMs = new Date(item.end).getTime();
                 const look = {
+                  ongoing: !item.allDay && now >= startMs && now < endMs,
                   range: item.allDay
                     ? t('today.schedule.allDay')
                     : `${time(item.start)}–${time(item.end)}`,
@@ -105,14 +113,15 @@ export function DayScheduleCard({
                     key={item.record.id}
                     label={item.allDay ? '' : time(item.start)}
                     look={look}
-                    dimmed={new Date(item.end).getTime() <= now}
+                    dimmed={endMs <= now}
+                    nowMark={nowOn(item.record.id)}
                     onPress={() => onOpenBlock(item.record)}
                     onLongPress={(anchor) => onBlockMenu(item.record, anchor, look)}
                   />
                 );
               }
               case 'now':
-                return <NowLine key="now" label={time(item.at)} />;
+                return current ? null : <NowLine key="now" label={time(item.at)} />;
             }
           })}
         </View>
@@ -137,6 +146,7 @@ interface VisitRowProps {
   label: string;
   range: string;
   now: number;
+  nowMark: string | null;
   formatAmount: (amount: number) => string;
   onPress: () => void;
   onLongPress: (anchor: ContextMenuAnchor) => void;
@@ -148,6 +158,7 @@ function VisitRow({
   label,
   range,
   now,
+  nowMark,
   formatAmount,
   onPress,
   onLongPress,
@@ -188,6 +199,7 @@ function VisitRow({
           eventCardStyles.event,
           { backgroundColor: swatch.fill },
           look.unconfirmed && { borderWidth: 1, borderStyle: 'dashed', borderColor: swatch.bar },
+          nowMark && styles.withNow,
           pressed && styles.pressed,
         ]}>
         <EventContent
@@ -196,10 +208,12 @@ function VisitRow({
           name={name}
           details={details}
           unconfirmed={look.unconfirmed}
+          ongoing={look.ongoing}
           bar={swatch.bar}
           onNote={onNote}
         />
       </Pressable>
+      {nowMark ? <NowAlong label={nowMark} /> : null}
     </View>
   );
 }
@@ -208,12 +222,14 @@ function BlockRow({
   label,
   look,
   dimmed,
+  nowMark,
   onPress,
   onLongPress,
 }: {
   label: string;
   look: BlockLook;
   dimmed: boolean;
+  nowMark: string | null;
   onPress: () => void;
   onLongPress: (anchor: ContextMenuAnchor) => void;
 }) {
@@ -235,10 +251,12 @@ function BlockRow({
         style={({ pressed }) => [
           eventCardStyles.event,
           eventCardStyles.block,
+          nowMark && styles.withNow,
           pressed && styles.pressed,
         ]}>
         <BlockContent look={look} />
       </Pressable>
+      {nowMark ? <NowAlong label={nowMark} /> : null}
     </View>
   );
 }
@@ -260,6 +278,15 @@ function NowLine({ label }: { label: string }) {
   );
 }
 
+/** The same line in the strip kept free at the bottom of what's happening now. */
+function NowAlong({ label }: { label: string }) {
+  return (
+    <View pointerEvents="none" style={styles.along}>
+      <NowLine label={label} />
+    </View>
+  );
+}
+
 const TIME_COLUMN = 36;
 const styles = StyleSheet.create((theme) => ({
   card: {
@@ -276,6 +303,8 @@ const styles = StyleSheet.create((theme) => ({
   dimmed: { opacity: 0.7 },
   time: { width: TIME_COLUMN, paddingTop: 2 },
   pressed: { opacity: 0.7 },
+  along: { position: 'absolute', left: 0, right: 0, bottom: 2 },
+  withNow: { paddingBottom: 26 },
   now: { flexDirection: 'row', alignItems: 'center', gap: theme.space[2], marginVertical: 2 },
   nowPill: {
     width: 40,

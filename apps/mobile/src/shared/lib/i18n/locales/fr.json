@@ -898,6 +898,7 @@
     },
     "schedule": {
       "title": "Planning",
+      "ongoing": "En cours",
       "empty": "Aucun rendez-vous pour l’instant",
       "freeFrom": "Libre de {{from}} à {{to}}",
       "dayOff": "Jour de repos",

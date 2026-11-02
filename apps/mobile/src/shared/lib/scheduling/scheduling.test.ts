@@ -5,6 +5,7 @@ import {
   dayLoad,
   daySlotGrid,
   firstOverlap,
+  ongoingItemId,
   weekdayIndex,
   workingHours,
   type WorkdayHours,
@@ -105,6 +106,34 @@ describe('buildDayTimeline', () => {
       'appointment:elena',
       'block:tennis',
     ]);
+  });
+
+  describe('ongoingItemId', () => {
+    const line = (now: number, extra: ReturnType<typeof block>[] = []) =>
+      ongoingItemId(
+        buildDayTimeline({
+          dayKey: DAY,
+          zone: ZONE,
+          appointments: [visit('aigerim', '14:00', 90)],
+          blocks: extra,
+          now,
+        }),
+        now,
+      );
+
+    it('finds the current item', () => {
+      expect(line(nowAt('14:45'))).toBe('aigerim');
+    });
+
+    it('is empty between items and right at the end', () => {
+      expect(line(nowAt('13:59'))).toBeNull();
+      expect(line(nowAt('15:30'))).toBeNull();
+    });
+
+    it('picks the item that started last when they overlap', () => {
+      const tennis = block('tennis', local('14:30'), local('15:00'));
+      expect(line(nowAt('14:45'), [tennis])).toBe('tennis');
+    });
   });
 
   it('computes appointment ends from the duration', () => {

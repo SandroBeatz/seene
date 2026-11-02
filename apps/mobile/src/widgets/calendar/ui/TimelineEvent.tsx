@@ -13,10 +13,10 @@ import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import type { TimeBlock } from '@/entities/time-block';
 import type { BlockLook, ScheduleVisit } from '@/features/appointment-actions';
 import { eventSwatch } from '@/shared/lib/color';
-import { Text, VipBadge, type ContextMenuAnchor } from '@/shared/ui';
+import { Icon, Text, VipBadge, type ContextMenuAnchor } from '@/shared/ui';
 
 export type EventMeta =
-  | { kind: 'visit'; visit: ScheduleVisit; range: string; dimmed: boolean }
+  | { kind: 'visit'; visit: ScheduleVisit; range: string; dimmed: boolean; ongoing: boolean }
   | { kind: 'block'; block: TimeBlock; look: BlockLook; dimmed: boolean }
   | { kind: 'free'; dayKey: string; minutes: number };
 
@@ -90,9 +90,12 @@ export function TimelineEvent({
           pressed && styles.pressed,
         ]}>
         <View style={[styles.bar, { backgroundColor: theme.colors.content.tertiary }]} />
-        <Text variant="eventTitle" color="secondary" numberOfLines={1}>
-          {two ? look.name : `${look.name} · ${look.range}`}
-        </Text>
+        <View style={styles.nameRow}>
+          <Text variant="eventTitle" color="secondary" numberOfLines={1} style={styles.shrink}>
+            {two ? look.name : `${look.name} · ${look.range}`}
+          </Text>
+          {look.ongoing ? <OngoingMark /> : null}
+        </View>
         {two ? (
           <Text variant="caption2" color="secondary" tabularNums numberOfLines={1}>
             {look.range}
@@ -148,6 +151,7 @@ export function TimelineEvent({
             </Text>
           </View>
         ) : null}
+        {meta.ongoing ? <OngoingMark /> : null}
       </View>
       {two ? (
         <Text variant="caption2" color="secondary" tabularNums numberOfLines={1}>
@@ -158,7 +162,17 @@ export function TimelineEvent({
   );
 }
 
+function OngoingMark() {
+  const { t } = useTranslation();
+  return (
+    <View accessible accessibilityLabel={t('today.schedule.ongoing')} style={styles.ongoing}>
+      <Icon name="hourglass" size={14} color="content.primary" />
+    </View>
+  );
+}
+
 const styles = StyleSheet.create((theme) => ({
+  ongoing: { marginLeft: 'auto' },
   event: {
     paddingLeft: theme.space[2.5],
     paddingRight: theme.space[2],

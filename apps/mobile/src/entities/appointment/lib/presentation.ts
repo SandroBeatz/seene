@@ -68,12 +68,15 @@ export interface ScheduleCardLook {
   dimmed: boolean;
   /** Not confirmed: dashed outline in the service colour + warning icon. */
   unconfirmed: boolean;
+  /** Confirmed and within its window right now. */
+  ongoing: boolean;
 }
 
 export function scheduleCardLook(a: PhaseInput, now: number = Date.now()): ScheduleCardLook {
   return {
     dimmed: appointmentEndMs(a) <= now,
     unconfirmed: a.status === 'pending',
+    ongoing: getAppointmentPhase(a, now) === 'ongoing',
   };
 }
 

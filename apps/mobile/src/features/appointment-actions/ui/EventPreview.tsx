@@ -14,6 +14,8 @@ import type { ScheduleVisit } from '../model/schedule-menu';
 export interface BlockLook {
   range: string;
   name: string;
+  /** Happening right now: an hourglass instead of the cup. */
+  ongoing?: boolean;
 }
 
 export function visitCardInfo(
@@ -66,6 +68,7 @@ export function VisitEventPreview({
         name={name}
         details={details}
         unconfirmed={look.unconfirmed}
+        ongoing={look.ongoing}
         bar={swatch.bar}
       />
     </View>
@@ -78,6 +81,7 @@ export function EventContent({
   name,
   details,
   unconfirmed,
+  ongoing,
   bar,
   onNote,
 }: {
@@ -86,6 +90,7 @@ export function EventContent({
   name: string;
   details: string;
   unconfirmed: boolean;
+  ongoing: boolean;
   bar: string;
   onNote?: () => void;
 }) {
@@ -103,6 +108,14 @@ export function EventContent({
             accessibilityLabel={t('today.schedule.unconfirmed')}
             style={eventCardStyles.headMark}>
             <Icon name="unconfirmed" size={14} color="tone.warning.fg" />
+          </View>
+        ) : null}
+        {ongoing ? (
+          <View
+            accessible
+            accessibilityLabel={t('today.schedule.ongoing')}
+            style={eventCardStyles.headMark}>
+            <Icon name="hourglass" size={14} color="content.primary" />
           </View>
         ) : null}
       </View>
@@ -147,7 +160,11 @@ export function BlockContent({ look }: { look: BlockLook }) {
           {look.range}
         </Text>
         <View style={eventCardStyles.headMark}>
-          <Icon name="coffee" size={14} color="content.tertiary" />
+          <Icon
+            name={look.ongoing ? 'hourglass' : 'coffee'}
+            size={14}
+            color={look.ongoing ? 'content.primary' : 'content.tertiary'}
+          />
         </View>
       </View>
       <Text variant="eventTitle" numberOfLines={1}>

@@ -147,6 +147,25 @@ export function buildDayTimeline<A extends TimedRecord, B extends BlockRecord>({
   return timeline;
 }
 
+/**
+ * The timed item happening at `now`, for marking it as the current one. Of overlapping
+ * items, the one that started last.
+ */
+export function ongoingItemId<A extends TimedRecord, B extends BlockRecord>(
+  timeline: readonly TimelineItem<A, B>[],
+  now: number,
+): string | null {
+  let found: { id: string; start: number } | null = null;
+  for (const item of timeline) {
+    if (item.kind === 'now' || (item.kind === 'block' && item.allDay)) continue;
+    const start = ms(item.start);
+    if (now >= start && now < ms(item.end) && (!found || start >= found.start)) {
+      found = { id: item.record.id, start };
+    }
+  }
+  return found?.id ?? null;
+}
+
 export interface SlotGridInput {
   dayKey: string;
   zone: string;

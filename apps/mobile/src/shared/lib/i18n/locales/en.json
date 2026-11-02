@@ -892,6 +892,7 @@
     },
     "schedule": {
       "title": "Schedule",
+      "ongoing": "Happening now",
       "empty": "No appointments yet",
       "freeFrom": "Free from {{from}} to {{to}}",
       "dayOff": "Day off today",
