@@ -16,14 +16,13 @@ import { errorMessageKey, normalizeError } from '@/shared/api/errors';
 import { DateTime, formatAmount, formatTime } from '@/shared/lib/formats';
 import { formatDurationLabel, isSupportedLocale, pluralCategory } from '@/shared/lib/i18n';
 import { formatPhone } from '@/shared/lib/phone';
-import { EmptyState, ErrorState, SheetChrome, Skeleton, Text } from '@/shared/ui';
+import { EmptyState, ErrorState, InfoRow, SheetChrome, Skeleton, Text } from '@/shared/ui';
 import { MORE_MENU, relativeDay, statusLabel } from '../model/labels';
 import { usePreview } from '../model/usePreview';
 import {
   AddRow,
   BottomBar,
   ClientCard,
-  InfoRow,
   MENU_ICON,
   MENU_SYMBOL,
   StatusPill,

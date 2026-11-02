@@ -1,9 +1,9 @@
 /**
  * Building blocks of the appointment preview (design "Запись · превью"): status
- * pill, client card, info rows, the glass bottom bar and its timer variant, the
+ * pill, client card, the "add" row, the glass bottom bar and its timer variant, the
  * "⋯" menu and the VIP badge.
  */
-import { useEffect, type ReactNode } from 'react';
+import { useEffect } from 'react';
 import type { SFSymbol } from 'expo-symbols';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
@@ -23,8 +23,8 @@ import {
 } from '@/entities/appointment';
 import type { Client } from '@/entities/client';
 import {
+  ActionBar,
   Avatar,
-  GlassSurface,
   Icon,
   Text,
   useNow,
@@ -151,46 +151,7 @@ function QuickButton({
   );
 }
 
-// ---- Info rows ----
-
-export interface InfoRowProps {
-  icon: IconName;
-  /** Small caption above the title (the note's "Заметка"). */
-  caption?: string;
-  title: ReactNode;
-  subtitle?: ReactNode;
-  accessibilityLabel?: string;
-  onPress: () => void;
-}
-
-export function InfoRow({
-  icon,
-  caption,
-  title,
-  subtitle,
-  accessibilityLabel,
-  onPress,
-}: InfoRowProps) {
-  return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={accessibilityLabel}
-      onPress={onPress}
-      style={({ pressed }) => [styles.card, styles.infoRow, pressed && styles.pressed]}>
-      <Icon name={icon} size="md" color="content.tertiary" />
-      <View style={styles.grow}>
-        {caption ? (
-          <Text variant="caption" color="tertiary">
-            {caption}
-          </Text>
-        ) : null}
-        {title}
-        {subtitle}
-      </View>
-      <Icon name="chevronRight" size="sm" color="content.disabled" />
-    </Pressable>
-  );
-}
+// ---- Add row ----
 
 export function AddRow({
   icon,
@@ -237,50 +198,24 @@ export interface BottomBarProps {
 
 export function BottomBar({ actions, disabled, bottom, onAction }: BottomBarProps) {
   const { t } = useTranslation();
-  const side = (action: AppointmentAction | null) =>
-    action ? (
-      <Pressable
-        accessibilityRole="button"
-        disabled={disabled}
-        onPress={() => onAction(action)}
-        style={({ pressed }) => [styles.side, pressed && styles.pressed]}>
-        <Icon
-          name={ACTION_ICON[action]}
-          size="md"
-          color={DESTRUCTIVE_ACTIONS.has(action) ? 'tone.danger.fg' : 'content.primary'}
-        />
-        <Text
-          variant="caption2Medium"
-          style={DESTRUCTIVE_ACTIONS.has(action) ? styles.dangerText : undefined}>
-          {t(`preview.actions.${action}`)}
-        </Text>
-      </Pressable>
-    ) : (
-      <View style={styles.side} />
-    );
+  const item = (action: AppointmentAction | null) =>
+    action
+      ? {
+          label: t(`preview.actions.${action}`),
+          icon: ACTION_ICON[action],
+          danger: DESTRUCTIVE_ACTIONS.has(action),
+          onPress: () => onAction(action),
+        }
+      : null;
 
   return (
-    <View style={[styles.barWrap, { bottom }]} pointerEvents="box-none">
-      <GlassSurface style={styles.barGlass} pointerEvents="none" />
-      <View style={styles.barRow}>
-        {side(actions.start)}
-        {actions.primary ? (
-          <Pressable
-            accessibilityRole="button"
-            disabled={disabled}
-            onPress={() => onAction(actions.primary!)}
-            style={({ pressed }) => [styles.primary, pressed && styles.primaryPressed]}>
-            <Icon name={ACTION_ICON[actions.primary]} size="base" color="accent.onAccent" />
-            <Text variant="bodyStrong" color="onAccent">
-              {t(`preview.actions.${actions.primary}`)}
-            </Text>
-          </Pressable>
-        ) : (
-          <View style={styles.gap} />
-        )}
-        {side(actions.end)}
-      </View>
-    </View>
+    <ActionBar
+      start={item(actions.start)}
+      primary={item(actions.primary)}
+      end={item(actions.end)}
+      disabled={disabled}
+      bottom={bottom}
+    />
   );
 }
 
@@ -347,8 +282,6 @@ export const MENU_ICON: Record<MenuAction, IconName> = {
   delete: 'trashBin',
 };
 
-const BAR_HEIGHT = 68;
-
 const styles = StyleSheet.create((theme) => ({
   pill: {
     alignSelf: 'flex-start',
@@ -391,12 +324,6 @@ const styles = StyleSheet.create((theme) => ({
     justifyContent: 'center',
     gap: theme.space[1],
   },
-  infoRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: theme.space[3],
-    padding: theme.space[3.5],
-  },
   addRow: {
     height: theme.sizing.row.sm,
     flexDirection: 'row',
@@ -407,43 +334,6 @@ const styles = StyleSheet.create((theme) => ({
     borderWidth: 1.5,
     borderStyle: 'dashed',
     borderColor: theme.colors.border.strong,
-  },
-  barWrap: {
-    position: 'absolute',
-    left: theme.space[4],
-    right: theme.space[4],
-    height: BAR_HEIGHT,
-  },
-  barGlass: {
-    ...StyleSheet.absoluteFillObject,
-    borderRadius: BAR_HEIGHT / 2,
-    boxShadow: theme.shadow.tabBar,
-  },
-  barRow: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: theme.space[1],
-    paddingHorizontal: theme.space[1.5],
-  },
-  side: {
-    flex: 1,
-    height: theme.sizing.row.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: theme.space[1],
-  },
-  dangerText: { color: theme.colors.tone.danger.fg },
-  gap: { width: theme.space[6] },
-  primary: {
-    height: theme.sizing.row.md,
-    paddingHorizontal: theme.space[6.5],
-    borderRadius: theme.sizing.row.md / 2,
-    backgroundColor: theme.colors.accent.default,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: theme.space[2],
-    boxShadow: theme.shadow.pop,
   },
   primaryPressed: { backgroundColor: theme.colors.accent.pressed },
   timerWrap: {

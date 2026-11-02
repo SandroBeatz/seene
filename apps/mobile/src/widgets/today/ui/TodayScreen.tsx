@@ -1,7 +1,8 @@
 /**
  * The "Сегодня" tab (design "Таб · Сегодня", "Сегодня · первый день"): header,
  * day summary, "Требуют внимания", first steps while setup is open, and the day's
- * schedule. Attention cards and schedule visits open a menu on long press.
+ * schedule. Attention cards, schedule visits and personal time open a menu on
+ * long press.
  */
 import { useState } from 'react';
 import { router } from 'expo-router';
@@ -23,6 +24,8 @@ import {
   useRefreshControl,
 } from '@/shared/ui';
 import { getAppointmentPhase } from '@/entities/appointment';
+import type { TimeBlock } from '@/entities/time-block';
+import { useTimeBlockActions, type TimeBlockAction } from '@/features/time-block-actions';
 import { ATTENTION_MENU } from '../model/attention';
 import { greetingPeriod } from '../model/first-steps';
 import { SCHEDULE_MENU } from '../model/schedule-menu';
@@ -30,7 +33,12 @@ import { useAttention, type AttentionCard } from '../model/useAttention';
 import { useToday, type ScheduleVisit } from '../model/useToday';
 import { useTodayActions } from '../model/useTodayActions';
 import { AttentionCardView, AttentionSection, type AttentionFormat } from './AttentionSection';
-import { DayScheduleCard, VisitEventPreview } from './DayScheduleCard';
+import {
+  BlockEventPreview,
+  DayScheduleCard,
+  VisitEventPreview,
+  type BlockLook,
+} from './DayScheduleCard';
 import { DaySummaryCard } from './DaySummaryCard';
 import { FirstStepsCard } from './FirstStepsCard';
 import { NoteBubble } from './NoteBubble';
@@ -57,6 +65,7 @@ export function TodayScreen() {
     now: today.now,
     tomorrowEnd: attention.tomorrowEnd,
   });
+  const blockActions = useTimeBlockActions();
   const [note, setNote] = useState<{ clientName: string; text: string } | null>(null);
   const [menu, setMenu] = useState<Menu | null>(null);
   const refreshControl = useRefreshControl(() =>
@@ -172,6 +181,10 @@ export function TodayScreen() {
           onOpenVisit={openVisit}
           onOpenNote={openNote}
           onMenu={(visit, anchor, range) => setMenu({ kind: 'schedule', visit, anchor, range })}
+          onOpenBlock={(block) =>
+            router.push({ pathname: '/time-block/[blockId]', params: { blockId: block.id } })
+          }
+          onBlockMenu={(block, anchor, look) => setMenu({ kind: 'block', block, anchor, look })}
         />
       </ScreenScrollView>
 
@@ -185,6 +198,8 @@ export function TodayScreen() {
               width={menu.anchor.width}
               format={attentionFormat}
             />
+          ) : menu?.kind === 'block' ? (
+            <BlockEventPreview look={menu.look} />
           ) : menu ? (
             <VisitEventPreview
               visit={menu.visit}
@@ -201,6 +216,8 @@ export function TodayScreen() {
         onSelect={(key) => {
           if (menu?.kind === 'attention') {
             act.cardMenu(menu.card, key as (typeof ATTENTION_MENU)['recall']['regular'][number]);
+          } else if (menu?.kind === 'block') {
+            blockActions.run(menu.block, key as TimeBlockAction);
           } else if (menu) {
             act.scheduleMenu(
               menu.visit,
@@ -215,7 +232,8 @@ export function TodayScreen() {
 
 type Menu =
   | { kind: 'attention'; card: AttentionCard; anchor: ContextMenuAnchor }
-  | { kind: 'schedule'; visit: ScheduleVisit; anchor: ContextMenuAnchor; range: string };
+  | { kind: 'schedule'; visit: ScheduleVisit; anchor: ContextMenuAnchor; range: string }
+  | { kind: 'block'; block: TimeBlock; anchor: ContextMenuAnchor; look: BlockLook };
 
 const MENU_ICON: Record<string, IconName> = {
   confirm: 'check',
@@ -233,10 +251,21 @@ const MENU_ICON: Record<string, IconName> = {
   decline: 'close',
   cancel: 'cancelCircle',
   no_show: 'noShow',
+  rename: 'pencil',
+  delete: 'trashBin',
 };
 
 function menuItems(menu: Menu | null, now: number, t: ReturnType<typeof useTranslation>['t']) {
   if (!menu) return [];
+  if (menu.kind === 'block') {
+    const blockItem = (key: TimeBlockAction, danger = false) => ({
+      key,
+      label: t(`personalTime.actions.${key}`),
+      icon: MENU_ICON[key],
+      danger,
+    });
+    return [blockItem('rename'), blockItem('reschedule'), blockItem('delete', true)];
+  }
   const groups =
     menu.kind === 'schedule'
       ? SCHEDULE_MENU[getAppointmentPhase(menu.visit.appointment, now)]
@@ -253,6 +282,7 @@ function menuItems(menu: Menu | null, now: number, t: ReturnType<typeof useTrans
 }
 
 function menuNote(menu: Menu | null, label: string) {
+  if (menu?.kind === 'block') return null;
   const text =
     menu?.kind === 'schedule'
       ? menu.visit.appointment.notes?.trim()

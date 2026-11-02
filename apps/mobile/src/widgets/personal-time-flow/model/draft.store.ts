@@ -1,15 +1,17 @@
 /**
- * The personal time being put together in "Личное время". The flow is one sheet with
- * its own Stack (when → what) plus two small sheets (own time, month), so the steps
+ * The personal time being put together in "Личное время", or moved from its preview.
+ * Either way it is a sheet plus two small sheets over it (own time, month), so they
  * share the draft here. Not persisted: closing the sheet drops it.
  */
 import { create } from 'zustand';
 
 /** "Сколько": the lengths offered as chips, minutes. */
 export const PERSONAL_LENGTHS = [15, 30, 60, 90, 120] as const;
-const DEFAULT_LENGTH = 60;
+export const DEFAULT_LENGTH = 60;
 
 export interface PersonalTimeDraft {
+  /** The time block being moved; null while creating one. */
+  blockId: string | null;
   /** "yyyy-MM-dd" in the master's zone; null = today. */
   dayKey: string | null;
   /** The chosen start, UTC ISO. */
@@ -24,6 +26,11 @@ export interface PersonalTimeDraft {
 }
 
 interface PersonalTimeState extends PersonalTimeDraft {
+  /** Start moving a block: its day, length and name, the new start still to pick. */
+  begin: (
+    blockId: string,
+    from: Pick<PersonalTimeDraft, 'dayKey' | 'allDay' | 'length' | 'title'>,
+  ) => void;
   setDay: (dayKey: string) => void;
   setStart: (start: string | null, ownTime?: boolean) => void;
   setAllDay: (allDay: boolean) => void;
@@ -33,6 +40,7 @@ interface PersonalTimeState extends PersonalTimeDraft {
 }
 
 const EMPTY: PersonalTimeDraft = {
+  blockId: null,
   dayKey: null,
   start: null,
   ownTime: false,
@@ -43,6 +51,7 @@ const EMPTY: PersonalTimeDraft = {
 
 export const usePersonalTimeDraft = create<PersonalTimeState>()((set) => ({
   ...EMPTY,
+  begin: (blockId, from) => set({ ...EMPTY, ...from, blockId }),
   setDay: (dayKey) =>
     set((state) => (state.dayKey === dayKey ? state : { dayKey, start: null, ownTime: false })),
   setStart: (start, ownTime = false) => set({ start, ownTime }),

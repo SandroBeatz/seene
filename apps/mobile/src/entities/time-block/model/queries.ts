@@ -7,6 +7,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   createTimeBlock,
   deleteTimeBlock,
+  getTimeBlock,
   listTimeBlocksByRange,
   updateTimeBlock,
 } from '../api/time-block.api';
@@ -14,8 +15,8 @@ import type { CreateTimeBlockDto, UpdateTimeBlockDto } from './types';
 
 export const timeBlockKeys = {
   all: (userId: string) => ['time-blocks', userId] as const,
-  range: (userId: string, from: string, to: string) =>
-    ['time-blocks', userId, from, to] as const,
+  range: (userId: string, from: string, to: string) => ['time-blocks', userId, from, to] as const,
+  detail: (userId: string, id: string) => ['time-blocks', userId, 'detail', id] as const,
 };
 
 function invalidateTimeBlockCaches(qc: ReturnType<typeof useQueryClient>, userId: string): void {
@@ -28,6 +29,14 @@ export function useTimeBlocksRangeQuery(userId: string, from: string, to: string
     queryKey: timeBlockKeys.range(userId, from, to),
     queryFn: () => listTimeBlocksByRange(userId, from, to),
     enabled: !!userId && !!from && !!to,
+  });
+}
+
+export function useTimeBlockQuery(userId: string, id: string | undefined) {
+  return useQuery({
+    queryKey: timeBlockKeys.detail(userId, id ?? ''),
+    queryFn: () => getTimeBlock(id!),
+    enabled: !!userId && !!id,
   });
 }
 

@@ -60,6 +60,12 @@ src/app/
 │       │   ├── what.tsx                    2 · name → create the time block
 │       │   ├── custom-time.tsx             "Своё время" sheet over step 1
 │       │   └── month.tsx                   month calendar sheet over step 1
+│       ├── time-block/[blockId]/           personal time from the schedule
+│       │   ├── index.tsx                   preview: name, when, move, delete
+│       │   ├── name.tsx                    another name
+│       │   ├── move.tsx                    another time (the fields of step 1)
+│       │   ├── custom-time.tsx             "Своё время" sheet over the move
+│       │   └── month.tsx                   month calendar sheet over the move
 │       └── quick-create/                   "Новая запись": form sheet with nested Stack
 │           ├── _layout.tsx                 iOS: native bar per step; Android: modal
 │           ├── index.tsx                   1 · client (`?clientId=` skips to services)

@@ -24,6 +24,7 @@ export {
   type IconSize,
   type IconWeight,
 } from './Icon';
+export { InfoRow, type InfoRowProps } from './InfoRow';
 export { Input, type InputProps, type InputSize } from './Input';
 export {
   BirthdayPicker,
@@ -56,6 +57,7 @@ export {
   type ContextMenuItem,
   type ContextMenuProps,
 } from './ContextMenu';
+export { ActionBar, type ActionBarItem, type ActionBarProps } from './ActionBar';
 export { Avatar, initialsOf, type AvatarProps, type AvatarSize, type AvatarTone } from './Avatar';
 export { GlassSurface, type GlassSurfaceProps } from './GlassSurface';
 export { VipBadge, type VipBadgeProps } from './VipBadge';

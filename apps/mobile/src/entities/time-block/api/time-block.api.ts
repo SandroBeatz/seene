@@ -22,10 +22,13 @@ export async function listTimeBlocksByRange(
   return data;
 }
 
-export async function createTimeBlock(
-  userId: string,
-  dto: CreateTimeBlockDto,
-): Promise<TimeBlock> {
+export async function getTimeBlock(id: string): Promise<TimeBlock | null> {
+  const { data, error } = await supabase.from('time_block').select('*').eq('id', id).maybeSingle();
+  if (error) throw error;
+  return data;
+}
+
+export async function createTimeBlock(userId: string, dto: CreateTimeBlockDto): Promise<TimeBlock> {
   const { data, error } = await supabase
     .from('time_block')
     .insert({ ...dto, user_id: userId })

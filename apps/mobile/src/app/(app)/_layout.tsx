@@ -68,6 +68,17 @@ export default function AppLayout() {
           name="(modals)/appointment-form"
           options={{ presentation: 'modal', title: t('navigation.appointmentForm') }}
         />
+        <Stack.Screen name="(modals)/time-block/[blockId]/index" options={sheet} />
+        <Stack.Screen name="(modals)/time-block/[blockId]/name" options={sheet} />
+        <Stack.Screen name="(modals)/time-block/[blockId]/move" options={sheet} />
+        <Stack.Screen
+          name="(modals)/time-block/[blockId]/month"
+          options={{ ...sheet, sheetAllowedDetents: [0.85] }}
+        />
+        <Stack.Screen
+          name="(modals)/time-block/[blockId]/custom-time"
+          options={{ ...sheet, sheetAllowedDetents: [0.62] }}
+        />
         {/* "Личное время": like "Новая запись" — a sheet with its own Stack of steps. */}
         <Stack.Screen
           name="(modals)/personal-time"
