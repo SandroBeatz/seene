@@ -868,6 +868,8 @@
   },
   "today": {
     "openMenu": "Профиль и меню",
+    "notifications": "Уведомления",
+    "notificationsEmpty": "Пока уведомлений нет.",
     "greeting": {
       "morning": "Доброе утро",
       "day": "Добрый день",
