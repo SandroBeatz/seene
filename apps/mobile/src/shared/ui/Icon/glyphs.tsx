@@ -47,6 +47,50 @@ export const GLYPHS = {
       <Path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" />
     </>,
   ),
+  // Design "Настройки", "Помощь".
+  help: stroke(
+    'light',
+    <>
+      <Circle cx={12} cy={12} r={9} />
+      <Path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17h.01" />
+    </>,
+  ),
+  cash: stroke(
+    'light',
+    <>
+      <Rect x={2.5} y={6} width={19} height={12.5} rx={3} />
+      <Circle cx={12} cy={12.25} r={2.75} />
+    </>,
+  ),
+  moon: stroke('light', <Path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" />),
+  mail: stroke(
+    'light',
+    <>
+      <Rect x={3} y={5} width={18} height={14} rx={3} />
+      <Path d="M3.5 7l8.5 6 8.5-6" />
+    </>,
+  ),
+  logout: stroke(
+    'light',
+    <>
+      <Path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3" />
+      <Path d="M10 16l-4-4 4-4M6 12h10" />
+    </>,
+  ),
+  bulb: stroke(
+    'light',
+    <>
+      <Path d="M9 18h6M10 21h4" />
+      <Path d="M12 3a6 6 0 0 0-3.5 10.9c.6.4 1 1.1 1 1.8V16h5v-.3c0-.7.4-1.4 1-1.8A6 6 0 0 0 12 3z" />
+    </>,
+  ),
+  document: stroke(
+    'light',
+    <>
+      <Path d="M7 3h7l5 5v13H7z" />
+      <Path d="M14 3v5h5" />
+    </>,
+  ),
   // Navigation
   chevronLeft: stroke('medium', <Path d="M15 6l-6 6 6 6" />),
   chevronRight: stroke('regular', <Path d="M9 6l6 6-6 6" />),

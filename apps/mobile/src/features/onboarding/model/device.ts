@@ -4,11 +4,8 @@ import { i18n, isSupportedLocale } from '@/shared/lib/i18n';
 import { useThemeStore } from '@/shared/theme/theme.store';
 import type { DeviceContext } from './payload';
 
+export { deviceCurrency } from '@/shared/config/currencies';
 export { deviceTimeZone } from '@/shared/lib/time-zone';
-
-export function deviceCurrency(): string {
-  return getLocales()[0]?.currencyCode ?? 'USD';
-}
 
 export function readDeviceContext(): DeviceContext {
   const locale = getLocales()[0];

@@ -5,11 +5,17 @@
  */
 import { supabase } from '@/shared/api/supabase';
 import type { Json } from '@/shared/api/database.types';
-import type { CompleteOnboardingPayload, MasterProfile, MasterSettings } from '../model/types';
+import type {
+  CompleteOnboardingPayload,
+  MasterProfile,
+  MasterSettings,
+  MasterSettingsPatch,
+} from '../model/types';
 
 const PROFILE_COLUMNS =
   'id, first_name, last_name, username, avatar_url, cover_url, bio, schedule, whatsapp, telegram, instagram, phone, address, city, country, specializations';
-const SETTINGS_COLUMNS = 'currency, time_format, date_format, calendar_slot_step_minutes';
+const SETTINGS_COLUMNS =
+  'currency, time_format, date_format, calendar_slot_step_minutes, language, theme';
 
 /** The master's own profile (the fields the app screens read), or null before onboarding. */
 export async function getMasterProfile(userId: string): Promise<MasterProfile | null> {
@@ -34,6 +40,28 @@ export async function getMasterSettings(userId: string): Promise<MasterSettings 
 }
 
 /** Globally-unique username check via the `check_username_available` RPC. */
+export async function updateMasterSettings(
+  userId: string,
+  patch: MasterSettingsPatch,
+): Promise<void> {
+  const { error } = await supabase.from('master_settings').update(patch).eq('user_id', userId);
+  if (error) throw error;
+}
+
+/** The zone lives inside `schedule`; the week around it is written back untouched. */
+export async function updateMasterTimezone(
+  userId: string,
+  schedule: Json,
+  timezone: string,
+): Promise<void> {
+  const next = { ...(schedule as Record<string, Json | undefined>), timezone };
+  const { error } = await supabase
+    .from('master_profile')
+    .update({ schedule: next })
+    .eq('user_id', userId);
+  if (error) throw error;
+}
+
 export async function checkUsernameAvailable(username: string): Promise<boolean> {
   const { data, error } = await supabase.rpc('check_username_available', {
     p_username: username,

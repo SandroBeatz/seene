@@ -18,6 +18,7 @@ export default defineEventHandler(async (event): Promise<NearestSlot> => {
     .from('master_profile')
     .select('id, user_id, schedule')
     .eq('username', username)
+    .is('deactivated_at', null)
     .maybeSingle()
 
   if (!profile) {

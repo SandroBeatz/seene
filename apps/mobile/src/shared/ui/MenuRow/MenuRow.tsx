@@ -33,7 +33,8 @@ export interface MenuRowProps {
   icon: IconName;
   title: string;
   value?: string;
-  onPress: () => void;
+  /** Without it the row only shows its value: no chevron. */
+  onPress?: () => void;
 }
 
 export function MenuRow({ icon, title, value, onPress }: MenuRowProps) {

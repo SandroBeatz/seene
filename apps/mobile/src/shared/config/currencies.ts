@@ -3,6 +3,8 @@
  * the one-glyph mark shown in its round badge. Names come from i18n
  * (`currencies.<code>`); a phone currency outside this list is added to it.
  */
+import { getLocales } from 'expo-localization';
+
 export interface CurrencyOption {
   /** ISO 4217. */
   code: string;
@@ -22,4 +24,8 @@ export const CURRENCIES: readonly CurrencyOption[] = [
 export function currencyOptions(extra?: string): CurrencyOption[] {
   if (!extra || CURRENCIES.some((c) => c.code === extra)) return [...CURRENCIES];
   return [...CURRENCIES, { code: extra, glyph: extra.slice(0, 1) }];
+}
+
+export function deviceCurrency(): string {
+  return getLocales()[0]?.currencyCode ?? 'USD';
 }

@@ -8,6 +8,8 @@ export {
   masterKeys,
   useMasterProfileQuery,
   useMasterSettingsQuery,
+  useUpdateMasterSettings,
+  useUpdateMasterTimezone,
   useUsernameAvailability,
   isUsernameSyntaxValid,
   MIN_USERNAME_LENGTH,

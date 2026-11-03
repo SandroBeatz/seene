@@ -7,6 +7,7 @@ declare namespace NodeJS {
     readonly EXPO_PUBLIC_SUPABASE_URL: string;
     readonly EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY: string;
     readonly EXPO_PUBLIC_SENTRY_DSN?: string;
+    readonly EXPO_PUBLIC_SITE_URL?: string;
   }
 }
 

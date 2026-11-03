@@ -3,6 +3,8 @@ export { useSessionStore } from './model/session.store';
 export {
   useAuthAvatar,
   useAuthName,
+  useDeactivateAccount,
+  useReactivateAccount,
   useSendEmailCode,
   useSignInWithGoogle,
   useUserId,

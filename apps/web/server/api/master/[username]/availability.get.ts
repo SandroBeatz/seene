@@ -28,6 +28,7 @@ export default defineEventHandler(async (event) => {
     .from('master_profile')
     .select('id, user_id, schedule')
     .eq('username', username)
+    .is('deactivated_at', null)
     .single()
 
   if (profileError || !profile) {

@@ -110,5 +110,8 @@ export type MasterProfile = Pick<
 /** Display settings (`getMasterSettings`). */
 export type MasterSettings = Pick<
   SettingsRow,
-  'currency' | 'time_format' | 'date_format' | 'calendar_slot_step_minutes'
+  'currency' | 'time_format' | 'date_format' | 'calendar_slot_step_minutes' | 'language' | 'theme'
 >;
+
+/** What the master changes on the settings screen. */
+export type MasterSettingsPatch = Partial<Pick<SettingsRow, 'currency' | 'language' | 'theme'>>;

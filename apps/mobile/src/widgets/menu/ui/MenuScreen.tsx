@@ -3,7 +3,6 @@
  * screens get built, see docs/mobile-menu-plan.md. The screen has no bar, so content
  * dissolves under the status bar while scrolling.
  */
-import Constants from 'expo-constants';
 import { router } from 'expo-router';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -14,18 +13,13 @@ import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { useMasterProfileQuery } from '@/entities/master';
 import { useServicesQuery } from '@/entities/service';
 import { useUserId } from '@/entities/session';
+import { appVersionLabel } from '@/shared/lib/app-version';
 import { MenuGroup, MenuRow, ScrollFade, Text, useScrollFade } from '@/shared/ui';
 import { MenuProfileCard } from './MenuProfileCard';
 import { PageLinkCard } from './PageLinkCard';
 
 /** The "+" floating above the tab bar: the last row scrolls clear of it. */
 const FAB_CLEARANCE = 80;
-
-const versionLabel = () => {
-  const version = Constants.expoConfig?.version;
-  const build = Constants.nativeBuildVersion;
-  return build ? `Seene ${version} (${build})` : `Seene ${version}`;
-};
 
 export interface MenuScreenProps {
   /** The "Деньги" group: another widget, so the route passes it in. */
@@ -76,10 +70,15 @@ export function MenuScreen({ moneySection }: MenuScreenProps) {
             title={t('menuHome.settings')}
             onPress={() => router.push('/settings/preferences')}
           />
+          <MenuRow
+            icon="help"
+            title={t('menuHome.help.title')}
+            onPress={() => router.push('/settings/help')}
+          />
         </MenuGroup>
 
         <Text variant="caption" color="tertiary" align="center" style={styles.version}>
-          {versionLabel()}
+          {appVersionLabel()}
         </Text>
       </Animated.ScrollView>
       <ScrollFade topFade={fade.topFade} edges="top" height={insets.top} />

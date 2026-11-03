@@ -74,8 +74,9 @@
     }
   },
   "account": {
-    "deactivatedTitle": "Compte désactivé",
-    "deactivatedDescription": "Ce compte a été désactivé. Déconnectez-vous ou contactez le support pour le réactiver."
+    "deactivatedTitle": "Compte en cours de suppression",
+    "deactivatedDescription": "Vos données seront supprimées le {{date}}. D’ici là, vous pouvez restaurer le compte.",
+    "restore": "Restaurer le compte"
   },
   "clients": {
     "toggleFavorite": "Basculer le favori",
@@ -539,7 +540,7 @@
     "theme": "Thème",
     "language": "Langue",
     "themeModes": {
-      "auto": "Système",
+      "auto": "Comme le téléphone",
       "light": "Clair",
       "dark": "Sombre"
     }
@@ -1462,6 +1463,31 @@
       "title": "QR code",
       "hint": "Vos clients scannent ce code pour ouvrir votre page de réservation.",
       "share": "Partager le lien"
+    },
+    "screen": {
+      "app": "Application",
+      "account": "Compte",
+      "language": "Langue",
+      "timezone": "Fuseau horaire",
+      "currency": "Devise",
+      "theme": "Thème",
+      "email": "E-mail de connexion",
+      "logOut": "Se déconnecter",
+      "logOutConfirm": "Se déconnecter du compte ?",
+      "delete": "Supprimer le compte",
+      "deleteConfirm": "Supprimer votre compte ?",
+      "deleteText": "Votre page de réservation ferme aussitôt. Vous pouvez restaurer le compte pendant 30 jours, puis toutes les données sont supprimées définitivement.",
+      "currencyHint": "Les prix et la section Argent utilisent cette devise. Les montants déjà enregistrés ne sont pas convertis."
+    },
+    "help": {
+      "title": "Aide",
+      "support": "Contacter le support",
+      "suggest": "Proposer une fonction",
+      "suggestText": "Bonjour ! Je voudrais proposer une fonction pour Seene : ",
+      "hours": "Nous répondons les jours ouvrés de 9 h à 21 h.",
+      "documents": "Documents",
+      "terms": "Conditions d’utilisation",
+      "privacy": "Politique de confidentialité"
     }
   }
 }
