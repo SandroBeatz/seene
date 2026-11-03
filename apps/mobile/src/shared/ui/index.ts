@@ -89,6 +89,7 @@ export {
 export { Divider, type DividerProps } from './Divider';
 export { Badge, StatusPill, type BadgeProps, type BadgeTone, type StatusPillProps } from './Badge';
 export { Chip, type ChipProps, type ChipShape } from './Chip';
+export { ChipRow } from './ChipRow';
 export { MonthGrid, type MonthGridProps } from './MonthGrid';
 export { AmountInput, type AmountInputProps } from './AmountInput';
 export { NumberPad, type NumberPadProps } from './NumberPad';

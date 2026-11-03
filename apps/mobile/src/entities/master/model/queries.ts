@@ -8,7 +8,6 @@ import {
   checkUsernameAvailable,
   getMasterProfile,
   getMasterSettings,
-  getPortfolioCount,
   removeMasterCover,
   updateMasterProfile,
   updateMasterSettings,
@@ -31,7 +30,6 @@ export const masterKeys = {
   usernameAvailable: (username: string) => [...masterKeys.all, 'username', username] as const,
   profile: (userId: string) => [...masterKeys.all, 'profile', userId] as const,
   settings: (userId: string) => [...masterKeys.all, 'settings', userId] as const,
-  portfolioCount: (userId: string) => [...masterKeys.all, 'portfolio-count', userId] as const,
 };
 
 export function useMasterProfileQuery(userId: string) {
@@ -145,14 +143,6 @@ export function useRemoveMasterCover(userId: string) {
   return useMutation({
     mutationFn: () => removeMasterCover(userId),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: masterKeys.profile(userId) }),
-  });
-}
-
-export function useMasterPortfolioCount(userId: string) {
-  return useQuery({
-    queryKey: masterKeys.portfolioCount(userId),
-    queryFn: () => getPortfolioCount(userId),
-    enabled: !!userId,
   });
 }
 

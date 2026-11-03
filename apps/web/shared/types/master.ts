@@ -93,10 +93,11 @@ export interface MasterService {
   show_online: boolean
 }
 
-/** A photo in the "Works" block, optionally captioned by a service. */
+/** A photo in the "Works" block, with the master's caption and service, if any. */
 export interface PortfolioItem {
   id: string
   photo_url: string
+  caption: string | null
   service_id: string | null
   sort_order: number
 }

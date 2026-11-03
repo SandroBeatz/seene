@@ -17,3 +17,19 @@ export async function pickImage(options: { square?: boolean } = {}): Promise<Pic
   const asset = result.canceled ? undefined : result.assets[0];
   return asset ? { uri: asset.uri, mimeType: asset.mimeType ?? 'image/jpeg' } : null;
 }
+
+/** Several photos at once, in the order they were picked. Empty when cancelled. */
+export async function pickImages(limit: number): Promise<PickedImage[]> {
+  const result = await launchImageLibraryAsync({
+    mediaTypes: 'images',
+    allowsMultipleSelection: true,
+    orderedSelection: true,
+    selectionLimit: limit,
+    quality: 0.8,
+  });
+  if (result.canceled) return [];
+  return result.assets.map((asset) => ({
+    uri: asset.uri,
+    mimeType: asset.mimeType ?? 'image/jpeg',
+  }));
+}

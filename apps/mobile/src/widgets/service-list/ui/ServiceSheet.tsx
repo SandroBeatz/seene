@@ -23,6 +23,7 @@ import { useUserId } from '@/entities/session';
 import { errorMessageKey, normalizeError } from '@/shared/api/errors';
 import { formatDurationLabel } from '@/shared/lib/i18n';
 import {
+  ChipRow,
   Button,
   Chip,
   DurationPicker,
@@ -45,7 +46,6 @@ import {
   parsePrice,
 } from '../lib/draft';
 import { directionOrder } from '../lib/grouping';
-import { ChipRow } from './ChipRow';
 
 const PRESETS: readonly number[] = DURATION_PRESETS;
 
@@ -209,7 +209,9 @@ function ServiceForm({
           />
         }>
         <SheetChrome
-          title={service ? t('menuHome.servicesPage.titleEdit') : t('menuHome.servicesPage.titleNew')}
+          title={
+            service ? t('menuHome.servicesPage.titleEdit') : t('menuHome.servicesPage.titleNew')
+          }
           leadingLabel={t('common.close')}
           action={
             service
@@ -314,7 +316,9 @@ function ServiceForm({
           <Chip
             size="filter"
             shape="pill"
-            label={custom ? formatDurationLabel(duration, t) : t('menuHome.servicesPage.durationCustom')}
+            label={
+              custom ? formatDurationLabel(duration, t) : t('menuHome.servicesPage.durationCustom')
+            }
             selected={custom}
             onPress={() => setPickerOpen(true)}
           />
@@ -430,7 +434,11 @@ function FieldLabel({ text }: { text: string }) {
 const styles = StyleSheet.create((theme) => ({
   loading: { padding: theme.layout.gutter },
   content: { paddingTop: theme.space[2], paddingBottom: theme.space[6] },
-  fieldLabel: { marginTop: theme.space[4.5], marginBottom: theme.space[2], marginHorizontal: theme.space[1] },
+  fieldLabel: {
+    marginTop: theme.space[4.5],
+    marginBottom: theme.space[2],
+    marginHorizontal: theme.space[1],
+  },
   newCategory: {
     marginTop: theme.space[2],
     flexDirection: 'row',
