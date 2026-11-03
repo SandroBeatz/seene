@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { Alert, Pressable, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import {
+  addressLine,
   masterPageLabel,
   normalizeUsernameInput,
   useMasterProfileQuery,
@@ -34,7 +35,6 @@ import {
   Skeleton,
   Text,
 } from '@/shared/ui';
-import { addressLine } from '../lib/address';
 
 /** `master_profile_bio_length` in the database. */
 const BIO_MAX_LENGTH = 600;

@@ -18,7 +18,7 @@ import {
 import { useClientQuery } from '@/entities/client';
 import { useMasterSettingsQuery } from '@/entities/master';
 import { useServicesQuery } from '@/entities/service';
-import { useAppointmentToast } from '@/features/appointment-actions';
+import { useAppointmentToast, useClientMessage } from '@/features/appointment-actions';
 import { DayTimePicker, useTimeContext } from '@/features/pick-time';
 import { formatAmount } from '@/shared/lib/formats';
 import { isSupportedLocale } from '@/shared/lib/i18n';
@@ -39,6 +39,7 @@ export function RescheduleSheet({ appointment }: RescheduleSheetProps) {
   const services = useServicesQuery(ctx.userId);
   const settings = useMasterSettingsQuery(ctx.userId);
   const showToast = useAppointmentToast((s) => s.show);
+  const composeMessage = useClientMessage();
   const draft = useRescheduleDraft();
   const { begin } = draft;
 
@@ -64,15 +65,21 @@ export function RescheduleSheet({ appointment }: RescheduleSheetProps) {
       title: t('reschedule.done'),
       summary: person ? `${person.first_name} · ${span}` : span,
       phone: person?.whatsapp ?? person?.phone ?? null,
-      message: t('actions.messages.moved', {
-        name: person?.first_name ?? '',
-        when: span,
-        services: picked.map((s) => s.name).join(', '),
-        price: formatAmount(appointmentTotalPrice(appointment, picked), {
-          currency: settings.data?.currency ?? 'EUR',
-          locale: isSupportedLocale(i18n.language) ? i18n.language : 'en',
+      message: () =>
+        composeMessage({
+          kind: 'reschedule',
+          clientName: person?.first_name ?? '',
+          clientLanguage: person?.language,
+          visit: {
+            id: appointment.id,
+            startAt: start,
+            services: picked.map((s) => s.name).join(', '),
+            price: formatAmount(appointmentTotalPrice(appointment, picked), {
+              currency: settings.data?.currency ?? 'EUR',
+              locale: isSupportedLocale(i18n.language) ? i18n.language : 'en',
+            }),
+          },
         }),
-      }),
     };
   };
 

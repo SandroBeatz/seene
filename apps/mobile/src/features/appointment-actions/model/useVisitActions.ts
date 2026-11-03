@@ -42,6 +42,7 @@ export function useVisitActions(input: VisitActionsInput) {
     return {
       appointment: visit.appointment,
       clientFirstName: visit.client?.first_name ?? '',
+      clientLanguage: visit.client?.language ?? null,
       phone: visit.client?.phone ?? '',
       when: t('preview.when', {
         date: date.toLocaleLowerCase(input.locale),

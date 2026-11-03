@@ -140,7 +140,8 @@ type BookingSettingsColumn =
   | 'allow_client_reschedule'
   | 'booking_show_prices'
   | 'booking_allow_comment'
-  | 'show_portfolio';
+  | 'show_portfolio'
+  | 'message_language';
 
 export type MasterSettings = Pick<
   SettingsRow,

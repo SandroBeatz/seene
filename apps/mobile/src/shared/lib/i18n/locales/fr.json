@@ -134,8 +134,7 @@
       "visits_many": "{{count}} visites",
       "visits_other": "{{count}} visites",
       "emptyTitle": "Pas encore de clients",
-      "emptyText": "Ajoutez votre premier client. Ceux qui réservent en ligne apparaissent ici tout seuls.",
-      "recallMessage": "Bonjour {{name}} ! Ça fait longtemps. Voulez-vous prendre rendez-vous ? Je vous trouve un créneau."
+      "emptyText": "Ajoutez votre premier client. Ceux qui réservent en ligne apparaissent ici tout seuls."
     },
     "form": {
       "newTitle": "Nouveau client",
@@ -195,7 +194,9 @@
       "deleteBlocked": "Ce client a des visites, il ne peut pas être supprimé : l'historique et le chiffre d'affaires restent.",
       "countryTitle": "Indicatif du pays",
       "countrySearch": "Pays ou indicatif",
-      "countryHint": "Absent de la liste ? Commencez le numéro par « + », le pays sera détecté."
+      "countryHint": "Absent de la liste ? Commencez le numéro par « + », le pays sera détecté.",
+      "language": "Langue des messages",
+      "languageAuto": "Comme le professionnel"
     },
     "profile": {
       "back": "Retour aux clients",
@@ -959,7 +960,8 @@
         "snooze": "Rappeler dans une semaine",
         "decline": "Refuser la demande",
         "cancel": "Annuler le rendez-vous",
-        "no_show": "Absence"
+        "no_show": "Absence",
+        "ask_review": "Demander un avis"
       },
       "clients_one": "{{count}} client",
       "clients_few": "{{count}} clients",
@@ -981,8 +983,7 @@
       "cadenceDays_one": "D'habitude chaque jour",
       "cadenceDays_few": "D'habitude tous les {{count}} jours",
       "cadenceDays_many": "D'habitude tous les {{count}} jours",
-      "cadenceDays_other": "D'habitude tous les {{count}} jours",
-      "recallMessage": "Bonjour {{name}} ! Ça fait longtemps. Voulez-vous prendre rendez-vous ? Je vous trouve un créneau."
+      "cadenceDays_other": "D'habitude tous les {{count}} jours"
     }
   },
   "duration": {
@@ -1053,7 +1054,8 @@
     },
     "missingTitle": "Aucun rendez-vous",
     "missing": "Il a été supprimé ou n’est pas disponible.",
-    "changeClient": "Changer de client"
+    "changeClient": "Changer de client",
+    "askReview": "Avis"
   },
   "actions": {
     "failedTitle": "Échec",
@@ -1082,12 +1084,10 @@
       }
     },
     "messages": {
-      "reminder": "Bonjour {{name}} ! Je vous rappelle votre rendez-vous {{when}} : {{services}}. À bientôt !",
-      "details": "Bonjour {{name}} ! Vous avez rendez-vous {{when}} : {{services}}, {{price}}.",
-      "proposeTime": "Bonjour {{name}} ! Malheureusement, {{when}} ne sera pas possible. Trouvons un autre horaire ?",
-      "moved": "Bonjour {{name}} ! Votre rendez-vous a été déplacé au {{when}} : {{services}}, {{price}}."
+      "proposeTime": "Bonjour {{name}} ! Malheureusement, {{when}} ne sera pas possible. Trouvons un autre horaire ?"
     },
-    "sendToClient": "Envoyer au client"
+    "sendToClient": "Envoyer au client",
+    "cancelledToast": "Rendez-vous annulé"
   },
   "note": {
     "title": "Note",
@@ -1673,6 +1673,60 @@
       "changeOrder": "Changer l’ordre",
       "deleteTitle": "Supprimer cette photo ?",
       "deleteText": "Les clients ne la verront plus."
+    },
+    "clientsGroup": "Clients",
+    "messages": {
+      "title": "Rappels",
+      "language": "Langue des messages",
+      "languages": {
+        "auto": "Celle du client",
+        "ru": "Русский",
+        "en": "English",
+        "fr": "Français"
+      },
+      "autoHint": "Русский, English ou français : dans la langue du client. Envoyés depuis votre WhatsApp.",
+      "fixedHint": "Tous les clients dans cette langue. Envoyés depuis votre WhatsApp.",
+      "templates": "Modèles de messages",
+      "edit": "Modifier",
+      "editA11y": "Modifier : {{title}}",
+      "editHint": "Ce texte est pour : {{language}}. Les éléments entre crochets se remplissent seuls, une ligne sans données n’est pas envoyée.",
+      "reset": "Rétablir le standard",
+      "kinds": {
+        "confirmation": {
+          "title": "Confirmation du rendez-vous",
+          "when": "Après la création d’un rendez-vous"
+        },
+        "reminder": {
+          "title": "Rappel du rendez-vous",
+          "when": "La veille du rendez-vous"
+        },
+        "recall": {
+          "title": "Il est temps de réserver",
+          "when": "Quand un client devrait revenir"
+        },
+        "review": {
+          "title": "Demander un avis",
+          "when": "Dans un rendez-vous terminé"
+        },
+        "cancellation": {
+          "title": "Annulation",
+          "when": "Quand un rendez-vous est annulé"
+        },
+        "reschedule": {
+          "title": "Déplacement",
+          "when": "Quand un rendez-vous est déplacé"
+        }
+      },
+      "variables": {
+        "client_name": "Nom du client",
+        "date_time": "Date et heure",
+        "service": "Prestation",
+        "price": "Prix",
+        "address": "Adresse",
+        "master": "Professionnel",
+        "booking_link": "Lien du rendez-vous",
+        "online_link": "Lien de réservation"
+      }
     },
     "booking": {
       "title": "Réservation en ligne",

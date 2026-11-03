@@ -172,6 +172,7 @@ export type Database = {
           id: string
           instagram: string | null
           is_favorite: boolean
+          language: string | null
           last_name: string | null
           marketing_consent: boolean
           notes: string | null
@@ -193,6 +194,7 @@ export type Database = {
           id?: string
           instagram?: string | null
           is_favorite?: boolean
+          language?: string | null
           last_name?: string | null
           marketing_consent?: boolean
           notes?: string | null
@@ -214,6 +216,7 @@ export type Database = {
           id?: string
           instagram?: string | null
           is_favorite?: boolean
+          language?: string | null
           last_name?: string | null
           marketing_consent?: boolean
           notes?: string | null
@@ -444,6 +447,7 @@ export type Database = {
           default_calendar_view: string
           id: string
           language: string
+          message_language: string
           online_booking_enabled: boolean
           page_accent: string
           page_theme: string
@@ -479,6 +483,7 @@ export type Database = {
           default_calendar_view?: string
           id?: string
           language?: string
+          message_language?: string
           online_booking_enabled?: boolean
           page_accent?: string
           page_theme?: string
@@ -514,6 +519,7 @@ export type Database = {
           default_calendar_view?: string
           id?: string
           language?: string
+          message_language?: string
           online_booking_enabled?: boolean
           page_accent?: string
           page_theme?: string
@@ -524,6 +530,30 @@ export type Database = {
           user_id?: string
           vacation_from?: string | null
           vacation_until?: string | null
+        }
+        Relationships: []
+      }
+      message_template: {
+        Row: {
+          body: string
+          kind: string
+          language: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          kind: string
+          language: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          kind?: string
+          language?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -1001,6 +1031,10 @@ export type Database = {
           p_username: string
         }
         Returns: Json
+      }
+      create_booking_link: {
+        Args: { p_appointment_id: string }
+        Returns: string
       }
       deactivate_account: { Args: never; Returns: undefined }
       get_money_clients: {

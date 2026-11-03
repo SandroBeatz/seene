@@ -88,6 +88,14 @@ export function MenuScreen({ moneySection }: MenuScreenProps) {
 
         {moneySection}
 
+        <MenuGroup label={t('menuHome.clientsGroup')}>
+          <MenuRow
+            icon="bell"
+            title={t('menuHome.messages.title')}
+            onPress={() => router.push('/settings/messages')}
+          />
+        </MenuGroup>
+
         <MenuGroup>
           <MenuRow
             icon="settings"

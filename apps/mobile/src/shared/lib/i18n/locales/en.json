@@ -130,8 +130,7 @@
       "visits_one": "{{count}} visit",
       "visits_other": "{{count}} visits",
       "emptyTitle": "No clients yet",
-      "emptyText": "Add your first client. People who book online show up here on their own.",
-      "recallMessage": "Hi {{name}}! It's been a while. Would you like to book? I'll find a time that suits you."
+      "emptyText": "Add your first client. People who book online show up here on their own."
     },
     "form": {
       "newTitle": "New client",
@@ -191,7 +190,9 @@
       "deleteBlocked": "This client has visits, so they can’t be deleted: the visit history and revenue stay.",
       "countryTitle": "Country code",
       "countrySearch": "Country or code",
-      "countryHint": "Not listed? Start the number with \"+\" and the country is detected."
+      "countryHint": "Not listed? Start the number with \"+\" and the country is detected.",
+      "language": "Message language",
+      "languageAuto": "As the professional's"
     },
     "profile": {
       "back": "Back to clients",
@@ -953,7 +954,8 @@
         "snooze": "Remind me in a week",
         "decline": "Decline request",
         "cancel": "Cancel appointment",
-        "no_show": "No-show"
+        "no_show": "No-show",
+        "ask_review": "Ask for a review"
       },
       "clients_one": "{{count}} client",
       "clients_few": "{{count}} clients",
@@ -975,8 +977,7 @@
       "cadenceDays_one": "Usually every day",
       "cadenceDays_few": "Usually every {{count}} days",
       "cadenceDays_many": "Usually every {{count}} days",
-      "cadenceDays_other": "Usually every {{count}} days",
-      "recallMessage": "Hi {{name}}! It's been a while. Would you like to book? I'll find a time that works for you."
+      "cadenceDays_other": "Usually every {{count}} days"
     }
   },
   "duration": {
@@ -1047,7 +1048,8 @@
     },
     "missingTitle": "No appointment",
     "missing": "It was deleted or is unavailable.",
-    "changeClient": "Change client"
+    "changeClient": "Change client",
+    "askReview": "Review"
   },
   "actions": {
     "failedTitle": "Something went wrong",
@@ -1076,12 +1078,10 @@
       }
     },
     "messages": {
-      "reminder": "Hi {{name}}! A reminder of your appointment {{when}}: {{services}}. See you!",
-      "details": "Hi {{name}}! You’re booked {{when}}: {{services}}, {{price}}.",
-      "proposeTime": "Hi {{name}}! Unfortunately {{when}} won’t work. Shall we find another time?",
-      "moved": "Hi {{name}}! Your appointment has been moved to {{when}}: {{services}}, {{price}}."
+      "proposeTime": "Hi {{name}}! Unfortunately {{when}} won’t work. Shall we find another time?"
     },
-    "sendToClient": "Send to client"
+    "sendToClient": "Send to client",
+    "cancelledToast": "Booking cancelled"
   },
   "note": {
     "title": "Note",
@@ -1666,6 +1666,60 @@
       "changeOrder": "Change order",
       "deleteTitle": "Delete this photo?",
       "deleteText": "Clients will no longer see it."
+    },
+    "clientsGroup": "Clients",
+    "messages": {
+      "title": "Reminders",
+      "language": "Message language",
+      "languages": {
+        "auto": "Client's language",
+        "ru": "Русский",
+        "en": "English",
+        "fr": "Français"
+      },
+      "autoHint": "Русский, English or français: in the client's language. Sent from your WhatsApp.",
+      "fixedHint": "All clients in this language. Sent from your WhatsApp.",
+      "templates": "Message templates",
+      "edit": "Edit",
+      "editA11y": "Edit: {{title}}",
+      "editHint": "This text is for: {{language}}. The parts in brackets fill in by themselves, a line without data is not sent.",
+      "reset": "Restore standard",
+      "kinds": {
+        "confirmation": {
+          "title": "Booking confirmation",
+          "when": "After a booking is created"
+        },
+        "reminder": {
+          "title": "Visit reminder",
+          "when": "The day before the visit"
+        },
+        "recall": {
+          "title": "Time to book",
+          "when": "When a client is due back"
+        },
+        "review": {
+          "title": "Ask for a review",
+          "when": "In a completed visit"
+        },
+        "cancellation": {
+          "title": "Cancellation",
+          "when": "When a booking is cancelled"
+        },
+        "reschedule": {
+          "title": "Reschedule",
+          "when": "When a booking is moved"
+        }
+      },
+      "variables": {
+        "client_name": "Client name",
+        "date_time": "Date and time",
+        "service": "Service",
+        "price": "Price",
+        "address": "Address",
+        "master": "Professional",
+        "booking_link": "Booking link",
+        "online_link": "Online booking link"
+      }
     },
     "booking": {
       "title": "Online booking",

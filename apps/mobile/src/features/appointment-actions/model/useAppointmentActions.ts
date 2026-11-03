@@ -7,6 +7,7 @@
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Alert, Linking } from 'react-native';
+import type { MessageKind } from '@/entities/message-template';
 import {
   useDeleteAppointmentMutation,
   useUpdateAppointmentMutation,
@@ -16,6 +17,8 @@ import {
 } from '@/entities/appointment';
 import { useUserId } from '@/entities/session';
 import { phoneCallUrl, whatsappUrl } from '@/shared/lib/phone';
+import { useAppointmentToast } from './appointment-toast.store';
+import { useClientMessage } from './useClientMessage';
 
 export type AppointmentActionKey =
   | AppointmentAction
@@ -23,6 +26,7 @@ export type AppointmentActionKey =
   | 'whatsapp'
   | 'remind'
   | 'send_details'
+  | 'ask_review'
   | 'note'
   | 'delete'
   | 'open_client';
@@ -31,6 +35,8 @@ export interface AppointmentActionContext {
   appointment: Appointment;
   /** Client's first name for messages ("Айгерим"). */
   clientFirstName: string;
+  /** The client's language for messages, when known. */
+  clientLanguage: string | null;
   /** Canonical phone, or empty when unknown. */
   phone: string;
   /** "сегодня, 30 октября, в 16:00" — for messages. */
@@ -50,6 +56,8 @@ export function useAppointmentActions(bound: AppointmentActionContext | null = n
   const userId = useUserId() ?? '';
   const update = useUpdateAppointmentMutation(userId);
   const remove = useDeleteAppointmentMutation(userId);
+  const composeMessage = useClientMessage();
+  const showToast = useAppointmentToast((s) => s.show);
 
   const failed = () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage'));
 
@@ -62,25 +70,48 @@ export function useAppointmentActions(bound: AppointmentActionContext | null = n
       { text: t(`actions.confirm.${key}.action`), style: 'destructive', onPress: onConfirm },
     ]);
 
-  const cancelByMaster = (ctx: AppointmentActionContext) =>
-    patch(ctx, {
-      status: 'cancelled',
-      cancelled_by: 'master',
-      cancelled_at: new Date().toISOString(),
+  const templateMessage = (ctx: AppointmentActionContext, kind: MessageKind) =>
+    composeMessage({
+      kind,
+      clientName: ctx.clientFirstName,
+      clientLanguage: ctx.clientLanguage,
+      visit: {
+        id: ctx.appointment.id,
+        startAt: ctx.appointment.start_at,
+        services: ctx.services,
+        price: ctx.price,
+      },
     });
+
+  const cancelByMaster = (ctx: AppointmentActionContext) =>
+    update.mutate(
+      {
+        id: ctx.appointment.id,
+        status: 'cancelled',
+        cancelled_by: 'master',
+        cancelled_at: new Date().toISOString(),
+      },
+      {
+        onError: failed,
+        onSuccess: () =>
+          showToast({
+            title: t('actions.cancelledToast'),
+            summary: `${ctx.clientFirstName} · ${ctx.when}`,
+            phone: ctx.phone || null,
+            message: () => templateMessage(ctx, 'cancellation'),
+          }),
+      },
+    );
 
   const openWhatsApp = (phone: string, text?: string) => {
     if (!phone) return Alert.alert(t('actions.noPhone'));
     void Linking.openURL(whatsappUrl(phone, text)).catch(failed);
   };
 
-  const message = (ctx: AppointmentActionContext, key: string) =>
-    t(`actions.messages.${key}`, {
-      name: ctx.clientFirstName,
-      when: ctx.when,
-      services: ctx.services,
-      price: ctx.price,
-    });
+  const sendTemplate = (ctx: AppointmentActionContext, kind: MessageKind) => {
+    if (!ctx.phone) return Alert.alert(t('actions.noPhone'));
+    void templateMessage(ctx, kind).then((text) => openWhatsApp(ctx.phone, text));
+  };
 
   function runFor(ctx: AppointmentActionContext, action: AppointmentActionKey) {
     const id = ctx.appointment.id;
@@ -131,11 +162,16 @@ export function useAppointmentActions(bound: AppointmentActionContext | null = n
       case 'whatsapp':
         return openWhatsApp(ctx.phone);
       case 'remind':
-        return openWhatsApp(ctx.phone, message(ctx, 'reminder'));
+        return sendTemplate(ctx, 'reminder');
       case 'send_details':
-        return openWhatsApp(ctx.phone, message(ctx, 'details'));
+        return sendTemplate(ctx, 'confirmation');
+      case 'ask_review':
+        return sendTemplate(ctx, 'review');
       case 'propose_time':
-        return openWhatsApp(ctx.phone, message(ctx, 'proposeTime'));
+        return openWhatsApp(
+          ctx.phone,
+          t('actions.messages.proposeTime', { name: ctx.clientFirstName, when: ctx.when }),
+        );
       case 'open_client':
         return router.push({
           pathname: '/clients/[clientId]',

@@ -21,6 +21,7 @@ import {
   type Seen,
 } from '@/entities/client';
 import { useUserId } from '@/entities/session';
+import { useClientMessage } from '@/features/appointment-actions';
 import { usePhoneCountry } from '@/features/client-form';
 import { errorMessageKey, normalizeError } from '@/shared/api/errors';
 import { formatTime } from '@/shared/lib/formats';
@@ -51,6 +52,7 @@ type Item =
 
 export function ClientList() {
   const { t, i18n } = useTranslation();
+  const composeMessage = useClientMessage();
   const { theme } = useUnistyles();
   const locale = isSupportedLocale(i18n.language) ? i18n.language : 'en';
   const list = useClientList();
@@ -150,9 +152,11 @@ export function ClientList() {
   const invite = ({ client }: ClientRow) => {
     const phone = client.whatsapp ?? client.phone;
     if (!phone) return;
-    void Linking.openURL(
-      whatsappUrl(phone, t('clients.list.recallMessage', { name: client.first_name })),
-    );
+    void composeMessage({
+      kind: 'recall',
+      clientName: client.first_name,
+      clientLanguage: client.language,
+    }).then((text) => Linking.openURL(whatsappUrl(phone, text)));
     dismiss.mutate([
       {
         key: `recall:${client.id}`,

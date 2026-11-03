@@ -60,9 +60,10 @@ export function AppointmentToast() {
   const send = () => {
     dismiss();
     if (!toast || !phone) return;
-    void Linking.openURL(whatsappUrl(phone, toast.message)).catch(() =>
-      Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')),
-    );
+    void toast
+      .message()
+      .then((text) => Linking.openURL(whatsappUrl(phone, text)))
+      .catch(() => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')));
   };
 
   return (

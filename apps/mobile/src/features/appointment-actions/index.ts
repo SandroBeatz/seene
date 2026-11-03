@@ -5,6 +5,7 @@ export {
   type AppointmentActionKey,
 } from './model/useAppointmentActions';
 export { useVisitActions, type VisitActionsInput } from './model/useVisitActions';
+export { useClientMessage, type ClientMessageInput } from './model/useClientMessage';
 export {
   MENU_ICON,
   SCHEDULE_MENU,

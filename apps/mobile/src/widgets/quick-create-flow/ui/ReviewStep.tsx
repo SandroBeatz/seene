@@ -12,7 +12,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { useCreateAppointmentMutation } from '@/entities/appointment';
 import { clientName } from '@/entities/client';
-import { parseAmount, useAppointmentToast } from '@/features/appointment-actions';
+import { parseAmount, useAppointmentToast, useClientMessage } from '@/features/appointment-actions';
 import { formatDurationLabel } from '@/shared/lib/i18n';
 import { formatPhone } from '@/shared/lib/phone';
 import { Avatar, FlowStepFooter, Icon, Text, useCloseFlow, type IconName } from '@/shared/ui';
@@ -27,6 +27,7 @@ export function ReviewStep() {
   const { theme } = useUnistyles();
   const create = useCreateAppointmentMutation(flow.userId);
   const showToast = useAppointmentToast((s) => s.show);
+  const composeMessage = useClientMessage();
   const close = useCloseFlow();
 
   const start = draft.start;
@@ -59,18 +60,24 @@ export function ReviewStep() {
         source: 'manual',
       },
       {
-        onSuccess: () => {
+        onSuccess: (created) => {
           const when = `${shortDay.toLocaleLowerCase()}, ${flow.range(start)}`;
           showToast({
             title: t('quickCreate.created.title'),
             summary: `${client.first_name} · ${when}`,
             phone: client.whatsapp ?? client.phone,
-            message: t('actions.messages.details', {
-              name: client.first_name,
-              when,
-              services: flow.picked.map((s) => s.name).join(', '),
-              price: flow.money(price),
-            }),
+            message: () =>
+              composeMessage({
+                kind: 'confirmation',
+                clientName: client.first_name,
+                clientLanguage: client.language,
+                visit: {
+                  id: created.id,
+                  startAt: start,
+                  services: flow.picked.map((s) => s.name).join(', '),
+                  price: flow.money(price),
+                },
+              }),
           });
           close();
         },
