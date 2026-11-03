@@ -1766,12 +1766,13 @@
       "namePlaceholder": "Par exemple, Vernis gel",
       "type": "Type",
       "unit": "Unité",
+      "partial": "S'utilise par petites quantités",
+      "partialHint": "Vernis, huile : déduire en ml ou g",
       "contentIn": {
         "pcs": "Dans une pièce",
         "bottle": "Dans un flacon",
         "pack": "Dans un paquet"
       },
-      "contentHint": "À remplir si le produit s'utilise par petites quantités",
       "stock": "En stock",
       "stockHint": "Ce que vous avez maintenant",
       "stockAmount": "Soit {{amount}}",

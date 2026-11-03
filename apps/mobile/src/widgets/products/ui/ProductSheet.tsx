@@ -73,6 +73,7 @@ function ProductForm({ product, userId }: { product?: Product; userId: string })
   const [contentUnit, setContentUnit] = useState<ProductContentUnit>(
     (product?.content_unit as ProductContentUnit) ?? 'ml',
   );
+  const [partial, setPartial] = useState(!!product?.content_unit);
   const [content, setContent] = useState(product?.content_unit ? String(product.pack_size) : '');
   // In packages, as typed. Null until touched: the saved amount stays exact, 29 ml of 30 is
   // shown as 0.97 and must not save back as 29.1.
@@ -94,7 +95,7 @@ function ProductForm({ product, userId }: { product?: Product; userId: string })
   const options = { onSuccess: () => router.back(), onError: failed };
 
   const contentValue = parseQuantity(content);
-  const packNow = contentValue || null;
+  const packNow = partial ? contentValue || null : null;
   const packSize = packNow ?? 1;
   const before = { measured: !!product?.content_unit, packSize: product?.pack_size ?? 1 };
   const stockBase = rebaseAmount(product?.stock ?? 0, before, packNow);
@@ -109,7 +110,7 @@ function ProductForm({ product, userId }: { product?: Product; userId: string })
   const priceOf = (text: string) => (text.trim() ? parseQuantity(text) : null);
   const forSale = type === 'sale';
   const buyValue = priceOf(buy);
-  const contentValid = !content.trim() || packNow !== null;
+  const contentValid = !partial || packNow !== null;
   const pricesValid =
     (!buy.trim() || buyValue !== null) && (!forSale || !sell.trim() || priceOf(sell) !== null);
   const linkList = Object.entries(links).map(([service_id, quantity]) => ({
@@ -258,36 +259,51 @@ function ProductForm({ product, userId }: { product?: Product; userId: string })
         </ChipRow>
       </View>
 
-      <View style={styles.block}>
-        <Text variant="captionMedium" color="secondary" style={styles.caption}>
-          {t(`menuHome.products.contentIn.${unit}`)}
-        </Text>
-        <View style={styles.contentRow}>
-          <View style={styles.grow}>
-            <Input
-              variant="filled"
-              accessibilityLabel={t(`menuHome.products.contentIn.${unit}`)}
-              placeholder="10"
-              keyboardType="decimal-pad"
-              value={content}
-              onChangeText={setContent}
+      <GroupedCard variant="menu">
+        <ListItem
+          size="menu"
+          inset={false}
+          title={t('menuHome.products.partial')}
+          subtitle={t('menuHome.products.partialHint')}
+          right={
+            <Switch
+              value={partial}
+              onValueChange={setPartial}
+              accessibilityLabel={t('menuHome.products.partial')}
             />
+          }
+        />
+      </GroupedCard>
+
+      {partial ? (
+        <View style={styles.block}>
+          <Text variant="captionMedium" color="secondary" style={styles.caption}>
+            {t(`menuHome.products.contentIn.${unit}`)}
+          </Text>
+          <View style={styles.contentRow}>
+            <View style={styles.grow}>
+              <Input
+                variant="filled"
+                accessibilityLabel={t(`menuHome.products.contentIn.${unit}`)}
+                placeholder="10"
+                keyboardType="decimal-pad"
+                value={content}
+                onChangeText={setContent}
+              />
+            </View>
+            {PRODUCT_CONTENT_UNITS.map((key) => (
+              <Chip
+                key={key}
+                size="filter"
+                shape="pill"
+                label={t(`menuHome.products.units.${key}`)}
+                selected={contentUnit === key}
+                onPress={() => setContentUnit(key)}
+              />
+            ))}
           </View>
-          {PRODUCT_CONTENT_UNITS.map((key) => (
-            <Chip
-              key={key}
-              size="filter"
-              shape="pill"
-              label={t(`menuHome.products.units.${key}`)}
-              selected={contentUnit === key}
-              onPress={() => setContentUnit(key)}
-            />
-          ))}
         </View>
-        <Text variant="caption" color="tertiary" style={styles.caption}>
-          {t('menuHome.products.contentHint')}
-        </Text>
-      </View>
+      ) : null}
 
       <GroupedCard variant="menu">
         <View style={styles.stockRow}>

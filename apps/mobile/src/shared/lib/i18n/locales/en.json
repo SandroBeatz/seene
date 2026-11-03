@@ -1759,12 +1759,13 @@
       "namePlaceholder": "For example, Gel polish",
       "type": "Type",
       "unit": "Unit",
+      "partial": "Used in parts",
+      "partialHint": "Gel polish, oil: deduct in ml or g",
       "contentIn": {
         "pcs": "In one piece",
         "bottle": "In one bottle",
         "pack": "In one pack"
       },
-      "contentHint": "Fill in if it is used in parts",
       "stock": "In stock",
       "stockHint": "How much you have now",
       "stockAmount": "That is {{amount}}",
