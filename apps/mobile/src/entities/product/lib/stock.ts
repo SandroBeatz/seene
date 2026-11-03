@@ -56,3 +56,43 @@ export function filterProducts<
       (!query || product.name.toLocaleLowerCase().includes(query)),
   );
 }
+
+/** What the stock on the shelf cost, at the buying price per package. */
+export const shelfValue = (
+  products: readonly { stock: number; pack_size: number; buy_price: number | null }[],
+) => hundredths(products.reduce((sum, p) => sum + (p.stock / p.pack_size) * (p.buy_price ?? 0), 0));
+
+/**
+ * Whole visits the stock lasts, on the average of what the linked services use. Null when no
+ * service uses it: then nothing says how fast it goes.
+ */
+export function visitsLeft(product: {
+  stock: number;
+  services: readonly { quantity: number }[];
+}): number | null {
+  if (!product.services.length) return null;
+  const perVisit =
+    product.services.reduce((sum, s) => sum + s.quantity, 0) / product.services.length;
+  return Math.floor(product.stock / perVisit);
+}
+
+/** Purchases in the month starting at `monthStart`, and in the one before it. */
+export function purchaseTotals(
+  purchases: readonly { amount: number | null; created_at: string }[],
+  monthStart: string,
+): { current: number; previous: number } {
+  const start = Date.parse(monthStart);
+  let current = 0;
+  let previous = 0;
+  for (const purchase of purchases) {
+    if (Date.parse(purchase.created_at) >= start) current += purchase.amount ?? 0;
+    else previous += purchase.amount ?? 0;
+  }
+  return { current: hundredths(current), previous: hundredths(previous) };
+}
+
+/** Whole percent against last month. Null with nothing to compare to or no change. */
+export function monthChange(current: number, previous: number): number | null {
+  if (previous <= 0) return null;
+  return Math.round(((current - previous) / previous) * 100) || null;
+}

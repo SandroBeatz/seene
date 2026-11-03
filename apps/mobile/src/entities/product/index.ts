@@ -11,15 +11,21 @@ export {
   filterProducts,
   fromPackages,
   isLowStock,
+  monthChange,
+  purchaseTotals,
   rebaseAmount,
+  shelfValue,
   stockDelta,
   toPackages,
+  visitsLeft,
   type TypeFilter,
 } from './lib/stock';
 export { createLinksStore } from './model/links.store';
 export {
   useDeleteProductMutation,
+  useProductPurchasesQuery,
   useProductsQuery,
+  useRestockProductMutation,
   useSaveProductMutation,
   useSetServiceProductsMutation,
 } from './model/queries';

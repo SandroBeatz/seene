@@ -14,6 +14,7 @@ import {
   PRODUCT_TYPES,
   toPackages,
   useProductsQuery,
+  visitsLeft,
   type Product,
   type ProductType,
   type TypeFilter,
@@ -34,6 +35,7 @@ import {
   SkeletonList,
   Text,
 } from '@/shared/ui';
+import { ProductsSummary } from './ProductsSummary';
 
 const openNew = () => router.push('/product/new');
 
@@ -104,6 +106,15 @@ export function ProductsScreen() {
     const stockText = `${number(toPackages(product.stock, product.pack_size))} ${t(`menuHome.products.units.${product.unit}`)}`;
     const stock = t('menuHome.products.stockOf', { stock: stockText });
     const price = priceText(product);
+    const visits = visitsLeft(product);
+    const subtitle =
+      visits === null
+        ? price
+          ? `${stock} · ${price}`
+          : stock
+        : visits > 0
+          ? t(`menuHome.products.visitsLeft_${pluralCategory(visits, locale)}`, { count: visits })
+          : t('menuHome.products.visitsNone');
     return (
       <Pressable
         key={product.id}
@@ -132,7 +143,7 @@ export function ProductsScreen() {
             ) : null}
           </View>
           <Text variant="caption" color="tertiary" tabularNums numberOfLines={1}>
-            {price ? `${stock} · ${price}` : stock}
+            {subtitle}
           </Text>
         </View>
         <Text variant="subheadMedium" tabularNums>
@@ -178,6 +189,7 @@ export function ProductsScreen() {
           />
         ) : (
           <>
+            <ProductsSummary userId={userId} products={all} />
             <SearchField
               accessibilityLabel={t('common.search')}
               placeholder={t('common.search')}

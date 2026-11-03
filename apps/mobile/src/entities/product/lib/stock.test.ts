@@ -3,9 +3,13 @@ import {
   contentUnitCost,
   filterProducts,
   fromPackages,
+  monthChange,
+  purchaseTotals,
   rebaseAmount,
+  shelfValue,
   stockDelta,
   toPackages,
+  visitsLeft,
 } from './stock';
 
 describe('contentUnitCost', () => {
@@ -94,5 +98,58 @@ describe('stockDelta', () => {
 
   it('adds a whole package to an amount that does not divide evenly', () => {
     expect(stockDelta(1.97, 29, 30)).toBe(30);
+  });
+});
+
+describe('shelfValue', () => {
+  it('prices packages, not stored amounts, and skips what has no price', () => {
+    expect(
+      shelfValue([
+        { stock: 50, pack_size: 10, buy_price: 630 },
+        { stock: 4, pack_size: 1, buy_price: 100 },
+        { stock: 9, pack_size: 1, buy_price: null },
+      ]),
+    ).toBe(3550);
+  });
+});
+
+describe('visitsLeft', () => {
+  it('is unknown when no service uses it', () => {
+    expect(visitsLeft({ stock: 10, services: [] })).toBeNull();
+  });
+
+  it('counts whole visits on the average use', () => {
+    expect(visitsLeft({ stock: 48, services: [{ quantity: 2 }] })).toBe(24);
+    expect(visitsLeft({ stock: 10, services: [{ quantity: 1 }, { quantity: 3 }] })).toBe(5);
+    expect(visitsLeft({ stock: 1, services: [{ quantity: 2 }] })).toBe(0);
+  });
+});
+
+describe('purchaseTotals', () => {
+  it('splits by the month start and counts no price as nothing', () => {
+    const start = '2026-11-01T00:00:00.000+06:00';
+    expect(
+      purchaseTotals(
+        [
+          { amount: 630, created_at: '2026-11-02T10:00:00Z' },
+          { amount: 100, created_at: '2026-10-31T17:59:00Z' },
+          { amount: 50, created_at: '2026-10-31T18:01:00Z' },
+          { amount: null, created_at: '2026-11-03T10:00:00Z' },
+        ],
+        start,
+      ),
+    ).toEqual({ current: 680, previous: 100 });
+  });
+});
+
+describe('monthChange', () => {
+  it('compares to last month in whole percent', () => {
+    expect(monthChange(92, 100)).toBe(-8);
+    expect(monthChange(150, 100)).toBe(50);
+  });
+
+  it('says nothing with no base or no change', () => {
+    expect(monthChange(100, 0)).toBeNull();
+    expect(monthChange(100, 100)).toBeNull();
   });
 });
