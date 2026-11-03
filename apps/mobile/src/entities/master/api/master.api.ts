@@ -12,6 +12,7 @@ import type {
   MasterProfilePatch,
   MasterSettings,
   MasterSettingsPatch,
+  StoredSchedule,
 } from '../model/types';
 
 const PROFILE_COLUMNS =
@@ -56,6 +57,20 @@ export async function updateMasterTimezone(
   timezone: string,
 ): Promise<void> {
   const next = { ...(schedule as Record<string, Json | undefined>), timezone };
+  const { error } = await supabase
+    .from('master_profile')
+    .update({ schedule: next })
+    .eq('user_id', userId);
+  if (error) throw error;
+}
+
+/** The week lives inside `schedule`; the zone around it is written back untouched. */
+export async function updateMasterWeek(
+  userId: string,
+  schedule: Json,
+  days: StoredSchedule['days'],
+): Promise<void> {
+  const next = { ...(schedule as Record<string, Json | undefined>), days: days as unknown as Json };
   const { error } = await supabase
     .from('master_profile')
     .update({ schedule: next })

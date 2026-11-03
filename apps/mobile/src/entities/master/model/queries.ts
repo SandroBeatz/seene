@@ -13,14 +13,17 @@ import {
   updateMasterProfile,
   updateMasterSettings,
   updateMasterTimezone,
+  updateMasterWeek,
   uploadMasterImage,
 } from '../api/master.api';
+import { toStoredSchedule } from '../lib/schedule';
 import type {
   MasterImageKind,
   MasterProfile,
   MasterProfilePatch,
   MasterSettings,
   MasterSettingsPatch,
+  WeeklySchedule,
 } from './types';
 
 export const masterKeys = {
@@ -84,6 +87,31 @@ export function useUpdateMasterTimezone(userId: string) {
       return { previous };
     },
     onError: (_error, _timezone, context) => queryClient.setQueryData(key, context?.previous),
+    onSettled: () => queryClient.invalidateQueries({ queryKey: key }),
+  });
+}
+
+/** Saves the working week, optimistically: a day's switch answers at once. */
+export function useUpdateMasterWeek(userId: string) {
+  const queryClient = useQueryClient();
+  const key = masterKeys.profile(userId);
+  return useMutation({
+    mutationFn: async (week: WeeklySchedule) => {
+      const current = queryClient.getQueryData<MasterProfile | null>(key);
+      if (!current) throw new Error('profile is not loaded');
+      await updateMasterWeek(userId, current.schedule, toStoredSchedule(week, '').days);
+    },
+    onMutate: async (week) => {
+      await queryClient.cancelQueries({ queryKey: key });
+      const previous = queryClient.getQueryData<MasterProfile | null>(key);
+      if (previous) {
+        const days = toStoredSchedule(week, '').days;
+        const schedule = { ...(previous.schedule as Record<string, unknown>), days };
+        queryClient.setQueryData(key, { ...previous, schedule });
+      }
+      return { previous };
+    },
+    onError: (_error, _week, context) => queryClient.setQueryData(key, context?.previous),
     onSettled: () => queryClient.invalidateQueries({ queryKey: key }),
   });
 }

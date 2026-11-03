@@ -50,7 +50,7 @@ export default defineEventHandler(async (event) => {
     supabase
       .from('master_settings')
       .select(
-        'online_booking_enabled, booking_min_notice_minutes, booking_buffer_minutes, calendar_slot_step_minutes, vacation_from, vacation_until, language, time_format, cancel_window_hours'
+        'online_booking_enabled, booking_min_notice_minutes, booking_buffer_minutes, calendar_slot_step_minutes, language, time_format, cancel_window_hours'
       )
       .eq('user_id', masterUserId)
       .maybeSingle(),

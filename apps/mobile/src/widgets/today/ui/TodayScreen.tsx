@@ -186,7 +186,9 @@ export function TodayScreen() {
           onOpenNote={openNote}
           onMenu={(visit, anchor, range) => setMenu({ kind: 'schedule', visit, anchor, range })}
           onOpenBlock={(block) =>
-            router.push({ pathname: '/time-block/[blockId]', params: { blockId: block.id } })
+            block.kind === 'personal'
+              ? router.push({ pathname: '/time-block/[blockId]', params: { blockId: block.id } })
+              : router.push({ pathname: '/hours/off', params: { id: block.id } })
           }
           onBlockMenu={(block, anchor, look) => setMenu({ kind: 'block', block, anchor, look })}
         />

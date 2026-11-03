@@ -11,11 +11,13 @@ import { Icon } from '@/shared/ui/Icon';
 import { Text } from '@/shared/ui/Text';
 
 export interface MonthGridProps {
-  /** Selected range; for a single day both ends are the same key. */
+  /** Selected range; for a single day both ends are the same key, empty for none yet. */
   start: string;
   end: string;
   /** The last day that can be picked ("yyyy-MM-dd"). */
   maxKey?: string;
+  /** The first day that can be picked ("yyyy-MM-dd"). */
+  minKey?: string;
   onPick: (dayKey: string) => void;
   /** "Октябрь", January first. */
   monthNames: readonly string[];
@@ -29,6 +31,7 @@ export function MonthGrid({
   start,
   end,
   maxKey,
+  minKey,
   onPick,
   monthNames,
   weekdayNames,
@@ -36,7 +39,7 @@ export function MonthGrid({
   nextLabel,
 }: MonthGridProps) {
   const [cursor, setCursor] = useState(() =>
-    DateTime.fromISO(end, { zone: 'utc' }).startOf('month'),
+    (end ? DateTime.fromISO(end, { zone: 'utc' }) : DateTime.utc()).startOf('month'),
   );
   const lead = cursor.weekday - 1;
   const cells = [
@@ -91,7 +94,7 @@ export function MonthGrid({
               const isEnd = key === start || key === end;
               const between = key > start && key < end;
               const hasRange = start !== end;
-              const disabled = !!maxKey && key > maxKey;
+              const disabled = (!!maxKey && key > maxKey) || (!!minKey && key < minKey);
               return (
                 <Pressable
                   key={key}

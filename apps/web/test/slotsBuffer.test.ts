@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildFreeSlots } from '../server/utils/slots'
+import { buildFreeSlots, zonedTimeToUtc } from '../server/utils/slots'
 
 const scheduleDay = { enabled: true, start: '10:00', end: '13:00', breaks: [] }
 const base = {
@@ -30,7 +30,7 @@ describe('buildFreeSlots with breaks after services', () => {
       bufferMinutes: 30,
       serviceDuration: 30
     })
-    expect(times(slots)).toEqual(['10:00', '10:30', '12:00', '12:30'])
+    expect(times(slots)).toEqual(['10:00', '12:00', '12:30'])
   })
 
   it('keeps the new visit’s own break clear of the next visit', () => {
@@ -68,5 +68,68 @@ describe('buildFreeSlots with breaks after services', () => {
       visitBufferMinutes: 30
     })
     expect(times(slots)).toEqual(['10:00', '10:30', '11:30', '12:00', '12:30'])
+  })
+})
+
+describe('buildFreeSlots agrees with the booking functions', () => {
+  it('counts steps from the start of the day after a break off the grid', () => {
+    const slots = buildFreeSlots({
+      ...base,
+      scheduleDay: { ...scheduleDay, breaks: [{ start: '11:00', end: '11:10' }] },
+      appointments: [],
+      serviceDuration: 30
+    })
+    expect(times(slots)).toEqual(['10:00', '10:30', '11:30', '12:00', '12:30'])
+  })
+
+  it('keeps the master’s buffer before the next visit', () => {
+    const slots = buildFreeSlots({
+      ...base,
+      appointments: [visit],
+      bufferMinutes: 30,
+      serviceDuration: 30
+    })
+    expect(times(slots)).toEqual(['10:00', '12:00', '12:30'])
+  })
+
+  it('keeps a visit that began yesterday busy', () => {
+    const slots = buildFreeSlots({
+      ...base,
+      appointments: [{ start_at: '2030-06-02T23:00:00.000Z', duration: 12 * 60 }],
+      serviceDuration: 30
+    })
+    expect(times(slots)).toEqual(['11:00', '11:30', '12:00', '12:30'])
+  })
+})
+
+describe('zonedTimeToUtc on the day the clocks change', () => {
+  it('reads the offset after the autumn change', () => {
+    expect(zonedTimeToUtc('2026-11-01', '08:00', 'America/Vancouver').toISOString()).toBe(
+      '2026-11-01T16:00:00.000Z'
+    )
+  })
+
+  it('reads the offset after the spring change', () => {
+    expect(zonedTimeToUtc('2026-03-08', '08:00', 'America/Vancouver').toISOString()).toBe(
+      '2026-03-08T15:00:00.000Z'
+    )
+  })
+
+  it('moves a skipped time forward, as AT TIME ZONE does', () => {
+    expect(zonedTimeToUtc('2026-03-08', '02:30', 'America/Vancouver').toISOString()).toBe(
+      '2026-03-08T10:30:00.000Z'
+    )
+  })
+
+  it('takes the first occurrence of a repeated time', () => {
+    expect(zonedTimeToUtc('2026-11-01', '01:30', 'America/Vancouver').toISOString()).toBe(
+      '2026-11-01T08:30:00.000Z'
+    )
+  })
+
+  it('leaves a zone without changes alone', () => {
+    expect(zonedTimeToUtc('2026-06-03', '10:00', 'Asia/Bishkek').toISOString()).toBe(
+      '2026-06-03T04:00:00.000Z'
+    )
   })
 })

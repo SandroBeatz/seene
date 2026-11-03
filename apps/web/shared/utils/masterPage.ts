@@ -114,14 +114,6 @@ export function activeVacationUntil(
   return from <= today && today <= until ? until : null
 }
 
-/** Whether a day (YYYY-MM-DD) is inside the master's vacation. */
-export function isVacationDay(
-  vacation: { vacation_from: string | null; vacation_until: string | null },
-  date: string
-): boolean {
-  return activeVacationUntil(vacation, date) !== null
-}
-
 /** Whole days from `today` to `date`, both YYYY-MM-DD. */
 export function daysBetween(today: string, date: string): number {
   return Math.round(

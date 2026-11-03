@@ -80,7 +80,9 @@ const TIME_INSET = 52;
 const RIGHT_EDGE = 16;
 
 const openBlock = (block: TimeBlock) =>
-  router.push({ pathname: '/time-block/[blockId]', params: { blockId: block.id } });
+  block.kind === 'personal'
+    ? router.push({ pathname: '/time-block/[blockId]', params: { blockId: block.id } })
+    : router.push({ pathname: '/hours/off', params: { id: block.id } });
 const newAppointment = (dayKey: string, start?: string) =>
   router.push({ pathname: '/quick-create', params: { dayKey, start } });
 

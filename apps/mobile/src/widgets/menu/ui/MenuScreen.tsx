@@ -60,6 +60,11 @@ export function MenuScreen({ moneySection }: MenuScreenProps) {
             value={servicesCount === undefined ? undefined : String(servicesCount)}
             onPress={() => router.push('/settings/services')}
           />
+          <MenuRow
+            icon="clock"
+            title={t('menuHome.hours.title')}
+            onPress={() => router.push('/settings/hours')}
+          />
         </MenuGroup>
 
         {moneySection}

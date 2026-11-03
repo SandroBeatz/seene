@@ -16,6 +16,7 @@ export {
   useUpdateMasterSettings,
   useUploadMasterImage,
   useUpdateMasterTimezone,
+  useUpdateMasterWeek,
   useUsernameAvailability,
   isUsernameSyntaxValid,
   MIN_USERNAME_LENGTH,

@@ -33,6 +33,8 @@ export {
   type DurationPickerProps,
   TimePicker,
   type TimePickerProps,
+  TimeWheel,
+  type TimeWheelProps,
 } from './TimePicker';
 export { Logo, LogoMark, type LogoProps, type LogoTone } from './Logo';
 export { ScreenTitle, type ScreenTitleProps } from './ScreenTitle';

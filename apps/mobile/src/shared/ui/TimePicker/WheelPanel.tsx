@@ -9,6 +9,7 @@ import { Host, HStack, Picker, Text as SwiftText } from '@expo/ui/swift-ui';
 import { clipped, frame, labelsHidden, pickerStyle, tag } from '@expo/ui/swift-ui/modifiers';
 import Animated, { FadeIn, FadeOut, SlideInDown, SlideOutDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useThemeStore } from '@/shared/theme/theme.store';
 import { Text } from '@/shared/ui/Text';
 
 export interface WheelColumn {
@@ -83,6 +84,8 @@ function Panel({
   separator,
 }: WheelPanelProps) {
   const insets = useSafeAreaInsets();
+  // The wheels follow the system unless told otherwise; the app's theme can differ from it.
+  const mode = useThemeStore((state) => state.mode);
   const unit = (text?: string) =>
     text ? (
       <SwiftText modifiers={[frame({ width: UNIT_WIDTH, alignment: 'leading' })]}>{text}</SwiftText>
@@ -118,7 +121,7 @@ function Panel({
             </Text>
           </Pressable>
         </View>
-        <Host style={styles.wheels}>
+        <Host style={styles.wheels} colorScheme={mode === 'auto' ? undefined : mode}>
           <HStack spacing={0}>
             <Wheel column={left} />
             {unit(leftUnit)}

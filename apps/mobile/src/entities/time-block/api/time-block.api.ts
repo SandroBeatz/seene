@@ -22,6 +22,19 @@ export async function listTimeBlocksByRange(
   return data;
 }
 
+/** Days off and vacations not over yet, nearest first. */
+export async function listDaysOff(userId: string, fromIso: string): Promise<TimeBlock[]> {
+  const { data, error } = await supabase
+    .from('time_block')
+    .select('*')
+    .eq('user_id', userId)
+    .neq('kind', 'personal')
+    .gt('end_at', fromIso)
+    .order('start_at');
+  if (error) throw error;
+  return data;
+}
+
 export async function getTimeBlock(id: string): Promise<TimeBlock | null> {
   const { data, error } = await supabase.from('time_block').select('*').eq('id', id).maybeSingle();
   if (error) throw error;

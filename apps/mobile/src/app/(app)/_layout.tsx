@@ -90,6 +90,13 @@ export default function AppLayout() {
           name="(modals)/service-category"
           options={{ ...sheet, sheetAllowedDetents: [0.5] }}
         />
+        <Stack.Screen name="settings/hours" options={{ title: t('menuHome.hours.title') }} />
+        <Stack.Screen
+          name="(modals)/hours/day"
+          options={{ ...sheet, sheetAllowedDetents: [0.8] }}
+        />
+        <Stack.Screen name="(modals)/hours/off" options={sheet} />
+        <Stack.Screen name="(modals)/hours/warn" options={sheet} />
         <Stack.Screen name="settings/expenses" options={{ title: t('expenses.title') }} />
         <Stack.Screen name="(modals)/appointment/[appointmentId]/index" options={sheet} />
         <Stack.Screen name="(modals)/appointment/[appointmentId]/note" options={sheet} />
