@@ -1250,6 +1250,10 @@ export type Database = {
         }
         Returns: string
       }
+      set_service_products: {
+        Args: { p_products: Json; p_service_id: string }
+        Returns: undefined
+      }
       specialization_keys: { Args: never; Returns: string[] }
       update_sale_details: {
         Args: { p_amount: number; p_items: Json; p_sale_id: string }

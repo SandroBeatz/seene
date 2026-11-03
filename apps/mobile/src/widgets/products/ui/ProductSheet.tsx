@@ -7,9 +7,12 @@ import { Alert, Pressable, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import { useMasterSettingsQuery, useMoneyContext } from '@/entities/master';
 import {
+  linkedSummary,
+  parseQuantity,
   PRODUCT_CONTENT_UNITS,
   PRODUCT_TYPES,
   PRODUCT_UNITS,
+  QuantityStepper,
   useDeleteProductMutation,
   useProductsQuery,
   useSaveProductMutation,
@@ -34,16 +37,8 @@ import {
   Switch,
   Text,
 } from '@/shared/ui';
-import {
-  linkedSummary,
-  parseQuantity,
-  rebaseAmount,
-  stockDelta,
-  toPackages,
-  unitCost,
-} from '../lib/products';
+import { rebaseAmount, stockDelta, toPackages, unitCost } from '../lib/products';
 import { useProductLinks } from '../model/links.store';
-import { QuantityStepper } from './QuantityStepper';
 
 /** The design's threshold on a new product. */
 const DEFAULT_LOW_STOCK = 5;

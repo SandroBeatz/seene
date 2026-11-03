@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, TextInput, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { Text } from '@/shared/ui';
-import { stepQuantity } from '../lib/products';
+import { stepQuantity } from '../lib/quantity';
 
 export function QuantityStepper({
   value,

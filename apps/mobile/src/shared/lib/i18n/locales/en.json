@@ -1568,7 +1568,8 @@
       "pickerCancel": "Cancel",
       "pickerDone": "Done",
       "hoursUnit": "h",
-      "minutesUnit": "min"
+      "minutesUnit": "min",
+      "materials": "Materials · optional"
     },
     "hours": {
       "title": "Working hours",
@@ -1775,6 +1776,7 @@
       "sellFor": "Price per 1 {{unit}}",
       "packUnitCost": "≈ {{price}} per {{unit}}",
       "useOn": "Use on service",
+      "useMaterials": "Deduct materials",
       "useOnNone": "Don't deduct",
       "useOnHint": "When a visit is completed, stock goes down by this amount.",
       "perVisit": "Per visit",

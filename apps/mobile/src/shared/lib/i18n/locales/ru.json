@@ -1590,7 +1590,8 @@
       "pickerCancel": "Отмена",
       "pickerDone": "Готово",
       "hoursUnit": "ч",
-      "minutesUnit": "мин"
+      "minutesUnit": "мин",
+      "materials": "Материалы · необязательно"
     },
     "hours": {
       "title": "Рабочие часы",
@@ -1797,6 +1798,7 @@
       "sellFor": "Продажа за 1 {{unit}}",
       "packUnitCost": "≈ {{price}} за {{unit}}",
       "useOn": "Списывать с услуги",
+      "useMaterials": "Списывать материалы",
       "useOnNone": "Не списывать",
       "useOnHint": "После завершения визита остаток уменьшится на указанное количество.",
       "perVisit": "За один визит",

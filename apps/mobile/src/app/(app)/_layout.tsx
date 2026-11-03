@@ -86,6 +86,7 @@ export default function AppLayout() {
         />
         <Stack.Screen name="(modals)/service/new" options={sheet} />
         <Stack.Screen name="(modals)/service/[serviceId]" options={sheet} />
+        <Stack.Screen name="(modals)/service/products" options={sheet} />
         <Stack.Screen
           name="(modals)/service-category"
           options={{ ...sheet, sheetAllowedDetents: [0.5] }}

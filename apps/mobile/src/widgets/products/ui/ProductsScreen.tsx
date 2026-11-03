@@ -169,7 +169,7 @@ export function ProductsScreen() {
           <SkeletonList rows={5} />
         ) : all.length === 0 ? (
           <EmptyState
-            icon="services"
+            icon="tube"
             title={t('menuHome.products.emptyTitle')}
             description={t('menuHome.products.emptyText')}
             actionLabel={t('menuHome.products.add')}

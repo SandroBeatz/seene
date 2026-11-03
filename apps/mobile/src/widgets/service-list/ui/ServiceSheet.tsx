@@ -3,11 +3,19 @@
  * service. A new category is typed right here, so the unsaved form stays on screen.
  */
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import { useMasterProfileQuery, useMoneyContext } from '@/entities/master';
+import {
+  linkedSummary,
+  linksOfService,
+  parseQuantity,
+  sameLinks,
+  useProductsQuery,
+  useSetServiceProductsMutation,
+} from '@/entities/product';
 import {
   useArchiveServiceMutation,
   useCreateServiceMutation,
@@ -46,6 +54,7 @@ import {
   parsePrice,
 } from '../lib/draft';
 import { directionOrder } from '../lib/grouping';
+import { useServiceProductLinks } from '../model/links.store';
 
 const PRESETS: readonly number[] = DURATION_PRESETS;
 
@@ -102,6 +111,8 @@ function ServiceForm({
   const update = useUpdateServiceMutation(userId);
   const archive = useArchiveServiceMutation(userId);
   const createCategory = useCreateServiceCategoryMutation(userId);
+  const products = useProductsQuery(userId);
+  const saveLinks = useSetServiceProductsMutation(userId);
 
   const [name, setName] = useState(service?.name ?? '');
   const [specialization, setSpecialization] = useState<string | null>(
@@ -120,10 +131,25 @@ function ServiceForm({
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [categoryName, setCategoryName] = useState('');
 
+  const links = useServiceProductLinks((s) => s.links);
+  const beginLinks = useServiceProductLinks((s) => s.begin);
+  // What was saved, once known. Without it a service saves as usual and its links stay untouched:
+  // a master who doesn't count materials must not depend on them loading.
+  const [savedLinks, setSavedLinks] = useState<Record<string, string> | null>(service ? null : {});
+  if (!savedLinks && service && products.data) {
+    setSavedLinks(linksOfService(products.data, service.id));
+  }
+  useEffect(() => {
+    if (savedLinks) beginLinks(savedLinks);
+  }, [savedLinks, beginLinks]);
+  // A new service whose links failed to save exists already: trying again must not add another.
+  const createdId = useRef<string | null>(null);
+
   const failed = () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage'));
   const parsedPrice = parsePrice(price);
-  const canSave = name.trim().length > 0 && parsedPrice !== null && duration > 0;
-  const saving = create.isPending || update.isPending;
+  const linksValid = Object.values(links).every((quantity) => (parseQuantity(quantity) ?? 0) > 0);
+  const canSave = name.trim().length > 0 && parsedPrice !== null && duration > 0 && linksValid;
+  const saving = create.isPending || update.isPending || saveLinks.isPending;
   const custom = !PRESETS.includes(duration);
 
   const directions = directionOrder(mine, [{ specialization }]);
@@ -173,9 +199,27 @@ function ServiceForm({
       description: description.trim() || null,
       color,
     };
-    const options = { onSuccess: () => router.back(), onError: failed };
-    if (service) update.mutate({ id: service.id, ...dto }, options);
-    else create.mutate({ ...dto, sort_order: nextSortOrder(all) }, options);
+    const existingId = service?.id ?? createdId.current;
+    void (async () => {
+      try {
+        const saved = existingId
+          ? await update.mutateAsync({ id: existingId, ...dto })
+          : await create.mutateAsync({ ...dto, sort_order: nextSortOrder(all) });
+        createdId.current = saved.id;
+        if (savedLinks && !sameLinks(savedLinks, links)) {
+          await saveLinks.mutateAsync({
+            serviceId: saved.id,
+            links: Object.entries(links).map(([product_id, quantity]) => ({
+              product_id,
+              quantity: parseQuantity(quantity) ?? 1,
+            })),
+          });
+        }
+        router.back();
+      } catch {
+        failed();
+      }
+    })();
   };
 
   const confirmDelete = () =>
@@ -189,6 +233,10 @@ function ServiceForm({
           archive.mutate(service.id, { onSuccess: () => router.back(), onError: failed }),
       },
     ]);
+
+  const linkedNames = (products.data ?? [])
+    .filter((product) => links[product.id] !== undefined)
+    .map((product) => product.name);
 
   const bufferLabel = (minutes: number) =>
     minutes ? formatDurationLabel(minutes, t) : t('menuHome.servicesPage.bufferNone');
@@ -403,6 +451,21 @@ function ServiceForm({
             multiline
           />
         </View>
+
+        <FieldLabel text={t('menuHome.servicesPage.materials')} />
+        <GroupedCard variant="menu">
+          <ListItem
+            size="menu"
+            inset={false}
+            title={t('menuHome.products.useMaterials')}
+            trailingText={
+              savedLinks
+                ? linkedSummary(linkedNames) || t('menuHome.products.useOnNone')
+                : undefined
+            }
+            onPress={savedLinks ? () => router.push('/service/products') : undefined}
+          />
+        </GroupedCard>
       </FormScreen>
 
       <DurationPicker

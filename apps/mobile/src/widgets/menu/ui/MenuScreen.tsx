@@ -60,13 +60,13 @@ export function MenuScreen({ moneySection }: MenuScreenProps) {
 
         <MenuGroup label={t('menuHome.work')}>
           <MenuRow
-            icon="tag"
+            icon="services"
             title={t('menuHome.services')}
             value={servicesCount === undefined ? undefined : String(servicesCount)}
             onPress={() => router.push('/settings/services')}
           />
           <MenuRow
-            icon="services"
+            icon="tube"
             title={t('menuHome.products.title')}
             value={products.data ? String(products.data.length) : undefined}
             onPress={() => router.push('/settings/products')}

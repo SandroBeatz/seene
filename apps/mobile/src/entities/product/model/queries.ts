@@ -3,7 +3,7 @@
  * and `['analytics', userId]`: this entity can't import those.
  */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { deleteProduct, getProducts, saveProduct } from '../api/product.api';
+import { deleteProduct, getProducts, saveProduct, setServiceProducts } from '../api/product.api';
 import type { SaveProductDto } from './types';
 
 export const productKeys = {
@@ -30,6 +30,15 @@ export function useSaveProductMutation(userId: string) {
         qc.invalidateQueries({ queryKey: ['expenses', userId] }),
         qc.invalidateQueries({ queryKey: ['analytics', userId] }),
       ]),
+  });
+}
+
+export function useSetServiceProductsMutation(userId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: { serviceId: string; links: { product_id: string; quantity: number }[] }) =>
+      setServiceProducts(input.serviceId, input.links),
+    onSettled: () => qc.invalidateQueries({ queryKey: productKeys.all(userId) }),
   });
 }
 

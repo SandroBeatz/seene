@@ -32,6 +32,17 @@ export async function saveProduct(dto: SaveProductDto): Promise<string> {
   return data;
 }
 
+export async function setServiceProducts(
+  serviceId: string,
+  links: { product_id: string; quantity: number }[],
+): Promise<void> {
+  const { error } = await supabase.rpc('set_service_products', {
+    p_service_id: serviceId,
+    p_products: links,
+  });
+  if (error) throw error;
+}
+
 export async function deleteProduct(id: string): Promise<void> {
   const { error } = await supabase.from('product').delete().eq('id', id);
   if (error) throw error;

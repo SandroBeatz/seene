@@ -1575,7 +1575,8 @@
       "pickerCancel": "Annuler",
       "pickerDone": "OK",
       "hoursUnit": "h",
-      "minutesUnit": "min"
+      "minutesUnit": "min",
+      "materials": "Matériel · facultatif"
     },
     "hours": {
       "title": "Horaires de travail",
@@ -1782,6 +1783,7 @@
       "sellFor": "Vente pour 1 {{unit}}",
       "packUnitCost": "≈ {{price}} par {{unit}}",
       "useOn": "Déduire de la prestation",
+      "useMaterials": "Déduire le matériel",
       "useOnNone": "Ne pas déduire",
       "useOnHint": "À la fin d’un rendez-vous, le stock baisse de cette quantité.",
       "perVisit": "Par rendez-vous",
