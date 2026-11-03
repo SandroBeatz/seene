@@ -3,6 +3,7 @@ import {
   activeVacationUntil,
   daysBetween,
   instagramLink,
+  masterCoverUrl,
   mergeWorkingDays,
   roundVisits,
   summarizeWorkingHours,
@@ -117,5 +118,21 @@ describe('dates', () => {
     const now = Date.UTC(2026, 9, 23, 20, 0)
     expect(todayIn('Asia/Bishkek', now)).toBe('2026-10-24')
     expect(todayIn('America/Toronto', now)).toBe('2026-10-23')
+  })
+})
+
+describe('masterCoverUrl', () => {
+  const photo = { photo_url: 'first.jpg' }
+
+  it('prefers the cover the master chose', () => {
+    expect(masterCoverUrl({ profile: { cover_url: 'cover.jpg' }, portfolio: [photo] })).toBe('cover.jpg')
+  })
+
+  it('falls back to the first portfolio photo', () => {
+    expect(masterCoverUrl({ profile: { cover_url: null }, portfolio: [photo] })).toBe('first.jpg')
+  })
+
+  it('is null without either', () => {
+    expect(masterCoverUrl({ profile: { cover_url: null }, portfolio: [] })).toBeNull()
   })
 })

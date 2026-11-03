@@ -102,10 +102,31 @@ export type MasterProfile = Pick<
   | 'instagram'
   | 'phone'
   | 'address'
+  | 'house_number'
   | 'city'
   | 'country'
   | 'specializations'
 >;
+
+/** What the master changes on the profile page. Photos go through `uploadMasterImage`. */
+export type MasterProfilePatch = Partial<
+  Pick<
+    ProfileRow,
+    | 'first_name'
+    | 'last_name'
+    | 'username'
+    | 'bio'
+    | 'specializations'
+    | 'whatsapp'
+    | 'telegram'
+    | 'instagram'
+    | 'city'
+    | 'address'
+    | 'house_number'
+  >
+>;
+
+export type MasterImageKind = 'avatar' | 'cover';
 
 /** Display settings (`getMasterSettings`). */
 export type MasterSettings = Pick<

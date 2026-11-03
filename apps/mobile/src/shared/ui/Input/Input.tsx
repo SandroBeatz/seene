@@ -14,6 +14,8 @@ import { MAX_FONT_SCALE } from '@/shared/theme/tokens';
 import { Text } from '@/shared/ui/Text';
 
 export type InputSize = 'md' | 'lg';
+/** outlined: a bordered field. filled: grey, no border, 48pt (the menu's forms). */
+export type InputVariant = 'outlined' | 'filled';
 
 export interface InputProps extends Omit<TextInputProps, 'style'> {
   label?: string;
@@ -23,6 +25,7 @@ export interface InputProps extends Omit<TextInputProps, 'style'> {
   helpText?: string;
   /** md: 16pt text, 14pt inset. lg: 17pt text, 16pt inset (single-field screens). */
   size?: InputSize;
+  variant?: InputVariant;
   prefix?: string;
   suffix?: string;
   /** Bold value text (username, price). */
@@ -42,6 +45,7 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
     error,
     helpText,
     size = 'md',
+    variant = 'outlined',
     prefix,
     suffix,
     strong = false,
@@ -59,8 +63,10 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
   const { theme } = useUnistyles();
   const [focused, setFocused] = useState(false);
   const state = error ? 'error' : focused && !inactive ? 'focused' : 'idle';
+  const filled = variant === 'filled';
   styles.useVariants({
     size,
+    variant,
     state,
     strong,
     multiline: !!multiline,
@@ -81,7 +87,10 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
     <View style={styles.wrapper}>
       {label ? (
         <View style={styles.labelRow}>
-          <Text variant="footnoteStrong" color="secondary">
+          <Text
+            variant={filled ? 'captionMedium' : 'footnoteStrong'}
+            color="secondary"
+            style={filled ? styles.filledLabel : undefined}>
             {label}
           </Text>
           {labelHint ? (
@@ -93,7 +102,9 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
       ) : null}
       <View style={styles.field}>
         {prefix ? (
-          <Text variant={size === 'lg' ? 'bodyLarge' : 'callout'} color="secondary">
+          <Text
+            variant={filled ? 'body' : size === 'lg' ? 'bodyLarge' : 'callout'}
+            color={filled ? 'tertiary' : 'secondary'}>
             {prefix}
           </Text>
         ) : null}
@@ -133,7 +144,12 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
 });
 
 const styles = StyleSheet.create((theme) => ({
-  wrapper: { gap: theme.space[2], alignSelf: 'stretch' },
+  wrapper: {
+    gap: theme.space[2],
+    alignSelf: 'stretch',
+    variants: { variant: { outlined: {}, filled: { gap: theme.space[1.5] } } },
+  },
+  filledLabel: { paddingLeft: theme.space[1] },
   labelRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' },
   field: {
     flexDirection: 'row',
@@ -164,7 +180,29 @@ const styles = StyleSheet.create((theme) => ({
         false: {},
       },
       strong: { true: {}, false: {} },
+      variant: { outlined: {}, filled: {} },
     },
+    compoundVariants: [
+      {
+        variant: 'filled',
+        state: 'idle',
+        styles: { borderColor: 'transparent' },
+      },
+      {
+        variant: 'filled',
+        styles: { backgroundColor: theme.colors.bg.surface, borderRadius: theme.radius.field },
+      },
+      {
+        variant: 'filled',
+        multiline: false,
+        styles: { height: theme.sizing.control.lg, gap: 2 },
+      },
+      {
+        variant: 'filled',
+        multiline: true,
+        styles: { paddingVertical: theme.space[3] },
+      },
+    ],
   },
   input: {
     flex: 1,
@@ -197,6 +235,22 @@ const styles = StyleSheet.create((theme) => ({
         },
         false: { height: '100%' },
       },
+      variant: { outlined: {}, filled: {} },
     },
+    compoundVariants: [
+      {
+        variant: 'filled',
+        multiline: false,
+        styles: {
+          fontFamily: theme.typography.body.fontFamily,
+          fontSize: theme.typography.body.fontSize,
+        },
+      },
+      {
+        variant: 'filled',
+        multiline: true,
+        styles: { minHeight: theme.typography.body.lineHeight * 3 },
+      },
+    ],
   },
 }));

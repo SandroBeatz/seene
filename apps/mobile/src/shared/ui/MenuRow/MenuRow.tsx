@@ -30,7 +30,8 @@ export function MenuGroup({ label, children }: MenuGroupProps) {
 }
 
 export interface MenuRowProps {
-  icon: IconName;
+  /** The profile page's rows have none. */
+  icon?: IconName;
   title: string;
   value?: string;
   /** Without it the row only shows its value: no chevron. */
@@ -43,9 +44,11 @@ export function MenuRow({ icon, title, value, onPress }: MenuRowProps) {
       size="menu"
       inset={false}
       left={
-        <View style={styles.icon}>
-          <Icon name={icon} size="md" weight="light" />
-        </View>
+        icon ? (
+          <View style={styles.icon}>
+            <Icon name={icon} size="md" weight="light" />
+          </View>
+        ) : undefined
       }
       title={title}
       trailingText={value}

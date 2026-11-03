@@ -61,6 +61,14 @@
       "react-native-edge-to-edge",
       "@sentry/react-native",
       [
+        "expo-image-picker",
+        {
+          "photosPermission": "Seene uses your photos for your profile picture and page cover.",
+          "cameraPermission": false,
+          "microphonePermission": false
+        }
+      ],
+      [
         "expo-contacts",
         {
           "contactsPermission": "Seene shows your contacts so you can add clients from your phone book."

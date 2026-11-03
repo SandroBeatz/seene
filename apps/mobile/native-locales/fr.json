@@ -1,3 +1,4 @@
 {
-  "NSContactsUsageDescription": "Seene affiche vos contacts pour que vous puissiez ajouter des clients depuis votre répertoire."
+  "NSContactsUsageDescription": "Seene affiche vos contacts pour que vous puissiez ajouter des clients depuis votre répertoire.",
+  "NSPhotoLibraryUsageDescription": "Seene utilise vos photos pour votre photo de profil et la couverture de votre page."
 }

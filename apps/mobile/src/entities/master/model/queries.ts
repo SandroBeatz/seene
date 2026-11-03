@@ -8,16 +8,27 @@ import {
   checkUsernameAvailable,
   getMasterProfile,
   getMasterSettings,
+  getPortfolioCount,
+  removeMasterCover,
+  updateMasterProfile,
   updateMasterSettings,
   updateMasterTimezone,
+  uploadMasterImage,
 } from '../api/master.api';
-import type { MasterProfile, MasterSettings, MasterSettingsPatch } from './types';
+import type {
+  MasterImageKind,
+  MasterProfile,
+  MasterProfilePatch,
+  MasterSettings,
+  MasterSettingsPatch,
+} from './types';
 
 export const masterKeys = {
   all: ['master'] as const,
   usernameAvailable: (username: string) => [...masterKeys.all, 'username', username] as const,
   profile: (userId: string) => [...masterKeys.all, 'profile', userId] as const,
   settings: (userId: string) => [...masterKeys.all, 'settings', userId] as const,
+  portfolioCount: (userId: string) => [...masterKeys.all, 'portfolio-count', userId] as const,
 };
 
 export function useMasterProfileQuery(userId: string) {
@@ -74,6 +85,46 @@ export function useUpdateMasterTimezone(userId: string) {
     },
     onError: (_error, _timezone, context) => queryClient.setQueryData(key, context?.previous),
     onSettled: () => queryClient.invalidateQueries({ queryKey: key }),
+  });
+}
+
+/** Saves profile fields. Not optimistic: the sheet waits, then closes on the saved value. */
+export function useUpdateMasterProfile(userId: string) {
+  const queryClient = useQueryClient();
+  const key = masterKeys.profile(userId);
+  return useMutation({
+    mutationFn: (patch: MasterProfilePatch) => updateMasterProfile(userId, patch),
+    onSuccess: async (_data, patch) => {
+      queryClient.setQueryData<MasterProfile | null>(key, (current) =>
+        current ? { ...current, ...patch } : current,
+      );
+      await queryClient.invalidateQueries({ queryKey: key });
+    },
+  });
+}
+
+export function useUploadMasterImage(userId: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (input: { kind: MasterImageKind; uri: string; mimeType: string }) =>
+      uploadMasterImage(userId, input.kind, input),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: masterKeys.profile(userId) }),
+  });
+}
+
+export function useRemoveMasterCover(userId: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => removeMasterCover(userId),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: masterKeys.profile(userId) }),
+  });
+}
+
+export function useMasterPortfolioCount(userId: string) {
+  return useQuery({
+    queryKey: masterKeys.portfolioCount(userId),
+    queryFn: () => getPortfolioCount(userId),
+    enabled: !!userId,
   });
 }
 

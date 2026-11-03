@@ -1,9 +1,9 @@
 /**
- * Live status of the username field (step 1): syntax first, then a debounced
+ * Live status of the username field (onboarding, profile): syntax first, then a debounced
  * availability RPC once typing settles.
  */
 import { useEffect, useState } from 'react';
-import { isUsernameSyntaxValid, useUsernameAvailability } from '@/entities/master';
+import { isUsernameSyntaxValid, useUsernameAvailability } from './queries';
 
 export type UsernameStatus = 'empty' | 'invalid' | 'checking' | 'free' | 'taken' | 'error';
 

@@ -236,6 +236,15 @@ export const GLYPHS = {
       <Path d="M21 16l-5-5-8 8" />
     </>,
   ),
+  gallery: stroke(
+    'regular',
+    <>
+      <Rect x={7} y={3} width={14} height={14} rx={3} />
+      <Circle cx={11.5} cy={7.5} r={1.3} />
+      <Path d="M21 13l-3.5-3.5L10 17" />
+      <Path d="M4 7.5V17a4 4 0 0 0 4 4h9.5" />
+    </>,
+  ),
   text: stroke('regular', <Path d="M5 6h14M5 11h14M5 16h9" />),
   mapPin: stroke(
     'regular',
