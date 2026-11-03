@@ -673,6 +673,7 @@ export type Database = {
       product: {
         Row: {
           buy_price: number | null
+          content_unit: string | null
           created_at: string
           expense_on_restock: boolean
           id: string
@@ -688,6 +689,7 @@ export type Database = {
         }
         Insert: {
           buy_price?: number | null
+          content_unit?: string | null
           created_at?: string
           expense_on_restock?: boolean
           id?: string
@@ -703,6 +705,7 @@ export type Database = {
         }
         Update: {
           buy_price?: number | null
+          content_unit?: string | null
           created_at?: string
           expense_on_restock?: boolean
           id?: string
@@ -1232,6 +1235,7 @@ export type Database = {
       save_product: {
         Args: {
           p_buy_price?: number
+          p_content_unit?: string
           p_expense_on_restock: boolean
           p_id?: string
           p_low_stock: number

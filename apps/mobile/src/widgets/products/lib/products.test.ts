@@ -1,11 +1,12 @@
 import { describe, expect, it } from '@jest/globals';
 import {
   filterProducts,
-  isMeasuredUnit,
   linkedSummary,
   parseQuantity,
+  rebaseAmount,
   stepQuantity,
   stockDelta,
+  toPackages,
   unitCost,
 } from './products';
 
@@ -25,9 +26,32 @@ describe('unitCost', () => {
   });
 });
 
-describe('isMeasuredUnit', () => {
-  it('is true only for amounts bought by the package', () => {
-    expect(['pcs', 'bottle', 'pack', 'ml', 'g'].filter(isMeasuredUnit)).toEqual(['ml', 'g']);
+describe('toPackages', () => {
+  it('shows an amount as packages', () => {
+    expect(toPackages(48, 10)).toBe(4.8);
+    expect(toPackages(5, 1)).toBe(5);
+  });
+});
+
+describe('rebaseAmount', () => {
+  const counted = { measured: false, packSize: 1 };
+  const bottle = { measured: true, packSize: 10 };
+
+  it('keeps the number while the meaning stays', () => {
+    expect(rebaseAmount(5, counted, null)).toBe(5);
+    expect(rebaseAmount(48, bottle, 10)).toBe(48);
+  });
+
+  it('keeps the amount when only the size is corrected', () => {
+    expect(rebaseAmount(50, bottle, 20)).toBe(50);
+  });
+
+  it('turns a count into an amount when the content is added', () => {
+    expect(rebaseAmount(5, counted, 10)).toBe(50);
+  });
+
+  it('turns an amount back into a count when the content is removed', () => {
+    expect(rebaseAmount(48, bottle, null)).toBe(4.8);
   });
 });
 

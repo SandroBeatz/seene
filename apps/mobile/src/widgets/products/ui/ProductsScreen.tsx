@@ -26,7 +26,7 @@ import {
   SkeletonList,
   Text,
 } from '@/shared/ui';
-import { filterProducts, isMeasuredUnit, type TypeFilter } from '../lib/products';
+import { filterProducts, toPackages, type TypeFilter } from '../lib/products';
 
 const openNew = () => router.push('/product/new');
 
@@ -86,7 +86,8 @@ export function ProductsScreen() {
   const money = (value: number) =>
     formatAmount(value, { currency: settings.data?.currency ?? 'EUR', locale });
   const unit = (product: Product) => t(`menuHome.products.units.${product.unit}`);
-  const stockText = (product: Product) => `${quantity(product.stock)} ${unit(product)}`;
+  const stockText = (product: Product) =>
+    `${quantity(toPackages(product.stock, product.pack_size))} ${unit(product)}`;
 
   const subtitle = (product: Product) => {
     const price =
@@ -94,12 +95,7 @@ export function ProductsScreen() {
         ? product.sell_price !== null &&
           t('menuHome.products.priceSell', { price: money(product.sell_price) })
         : product.buy_price !== null &&
-          (isMeasuredUnit(product.unit)
-            ? t('menuHome.products.priceBuyPack', {
-                price: money(product.buy_price),
-                pack: `${quantity(product.pack_size)} ${unit(product)}`,
-              })
-            : t('menuHome.products.priceBuy', { price: money(product.buy_price) }));
+          t('menuHome.products.priceBuy', { price: money(product.buy_price) });
     const stock = t('menuHome.products.stockOf', { stock: stockText(product) });
     return price ? `${stock} · ${price}` : stock;
   };
