@@ -139,7 +139,8 @@ type BookingSettingsColumn =
   | 'cancel_window_hours'
   | 'allow_client_reschedule'
   | 'booking_show_prices'
-  | 'booking_allow_comment';
+  | 'booking_allow_comment'
+  | 'show_portfolio';
 
 export type MasterSettings = Pick<
   SettingsRow,

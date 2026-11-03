@@ -11,7 +11,6 @@ import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import {
   masterPageLabel,
   normalizeUsernameInput,
-  useMasterPortfolioCount,
   useMasterProfileQuery,
   useRemoveMasterCover,
   useUpdateMasterProfile,
@@ -19,6 +18,7 @@ import {
   useUsernameStatus,
   type MasterProfile,
 } from '@/entities/master';
+import { usePortfolioQuery } from '@/entities/portfolio';
 import { useUserId } from '@/entities/session';
 import { UsernameStatusLine } from '@/features/onboarding';
 import { normalizeError } from '@/shared/api/errors';
@@ -68,7 +68,7 @@ function ProfileForm({ profile, userId }: { profile: MasterProfile; userId: stri
   const update = useUpdateMasterProfile(userId);
   const upload = useUploadMasterImage(userId);
   const removeCover = useRemoveMasterCover(userId);
-  const portfolio = useMasterPortfolioCount(userId);
+  const portfolio = usePortfolioQuery(userId);
   const checked = useUsernameStatus(username);
 
   const linkChanged = username !== profile.username;
@@ -299,11 +299,11 @@ function ProfileForm({ profile, userId }: { profile: MasterProfile; userId: stri
             }
             onPress={editCover}
           />
-          {/* Opens the portfolio once that page exists (phase 7). */}
           <MenuRow
             icon="gallery"
             title={t('menuHome.profile.portfolio')}
-            value={t('menuHome.profile.portfolioCount', { count: portfolio.data ?? 0 })}
+            value={t('menuHome.profile.portfolioCount', { count: portfolio.data?.length ?? 0 })}
+            onPress={() => router.push('/settings/portfolio')}
           />
         </MenuGroup>
       </FormScreen>

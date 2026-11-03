@@ -11,6 +11,7 @@ import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { useMasterProfileQuery, useMasterSettingsQuery } from '@/entities/master';
+import { usePortfolioQuery } from '@/entities/portfolio';
 import { useServicesQuery } from '@/entities/service';
 import { useUserId } from '@/entities/session';
 import { appVersionLabel } from '@/shared/lib/app-version';
@@ -35,6 +36,7 @@ export function MenuScreen({ moneySection }: MenuScreenProps) {
   const profile = useMasterProfileQuery(userId);
   const services = useServicesQuery(userId);
   const settings = useMasterSettingsQuery(userId);
+  const portfolio = usePortfolioQuery(userId);
   const servicesCount = services.data?.filter((service) => service.is_active).length;
 
   return (
@@ -60,6 +62,12 @@ export function MenuScreen({ moneySection }: MenuScreenProps) {
             title={t('menuHome.services')}
             value={servicesCount === undefined ? undefined : String(servicesCount)}
             onPress={() => router.push('/settings/services')}
+          />
+          <MenuRow
+            icon="gallery"
+            title={t('menuHome.portfolio.title')}
+            value={portfolio.data ? String(portfolio.data.length) : undefined}
+            onPress={() => router.push('/settings/portfolio')}
           />
           <MenuRow
             icon="clock"

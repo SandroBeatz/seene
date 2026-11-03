@@ -48,6 +48,7 @@ type MasterSettingsRow = {
   allow_client_reschedule: boolean | null
   booking_show_prices: boolean | null
   booking_allow_comment: boolean | null
+  show_portfolio: boolean | null
 }
 
 /**
@@ -147,7 +148,7 @@ export default defineEventHandler(async (event) => {
     supabase
       .from('master_settings')
       .select(
-        'language, currency, time_format, date_format, online_booking_enabled, booking_default_status, booking_buffer_minutes, booking_min_notice_minutes, calendar_slot_step_minutes, page_theme, page_accent, booking_horizon_days, cancel_window_hours, allow_client_reschedule, booking_show_prices, booking_allow_comment'
+        'language, currency, time_format, date_format, online_booking_enabled, booking_default_status, booking_buffer_minutes, booking_min_notice_minutes, calendar_slot_step_minutes, page_theme, page_accent, booking_horizon_days, cancel_window_hours, allow_client_reschedule, booking_show_prices, booking_allow_comment, show_portfolio'
       )
       .eq('user_id', profile.user_id)
       .maybeSingle(),
@@ -159,7 +160,7 @@ export default defineEventHandler(async (event) => {
       .order('sort_order'),
     supabase
       .from('portfolio_item')
-      .select('id, photo_url, service_id, sort_order')
+      .select('id, photo_url, caption, service_id, sort_order')
       .eq('user_id', profile.user_id)
       .order('sort_order'),
     // Past visits that happened: shown only when the master turned the counter on.
@@ -200,7 +201,8 @@ export default defineEventHandler(async (event) => {
     categories: categories ?? [],
     services: services ?? [],
     payment_types: paymentTypes,
-    portfolio: portfolio ?? [],
+    // Hidden means not sent at all, so the cover can't fall back to a hidden photo either.
+    portfolio: settingsRow?.show_portfolio === false ? [] : (portfolio ?? []),
     working_hours: summarizeWorkingHours(parsedSchedule?.days),
     timezone: parsedSchedule?.timezone ?? 'UTC',
     visits_count: profile.show_visits_count ? (visitsCount ?? 0) : null

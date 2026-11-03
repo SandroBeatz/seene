@@ -10,7 +10,6 @@ export {
   masterKeys,
   useMasterProfileQuery,
   useMasterSettingsQuery,
-  useMasterPortfolioCount,
   useRemoveMasterCover,
   useUpdateMasterProfile,
   useUpdateMasterSettings,

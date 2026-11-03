@@ -18,7 +18,7 @@ import type {
 const PROFILE_COLUMNS =
   'id, first_name, last_name, username, avatar_url, cover_url, bio, schedule, whatsapp, telegram, instagram, phone, address, house_number, city, country, specializations';
 const SETTINGS_COLUMNS =
-  'currency, time_format, date_format, calendar_slot_step_minutes, language, theme, online_booking_enabled, booking_default_status, booking_min_notice_minutes, booking_horizon_days, booking_buffer_minutes, cancel_window_hours, allow_client_reschedule, booking_show_prices, booking_allow_comment';
+  'currency, time_format, date_format, calendar_slot_step_minutes, language, theme, online_booking_enabled, booking_default_status, booking_min_notice_minutes, booking_horizon_days, booking_buffer_minutes, cancel_window_hours, allow_client_reschedule, booking_show_prices, booking_allow_comment, show_portfolio';
 
 /** The master's own profile (the fields the app screens read), or null before onboarding. */
 export async function getMasterProfile(userId: string): Promise<MasterProfile | null> {
@@ -197,13 +197,4 @@ export async function removeMasterCover(userId: string): Promise<void> {
     .eq('user_id', userId);
   if (error) throw error;
   await removeOldImages(userId, 'cover');
-}
-
-export async function getPortfolioCount(userId: string): Promise<number> {
-  const { count, error } = await supabase
-    .from('portfolio_item')
-    .select('id', { count: 'exact', head: true })
-    .eq('user_id', userId);
-  if (error) throw error;
-  return count ?? 0;
 }

@@ -16,6 +16,7 @@ import { useUserId } from '@/entities/session';
 import { errorMessageKey, normalizeError } from '@/shared/api/errors';
 import { formatDurationLabel } from '@/shared/lib/i18n';
 import {
+  ChipRow,
   Chip,
   EmptyState,
   ErrorState,
@@ -27,7 +28,6 @@ import {
   Text,
 } from '@/shared/ui';
 import { groupServices, withGroupOrder, type DirectionGroup } from '../lib/grouping';
-import { ChipRow } from './ChipRow';
 import { DirectionHeading } from './DirectionHeading';
 import { ReorderCard } from './ReorderCard';
 
@@ -267,7 +267,11 @@ const styles = StyleSheet.create((theme) => ({
     paddingTop: theme.space[2],
     paddingBottom: theme.space[8],
   },
-  caption: { marginTop: theme.space[3.5], marginBottom: theme.space[2], marginHorizontal: theme.space[1] },
+  caption: {
+    marginTop: theme.space[3.5],
+    marginBottom: theme.space[2],
+    marginHorizontal: theme.space[1],
+  },
   noCaption: { height: theme.space[2.5] },
   row: {
     flexDirection: 'row',

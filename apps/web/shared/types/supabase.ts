@@ -447,6 +447,7 @@ export type Database = {
           online_booking_enabled: boolean
           page_accent: string
           page_theme: string
+          show_portfolio: boolean
           theme: string
           time_format: number
           updated_at: string
@@ -481,6 +482,7 @@ export type Database = {
           online_booking_enabled?: boolean
           page_accent?: string
           page_theme?: string
+          show_portfolio?: boolean
           theme?: string
           time_format?: number
           updated_at?: string
@@ -515,6 +517,7 @@ export type Database = {
           online_booking_enabled?: boolean
           page_accent?: string
           page_theme?: string
+          show_portfolio?: boolean
           theme?: string
           time_format?: number
           updated_at?: string
@@ -601,6 +604,7 @@ export type Database = {
       }
       portfolio_item: {
         Row: {
+          caption: string | null
           created_at: string
           id: string
           photo_url: string
@@ -609,6 +613,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          caption?: string | null
           created_at?: string
           id?: string
           photo_url: string
@@ -617,6 +622,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          caption?: string | null
           created_at?: string
           id?: string
           photo_url?: string
@@ -1046,6 +1052,7 @@ export type Database = {
       }
       purge_account_data: { Args: { p_user_id: string }; Returns: undefined }
       reactivate_account: { Args: never; Returns: undefined }
+      reorder_portfolio: { Args: { p_ids: string[] }; Returns: undefined }
       reorder_service_categories: {
         Args: { p_ids: string[] }
         Returns: undefined

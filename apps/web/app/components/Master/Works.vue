@@ -20,11 +20,12 @@ const serviceNames = computed(() => new Map(props.services.map((s) => [s.id, s.n
 const photos = computed(() =>
   props.items.map((item, i) => {
     const service = item.service_id ? serviceNames.value.get(item.service_id) : undefined
+    const label = item.caption || service
     return {
       ...item,
-      service,
-      alt: service
-        ? $ts('master.works.altService', { service })
+      label,
+      alt: label
+        ? $ts('master.works.altService', { service: label })
         : $ts('master.works.alt', { index: i + 1 })
     }
   })
@@ -114,7 +115,7 @@ watch(
         </UCarousel>
 
         <div class="flex flex-col items-center gap-1 px-4 pt-4 text-center" aria-live="polite">
-          <p v-if="active?.service" class="text-base font-semibold">{{ active.service }}</p>
+          <p v-if="active?.label" class="text-base font-semibold">{{ active.label }}</p>
           <p class="text-sm text-white/70">
             {{ $ts('master.works.counter', { index: activeIndex + 1, total: photos.length }) }}
           </p>
