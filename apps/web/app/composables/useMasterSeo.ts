@@ -101,8 +101,9 @@ function structuredData(d: MasterPageData, url: URL) {
     makesOffer: d.services.map((s) => ({
       '@type': 'Offer',
       itemOffered: { '@type': 'Service', name: s.name, description: s.description ?? undefined },
-      price: priceToNumber(s.price),
-      priceCurrency: d.settings.currency
+      ...(d.settings.booking_show_prices
+        ? { price: priceToNumber(s.price), priceCurrency: d.settings.currency }
+        : {})
     }))
   }
 }

@@ -60,6 +60,12 @@ export interface MasterSettings {
   booking_horizon_days: number
   /** Up to how many hours before the visit a client can cancel by link */
   cancel_window_hours: number
+  /** A client may move a booking by the personal link */
+  allow_client_reschedule: boolean
+  /** Prices are shown on the master page and in booking */
+  booking_show_prices: boolean
+  /** The booking form has a comment field */
+  booking_allow_comment: boolean
   /** Vacation dates (YYYY-MM-DD), inclusive; online booking is paused */
   vacation_from: string | null
   vacation_until: string | null

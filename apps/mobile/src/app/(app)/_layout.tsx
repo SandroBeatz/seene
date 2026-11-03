@@ -105,6 +105,9 @@ export default function AppLayout() {
           name="(modals)/payment-method"
           options={{ ...sheet, sheetAllowedDetents: [0.5] }}
         />
+        <Stack.Screen name="settings/booking" options={{ title: t('menuHome.booking.title') }} />
+        <Stack.Screen name="(modals)/booking/option" options={fitSheet} />
+        <Stack.Screen name="(modals)/booking/services" options={sheet} />
         <Stack.Screen name="settings/expenses" options={{ title: t('expenses.title') }} />
         <Stack.Screen name="(modals)/appointment/[appointmentId]/index" options={sheet} />
         <Stack.Screen name="(modals)/appointment/[appointmentId]/note" options={sheet} />

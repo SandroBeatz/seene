@@ -74,6 +74,7 @@ const serviceName = computed(() => booking.value?.services.map((s) => s.name).jo
 
 const price = computed(() => {
   if (booking.value?.price === null || booking.value?.price === undefined) return ''
+  if (master.value?.settings.booking_show_prices === false) return ''
   const amount = formatPrice(booking.value.price)
   return booking.value.services.some((s) => s.price_from)
     ? $ts('booking.service.priceFrom', { price: amount })
@@ -160,6 +161,7 @@ const bookableServiceIds = computed(() => {
 const canMove = computed(
   () =>
     !!master.value?.settings.online_booking_enabled &&
+    !!master.value.settings.allow_client_reschedule &&
     !!booking.value?.services.length &&
     bookableServiceIds.value.length === booking.value.services.length
 )

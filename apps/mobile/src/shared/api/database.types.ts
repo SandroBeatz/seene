@@ -432,10 +432,13 @@ export type Database = {
           alert_new_booking_enabled: boolean
           alert_upcoming_appointment_enabled: boolean
           alert_upcoming_offset_minutes: number
+          allow_client_reschedule: boolean
+          booking_allow_comment: boolean
           booking_buffer_minutes: number
           booking_default_status: string
           booking_horizon_days: number
           booking_min_notice_minutes: number
+          booking_show_prices: boolean
           calendar_first_day: number
           calendar_slot_step_minutes: number
           cancel_window_hours: number
@@ -463,10 +466,13 @@ export type Database = {
           alert_new_booking_enabled?: boolean
           alert_upcoming_appointment_enabled?: boolean
           alert_upcoming_offset_minutes?: number
+          allow_client_reschedule?: boolean
+          booking_allow_comment?: boolean
           booking_buffer_minutes?: number
           booking_default_status?: string
           booking_horizon_days?: number
           booking_min_notice_minutes?: number
+          booking_show_prices?: boolean
           calendar_first_day?: number
           calendar_slot_step_minutes?: number
           cancel_window_hours?: number
@@ -494,10 +500,13 @@ export type Database = {
           alert_new_booking_enabled?: boolean
           alert_upcoming_appointment_enabled?: boolean
           alert_upcoming_offset_minutes?: number
+          allow_client_reschedule?: boolean
+          booking_allow_comment?: boolean
           booking_buffer_minutes?: number
           booking_default_status?: string
           booking_horizon_days?: number
           booking_min_notice_minutes?: number
+          booking_show_prices?: boolean
           calendar_first_day?: number
           calendar_slot_step_minutes?: number
           cancel_window_hours?: number

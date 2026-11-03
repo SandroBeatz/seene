@@ -21,6 +21,9 @@ type BookingResponse = {
   booking: OnlineBooking
 }
 
+/** Matches the field's limit on the booking form. */
+const NOTE_MAX_LENGTH = 500
+
 export default defineEventHandler(async (event) => {
   const username = getRouterParam(event, 'username')
 
@@ -65,6 +68,7 @@ export default defineEventHandler(async (event) => {
 
   const holderHash = readHolderHash(event)
   let messageSettings: { language: string | null; time_format: number | null } | null = null
+  let commentAllowed = true
 
   // If master not found, let the RPC return master_not_found
   if (profile) {
@@ -72,7 +76,7 @@ export default defineEventHandler(async (event) => {
       supabase
         .from('master_settings')
         .select(
-          'online_booking_enabled, booking_min_notice_minutes, booking_buffer_minutes, calendar_slot_step_minutes, language, time_format'
+          'online_booking_enabled, booking_min_notice_minutes, booking_buffer_minutes, calendar_slot_step_minutes, language, time_format, booking_allow_comment'
         )
         .eq('user_id', profile.user_id)
         .maybeSingle(),
@@ -89,6 +93,7 @@ export default defineEventHandler(async (event) => {
       throw createError({ statusCode: 403, message: 'Online booking is disabled' })
     }
     messageSettings = settingsRow
+    commentAllowed = settingsRow.booking_allow_comment
 
     // Gate: the slot is one she could have been shown (schedule, breaks, step,
     // notice, vacation, other clients' holds). The RPC repeats the conflict
@@ -120,7 +125,7 @@ export default defineEventHandler(async (event) => {
     p_phone: phone,
     p_first_name: firstName ?? undefined,
     p_last_name: lastName ?? undefined,
-    p_note: note ?? undefined,
+    p_note: commentAllowed ? (note ?? undefined) : undefined,
     p_holder_hash: holderHash ?? undefined,
     p_reminders_consent: remindersConsent ?? undefined,
     p_marketing_consent: marketingConsent ?? undefined,
@@ -208,7 +213,7 @@ function parseName(value: unknown, field: string) {
     throw createError({ statusCode: 400, message: `${field} must be a string` })
   }
 
-  return value.trim() || null
+  return value.trim().slice(0, NOTE_MAX_LENGTH) || null
 }
 
 function parseConsent(value: unknown, field: string) {

@@ -10,7 +10,7 @@ import { View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
-import { useMasterProfileQuery } from '@/entities/master';
+import { useMasterProfileQuery, useMasterSettingsQuery } from '@/entities/master';
 import { useServicesQuery } from '@/entities/service';
 import { useUserId } from '@/entities/session';
 import { appVersionLabel } from '@/shared/lib/app-version';
@@ -34,6 +34,7 @@ export function MenuScreen({ moneySection }: MenuScreenProps) {
   const userId = useUserId() ?? '';
   const profile = useMasterProfileQuery(userId);
   const services = useServicesQuery(userId);
+  const settings = useMasterSettingsQuery(userId);
   const servicesCount = services.data?.filter((service) => service.is_active).length;
 
   return (
@@ -64,6 +65,16 @@ export function MenuScreen({ moneySection }: MenuScreenProps) {
             icon="clock"
             title={t('menuHome.hours.title')}
             onPress={() => router.push('/settings/hours')}
+          />
+          <MenuRow
+            icon="calendar"
+            title={t('menuHome.booking.title')}
+            value={
+              settings.data
+                ? t(settings.data.online_booking_enabled ? 'menuHome.booking.on' : 'menuHome.booking.off')
+                : undefined
+            }
+            onPress={() => router.push('/settings/booking')}
           />
         </MenuGroup>
 
