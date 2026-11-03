@@ -10,7 +10,7 @@ import { DEFAULT_HOURS } from './hours';
 // eslint-disable-next-line import/first -- must be imported after the mock is registered
 import { buildPayload, type DeviceContext } from './payload';
 // eslint-disable-next-line import/first -- must be imported after the mock is registered
-import { normalizeUsernameInput } from './username-input';
+import { normalizeUsernameInput } from '@/entities/master/lib/username-input';
 
 const device: DeviceContext = {
   region: 'KG',

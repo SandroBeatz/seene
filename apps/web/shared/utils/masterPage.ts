@@ -69,6 +69,14 @@ export function roundVisits(count: number): { value: number; plus: boolean } {
   return { value: Math.floor(count / 100) * 100, plus: true }
 }
 
+/** The page's cover: the one the master chose, else the first portfolio photo. */
+export function masterCoverUrl(data: {
+  profile: { cover_url: string | null }
+  portfolio: { photo_url: string }[]
+}): string | null {
+  return data.profile.cover_url || data.portfolio[0]?.photo_url || null
+}
+
 /** wa.me link for a WhatsApp number in any format, with an optional prefilled message. */
 export function whatsappLink(number: string, text?: string): string | null {
   const digits = number.replace(/\D/g, '')

@@ -10,7 +10,8 @@
     "search": "Rechercher",
     "close": "Fermer",
     "continue": "Continuer",
-    "back": "Retour"
+    "back": "Retour",
+    "done": "Terminé"
   },
   "tabs": {
     "today": "Aujourd'hui",
@@ -533,8 +534,7 @@
   },
   "placeholders": {
     "home": "La base de navigation est prête. Les données produit arrivent dans les prochaines phases.",
-    "clients": "Les données client ne sont pas encore implémentées. Utilisez l’action pour inspecter la route dynamique.",
-    "profileSettings": "Les réglages du profil seront ajoutés avec la fonctionnalité Réglages."
+    "clients": "Les données client ne sont pas encore implémentées. Utilisez l’action pour inspecter la route dynamique."
   },
   "settings": {
     "theme": "Thème",
@@ -1488,6 +1488,40 @@
       "documents": "Documents",
       "terms": "Conditions d’utilisation",
       "privacy": "Politique de confidentialité"
+    },
+    "profile": {
+      "photo": "Changer la photo",
+      "uploading": "Envoi…",
+      "link": "Lien de la page",
+      "about": "À propos",
+      "specialization": "Spécialité",
+      "contacts": "Contacts et adresse",
+      "contactsHint": "Visible par les clients sur votre page de réservation.",
+      "address": "Adresse",
+      "add": "Ajouter",
+      "page": "Page de réservation",
+      "cover": "Couverture",
+      "coverNone": "Non choisie",
+      "coverChosen": "Choisie",
+      "coverChange": "En choisir une autre",
+      "coverRemove": "Retirer la couverture",
+      "portfolio": "Portfolio",
+      "portfolioCount_one": "{{count}} photo",
+      "portfolioCount_many": "{{count}} photos",
+      "portfolioCount_other": "{{count}} photos",
+      "linkChangeTitle": "Changer le lien ?",
+      "linkChangeText": "L’ancien lien {{link}} ne fonctionnera plus : les clients qui l’ont enregistré n’arriveront plus sur votre page.",
+      "linkChangeConfirm": "Changer",
+      "discardTitle": "Abandonner les modifications ?",
+      "keepEditing": "Continuer",
+      "discard": "Abandonner",
+      "city": "Ville",
+      "street": "Rue",
+      "house": "Numéro",
+      "contactHelp": "Laissez vide pour retirer ce contact.",
+      "whatsappInvalid": "Vérifiez le numéro : il faut l’indicatif du pays et tous les chiffres.",
+      "telegramInvalid": "5 à 32 caractères : lettres latines, chiffres et _",
+      "instagramInvalid": "30 caractères maximum : lettres latines, chiffres, point et _"
     }
   }
 }

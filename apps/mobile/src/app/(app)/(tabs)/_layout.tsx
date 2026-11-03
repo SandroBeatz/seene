@@ -1,3 +1,4 @@
+import { useSegments } from 'expo-router';
 import { NativeTabs } from 'expo-router/unstable-native-tabs';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
@@ -13,6 +14,7 @@ const TAB_BAR_HEIGHT = process.env.EXPO_OS === 'ios' ? 49 : 80;
  * Календарь · Клиенты · Меню — and the "+" floating over its right end, which opens
  * the create card. Pushed screens live in the app stack above the tabs, so the bar
  * and the "+" slide away with them. Analytics opens from "Сегодня" the same way.
+ * "Меню" creates nothing, so it has no "+".
  *
  * Each tab is a Stack whose screens set their own scroll insets (a native header,
  * or "never" under a drawn one), so the tab doesn't force automatic insets on them.
@@ -21,6 +23,7 @@ export default function TabsLayout() {
   const { t } = useTranslation();
   const { theme } = useUnistyles();
   const insets = useSafeAreaInsets();
+  const onMenu = (useSegments() as string[]).includes('(settings)');
 
   return (
     <View style={styles.root}>
@@ -48,7 +51,7 @@ export default function TabsLayout() {
           <NativeTabs.Trigger.Label>{t('tabs.menu')}</NativeTabs.Trigger.Label>
         </NativeTabs.Trigger>
       </NativeTabs>
-      <CreateMenu bottom={insets.bottom + TAB_BAR_HEIGHT + theme.space[3]} />
+      {onMenu ? null : <CreateMenu bottom={insets.bottom + TAB_BAR_HEIGHT + theme.space[3]} />}
     </View>
   );
 }

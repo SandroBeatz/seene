@@ -7,13 +7,15 @@ import { supabase } from '@/shared/api/supabase';
 import type { Json } from '@/shared/api/database.types';
 import type {
   CompleteOnboardingPayload,
+  MasterImageKind,
   MasterProfile,
+  MasterProfilePatch,
   MasterSettings,
   MasterSettingsPatch,
 } from '../model/types';
 
 const PROFILE_COLUMNS =
-  'id, first_name, last_name, username, avatar_url, cover_url, bio, schedule, whatsapp, telegram, instagram, phone, address, city, country, specializations';
+  'id, first_name, last_name, username, avatar_url, cover_url, bio, schedule, whatsapp, telegram, instagram, phone, address, house_number, city, country, specializations';
 const SETTINGS_COLUMNS =
   'currency, time_format, date_format, calendar_slot_step_minutes, language, theme';
 
@@ -39,7 +41,6 @@ export async function getMasterSettings(userId: string): Promise<MasterSettings 
   return data;
 }
 
-/** Globally-unique username check via the `check_username_available` RPC. */
 export async function updateMasterSettings(
   userId: string,
   patch: MasterSettingsPatch,
@@ -62,6 +63,7 @@ export async function updateMasterTimezone(
   if (error) throw error;
 }
 
+/** Globally-unique username check via the `check_username_available` RPC. */
 export async function checkUsernameAvailable(username: string): Promise<boolean> {
   const { data, error } = await supabase.rpc('check_username_available', {
     p_username: username,
@@ -110,4 +112,83 @@ export async function importAvatar(userId: string, sourceUrl: string): Promise<s
     .eq('user_id', userId);
   if (error) throw error;
   return avatarUrl;
+}
+
+export async function updateMasterProfile(
+  userId: string,
+  patch: MasterProfilePatch,
+): Promise<void> {
+  const { error } = await supabase.from('master_profile').update(patch).eq('user_id', userId);
+  if (error) throw error;
+}
+
+const IMAGE_BUCKET = {
+  avatar: 'avatars',
+  cover: 'master-media',
+} as const;
+
+/**
+ * Removes the earlier files of this kind. Only tidying: the profile already points at
+ * the new file, so a failure here must not fail the save. The prefix keeps portfolio
+ * photos safe, they share the `master-media` folder.
+ */
+async function removeOldImages(userId: string, kind: MasterImageKind, keep?: string) {
+  try {
+    const bucket = supabase.storage.from(IMAGE_BUCKET[kind]);
+    const { data } = await bucket.list(userId, { search: kind });
+    const stale = (data ?? [])
+      .filter((file) => file.name.startsWith(kind) && file.name !== keep)
+      .map((file) => `${userId}/${file.name}`);
+    if (stale.length) await bucket.remove(stale);
+  } catch {
+    // An orphan file costs little and is removed with the account.
+  }
+}
+
+/**
+ * A picked photo → storage → profile. Every upload gets a new name: the public URL
+ * of an overwritten file would keep showing the old picture from caches.
+ */
+export async function uploadMasterImage(
+  userId: string,
+  kind: MasterImageKind,
+  file: { uri: string; mimeType: string },
+): Promise<string> {
+  const response = await fetch(file.uri);
+  const ext = file.mimeType.includes('png') ? 'png' : file.mimeType.includes('webp') ? 'webp' : 'jpg';
+  const name = `${kind}-${Date.now()}.${ext}`;
+
+  const bucket = supabase.storage.from(IMAGE_BUCKET[kind]);
+  const upload = await bucket.upload(`${userId}/${name}`, await response.arrayBuffer(), {
+    contentType: file.mimeType,
+  });
+  if (upload.error) throw upload.error;
+
+  const url = bucket.getPublicUrl(`${userId}/${name}`).data.publicUrl;
+  const { error } = await supabase
+    .from('master_profile')
+    .update(kind === 'avatar' ? { avatar_url: url } : { cover_url: url })
+    .eq('user_id', userId);
+  if (error) throw error;
+
+  await removeOldImages(userId, kind, name);
+  return url;
+}
+
+export async function removeMasterCover(userId: string): Promise<void> {
+  const { error } = await supabase
+    .from('master_profile')
+    .update({ cover_url: null })
+    .eq('user_id', userId);
+  if (error) throw error;
+  await removeOldImages(userId, 'cover');
+}
+
+export async function getPortfolioCount(userId: string): Promise<number> {
+  const { count, error } = await supabase
+    .from('portfolio_item')
+    .select('id', { count: 'exact', head: true })
+    .eq('user_id', userId);
+  if (error) throw error;
+  return count ?? 0;
 }

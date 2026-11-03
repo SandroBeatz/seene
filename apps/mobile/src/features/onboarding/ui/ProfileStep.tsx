@@ -8,12 +8,15 @@ import { type TextInput, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useShallow } from 'zustand/react/shallow';
 import { StyleSheet } from 'react-native-unistyles';
+import {
+  normalizeUsernameInput,
+  useUsernameStatus,
+  type UsernameStatus,
+} from '@/entities/master';
 import { useAuthName, useUserId } from '@/entities/session';
 import { Button, FormScreen, Icon, Input, ScreenTitle, Text } from '@/shared/ui';
 import { deviceCurrency, deviceTimeZone } from '../model/device';
 import { useOnboardingDraft } from '../model/draft.store';
-import { normalizeUsernameInput } from '../model/username-input';
-import { type UsernameStatus, useUsernameStatus } from '../model/username';
 import { useOnboardingHeaderInset } from './OnboardingHeader';
 
 export interface ProfileStepProps {
@@ -132,7 +135,7 @@ export function ProfileStep({ onNext }: ProfileStepProps) {
   );
 }
 
-function UsernameStatusLine({ status }: { status: UsernameStatus }) {
+export function UsernameStatusLine({ status }: { status: UsernameStatus }) {
   const { t } = useTranslation();
   if (status === 'empty') return null;
   const free = status === 'free';

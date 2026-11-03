@@ -1,4 +1,5 @@
 /** Onboarding feature — public barrel. One component per step / sheet; routes wire them. */
+export { UsernameStatusLine } from './ui/ProfileStep';
 export { ProfileStep, type ProfileStepProps } from './ui/ProfileStep';
 export { ProfessionsStep, type ProfessionsStepProps } from './ui/ProfessionsStep';
 export { ServicesStep, type ServicesStepProps } from './ui/ServicesStep';

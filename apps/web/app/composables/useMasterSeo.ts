@@ -41,7 +41,7 @@ export function useMasterSeo(data: Ref<MasterPageData | undefined>) {
       DESCRIPTION_MAX
     )
 
-    return { name, title, description, image: p.cover_url || p.avatar_url || undefined }
+    return { name, title, description, image: masterCoverUrl(data.value) || p.avatar_url || undefined }
   })
 
   useSeoMeta({
@@ -52,7 +52,7 @@ export function useMasterSeo(data: Ref<MasterPageData | undefined>) {
     ogImage: () => meta.value?.image,
     ogType: 'profile',
     ogUrl: url.href,
-    twitterCard: () => (data.value?.profile.cover_url ? 'summary_large_image' : 'summary')
+    twitterCard: () => (data.value && masterCoverUrl(data.value) ? 'summary_large_image' : 'summary')
   })
 
   useHead({
@@ -80,7 +80,7 @@ function structuredData(d: MasterPageData, url: URL) {
     '@type': 'BeautySalon',
     name: `${p.first_name} ${p.last_name}`.trim(),
     url: url.origin + url.pathname,
-    image: [p.cover_url, p.avatar_url].filter(Boolean),
+    image: [masterCoverUrl(d), p.avatar_url].filter(Boolean),
     description: p.bio ?? undefined,
     address: p.city
       ? {

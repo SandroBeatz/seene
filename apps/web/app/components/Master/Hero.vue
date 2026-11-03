@@ -10,6 +10,7 @@ const toast = useToast()
 const { plural, formatDays, formatHours } = useMasterPageFormat(() => props.data.settings)
 
 const profile = computed(() => props.data.profile)
+const coverUrl = computed(() => masterCoverUrl(props.data))
 const fullName = computed(() => `${profile.value.first_name} ${profile.value.last_name}`.trim())
 const initials = computed(() =>
   `${profile.value.first_name[0] ?? ''}${profile.value.last_name[0] ?? ''}`.toUpperCase()
@@ -69,8 +70,8 @@ async function share() {
   <header>
     <div class="relative h-56 overflow-hidden bg-primary">
       <img
-        v-if="profile.cover_url"
-        :src="profile.cover_url"
+        v-if="coverUrl"
+        :src="coverUrl"
         :alt="$ts('master.poster.alt', { name: fullName })"
         class="size-full object-cover"
         fetchpriority="high"

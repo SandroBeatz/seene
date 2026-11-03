@@ -66,6 +66,15 @@ export default function AppLayout() {
         />
         <Stack.Screen name="settings/preferences" options={{ title: t('menuHome.settings') }} />
         <Stack.Screen name="settings/help" options={{ title: t('menuHome.help.title') }} />
+        <Stack.Screen
+          name="(modals)/settings/contact"
+          options={{ ...sheet, sheetAllowedDetents: [0.5] }}
+        />
+        <Stack.Screen
+          name="(modals)/settings/address"
+          options={{ ...sheet, sheetAllowedDetents: [0.62] }}
+        />
+        <Stack.Screen name="(modals)/settings/specializations" options={sheet} />
         <Stack.Screen name="(modals)/settings/language" options={fitSheet} />
         <Stack.Screen name="(modals)/settings/theme" options={fitSheet} />
         <Stack.Screen name="(modals)/settings/currency" options={pickerSheet} />

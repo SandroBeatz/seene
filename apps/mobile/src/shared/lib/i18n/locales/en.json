@@ -10,7 +10,8 @@
     "search": "Search",
     "close": "Close",
     "continue": "Continue",
-    "back": "Back"
+    "back": "Back",
+    "done": "Done"
   },
   "tabs": {
     "today": "Today",
@@ -527,8 +528,7 @@
   },
   "placeholders": {
     "home": "The navigation foundation is ready. Product data arrives in the next feature phases.",
-    "clients": "Client data is not implemented yet. Use the action below to inspect the dynamic route.",
-    "profileSettings": "Profile settings will be implemented with the settings feature."
+    "clients": "Client data is not implemented yet. Use the action below to inspect the dynamic route."
   },
   "settings": {
     "theme": "Theme",
@@ -1482,6 +1482,39 @@
       "documents": "Documents",
       "terms": "Terms of use",
       "privacy": "Privacy policy"
+    },
+    "profile": {
+      "photo": "Change photo",
+      "uploading": "Uploading…",
+      "link": "Page link",
+      "about": "About",
+      "specialization": "Specialization",
+      "contacts": "Contacts and address",
+      "contactsHint": "Clients see this on your booking page.",
+      "address": "Address",
+      "add": "Add",
+      "page": "Booking page",
+      "cover": "Cover",
+      "coverNone": "Not selected",
+      "coverChosen": "Selected",
+      "coverChange": "Choose another",
+      "coverRemove": "Remove cover",
+      "portfolio": "Portfolio",
+      "portfolioCount_one": "{{count}} photo",
+      "portfolioCount_other": "{{count}} photos",
+      "linkChangeTitle": "Change the link?",
+      "linkChangeText": "The old link {{link}} will stop working: clients who saved it won’t reach your page.",
+      "linkChangeConfirm": "Change",
+      "discardTitle": "Discard changes?",
+      "keepEditing": "Keep editing",
+      "discard": "Discard",
+      "city": "City",
+      "street": "Street",
+      "house": "Building",
+      "contactHelp": "Leave it empty to remove this contact.",
+      "whatsappInvalid": "Check the number: it needs the country code and all digits.",
+      "telegramInvalid": "5 to 32 characters: Latin letters, digits and _",
+      "instagramInvalid": "Up to 30 characters: Latin letters, digits, dot and _"
     }
   }
 }
