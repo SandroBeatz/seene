@@ -1,5 +1,35 @@
 import { describe, expect, it } from '@jest/globals';
-import { filterProducts, linkedSummary, parseQuantity, stepQuantity, stockDelta } from './products';
+import {
+  filterProducts,
+  isMeasuredUnit,
+  linkedSummary,
+  parseQuantity,
+  stepQuantity,
+  stockDelta,
+  unitCost,
+} from './products';
+
+describe('unitCost', () => {
+  it('divides the package price by its size', () => {
+    expect(unitCost(630, 500)).toBe(1.26);
+  });
+
+  it('is unknown without a price or a size', () => {
+    expect(unitCost(null, 500)).toBeNull();
+    expect(unitCost(630, null)).toBeNull();
+    expect(unitCost(630, 0)).toBeNull();
+  });
+
+  it('is unknown when it would show as zero money', () => {
+    expect(unitCost(1, 1000)).toBeNull();
+  });
+});
+
+describe('isMeasuredUnit', () => {
+  it('is true only for amounts bought by the package', () => {
+    expect(['pcs', 'bottle', 'pack', 'ml', 'g'].filter(isMeasuredUnit)).toEqual(['ml', 'g']);
+  });
+});
 
 const products = [
   { name: 'Гель-лак', type: 'work', stock: 3, low_stock: 5 },

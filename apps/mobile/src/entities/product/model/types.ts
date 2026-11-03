@@ -18,6 +18,8 @@ export interface SaveProductDto {
   /** A change, not a value: a visit may come off the stock while the form is open. */
   stockDelta: number;
   lowStock: number;
+  /** How many units `buyPrice` pays for: 500 ml for 630. 1 for pieces, bottles and packs. */
+  packSize: number;
   buyPrice: number | null;
   sellPrice: number | null;
   expenseOnRestock: boolean;

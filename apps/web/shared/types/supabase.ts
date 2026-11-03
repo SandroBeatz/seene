@@ -678,6 +678,7 @@ export type Database = {
           id: string
           low_stock: number
           name: string
+          pack_size: number
           sell_price: number | null
           stock: number
           type: string
@@ -692,6 +693,7 @@ export type Database = {
           id?: string
           low_stock?: number
           name: string
+          pack_size?: number
           sell_price?: number | null
           stock?: number
           type: string
@@ -706,6 +708,7 @@ export type Database = {
           id?: string
           low_stock?: number
           name?: string
+          pack_size?: number
           sell_price?: number | null
           stock?: number
           type?: string
@@ -1233,6 +1236,7 @@ export type Database = {
           p_id?: string
           p_low_stock: number
           p_name: string
+          p_pack_size?: number
           p_sell_price?: number
           p_services: Json
           p_stock_delta: number

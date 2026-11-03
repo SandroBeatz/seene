@@ -18,7 +18,7 @@ import {
 } from '@/entities/product';
 import { useServicesQuery } from '@/entities/service';
 import { useUserId } from '@/entities/session';
-import { currencySymbol } from '@/shared/lib/formats';
+import { currencySymbol, formatAmount } from '@/shared/lib/formats';
 import {
   Button,
   Chip,
@@ -32,7 +32,13 @@ import {
   Switch,
   Text,
 } from '@/shared/ui';
-import { linkedSummary, parseQuantity, stockDelta } from '../lib/products';
+import {
+  isMeasuredUnit,
+  linkedSummary,
+  parseQuantity,
+  stockDelta,
+  unitCost,
+} from '../lib/products';
 import { useProductLinks } from '../model/links.store';
 import { QuantityStepper } from './QuantityStepper';
 
@@ -63,6 +69,10 @@ function ProductForm({ product, userId }: { product?: Product; userId: string })
   const [unit, setUnit] = useState<ProductUnit>((product?.unit as ProductUnit) ?? 'pcs');
   const [stock, setStock] = useState(String(product?.stock ?? 0));
   const [lowStock, setLowStock] = useState(String(product?.low_stock ?? DEFAULT_LOW_STOCK));
+  // 1 is the column's "not by the package": a size has to be asked for, not assumed.
+  const [pack, setPack] = useState(
+    product && product.pack_size !== 1 ? String(product.pack_size) : '',
+  );
   const [buy, setBuy] = useState(product?.buy_price?.toString() ?? '');
   const [sell, setSell] = useState(product?.sell_price?.toString() ?? '');
   const [toExpense, setToExpense] = useState(product?.expense_on_restock ?? true);
@@ -81,8 +91,17 @@ function ProductForm({ product, userId }: { product?: Product; userId: string })
   const stockValue = parseQuantity(stock);
   const lowValue = parseQuantity(lowStock);
   const priceOf = (text: string) => (text.trim() ? parseQuantity(text) : null);
+  const measured = isMeasuredUnit(unit);
+  const forSale = type === 'sale';
+  const buyValue = priceOf(buy);
+  const packValue = parseQuantity(pack);
+  const packKnown = !!packValue;
+  // A price with no size would mean per ml again, the mistake the size is here to prevent.
+  const packValid = !measured || !buy.trim() || packKnown;
   const pricesValid =
-    (!buy.trim() || priceOf(buy) !== null) && (!sell.trim() || priceOf(sell) !== null);
+    (!buy.trim() || buyValue !== null) &&
+    packValid &&
+    (!forSale || !sell.trim() || priceOf(sell) !== null);
   const linkList = Object.entries(links).map(([service_id, quantity]) => ({
     service_id,
     quantity: parseQuantity(quantity),
@@ -101,8 +120,10 @@ function ProductForm({ product, userId }: { product?: Product; userId: string })
         unit,
         stockDelta: stockDelta(stockValue, product?.stock ?? 0),
         lowStock: lowValue,
-        buyPrice: priceOf(buy),
-        sellPrice: priceOf(sell),
+        packSize: measured && packValue ? packValue : 1,
+        buyPrice: buyValue,
+        // Hidden on a product for work, and kept in case it goes on sale again.
+        sellPrice: forSale ? priceOf(sell) : (product?.sell_price ?? null),
         expenseOnRestock: toExpense,
         services: linkList.map((link) => ({
           service_id: link.service_id,
@@ -129,6 +150,17 @@ function ProductForm({ product, userId }: { product?: Product; userId: string })
     .map((service) => service.name);
   const currency = currencySymbol(settings.data?.currency ?? 'EUR', locale);
   const unitLabel = t(`menuHome.products.units.${unit}`);
+  const cost = unitCost(buyValue, packValue);
+  const packHint = !buy.trim()
+    ? null
+    : !packKnown
+      ? t('menuHome.products.packMissing')
+      : cost !== null
+        ? t('menuHome.products.packUnitCost', {
+            price: formatAmount(cost, { currency: settings.data?.currency ?? 'EUR', locale }),
+            unit: unitLabel,
+          })
+        : null;
 
   return (
     <FormScreen
@@ -237,35 +269,83 @@ function ProductForm({ product, userId }: { product?: Product; userId: string })
         </View>
       </GroupedCard>
 
-      <View style={styles.prices}>
-        <View style={styles.grow}>
-          <Input
-            variant="filled"
-            label={t('menuHome.products.buy')}
-            placeholder="0"
-            keyboardType="decimal-pad"
-            value={buy}
-            onChangeText={setBuy}
-            suffix={currency}
-          />
+      {measured ? (
+        <View style={styles.block}>
+          <Text variant="captionMedium" color="secondary" style={styles.caption}>
+            {t('menuHome.products.buy')}
+          </Text>
+          <View style={styles.pack}>
+            <View style={styles.grow}>
+              <Input
+                variant="filled"
+                accessibilityLabel={t('menuHome.products.packSizeA11y')}
+                placeholder="500"
+                keyboardType="decimal-pad"
+                value={pack}
+                onChangeText={setPack}
+                suffix={unitLabel}
+              />
+            </View>
+            <Text variant="body" color="tertiary">
+              {t('menuHome.products.packFor')}
+            </Text>
+            <View style={styles.grow}>
+              <Input
+                variant="filled"
+                accessibilityLabel={t('menuHome.products.buy')}
+                placeholder="0"
+                keyboardType="decimal-pad"
+                value={buy}
+                onChangeText={setBuy}
+                suffix={currency}
+              />
+            </View>
+          </View>
+          {packHint ? (
+            <Text variant="caption" color="tertiary" style={styles.caption}>
+              {packHint}
+            </Text>
+          ) : null}
         </View>
-        <View style={styles.grow}>
-          <Input
-            variant="filled"
-            label={t('menuHome.products.sell')}
-            placeholder="0"
-            keyboardType="decimal-pad"
-            value={sell}
-            onChangeText={setSell}
-            suffix={currency}
-          />
+      ) : null}
+
+      {!measured || forSale ? (
+        <View style={styles.prices}>
+          {measured ? null : (
+            <View style={styles.grow}>
+              <Input
+                variant="filled"
+                label={t('menuHome.products.buyFor', { unit: unitLabel })}
+                placeholder="0"
+                keyboardType="decimal-pad"
+                value={buy}
+                onChangeText={setBuy}
+                suffix={currency}
+              />
+            </View>
+          )}
+          {forSale ? (
+            <View style={styles.grow}>
+              <Input
+                variant="filled"
+                label={t('menuHome.products.sellFor', { unit: unitLabel })}
+                placeholder="0"
+                keyboardType="decimal-pad"
+                value={sell}
+                onChangeText={setSell}
+                suffix={currency}
+              />
+            </View>
+          ) : null}
         </View>
-      </View>
+      ) : null}
 
       <GroupedCard variant="menu">
         <Pressable
           accessibilityRole="button"
-          onPress={() => router.push('/product/services')}
+          onPress={() =>
+            router.push({ pathname: '/product/services', params: { unit: unitLabel } })
+          }
           style={({ pressed }) => [styles.linkRow, pressed && styles.pressed]}>
           <Text variant="body">{t('menuHome.products.useOn')}</Text>
           <Text
@@ -310,6 +390,7 @@ const styles = StyleSheet.create((theme) => ({
   separator: { borderTopWidth: 1, borderTopColor: theme.colors.border.default },
   grow: { flex: 1, minWidth: 0 },
   prices: { flexDirection: 'row', gap: theme.space[2.5] },
+  pack: { flexDirection: 'row', alignItems: 'center', gap: theme.space[2] },
   linkRow: {
     minHeight: 54,
     flexDirection: 'row',

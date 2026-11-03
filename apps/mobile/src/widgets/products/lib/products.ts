@@ -37,6 +37,16 @@ export function stepQuantity(text: string, step: 1 | -1): string {
 /** Money and floats: 3.3 − 3.1 must not save as 0.1999… */
 export const stockDelta = (next: number, before: number) => Math.round((next - before) * 100) / 100;
 
+/** Bought by the package, used by the amount: a bottle of 500 ml, not 500 bottles. */
+export const isMeasuredUnit = (unit: string) => unit === 'ml' || unit === 'g';
+
+/** What one unit costs out of a package. Null when unknown or too small to show as money. */
+export function unitCost(price: number | null, packSize: number | null): number | null {
+  if (price === null || !packSize) return null;
+  const cost = Math.round((price / packSize) * 100) / 100;
+  return cost > 0 ? cost : null;
+}
+
 /** "Маникюр" / "Маникюр + 2". Empty when nothing is linked. */
 export function linkedSummary(names: readonly string[]): string {
   if (names.length <= 1) return names[0] ?? '';

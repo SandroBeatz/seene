@@ -2,6 +2,7 @@
  * Which services use this product and how much per visit. The design has no screen for it and
  * no amount, but 1 per visit fits a pair of gloves, not a bottle. Saved with the product's form.
  */
+import { useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
@@ -13,6 +14,8 @@ import { QuantityStepper } from './QuantityStepper';
 
 export function ProductServicesSheet() {
   const { t } = useTranslation();
+  // The form's current choice, which may not be saved yet.
+  const { unit } = useLocalSearchParams<{ unit?: string }>();
   const userId = useUserId() ?? '';
   const services = useServicesQuery(userId);
   const links = useProductLinks((s) => s.links);
@@ -54,7 +57,7 @@ export function ProductServicesSheet() {
                   </Text>
                   <QuantityStepper
                     value={quantity}
-                    unit=""
+                    unit={unit ?? ''}
                     label={t('menuHome.products.perVisitA11y', { service: service.name })}
                     onChange={(value) => setQuantity(service.id, value)}
                   />

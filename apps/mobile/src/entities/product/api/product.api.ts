@@ -20,6 +20,7 @@ export async function saveProduct(dto: SaveProductDto): Promise<string> {
     p_unit: dto.unit,
     p_stock_delta: dto.stockDelta,
     p_low_stock: dto.lowStock,
+    p_pack_size: dto.packSize,
     p_buy_price: dto.buyPrice ?? undefined,
     p_sell_price: dto.sellPrice ?? undefined,
     p_expense_on_restock: dto.expenseOnRestock,
