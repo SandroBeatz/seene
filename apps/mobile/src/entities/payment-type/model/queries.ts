@@ -25,7 +25,7 @@ export function usePaymentTypesQuery(userId: string) {
   });
 }
 
-/** Seed cash/card if missing (idempotent) — run once when payment settings mount. */
+/** Seed the system methods if missing (idempotent) — run once when payment settings mount. */
 export function useEnsureSystemPaymentTypesMutation(userId: string) {
   const qc = useQueryClient();
   return useMutation({

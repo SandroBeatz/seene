@@ -95,11 +95,11 @@ export interface PortfolioItem {
   sort_order: number
 }
 
-export type PaymentTypeKind = 'cash' | 'card' | 'custom'
+export type PaymentTypeKind = 'cash' | 'card' | 'transfer' | 'qr' | 'custom'
 
 /**
  * A payment method the master accepts, configured in the dashboard
- * (`payment_type` table). System methods (cash/card) are labeled via i18n on
+ * (`payment_type` table). System methods are labeled via i18n on
  * the client; custom methods display their own `name`.
  */
 export interface MasterPaymentType {

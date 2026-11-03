@@ -1143,7 +1143,9 @@
     "method": "Moyen de paiement",
     "methods": {
       "cash": "Espèces",
-      "card": "Carte"
+      "card": "Carte",
+      "transfer": "Virement",
+      "qr": "Paiement QR"
     },
     "time": "Heure de la visite",
     "asPlanned": "Comme prévu",
@@ -1626,6 +1628,26 @@
       "warnMessage": "Bonjour {{name}} ! Vous avez un rendez-vous le {{when}}, mais je ne travaille pas à ce moment-là. Pouvons-nous le déplacer ?",
       "warnEmpty": "Aucun rendez-vous ces jours-là",
       "clientFallback": "Client"
+    },
+    "payments": {
+      "title": "Modes de paiement",
+      "count_one": "{{count}} mode",
+      "count_few": "{{count}} modes",
+      "count_many": "{{count}} modes",
+      "count_other": "{{count}} modes",
+      "cash": "Espèces",
+      "transfer": "Virement",
+      "card": "Carte bancaire",
+      "qr": "Paiement QR",
+      "hint": "Choisissez un mode à la fin de la visite. Les statistiques en dépendent.",
+      "ownSection": "Vos propres modes",
+      "add": "+ Ajouter un mode",
+      "newTitle": "Nouveau mode",
+      "editTitle": "Mode de paiement",
+      "namePlaceholder": "Par exemple, MBank",
+      "deleteTitle": "Supprimer ce mode ?",
+      "deleteText": "Les paiements passés restent dans les statistiques, mais sans ce nom.",
+      "lastActive": "Au moins un mode doit rester activé."
     }
   }
 }

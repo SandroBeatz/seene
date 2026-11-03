@@ -1137,7 +1137,9 @@
     "method": "Payment method",
     "methods": {
       "cash": "Cash",
-      "card": "Card"
+      "card": "Card",
+      "transfer": "Transfer",
+      "qr": "QR payment"
     },
     "time": "Visit time",
     "asPlanned": "As booked",
@@ -1619,6 +1621,26 @@
       "warnMessage": "Hi {{name}}! You have a booking on {{when}}, but I'm not working then. Shall we move your visit?",
       "warnEmpty": "No bookings on these days",
       "clientFallback": "Client"
+    },
+    "payments": {
+      "title": "Payment methods",
+      "count_one": "{{count}} method",
+      "count_few": "{{count}} methods",
+      "count_many": "{{count}} methods",
+      "count_other": "{{count}} methods",
+      "cash": "Cash",
+      "transfer": "Transfer",
+      "card": "Bank card",
+      "qr": "QR payment",
+      "hint": "Pick a method when you finish a visit. Analytics are built on them.",
+      "ownSection": "Your own methods",
+      "add": "+ Add a method",
+      "newTitle": "New method",
+      "editTitle": "Payment method",
+      "namePlaceholder": "For example, MBank",
+      "deleteTitle": "Delete this method?",
+      "deleteText": "Past payments stay in analytics, but without this name.",
+      "lastActive": "At least one method has to stay on."
     }
   }
 }

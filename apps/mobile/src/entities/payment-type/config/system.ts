@@ -1,5 +1,5 @@
 /**
- * System payment types seeded per master (cash + card). `ensureSystemPaymentTypes`
+ * System payment types seeded per master, in the design's order. `ensureSystemPaymentTypes`
  * inserts any that are missing. Names are canonical English; the UI may relabel by
  * `kind`. Custom methods are master-created and are never seeded here.
  */
@@ -16,5 +16,7 @@ export interface SystemPaymentTypeSeed {
 
 export const SYSTEM_PAYMENT_TYPES: readonly SystemPaymentTypeSeed[] = [
   { kind: 'cash', name: 'Cash', color: '#34d399', is_default: true, is_active: true, sort_order: 0 },
-  { kind: 'card', name: 'Card', color: '#60a5fa', is_default: false, is_active: true, sort_order: 1 },
+  { kind: 'transfer', name: 'Transfer', color: '#a78bfa', is_default: false, is_active: false, sort_order: 1 },
+  { kind: 'card', name: 'Card', color: '#60a5fa', is_default: false, is_active: true, sort_order: 2 },
+  { kind: 'qr', name: 'QR', color: '#fbbf24', is_default: false, is_active: false, sort_order: 3 },
 ];
