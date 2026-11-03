@@ -3,7 +3,7 @@ import type { Database } from '@/shared/api/database.types';
 
 type PaymentTypeRow = Database['public']['Tables']['payment_type']['Row'];
 
-export type PaymentTypeKind = 'cash' | 'card' | 'custom';
+export type PaymentTypeKind = 'cash' | 'card' | 'transfer' | 'qr' | 'custom';
 
 export interface PaymentType extends Omit<PaymentTypeRow, 'kind'> {
   kind: PaymentTypeKind;

@@ -18,7 +18,7 @@ export async function listPaymentTypes(userId: string): Promise<PaymentType[]> {
 }
 
 /**
- * Insert any missing system methods (cash/card) for this master. Idempotent: reads the
+ * Insert any missing system methods for this master. Idempotent: reads the
  * existing kinds first and only inserts the gap, so it is safe to call on every launch.
  */
 export async function ensureSystemPaymentTypes(userId: string): Promise<void> {

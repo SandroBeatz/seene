@@ -6,7 +6,7 @@ import type {
 } from '#shared/types/master'
 import { getProfileSchedule, utcMsToLocalDate } from '../../utils/slots'
 
-const PAYMENT_KINDS = new Set<PaymentTypeKind>(['cash', 'card', 'custom'])
+const PAYMENT_KINDS = new Set<PaymentTypeKind>(['cash', 'card', 'transfer', 'qr', 'custom'])
 
 const DEFAULT_SETTINGS: MasterSettings = {
   language: 'en',
