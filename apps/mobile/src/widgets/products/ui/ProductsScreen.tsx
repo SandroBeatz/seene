@@ -7,11 +7,19 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
-import { useMasterSettingsQuery, useMoneyContext } from '@/entities/master';
-import { isLowStock, useProductsQuery, type Product } from '@/entities/product';
+import { useMoneyContext } from '@/entities/master';
+import {
+  filterProducts,
+  isLowStock,
+  PRODUCT_TYPES,
+  toPackages,
+  useProductsQuery,
+  type Product,
+  type ProductType,
+  type TypeFilter,
+} from '@/entities/product';
 import { useUserId } from '@/entities/session';
 import { errorMessageKey, normalizeError } from '@/shared/api/errors';
-import { formatAmount } from '@/shared/lib/formats';
 import { pluralCategory } from '@/shared/lib/i18n';
 import {
   Chip,
@@ -26,7 +34,6 @@ import {
   SkeletonList,
   Text,
 } from '@/shared/ui';
-import { filterProducts, toPackages, type TypeFilter } from '../lib/products';
 
 const openNew = () => router.push('/product/new');
 
@@ -35,8 +42,7 @@ export function ProductsScreen() {
   const { theme } = useUnistyles();
   const userId = useUserId() ?? '';
   const products = useProductsQuery(userId);
-  const settings = useMasterSettingsQuery(userId);
-  const { locale } = useMoneyContext(userId);
+  const { locale, money, number } = useMoneyContext(userId);
   const [query, setQuery] = useState('');
   const [type, setType] = useState<TypeFilter>('all');
   const [lowOnly, setLowOnly] = useState(false);
@@ -68,7 +74,7 @@ export function ProductsScreen() {
       />
     );
 
-  if (products.isError) {
+  if (products.isError && !products.data) {
     return (
       <ErrorState
         message={t(errorMessageKey(normalizeError(products.error)))}
@@ -80,69 +86,64 @@ export function ProductsScreen() {
   const all = products.data ?? [];
   const lowCount = all.filter(isLowStock).length;
   // The last low product restocked: nothing left to narrow down to.
-  const onlyLow = lowOnly && lowCount > 0;
-  const visible = filterProducts(all, { query, type, lowOnly: onlyLow });
-  const quantity = (value: number) => new Intl.NumberFormat(locale).format(value);
-  const money = (value: number) =>
-    formatAmount(value, { currency: settings.data?.currency ?? 'EUR', locale });
-  const unit = (product: Product) => t(`menuHome.products.units.${product.unit}`);
-  const stockText = (product: Product) =>
-    `${quantity(toPackages(product.stock, product.pack_size))} ${unit(product)}`;
+  const showingLow = lowOnly && lowCount > 0;
+  const visible = filterProducts(all, { query, type, lowOnly: showingLow });
 
-  const subtitle = (product: Product) => {
-    const price =
-      product.type === 'sale'
-        ? product.sell_price !== null &&
-          t('menuHome.products.priceSell', { price: money(product.sell_price) })
-        : product.buy_price !== null &&
-          t('menuHome.products.priceBuy', { price: money(product.buy_price) });
-    const stock = t('menuHome.products.stockOf', { stock: stockText(product) });
-    return price ? `${stock} · ${price}` : stock;
+  const priceText = (product: Product) => {
+    if (product.type === 'sale') {
+      return product.sell_price === null
+        ? null
+        : t('menuHome.products.priceSell', { price: money(product.sell_price) });
+    }
+    return product.buy_price === null
+      ? null
+      : t('menuHome.products.priceBuy', { price: money(product.buy_price) });
   };
 
-  const row = (product: Product, index: number) => (
-    <Pressable
-      key={product.id}
-      accessibilityRole="button"
-      onPress={() =>
-        router.push({ pathname: '/product/[productId]', params: { productId: product.id } })
-      }
-      style={({ pressed }) => [
-        styles.row,
-        index > 0 && styles.separator,
-        pressed && styles.pressed,
-      ]}>
-      <View style={styles.rowText}>
-        <View style={styles.title}>
-          <Text variant="body" numberOfLines={1} style={styles.name}>
-            {product.name}
+  const row = (product: Product) => {
+    const stockText = `${number(toPackages(product.stock, product.pack_size))} ${t(`menuHome.products.units.${product.unit}`)}`;
+    const stock = t('menuHome.products.stockOf', { stock: stockText });
+    const price = priceText(product);
+    return (
+      <Pressable
+        key={product.id}
+        accessibilityRole="button"
+        onPress={() =>
+          router.push({ pathname: '/product/[productId]', params: { productId: product.id } })
+        }
+        style={({ pressed }) => [styles.row, pressed && styles.pressed]}>
+        <View style={styles.rowText}>
+          <View style={styles.title}>
+            <Text variant="body" numberOfLines={1} style={styles.name}>
+              {product.name}
+            </Text>
+            {isLowStock(product) ? (
+              <View style={[styles.pill, styles.pillLow]}>
+                <Text variant="caption2Strong" style={styles.pillLowText}>
+                  {t('menuHome.products.low')}
+                </Text>
+              </View>
+            ) : product.type === 'sale' ? (
+              <View style={[styles.pill, styles.pillSale]}>
+                <Text variant="caption2Strong" style={styles.pillSaleText}>
+                  {t('menuHome.products.forSale')}
+                </Text>
+              </View>
+            ) : null}
+          </View>
+          <Text variant="caption" color="tertiary" tabularNums numberOfLines={1}>
+            {price ? `${stock} · ${price}` : stock}
           </Text>
-          {isLowStock(product) ? (
-            <View style={[styles.pill, styles.pillLow]}>
-              <Text variant="caption2Strong" style={styles.pillLowText}>
-                {t('menuHome.products.low')}
-              </Text>
-            </View>
-          ) : product.type === 'sale' ? (
-            <View style={[styles.pill, styles.pillSale]}>
-              <Text variant="caption2Strong" style={styles.pillSaleText}>
-                {t('menuHome.products.forSale')}
-              </Text>
-            </View>
-          ) : null}
         </View>
-        <Text variant="caption" color="tertiary" tabularNums numberOfLines={1}>
-          {subtitle(product)}
+        <Text variant="subheadMedium" tabularNums>
+          {stockText}
         </Text>
-      </View>
-      <Text variant="subheadMedium" tabularNums>
-        {stockText(product)}
-      </Text>
-      <Icon name="chevronRight" size="sm" color="content.tertiary" />
-    </Pressable>
-  );
+        <Icon name="chevronRight" size="sm" color="content.tertiary" />
+      </Pressable>
+    );
+  };
 
-  const section = (key: 'work' | 'sale') => {
+  const section = (key: ProductType) => {
     const rows = visible.filter((product) => product.type === key);
     if (!rows.length) return null;
     return (
@@ -153,7 +154,7 @@ export function ProductsScreen() {
     );
   };
 
-  const count = (key: 'work' | 'sale') => all.filter((product) => product.type === key).length;
+  const count = (key: ProductType) => all.filter((product) => product.type === key).length;
 
   return (
     <>
@@ -192,7 +193,7 @@ export function ProductsScreen() {
                   selected={type === 'all'}
                   onPress={() => setType('all')}
                 />
-                {(['work', 'sale'] as const).map((key) => (
+                {PRODUCT_TYPES.map((key) => (
                   <Chip
                     key={key}
                     size="filter"
@@ -207,8 +208,8 @@ export function ProductsScreen() {
             {lowCount > 0 ? (
               <Pressable
                 accessibilityRole="button"
-                accessibilityState={{ selected: onlyLow }}
-                onPress={() => setLowOnly(!onlyLow)}
+                accessibilityState={{ selected: showingLow }}
+                onPress={() => setLowOnly(!showingLow)}
                 style={({ pressed }) => [styles.banner, pressed && styles.pressed]}>
                 <Icon name="warning" size="base" color="tone.warning.fg" />
                 <Text variant="subheadMedium" style={styles.bannerText}>
@@ -217,15 +218,12 @@ export function ProductsScreen() {
                   })}
                 </Text>
                 <Text variant="footnoteStrong" style={styles.bannerAction}>
-                  {t(onlyLow ? 'menuHome.products.showAll' : 'menuHome.products.show')}
+                  {t(showingLow ? 'menuHome.products.showAll' : 'menuHome.products.show')}
                 </Text>
               </Pressable>
             ) : null}
             {visible.length ? (
-              <>
-                {section('work')}
-                {section('sale')}
-              </>
+              PRODUCT_TYPES.map(section)
             ) : (
               <Text variant="subhead" color="tertiary" align="center" style={styles.none}>
                 {t('menuHome.products.nothingFound')}
@@ -268,7 +266,6 @@ const styles = StyleSheet.create((theme) => ({
     alignItems: 'center',
     gap: theme.space[3],
   },
-  separator: { borderTopWidth: 1, borderTopColor: theme.colors.border.default },
   pressed: { opacity: 0.7 },
   rowText: { flex: 1, minWidth: 0, gap: 2 },
   title: { flexDirection: 'row', alignItems: 'center', gap: 6 },

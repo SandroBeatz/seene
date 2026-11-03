@@ -42,6 +42,8 @@ export function useCompleteAppointmentMutation(userId: string) {
     onSettled: (_id, _error, dto) => {
       qc.invalidateQueries({ queryKey: saleKeys.all(userId) });
       qc.invalidateQueries({ queryKey: saleKeys.byAppointment(dto.appointmentId) });
+      // What the visit used came off the stock (product entity's `productKeys.all`).
+      qc.invalidateQueries({ queryKey: ['products', userId] });
     },
   });
 }

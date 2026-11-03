@@ -49,6 +49,7 @@ export function QuantityLinksList({
                 <QuantityStepper
                   value={quantity}
                   unit={row.unit}
+                  min={0.01}
                   label={t('menuHome.products.perVisitA11y', { service: row.name })}
                   onChange={(value) => onQuantity(row.id, value)}
                 />

@@ -9,7 +9,7 @@ export async function getProducts(userId: string): Promise<Product[]> {
     .eq('user_id', userId)
     .order('name');
   if (error) throw error;
-  return data;
+  return data as Product[];
 }
 
 export async function saveProduct(dto: SaveProductDto): Promise<string> {

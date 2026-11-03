@@ -1796,7 +1796,7 @@
       "lowStockHint": "Метка «Мало» в списке",
       "buyFor": "Закупка за 1 {{unit}}",
       "sellFor": "Продажа за 1 {{unit}}",
-      "packUnitCost": "≈ {{price}} за {{unit}}",
+      "contentUnitCost": "≈ {{price}} за {{unit}}",
       "useOn": "Списывать с услуги",
       "useMaterials": "Списывать материалы",
       "useOnNone": "Не списывать",

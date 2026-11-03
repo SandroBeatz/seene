@@ -39,6 +39,6 @@ export function ServiceProductsSheet() {
   );
 }
 
-const styles = StyleSheet.create(() => ({
+const styles = StyleSheet.create({
   root: { flex: 1 },
-}));
+});

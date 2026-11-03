@@ -11,6 +11,7 @@ import { useMasterProfileQuery, useMoneyContext } from '@/entities/master';
 import {
   linkedSummary,
   linksOfService,
+  linksValid,
   parseQuantity,
   sameLinks,
   useProductsQuery,
@@ -133,22 +134,28 @@ function ServiceForm({
 
   const links = useServiceProductLinks((s) => s.links);
   const beginLinks = useServiceProductLinks((s) => s.begin);
-  // What was saved, once known. Without it a service saves as usual and its links stay untouched:
-  // a master who doesn't count materials must not depend on them loading.
-  const [savedLinks, setSavedLinks] = useState<Record<string, string> | null>(service ? null : {});
-  if (!savedLinks && service && products.data) {
-    setSavedLinks(linksOfService(products.data, service.id));
-  }
+  // What is saved, once known. Without it a service saves as usual and its links stay untouched:
+  // a master who doesn't count materials must not depend on them loading. A product added from
+  // the materials sheet can link this service, so the draft restarts when this changes.
+  const savedLinks = !service
+    ? {}
+    : products.data
+      ? linksOfService(products.data, service.id)
+      : null;
+  const savedKey = savedLinks && JSON.stringify(savedLinks);
   useEffect(() => {
-    if (savedLinks) beginLinks(savedLinks);
-  }, [savedLinks, beginLinks]);
+    if (savedKey) beginLinks(JSON.parse(savedKey));
+  }, [savedKey, beginLinks]);
   // A new service whose links failed to save exists already: trying again must not add another.
   const createdId = useRef<string | null>(null);
 
   const failed = () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage'));
   const parsedPrice = parsePrice(price);
-  const linksValid = Object.values(links).every((quantity) => (parseQuantity(quantity) ?? 0) > 0);
-  const canSave = name.trim().length > 0 && parsedPrice !== null && duration > 0 && linksValid;
+  const canSave =
+    name.trim().length > 0 &&
+    parsedPrice !== null &&
+    duration > 0 &&
+    (!savedLinks || linksValid(links));
   const saving = create.isPending || update.isPending || saveLinks.isPending;
   const custom = !PRESETS.includes(duration);
 
@@ -185,7 +192,7 @@ function ServiceForm({
     );
   };
 
-  const save = () => {
+  const save = async () => {
     if (!canSave) return;
     const dto = {
       name: name.trim(),
@@ -200,26 +207,24 @@ function ServiceForm({
       color,
     };
     const existingId = service?.id ?? createdId.current;
-    void (async () => {
-      try {
-        const saved = existingId
-          ? await update.mutateAsync({ id: existingId, ...dto })
-          : await create.mutateAsync({ ...dto, sort_order: nextSortOrder(all) });
-        createdId.current = saved.id;
-        if (savedLinks && !sameLinks(savedLinks, links)) {
-          await saveLinks.mutateAsync({
-            serviceId: saved.id,
-            links: Object.entries(links).map(([product_id, quantity]) => ({
-              product_id,
-              quantity: parseQuantity(quantity) ?? 1,
-            })),
-          });
-        }
-        router.back();
-      } catch {
-        failed();
+    try {
+      const saved = existingId
+        ? await update.mutateAsync({ id: existingId, ...dto })
+        : await create.mutateAsync({ ...dto, sort_order: nextSortOrder(all) });
+      createdId.current = saved.id;
+      if (savedLinks && !sameLinks(savedLinks, links)) {
+        await saveLinks.mutateAsync({
+          serviceId: saved.id,
+          links: Object.entries(links).map(([product_id, quantity]) => ({
+            product_id,
+            quantity: parseQuantity(quantity) ?? 1,
+          })),
+        });
       }
-    })();
+      router.back();
+    } catch {
+      failed();
+    }
   };
 
   const confirmDelete = () =>

@@ -1,5 +1,12 @@
 import { describe, expect, it } from '@jest/globals';
-import { linkedSummary, linksOfService, parseQuantity, sameLinks, stepQuantity } from './quantity';
+import {
+  linkedSummary,
+  linksOfService,
+  linksValid,
+  parseQuantity,
+  sameLinks,
+  stepQuantity,
+} from './quantity';
 
 describe('parseQuantity', () => {
   it('reads a comma and rounds to hundredths', () => {
@@ -40,6 +47,15 @@ describe('linksOfService', () => {
     ];
     expect(linksOfService(products, 'a')).toEqual({ lak: '2' });
     expect(linksOfService(products, 'none')).toEqual({});
+  });
+});
+
+describe('linksValid', () => {
+  it('needs an amount above zero on every link', () => {
+    expect(linksValid({})).toBe(true);
+    expect(linksValid({ lak: '1,5' })).toBe(true);
+    expect(linksValid({ lak: '0' })).toBe(false);
+    expect(linksValid({ lak: '' })).toBe(false);
   });
 });
 

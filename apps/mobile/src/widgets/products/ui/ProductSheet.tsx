@@ -3,16 +3,23 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { DateTime } from 'luxon';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Pressable, View } from 'react-native';
+import { Alert, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
-import { useMasterSettingsQuery, useMoneyContext } from '@/entities/master';
+import { useMoneyContext } from '@/entities/master';
 import {
+  contentUnitCost,
+  fromPackages,
   linkedSummary,
+  linksValid,
   parseQuantity,
+  sameLinks,
   PRODUCT_CONTENT_UNITS,
   PRODUCT_TYPES,
   PRODUCT_UNITS,
   QuantityStepper,
+  rebaseAmount,
+  stockDelta,
+  toPackages,
   useDeleteProductMutation,
   useProductsQuery,
   useSaveProductMutation,
@@ -23,21 +30,22 @@ import {
 } from '@/entities/product';
 import { useServicesQuery } from '@/entities/service';
 import { useUserId } from '@/entities/session';
-import { currencySymbol, formatAmount } from '@/shared/lib/formats';
+import { errorMessageKey, normalizeError } from '@/shared/api/errors';
 import {
   Button,
   Chip,
   ChipRow,
+  ErrorState,
   FormScreen,
   GroupedCard,
-  Icon,
   Input,
   ListItem,
+  MenuRow,
   SheetChrome,
+  Skeleton,
   Switch,
   Text,
 } from '@/shared/ui';
-import { rebaseAmount, stockDelta, toPackages, unitCost } from '../lib/products';
 import { useProductLinks } from '../model/links.store';
 
 /** The design's threshold on a new product. */
@@ -46,8 +54,20 @@ const DEFAULT_LOW_STOCK = 5;
 export function ProductSheet() {
   const { productId } = useLocalSearchParams<{ productId?: string }>();
   const userId = useUserId() ?? '';
+  const { t } = useTranslation();
   const products = useProductsQuery(userId);
-  if (productId && !products.data) return null;
+  if (productId && !products.data) {
+    return products.isError ? (
+      <ErrorState
+        message={t(errorMessageKey(normalizeError(products.error)))}
+        onRetry={() => void products.refetch()}
+      />
+    ) : (
+      <View style={styles.loading}>
+        <Skeleton height={320} />
+      </View>
+    );
+  }
   const product = products.data?.find((item) => item.id === productId);
   // Deleted while open: the sheet is on its way out.
   if (productId && !product) return null;
@@ -56,18 +76,15 @@ export function ProductSheet() {
 
 function ProductForm({ product, userId }: { product?: Product; userId: string }) {
   const { t } = useTranslation();
-  const settings = useMasterSettingsQuery(userId);
-  const { zone, locale } = useMoneyContext(userId);
+  const { zone, currencyLabel, money, number } = useMoneyContext(userId);
   const services = useServicesQuery(userId);
   const save = useSaveProductMutation(userId);
   const remove = useDeleteProductMutation(userId);
 
   const [name, setName] = useState(product?.name ?? '');
-  const [type, setType] = useState<ProductType>((product?.type as ProductType) ?? 'sale');
-  const [unit, setUnit] = useState<ProductUnit>((product?.unit as ProductUnit) ?? 'pcs');
-  const [contentUnit, setContentUnit] = useState<ProductContentUnit>(
-    (product?.content_unit as ProductContentUnit) ?? 'ml',
-  );
+  const [type, setType] = useState<ProductType>(product?.type ?? 'sale');
+  const [unit, setUnit] = useState<ProductUnit>(product?.unit ?? 'pcs');
+  const [contentUnit, setContentUnit] = useState<ProductContentUnit>(product?.content_unit ?? 'ml');
   const [partial, setPartial] = useState(!!product?.content_unit);
   const [content, setContent] = useState(product?.content_unit ? String(product.pack_size) : '');
   // In packages, as typed. Null until touched: the saved amount stays exact, 29 ml of 30 is
@@ -80,46 +97,37 @@ function ProductForm({ product, userId }: { product?: Product; userId: string })
 
   const links = useProductLinks((s) => s.links);
   const beginLinks = useProductLinks((s) => s.begin);
-  useEffect(() => {
-    beginLinks(
-      Object.fromEntries((product?.services ?? []).map((s) => [s.service_id, String(s.quantity)])),
-    );
-  }, [product?.id, beginLinks]); // eslint-disable-line react-hooks/exhaustive-deps
+  const [linksBefore] = useState(() =>
+    Object.fromEntries((product?.services ?? []).map((s) => [s.service_id, String(s.quantity)])),
+  );
+  useEffect(() => beginLinks(linksBefore), [linksBefore, beginLinks]);
 
   const failed = () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage'));
   const options = { onSuccess: () => router.back(), onError: failed };
 
-  const contentValue = parseQuantity(content);
-  const packNow = partial ? contentValue || null : null;
+  const packNow = partial ? parseQuantity(content) || null : null;
   const packSize = packNow ?? 1;
-  const before = { measured: !!product?.content_unit, packSize: product?.pack_size ?? 1 };
-  const stockBase = rebaseAmount(product?.stock ?? 0, before, packNow);
-  const lowBase = product
-    ? rebaseAmount(product.low_stock, before, packNow)
-    : DEFAULT_LOW_STOCK * packSize;
+  const packBefore = product?.content_unit ? product.pack_size : null;
+  const stockBase = rebaseAmount(product?.stock ?? 0, packBefore, packNow);
+  const lowBase = rebaseAmount(product?.low_stock ?? DEFAULT_LOW_STOCK, packBefore, packNow);
   const stock = stockEdit ?? String(toPackages(stockBase, packSize));
   const lowStock = lowEdit ?? String(toPackages(lowBase, packSize));
   const stockValue = parseQuantity(stock);
   const lowValue = parseQuantity(lowStock);
-  const amountOf = (packages: number) => Math.round(packages * packSize * 100) / 100;
   const priceOf = (text: string) => (text.trim() ? parseQuantity(text) : null);
   const forSale = type === 'sale';
   const buyValue = priceOf(buy);
+  const sellValue = priceOf(sell);
   const contentValid = !partial || packNow !== null;
   const pricesValid =
-    (!buy.trim() || buyValue !== null) && (!forSale || !sell.trim() || priceOf(sell) !== null);
-  const linkList = Object.entries(links).map(([service_id, quantity]) => ({
-    service_id,
-    quantity: parseQuantity(quantity),
-  }));
-  const linksValid = linkList.every((link) => link.quantity !== null && link.quantity > 0);
+    (!buy.trim() || buyValue !== null) && (!forSale || !sell.trim() || sellValue !== null);
   const canSave =
     !!name.trim() &&
     stockValue !== null &&
     lowValue !== null &&
     contentValid &&
     pricesValid &&
-    linksValid;
+    linksValid(links);
 
   const submit = () => {
     if (stockValue === null || lowValue === null) return;
@@ -129,18 +137,26 @@ function ProductForm({ product, userId }: { product?: Product; userId: string })
         name: name.trim(),
         type,
         unit,
-        stockDelta: stockEdit === null ? 0 : stockDelta(amountOf(stockValue), stockBase),
-        lowStock: lowEdit === null ? lowBase : amountOf(lowValue),
+        stockDelta: stockEdit === null ? 0 : stockDelta(stockValue, stockBase, packSize),
+        lowStock:
+          lowValue === toPackages(lowBase, packSize) ? lowBase : fromPackages(lowValue, packSize),
         contentUnit: packNow !== null ? contentUnit : null,
         packSize,
         buyPrice: buyValue,
         // Hidden on a product for work, and kept in case it goes on sale again.
-        sellPrice: forSale ? priceOf(sell) : (product?.sell_price ?? null),
+        sellPrice: forSale ? sellValue : (product?.sell_price ?? null),
         expenseOnRestock: toExpense,
-        services: linkList.map((link) => ({
-          service_id: link.service_id,
-          quantity: link.quantity ?? 1,
-        })),
+        // Content added or removed changes what the amounts mean, as with the stock. What was
+        // typed after that is already in the new unit.
+        services: Object.entries(links).map(([service_id, quantity]) => {
+          const amount = parseQuantity(quantity) ?? 1;
+          return {
+            service_id,
+            quantity: sameLinks(linksBefore, links)
+              ? rebaseAmount(amount, packBefore, packNow)
+              : amount,
+          };
+        }),
         today: DateTime.now().setZone(zone).toISODate() ?? '',
       },
       options,
@@ -160,21 +176,17 @@ function ProductForm({ product, userId }: { product?: Product; userId: string })
   const linkedNames = (services.data ?? [])
     .filter((service) => links[service.id] !== undefined)
     .map((service) => service.name);
-  const currency = currencySymbol(settings.data?.currency ?? 'EUR', locale);
   const unitLabel = t(`menuHome.products.units.${unit}`);
   const contentLabel = t(`menuHome.products.units.${contentUnit}`);
-  const usedIn = packNow !== null ? contentLabel : unitLabel;
-  const money = (value: number) =>
-    formatAmount(value, { currency: settings.data?.currency ?? 'EUR', locale });
-  const cost = packNow !== null ? unitCost(buyValue, packNow) : null;
+  const cost = contentUnitCost(buyValue, packNow);
   const costHint =
     cost !== null
-      ? t('menuHome.products.packUnitCost', { price: money(cost), unit: contentLabel })
+      ? t('menuHome.products.contentUnitCost', { price: money(cost), unit: contentLabel })
       : undefined;
   const amountHint =
     packNow !== null && stockValue !== null
       ? t('menuHome.products.stockAmount', {
-          amount: `${new Intl.NumberFormat(locale).format(amountOf(stockValue))} ${contentLabel}`,
+          amount: `${number(stockEdit === null ? stockBase : fromPackages(stockValue, packSize))} ${contentLabel}`,
         })
       : t('menuHome.products.stockHint');
 
@@ -218,41 +230,21 @@ function ProductForm({ product, userId }: { product?: Product; userId: string })
         autoCapitalize="sentences"
       />
 
-      <View style={styles.block}>
-        <Text variant="captionMedium" color="secondary" style={styles.caption}>
-          {t('menuHome.products.type')}
-        </Text>
-        <ChipRow>
-          {PRODUCT_TYPES.map((key) => (
-            <Chip
-              key={key}
-              size="filter"
-              shape="pill"
-              label={t(`menuHome.products.types.${key}`)}
-              selected={type === key}
-              onPress={() => setType(key)}
-            />
-          ))}
-        </ChipRow>
-      </View>
+      <ChipField
+        label={t('menuHome.products.type')}
+        options={PRODUCT_TYPES}
+        labelOf={(key) => t(`menuHome.products.types.${key}`)}
+        value={type}
+        onChange={setType}
+      />
 
-      <View style={styles.block}>
-        <Text variant="captionMedium" color="secondary" style={styles.caption}>
-          {t('menuHome.products.unit')}
-        </Text>
-        <ChipRow>
-          {PRODUCT_UNITS.map((key) => (
-            <Chip
-              key={key}
-              size="filter"
-              shape="pill"
-              label={t(`menuHome.products.units.${key}`)}
-              selected={unit === key}
-              onPress={() => setUnit(key)}
-            />
-          ))}
-        </ChipRow>
-      </View>
+      <ChipField
+        label={t('menuHome.products.unit')}
+        options={PRODUCT_UNITS}
+        labelOf={(key) => t(`menuHome.products.units.${key}`)}
+        value={unit}
+        onChange={setUnit}
+      />
 
       <GroupedCard variant="menu">
         <ListItem
@@ -301,34 +293,20 @@ function ProductForm({ product, userId }: { product?: Product; userId: string })
       ) : null}
 
       <GroupedCard variant="menu">
-        <View style={styles.stockRow}>
-          <View style={styles.grow}>
-            <Text variant="body">{t('menuHome.products.stock')}</Text>
-            <Text variant="caption" color="tertiary">
-              {amountHint}
-            </Text>
-          </View>
-          <QuantityStepper
-            value={stock}
-            unit={unitLabel}
-            label={t('menuHome.products.stock')}
-            onChange={setStockEdit}
-          />
-        </View>
-        <View style={[styles.stockRow, styles.separator]}>
-          <View style={styles.grow}>
-            <Text variant="body">{t('menuHome.products.lowStock')}</Text>
-            <Text variant="caption" color="tertiary">
-              {t('menuHome.products.lowStockHint')}
-            </Text>
-          </View>
-          <QuantityStepper
-            value={lowStock}
-            unit={unitLabel}
-            label={t('menuHome.products.lowStock')}
-            onChange={setLowEdit}
-          />
-        </View>
+        <StockRow
+          title={t('menuHome.products.stock')}
+          hint={amountHint}
+          value={stock}
+          unit={unitLabel}
+          onChange={setStockEdit}
+        />
+        <StockRow
+          title={t('menuHome.products.lowStock')}
+          hint={t('menuHome.products.lowStockHint')}
+          value={lowStock}
+          unit={unitLabel}
+          onChange={setLowEdit}
+        />
       </GroupedCard>
 
       <View style={styles.prices}>
@@ -340,7 +318,7 @@ function ProductForm({ product, userId }: { product?: Product; userId: string })
             keyboardType="decimal-pad"
             value={buy}
             onChangeText={setBuy}
-            suffix={currency}
+            suffix={currencyLabel}
             helpText={costHint}
           />
         </View>
@@ -353,28 +331,23 @@ function ProductForm({ product, userId }: { product?: Product; userId: string })
               keyboardType="decimal-pad"
               value={sell}
               onChangeText={setSell}
-              suffix={currency}
+              suffix={currencyLabel}
             />
           </View>
         ) : null}
       </View>
 
       <GroupedCard variant="menu">
-        <Pressable
-          accessibilityRole="button"
-          onPress={() => router.push({ pathname: '/product/services', params: { unit: usedIn } })}
-          style={({ pressed }) => [styles.linkRow, pressed && styles.pressed]}>
-          <Text variant="body">{t('menuHome.products.useOn')}</Text>
-          <Text
-            variant="footnote"
-            color="tertiary"
-            numberOfLines={1}
-            align="right"
-            style={styles.grow}>
-            {linkedSummary(linkedNames) || t('menuHome.products.useOnNone')}
-          </Text>
-          <Icon name="chevronRight" size="sm" color="content.tertiary" />
-        </Pressable>
+        <MenuRow
+          title={t('menuHome.products.useOn')}
+          value={linkedSummary(linkedNames) || t('menuHome.products.useOnNone')}
+          onPress={() =>
+            router.push({
+              pathname: '/product/services',
+              params: { unit: packNow !== null ? contentUnit : unit },
+            })
+          }
+        />
         <ListItem
           size="menu"
           inset={false}
@@ -393,7 +366,68 @@ function ProductForm({ product, userId }: { product?: Product; userId: string })
   );
 }
 
+function ChipField<T extends string>({
+  label,
+  options,
+  labelOf,
+  value,
+  onChange,
+}: {
+  label: string;
+  options: readonly T[];
+  labelOf: (key: T) => string;
+  value: T;
+  onChange: (key: T) => void;
+}) {
+  return (
+    <View style={styles.block}>
+      <Text variant="captionMedium" color="secondary" style={styles.caption}>
+        {label}
+      </Text>
+      <ChipRow>
+        {options.map((key) => (
+          <Chip
+            key={key}
+            size="filter"
+            shape="pill"
+            label={labelOf(key)}
+            selected={value === key}
+            onPress={() => onChange(key)}
+          />
+        ))}
+      </ChipRow>
+    </View>
+  );
+}
+
+function StockRow({
+  title,
+  hint,
+  value,
+  unit,
+  onChange,
+}: {
+  title: string;
+  hint: string;
+  value: string;
+  unit: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <View style={styles.stockRow}>
+      <View style={styles.grow}>
+        <Text variant="body">{title}</Text>
+        <Text variant="caption" color="tertiary">
+          {hint}
+        </Text>
+      </View>
+      <QuantityStepper value={value} unit={unit} label={title} onChange={onChange} />
+    </View>
+  );
+}
+
 const styles = StyleSheet.create((theme) => ({
+  loading: { padding: theme.layout.gutter },
   content: { paddingTop: theme.space[2], gap: theme.space[4] },
   block: { gap: theme.space[2] },
   caption: { marginLeft: theme.space[1] },
@@ -404,15 +438,7 @@ const styles = StyleSheet.create((theme) => ({
     gap: theme.space[3],
     paddingVertical: theme.space[2],
   },
-  separator: { borderTopWidth: 1, borderTopColor: theme.colors.border.default },
   grow: { flex: 1, minWidth: 0 },
   prices: { flexDirection: 'row', gap: theme.space[2.5] },
   contentRow: { flexDirection: 'row', alignItems: 'center', gap: theme.space[2] },
-  linkRow: {
-    minHeight: 54,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: theme.space[3],
-  },
-  pressed: { opacity: 0.6 },
 }));

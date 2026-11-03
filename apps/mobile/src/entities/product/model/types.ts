@@ -1,9 +1,5 @@
 import type { Tables } from '@/shared/api/database.types';
 
-export type Product = Tables<'product'> & {
-  services: { service_id: string; quantity: number }[];
-};
-
 export const PRODUCT_TYPES = ['work', 'sale'] as const;
 export type ProductType = (typeof PRODUCT_TYPES)[number];
 
@@ -14,6 +10,14 @@ export type ProductUnit = (typeof PRODUCT_UNITS)[number];
 /** What it is used in, when a package is used in parts. */
 export const PRODUCT_CONTENT_UNITS = ['ml', 'g'] as const;
 export type ProductContentUnit = (typeof PRODUCT_CONTENT_UNITS)[number];
+
+/** The row, with the columns its CHECKs hold to these values narrowed. */
+export type Product = Omit<Tables<'product'>, 'type' | 'unit' | 'content_unit'> & {
+  type: ProductType;
+  unit: ProductUnit;
+  content_unit: ProductContentUnit | null;
+  services: { service_id: string; quantity: number }[];
+};
 
 export interface SaveProductDto {
   id?: string;

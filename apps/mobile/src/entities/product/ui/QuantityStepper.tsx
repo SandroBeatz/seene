@@ -9,21 +9,28 @@ export function QuantityStepper({
   value,
   unit,
   label,
+  min = 0,
   onChange,
 }: {
   value: string;
   unit: string;
   label: string;
+  /** The − button stops before going below this. */
+  min?: number;
   onChange: (value: string) => void;
 }) {
   const { t } = useTranslation();
   const { theme } = useUnistyles();
+  const less = () => {
+    const next = stepQuantity(value, -1);
+    if (Number(next) >= min) onChange(next);
+  };
   return (
     <View style={styles.row}>
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={t('menuHome.products.less')}
-        onPress={() => onChange(stepQuantity(value, -1))}
+        onPress={less}
         style={({ pressed }) => [styles.button, styles.minus, pressed && styles.pressed]}>
         <Text variant="title3">−</Text>
       </Pressable>

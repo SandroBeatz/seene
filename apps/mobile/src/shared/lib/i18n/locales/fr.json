@@ -1781,7 +1781,7 @@
       "lowStockHint": "La mention « Bas » dans la liste",
       "buyFor": "Achat pour 1 {{unit}}",
       "sellFor": "Vente pour 1 {{unit}}",
-      "packUnitCost": "≈ {{price}} par {{unit}}",
+      "contentUnitCost": "≈ {{price}} par {{unit}}",
       "useOn": "Déduire de la prestation",
       "useMaterials": "Déduire le matériel",
       "useOnNone": "Ne pas déduire",

@@ -1774,7 +1774,7 @@
       "lowStockHint": "The “Low” mark in the list",
       "buyFor": "Cost per 1 {{unit}}",
       "sellFor": "Price per 1 {{unit}}",
-      "packUnitCost": "≈ {{price}} per {{unit}}",
+      "contentUnitCost": "≈ {{price}} per {{unit}}",
       "useOn": "Use on service",
       "useMaterials": "Deduct materials",
       "useOnNone": "Don't deduct",
