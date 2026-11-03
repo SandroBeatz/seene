@@ -29,6 +29,8 @@ export type Schedule = {
 export type AppointmentRow = {
   start_at: string
   duration: number
+  /** Перерыв после: the gap is the larger of this and the master's buffer. */
+  buffer_after_minutes?: number
 }
 
 export type TimeBlockRow = {
@@ -185,26 +187,19 @@ function subtractIntervals(interval: Interval, subtracts: Interval[]): Interval[
   return segments
 }
 
-function getBusyIntervals(
-  appointments: AppointmentRow[],
-  timeBlocks: TimeBlockRow[],
-  bufferMinutes: number
-): Interval[] {
-  const busy: Interval[] = []
-
-  for (const apt of appointments) {
+function getVisitIntervals(appointments: AppointmentRow[], bufferMinutes: number): Interval[] {
+  return appointments.map((apt) => {
     const start = new Date(apt.start_at).getTime()
-    busy.push({ start, end: start + (apt.duration + bufferMinutes) * MINUTE_MS })
-  }
+    const gap = Math.max(bufferMinutes, apt.buffer_after_minutes ?? 0)
+    return { start, end: start + (apt.duration + gap) * MINUTE_MS }
+  })
+}
 
-  for (const block of timeBlocks) {
-    busy.push({
-      start: new Date(block.start_at).getTime(),
-      end: new Date(block.end_at).getTime()
-    })
-  }
-
-  return busy
+function getBlockIntervals(timeBlocks: TimeBlockRow[]): Interval[] {
+  return timeBlocks.map((block) => ({
+    start: new Date(block.start_at).getTime(),
+    end: new Date(block.end_at).getTime()
+  }))
 }
 
 export function buildFreeSlots({
@@ -213,6 +208,7 @@ export function buildFreeSlots({
   appointments,
   timeBlocks,
   serviceDuration,
+  visitBufferMinutes = 0,
   timezone,
   slotStepMinutes = 15,
   bufferMinutes = 0,
@@ -224,6 +220,11 @@ export function buildFreeSlots({
   appointments: AppointmentRow[]
   timeBlocks: TimeBlockRow[]
   serviceDuration: number
+  /**
+   * The visit's own break: keeps the next visit away, may run into closing time, a work
+   * break or a time block, as in create_appointment_from_booking.
+   */
+  visitBufferMinutes?: number
   timezone: string
   slotStepMinutes?: number
   bufferMinutes?: number
@@ -233,7 +234,8 @@ export function buildFreeSlots({
   const workingIntervals = getWorkingIntervals(date, scheduleDay, timezone)
   if (!workingIntervals.length) return []
 
-  const busyIntervals = getBusyIntervals(appointments, timeBlocks, bufferMinutes)
+  const visitIntervals = getVisitIntervals(appointments, bufferMinutes)
+  const blockIntervals = getBlockIntervals(timeBlocks)
   const duration = serviceDuration * MINUTE_MS
   const step = slotStepMinutes * MINUTE_MS
   const minStartMs = nowMs + minNoticeMinutes * MINUTE_MS
@@ -243,7 +245,10 @@ export function buildFreeSlots({
     for (let t = interval.start; t + duration <= interval.end; t += step) {
       if (t < minStartMs) continue
       const end = t + duration
-      const overlaps = busyIntervals.some((b) => t < b.end && end > b.start)
+      const endWithBreak = end + visitBufferMinutes * MINUTE_MS
+      const overlaps =
+        visitIntervals.some((b) => t < b.end && endWithBreak > b.start) ||
+        blockIntervals.some((b) => t < b.end && end > b.start)
       if (!overlaps) slots.add(new Date(t).toISOString())
     }
   }

@@ -35,7 +35,7 @@ export default defineEventHandler(async (event): Promise<NearestSlot> => {
       .maybeSingle(),
     supabase
       .from('service')
-      .select('duration')
+      .select('duration, buffer_after_minutes')
       .eq('user_id', profile.user_id)
       .eq('is_active', true)
       .eq('show_online', true)
@@ -63,7 +63,8 @@ export default defineEventHandler(async (event): Promise<NearestSlot> => {
     profile,
     settings: settingsRow,
     dates,
-    durationMinutes: duration
+    durationMinutes: duration,
+    visitBufferMinutes: services?.[0]?.buffer_after_minutes ?? 0
   })
 
   return { start_at: days.find((day) => day.slots.length)?.slots[0] ?? null, timezone }

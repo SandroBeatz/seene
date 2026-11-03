@@ -66,7 +66,8 @@ export function useDayGrid({
     () => [
       ...shown.map((a) => ({
         start: a.start_at,
-        end: new Date(appointmentEndMs(a)).toISOString(),
+        // Its "Перерыв после" is closed too. Cached rows from before the column have none.
+        end: new Date(appointmentEndMs(a) + (a.buffer_after_minutes ?? 0) * 60_000).toISOString(),
       })),
       ...otherBlocks.map((b) => ({ start: b.start_at, end: b.end_at })),
     ],

@@ -56,6 +56,7 @@ import {
   unavailableHours,
   withNeighbours,
   workMinutes,
+  bufferSpans,
 } from '../model/calendar';
 import { useCalendarSelection } from '../model/calendar.store';
 import {
@@ -174,10 +175,31 @@ function buildDayEvents({
     };
   });
 
+  const buffers = bufferSpans(
+    timed.map((e) => ({
+      id: e.id,
+      from: e.from,
+      to: e.to,
+      // Cached rows from before the column have none.
+      buffer: e.visit?.appointment.buffer_after_minutes ?? 0,
+    })),
+  );
+  for (const { entry, from, to } of buffers) {
+    list.push({
+      id: `buffer-${entry.id}`,
+      start: timelineStamp(day, from),
+      end: timelineStamp(day, to),
+      title: '',
+      color: 'transparent',
+      meta: { kind: 'buffer', minutes: to - from, dimmed: past },
+    });
+  }
+
   const work = workMinutes(workday);
   if (work && bookable && !past && !entries.some((e) => e.allDay)) {
     const busy = [
       ...timed.map((e) => [e.from, e.to] as const),
+      ...buffers.map((b) => [b.from, b.to] as const),
       ...(workday?.breaks ?? []).map((b) => [parseHhmm(b.start), parseHhmm(b.end)] as const),
     ];
     for (const from of freeCells({ work, busy, after: today?.minutes ?? 0 })) {

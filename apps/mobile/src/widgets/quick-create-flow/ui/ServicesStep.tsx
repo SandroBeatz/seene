@@ -180,7 +180,11 @@ export function ServicesStep() {
                       <View style={styles.grow}>
                         <Text variant="bodyMedium">{service.name}</Text>
                         <Text variant="footnote" color="tertiary" tabularNums>
-                          {`${formatDurationLabel(service.duration, t)} · ${flow.money(service.price)}`}
+                          {`${formatDurationLabel(service.duration, t)} · ${
+                            service.price_from
+                              ? t('menuHome.servicesPage.priceFrom', { price: flow.money(service.price) })
+                              : flow.money(service.price)
+                          }`}
                         </Text>
                       </View>
                       <View style={[styles.toggle, on && styles.toggleOn]}>

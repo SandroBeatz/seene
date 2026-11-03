@@ -12,6 +12,7 @@ import {
   unavailableHours,
   withNeighbours,
   workMinutes,
+  bufferSpans,
 } from './calendar';
 
 const BISHKEK = 'Asia/Bishkek'; // UTC+6, no DST
@@ -236,5 +237,29 @@ describe('timelineStamp', () => {
   });
   it('keeps midnight in the day', () => {
     expect(timelineStamp('2026-11-02', 1440)).toBe('2026-11-02 23:59:59');
+  });
+});
+
+describe('bufferSpans', () => {
+  const entry = (id: string, from: number, to: number, buffer = 0) => ({ id, from, to, buffer });
+  const spans = (entries: ReturnType<typeof entry>[]) =>
+    bufferSpans(entries).map(({ entry: e, from, to }) => [e.id, from, to]);
+
+  it('follows a visit that has a break', () => {
+    expect(spans([entry('a', 600, 660, 20), entry('b', 700, 760)])).toEqual([['a', 660, 680]]);
+  });
+
+  it('stops where the next record begins', () => {
+    expect(spans([entry('a', 600, 660, 30), entry('b', 670, 720)])).toEqual([['a', 660, 670]]);
+  });
+
+  it('draws nothing when another record already covers that time', () => {
+    expect(spans([entry('a', 600, 660, 30), entry('b', 660, 720)])).toEqual([]);
+    expect(spans([entry('a', 600, 660, 30), entry('b', 630, 700)])).toEqual([]);
+  });
+
+  it('stays inside the day', () => {
+    expect(spans([entry('a', 1400, 1430, 30)])).toEqual([['a', 1430, 1440]]);
+    expect(spans([entry('a', 1400, 1440, 30)])).toEqual([]);
   });
 });

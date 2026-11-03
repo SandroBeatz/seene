@@ -38,7 +38,7 @@ export default defineEventHandler(async (event) => {
   const [{ data: services, error: servicesError }, { data: settingsRow }] = await Promise.all([
     supabase
       .from('service')
-      .select('id, duration')
+      .select('id, duration, buffer_after_minutes')
       .eq('user_id', profile.user_id)
       .eq('is_active', true)
       .eq('show_online', true)
@@ -94,6 +94,7 @@ export default defineEventHandler(async (event) => {
     settings: settingsRow,
     dates,
     durationMinutes: services.reduce((total, service) => total + service.duration, 0),
+    visitBufferMinutes: visitBuffer(services),
     holderHash: readHolderHash(event)
   })
 })

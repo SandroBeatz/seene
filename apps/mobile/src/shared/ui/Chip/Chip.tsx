@@ -19,7 +19,8 @@ export interface ChipProps {
   /** Pressed in without being a choice: the "add" chip while its field is open. */
   active?: boolean;
   shape?: ChipShape;
-  size?: 'sm' | 'md';
+  /** filter: 34pt with 13pt text (the menu's filter and choice chips). */
+  size?: 'filter' | 'sm' | 'md';
   /** Idle label in the muted tone (weekday row: days off read as greyed out). */
   mutedWhenIdle?: boolean;
   accessibilityLabel?: string;
@@ -50,7 +51,10 @@ export function Chip({
         {icon ? (
           <Icon name={icon} size="sm" color={selected ? 'accent.onAccent' : 'content.primary'} />
         ) : null}
-        <Text variant="subheadStrong" color={labelColor} numberOfLines={1}>
+        <Text
+          variant={size === 'filter' ? 'footnoteStrong' : 'subheadStrong'}
+          color={labelColor}
+          numberOfLines={1}>
           {label}
         </Text>
       </View>
@@ -66,6 +70,7 @@ const styles = StyleSheet.create((theme) => ({
     justifyContent: 'center',
     variants: {
       size: {
+        filter: { height: 34 },
         sm: { height: theme.sizing.control.sm },
         md: { height: theme.sizing.control.md },
       },

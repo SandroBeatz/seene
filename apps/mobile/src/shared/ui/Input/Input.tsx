@@ -124,7 +124,7 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
           {...rest}
         />
         {suffix ? (
-          <Text variant="body" color="secondary">
+          <Text variant="body" color={filled ? 'tertiary' : 'secondary'}>
             {suffix}
           </Text>
         ) : null}

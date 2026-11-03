@@ -56,7 +56,7 @@ export default defineEventHandler(async (event) => {
       .maybeSingle(),
     supabase
       .from('service')
-      .select('id, duration')
+      .select('id, duration, buffer_after_minutes')
       .eq('user_id', masterUserId)
       .eq('is_active', true)
       .eq('show_online', true)
@@ -91,6 +91,7 @@ export default defineEventHandler(async (event) => {
       settings,
       dates: [utcMsToLocalDate(Date.parse(startsAt), getProfileTimezone(profile.schedule))],
       durationMinutes: services.reduce((total, s) => total + s.duration, 0),
+      visitBufferMinutes: visitBuffer(services),
       holderHash: readHolderHash(event)
     })
 

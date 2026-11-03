@@ -5,6 +5,7 @@ export {
   useCreateServiceCategoryMutation,
   useUpdateServiceCategoryMutation,
   useDeleteServiceCategoryMutation,
+  useReorderServiceCategoriesMutation,
 } from './model/queries';
 export type {
   ServiceCategory,

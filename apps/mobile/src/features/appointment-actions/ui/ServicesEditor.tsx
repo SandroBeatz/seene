@@ -221,7 +221,13 @@ export function ServicesEditor({
                   <View style={styles.grow}>
                     <Text variant="bodyMedium">{service.name}</Text>
                     <Text variant="footnote" color="tertiary" tabularNums>
-                      {`${formatDurationLabel(service.duration, t)} · ${formatAmount(service.price, { currency, locale })}`}
+                      {`${formatDurationLabel(service.duration, t)} · ${
+                        service.price_from
+                          ? t('menuHome.servicesPage.priceFrom', {
+                              price: formatAmount(service.price, { currency, locale }),
+                            })
+                          : formatAmount(service.price, { currency, locale })
+                      }`}
                     </Text>
                   </View>
                   <View style={[styles.toggle, on && styles.toggleOn]}>

@@ -17,17 +17,22 @@ import {
   type ScheduleVisit,
 } from '@/features/appointment-actions';
 import { eventSwatch } from '@/shared/lib/color';
+import { formatDurationLabel } from '@/shared/lib/i18n';
 import { Icon, Text, VipBadge, type ContextMenuAnchor } from '@/shared/ui';
 
 export type EventMeta =
   | { kind: 'visit'; visit: ScheduleVisit; range: string; dimmed: boolean; ongoing: boolean }
   | { kind: 'block'; block: TimeBlock; look: BlockLook; dimmed: boolean }
-  | { kind: 'free'; dayKey: string; minutes: number };
+  | { kind: 'free'; dayKey: string; minutes: number }
+  /** "Перерыв после": closed time after a visit, nothing to tap. */
+  | { kind: 'buffer'; minutes: number; dimmed: boolean };
 
 export type CalendarTimelineEvent = TimelineEventProps & { meta: EventMeta };
 
 /** Below this an event has room for one line. */
 const TWO_LINES_HEIGHT = 44;
+/** Below this a break has no room for its label. */
+const BUFFER_LABEL_HEIGHT = 16;
 /** Air between events that follow each other. */
 const EVENT_GAP = 2;
 /** A tap that starts a scroll shouldn't flash the cell. */
@@ -47,7 +52,7 @@ export interface TimelineEventHandlers {
 export function pressEvent(meta: EventMeta, handlers: TimelineEventHandlers) {
   if (meta.kind === 'visit') handlers.onVisit(meta.visit);
   else if (meta.kind === 'block') handlers.onBlock(meta.block);
-  else handlers.onFree(meta.dayKey, meta.minutes);
+  else if (meta.kind === 'free') handlers.onFree(meta.dayKey, meta.minutes);
 }
 
 export function TimelineEvent({
@@ -66,6 +71,23 @@ export function TimelineEvent({
   const ref = useRef<View>(null);
   const two = height >= TWO_LINES_HEIGHT;
   const size = { width, height: Math.max(height - EVENT_GAP, 0) };
+
+  if (meta.kind === 'buffer') {
+    const label = t('calendar.buffer', { duration: formatDurationLabel(meta.minutes, t) });
+    return (
+      <View
+        accessible
+        accessibilityLabel={label}
+        pointerEvents="none"
+        style={[styles.buffer, size, meta.dimmed && styles.dimmed]}>
+        {height >= BUFFER_LABEL_HEIGHT ? (
+          <Text variant="caption2" color="tertiary" numberOfLines={1}>
+            {label}
+          </Text>
+        ) : null}
+      </View>
+    );
+  }
 
   if (meta.kind === 'free') {
     return (
@@ -181,6 +203,15 @@ function OngoingMark() {
 }
 
 const styles = StyleSheet.create((theme) => ({
+  buffer: {
+    justifyContent: 'center',
+    paddingHorizontal: theme.space[2],
+    borderRadius: theme.radius.sm,
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: theme.colors.border.strong,
+    overflow: 'hidden',
+  },
   ongoing: { marginLeft: 'auto' },
   event: {
     paddingLeft: theme.space[2.5],

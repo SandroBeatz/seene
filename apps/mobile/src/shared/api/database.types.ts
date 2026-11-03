@@ -41,6 +41,7 @@ export type Database = {
     Tables: {
       appointments: {
         Row: {
+          buffer_after_minutes: number
           cancel_reason: string | null
           cancelled_at: string | null
           cancelled_by: string | null
@@ -59,6 +60,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          buffer_after_minutes?: number
           cancel_reason?: string | null
           cancelled_at?: string | null
           cancelled_by?: string | null
@@ -77,6 +79,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          buffer_after_minutes?: number
           cancel_reason?: string | null
           cancelled_at?: string | null
           cancelled_by?: string | null
@@ -720,6 +723,7 @@ export type Database = {
       }
       service: {
         Row: {
+          buffer_after_minutes: number
           category_id: string | null
           color: string
           created_at: string
@@ -738,6 +742,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          buffer_after_minutes?: number
           category_id?: string | null
           color?: string
           created_at?: string
@@ -756,6 +761,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          buffer_after_minutes?: number
           category_id?: string | null
           color?: string
           created_at?: string
@@ -789,6 +795,7 @@ export type Database = {
           id: string
           name: string
           sort_order: number
+          specialization: string | null
           updated_at: string
           user_id: string
         }
@@ -797,6 +804,7 @@ export type Database = {
           id?: string
           name: string
           sort_order?: number
+          specialization?: string | null
           updated_at?: string
           user_id: string
         }
@@ -805,6 +813,7 @@ export type Database = {
           id?: string
           name?: string
           sort_order?: number
+          specialization?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -1005,6 +1014,7 @@ export type Database = {
       }
       hold_booking_slot: {
         Args: {
+          p_after_minutes?: number
           p_duration: number
           p_holder_hash: string
           p_starts_at: string
@@ -1027,6 +1037,11 @@ export type Database = {
       }
       purge_account_data: { Args: { p_user_id: string }; Returns: undefined }
       reactivate_account: { Args: never; Returns: undefined }
+      reorder_service_categories: {
+        Args: { p_ids: string[] }
+        Returns: undefined
+      }
+      reorder_services: { Args: { p_ids: string[] }; Returns: undefined }
       roll_recurring_expenses: { Args: never; Returns: number }
       specialization_keys: { Args: never; Returns: string[] }
       update_sale_details: {

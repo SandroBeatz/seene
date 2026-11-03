@@ -54,3 +54,9 @@ export async function deleteServiceCategory(id: string): Promise<void> {
   const { error } = await supabase.from('service_category').delete().eq('id', id);
   if (error) throw error;
 }
+
+/** Writes the order of the listed categories, numbered from 1. */
+export async function reorderServiceCategories(ids: string[]): Promise<void> {
+  const { error } = await supabase.rpc('reorder_service_categories', { p_ids: ids });
+  if (error) throw error;
+}
