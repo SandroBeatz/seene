@@ -670,6 +670,90 @@ export type Database = {
           }
         ]
       }
+      product: {
+        Row: {
+          buy_price: number | null
+          content_unit: string | null
+          created_at: string
+          expense_on_restock: boolean
+          id: string
+          low_stock: number
+          name: string
+          pack_size: number
+          sell_price: number | null
+          stock: number
+          type: string
+          unit: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          buy_price?: number | null
+          content_unit?: string | null
+          created_at?: string
+          expense_on_restock?: boolean
+          id?: string
+          low_stock?: number
+          name: string
+          pack_size?: number
+          sell_price?: number | null
+          stock?: number
+          type: string
+          unit: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          buy_price?: number | null
+          content_unit?: string | null
+          created_at?: string
+          expense_on_restock?: boolean
+          id?: string
+          low_stock?: number
+          name?: string
+          pack_size?: number
+          sell_price?: number | null
+          stock?: number
+          type?: string
+          unit?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      product_service: {
+        Row: {
+          product_id: string
+          quantity: number
+          service_id: string
+        }
+        Insert: {
+          product_id: string
+          quantity?: number
+          service_id: string
+        }
+        Update: {
+          product_id?: string
+          quantity?: number
+          service_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'product_service_product_id_fkey'
+            columns: ['product_id']
+            isOneToOne: false
+            referencedRelation: 'product'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'product_service_service_id_fkey'
+            columns: ['service_id']
+            isOneToOne: false
+            referencedRelation: 'service'
+            referencedColumns: ['id']
+          }
+        ]
+      }
       sale: {
         Row: {
           amount: number
@@ -888,6 +972,61 @@ export type Database = {
         }
         Relationships: []
       }
+      stock_movement: {
+        Row: {
+          created_at: string
+          delta: number
+          expense_id: string | null
+          id: string
+          product_id: string
+          reason: string
+          sale_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          delta: number
+          expense_id?: string | null
+          id?: string
+          product_id: string
+          reason: string
+          sale_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          delta?: number
+          expense_id?: string | null
+          id?: string
+          product_id?: string
+          reason?: string
+          sale_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'stock_movement_expense_id_fkey'
+            columns: ['expense_id']
+            isOneToOne: false
+            referencedRelation: 'expense'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'stock_movement_product_id_fkey'
+            columns: ['product_id']
+            isOneToOne: false
+            referencedRelation: 'product'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'stock_movement_sale_id_fkey'
+            columns: ['sale_id']
+            isOneToOne: false
+            referencedRelation: 'sale'
+            referencedColumns: ['id']
+          }
+        ]
+      }
       time_block: {
         Row: {
           all_day: boolean
@@ -1093,6 +1232,28 @@ export type Database = {
       }
       reorder_services: { Args: { p_ids: string[] }; Returns: undefined }
       roll_recurring_expenses: { Args: never; Returns: number }
+      save_product: {
+        Args: {
+          p_buy_price?: number
+          p_content_unit?: string
+          p_expense_on_restock: boolean
+          p_id?: string
+          p_low_stock: number
+          p_name: string
+          p_pack_size?: number
+          p_sell_price?: number
+          p_services: Json
+          p_stock_delta: number
+          p_today: string
+          p_type: string
+          p_unit: string
+        }
+        Returns: string
+      }
+      set_service_products: {
+        Args: { p_products: Json; p_service_id: string }
+        Returns: undefined
+      }
       specialization_keys: { Args: never; Returns: string[] }
       update_sale_details: {
         Args: { p_amount: number; p_items: Json; p_sale_id: string }

@@ -156,6 +156,8 @@ export function useDeleteAppointmentMutation(userId: string) {
     mutationFn: (id: string) => deleteAppointment(id),
     onSettled: (_data, _error, id) => {
       invalidateAppointmentCaches(qc, userId);
+      // A finished visit's stock comes back (product entity's `productKeys.all`).
+      qc.invalidateQueries({ queryKey: ['products', userId] });
       qc.invalidateQueries({ queryKey: appointmentKeys.detail(id) });
     },
   });

@@ -205,6 +205,15 @@ export const GLYPHS = {
       <Circle cx={7.5} cy={7.5} r={1.5} />
     </>,
   ),
+  tube: stroke(
+    'regular',
+    <>
+      <Path d="M5 3h14" />
+      <Path d="M6.5 3h11l-1.7 13.2a1 1 0 0 1-1 .8H9.2a1 1 0 0 1-1-.8z" />
+      <Path d="M6.9 6.5h10.2" />
+      <Path d="M9.5 17v3a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-3" />
+    </>,
+  ),
   user: stroke(
     'regular',
     <>

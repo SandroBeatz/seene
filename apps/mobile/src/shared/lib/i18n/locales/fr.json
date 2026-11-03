@@ -1575,7 +1575,8 @@
       "pickerCancel": "Annuler",
       "pickerDone": "OK",
       "hoursUnit": "h",
-      "minutesUnit": "min"
+      "minutesUnit": "min",
+      "materials": "Matériel · facultatif"
     },
     "hours": {
       "title": "Horaires de travail",
@@ -1727,6 +1728,72 @@
         "booking_link": "Lien du rendez-vous",
         "online_link": "Lien de réservation"
       }
+    },
+    "products": {
+      "title": "Produits et fournitures",
+      "addA11y": "Nouveau produit",
+      "add": "Ajouter un produit",
+      "addSubmit": "Ajouter",
+      "newTitle": "Nouveau produit",
+      "editTitle": "Produit",
+      "all": "Tous",
+      "types": {
+        "work": "Pour le travail",
+        "sale": "À vendre"
+      },
+      "units": {
+        "pcs": "pc",
+        "bottle": "fl",
+        "pack": "pqt",
+        "ml": "ml",
+        "g": "g"
+      },
+      "low": "Bas",
+      "forSale": "À vendre",
+      "stockOf": "En stock {{stock}}",
+      "priceBuy": "achat {{price}}",
+      "priceSell": "vente {{price}}",
+      "running_one": "{{count}} article bientôt épuisé",
+      "running_few": "{{count}} articles bientôt épuisés",
+      "running_many": "{{count}} articles bientôt épuisés",
+      "running_other": "{{count}} articles bientôt épuisés",
+      "show": "Afficher",
+      "showAll": "Tous les produits",
+      "nothingFound": "Aucun résultat",
+      "hint": "Les achats de fournitures vont dans les dépenses.",
+      "emptyTitle": "Pas encore de produits",
+      "emptyText": "Ajoutez vos fournitures : le stock baissera après chaque rendez-vous.",
+      "name": "Nom",
+      "namePlaceholder": "Par exemple, Vernis gel",
+      "type": "Type",
+      "unit": "Unité",
+      "partial": "S'utilise par petites quantités",
+      "partialHint": "Vernis, huile : déduire en ml ou g",
+      "contentIn": {
+        "pcs": "Dans une pièce",
+        "bottle": "Dans un flacon",
+        "pack": "Dans un paquet"
+      },
+      "stock": "En stock",
+      "stockHint": "Ce que vous avez maintenant",
+      "stockAmount": "Soit {{amount}}",
+      "lowStock": "Rappeler en dessous de",
+      "lowStockHint": "La mention « Bas » dans la liste",
+      "buyFor": "Achat pour 1 {{unit}}",
+      "sellFor": "Vente pour 1 {{unit}}",
+      "contentUnitCost": "≈ {{price}} par {{unit}}",
+      "useOn": "Déduire de la prestation",
+      "useMaterials": "Déduire le matériel",
+      "useOnNone": "Ne pas déduire",
+      "useOnHint": "À la fin d’un rendez-vous, le stock baisse de cette quantité.",
+      "perVisit": "Par rendez-vous",
+      "perVisitA11y": "Utilisé par rendez-vous : {{service}}",
+      "toExpense": "Achat en dépenses",
+      "toExpenseHint": "Une dépense est ajoutée au réapprovisionnement",
+      "less": "Moins",
+      "more": "Plus",
+      "deleteTitle": "Supprimer ce produit ?",
+      "deleteText": "Il quitte la liste et n’est plus déduit. Les dépenses restent."
     },
     "booking": {
       "title": "Réservation en ligne",
