@@ -4,8 +4,14 @@ export {
   useTimeBlocksRangeQuery,
   useTimeBlocksRangesQuery,
   useTimeBlockQuery,
+  useDaysOffQuery,
   useCreateTimeBlockMutation,
   useUpdateTimeBlockMutation,
   useDeleteTimeBlockMutation,
 } from './model/queries';
-export type { TimeBlock, CreateTimeBlockDto, UpdateTimeBlockDto } from './model/types';
+export type {
+  TimeBlock,
+  TimeBlockKind,
+  CreateTimeBlockDto,
+  UpdateTimeBlockDto,
+} from './model/types';

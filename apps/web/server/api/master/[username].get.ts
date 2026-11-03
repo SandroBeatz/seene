@@ -4,7 +4,7 @@ import type {
   MasterSettings,
   PaymentTypeKind
 } from '#shared/types/master'
-import { getProfileSchedule } from '../../utils/slots'
+import { getProfileSchedule, utcMsToLocalDate } from '../../utils/slots'
 
 const PAYMENT_KINDS = new Set<PaymentTypeKind>(['cash', 'card', 'custom'])
 
@@ -42,8 +42,6 @@ type MasterSettingsRow = {
   page_accent: string | null
   booking_horizon_days: number | null
   cancel_window_hours: number | null
-  vacation_from: string | null
-  vacation_until: string | null
 }
 
 /**
@@ -72,8 +70,17 @@ function resolveSettings(row: MasterSettingsRow | null): MasterSettings {
     page_accent: row.page_accent ?? DEFAULT_SETTINGS.page_accent,
     booking_horizon_days: row.booking_horizon_days ?? DEFAULT_SETTINGS.booking_horizon_days,
     cancel_window_hours: row.cancel_window_hours ?? DEFAULT_SETTINGS.cancel_window_hours,
-    vacation_from: row.vacation_from,
-    vacation_until: row.vacation_until
+    vacation_from: null,
+    vacation_until: null
+  }
+}
+
+/** A vacation block as its first and last days in the master's zone; its end is exclusive. */
+function vacationDays(block: { start_at: string; end_at: string } | null, timezone: string) {
+  if (!block) return {}
+  return {
+    vacation_from: utcMsToLocalDate(new Date(block.start_at).getTime(), timezone),
+    vacation_until: utcMsToLocalDate(new Date(block.end_at).getTime() - 1, timezone)
   }
 }
 
@@ -108,7 +115,8 @@ export default defineEventHandler(async (event) => {
     { data: settingsRow },
     { data: paymentRows },
     { data: portfolio },
-    { count: visitsCount }
+    { count: visitsCount },
+    { data: vacationBlock }
   ] = await Promise.all([
     supabase
       .from('service_category')
@@ -129,7 +137,7 @@ export default defineEventHandler(async (event) => {
     supabase
       .from('master_settings')
       .select(
-        'language, currency, time_format, date_format, online_booking_enabled, booking_default_status, booking_buffer_minutes, booking_min_notice_minutes, calendar_slot_step_minutes, page_theme, page_accent, booking_horizon_days, cancel_window_hours, vacation_from, vacation_until'
+        'language, currency, time_format, date_format, online_booking_enabled, booking_default_status, booking_buffer_minutes, booking_min_notice_minutes, calendar_slot_step_minutes, page_theme, page_accent, booking_horizon_days, cancel_window_hours'
       )
       .eq('user_id', profile.user_id)
       .maybeSingle(),
@@ -152,7 +160,18 @@ export default defineEventHandler(async (event) => {
           .eq('user_id', profile.user_id)
           .in('status', ['confirmed', 'completed'])
           .lt('start_at', new Date().toISOString())
-      : Promise.resolve({ count: null })
+      : Promise.resolve({ count: null }),
+    // The vacation that closes booking now or next.
+    supabase
+      .from('time_block')
+      .select('start_at, end_at')
+      .eq('user_id', profile.user_id)
+      .eq('kind', 'vacation')
+      .eq('close_online', true)
+      .gt('end_at', new Date().toISOString())
+      .order('start_at')
+      .limit(1)
+      .maybeSingle()
   ])
 
   const paymentTypes: MasterPaymentType[] = (paymentRows ?? []).map((row) => ({
@@ -164,7 +183,10 @@ export default defineEventHandler(async (event) => {
 
   return {
     profile: publicProfile,
-    settings: resolveSettings(settingsRow),
+    settings: {
+      ...resolveSettings(settingsRow),
+      ...vacationDays(vacationBlock, parsedSchedule?.timezone ?? 'UTC')
+    },
     categories: categories ?? [],
     services: services ?? [],
     payment_types: paymentTypes,

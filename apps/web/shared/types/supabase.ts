@@ -6,6 +6,31 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: '14.5'
   }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       appointments: {
@@ -821,9 +846,11 @@ export type Database = {
       time_block: {
         Row: {
           all_day: boolean
+          close_online: boolean
           created_at: string
           end_at: string
           id: string
+          kind: string
           notes: string | null
           start_at: string
           updated_at: string
@@ -831,9 +858,11 @@ export type Database = {
         }
         Insert: {
           all_day?: boolean
+          close_online?: boolean
           created_at?: string
           end_at: string
           id?: string
+          kind?: string
           notes?: string | null
           start_at: string
           updated_at?: string
@@ -841,9 +870,11 @@ export type Database = {
         }
         Update: {
           all_day?: boolean
+          close_online?: boolean
           created_at?: string
           end_at?: string
           id?: string
+          kind?: string
           notes?: string | null
           start_at?: string
           updated_at?: string
@@ -1143,6 +1174,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {}
+  },
   public: {
     Enums: {}
   }

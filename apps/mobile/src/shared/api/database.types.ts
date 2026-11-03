@@ -852,9 +852,11 @@ export type Database = {
       time_block: {
         Row: {
           all_day: boolean
+          close_online: boolean
           created_at: string
           end_at: string
           id: string
+          kind: string
           notes: string | null
           start_at: string
           updated_at: string
@@ -862,9 +864,11 @@ export type Database = {
         }
         Insert: {
           all_day?: boolean
+          close_online?: boolean
           created_at?: string
           end_at: string
           id?: string
+          kind?: string
           notes?: string | null
           start_at: string
           updated_at?: string
@@ -872,9 +876,11 @@ export type Database = {
         }
         Update: {
           all_day?: boolean
+          close_online?: boolean
           created_at?: string
           end_at?: string
           id?: string
+          kind?: string
           notes?: string | null
           start_at?: string
           updated_at?: string

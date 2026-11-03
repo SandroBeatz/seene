@@ -8,6 +8,7 @@ import {
   createTimeBlock,
   deleteTimeBlock,
   getTimeBlock,
+  listDaysOff,
   listTimeBlocksByRange,
   updateTimeBlock,
 } from '../api/time-block.api';
@@ -55,6 +56,15 @@ export function useTimeBlocksRangesQuery(
         refetch: () => Promise.all(results.map((r) => r.refetch())),
       };
     },
+  });
+}
+
+/** "Выходные и отпуск": `fromIso` is fixed by the caller, so the key doesn't tick. */
+export function useDaysOffQuery(userId: string, fromIso: string) {
+  return useQuery({
+    queryKey: [...timeBlockKeys.all(userId), 'days-off', fromIso],
+    queryFn: () => listDaysOff(userId, fromIso),
+    enabled: !!userId && !!fromIso,
   });
 }
 

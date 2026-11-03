@@ -58,6 +58,28 @@ export function getDayOfWeek(date: string) {
   return new Date(`${date}T00:00:00.000Z`).getUTCDay()
 }
 
+/** How far a zone's clock is ahead of UTC at an instant, ms. */
+function zoneOffsetMs(formatter: Intl.DateTimeFormat, utcMs: number) {
+  const parts = Object.fromEntries(
+    formatter.formatToParts(new Date(utcMs)).map((part) => [part.type, part.value])
+  )
+  const local = Date.UTC(
+    Number(parts.year),
+    Number(parts.month) - 1,
+    Number(parts.day),
+    Number(parts.hour),
+    Number(parts.minute),
+    Number(parts.second)
+  )
+
+  return local - utcMs
+}
+
+/**
+ * The instant a wall-clock time in a zone means. The offset has to be read at the answer,
+ * not at the guess: they differ on the day the clocks change. A time skipped by the change
+ * moves forward and a repeated one takes its first occurrence, as `AT TIME ZONE` does.
+ */
 export function zonedTimeToUtc(date: string, time: string, timezone: string) {
   const year = Number(date.slice(0, 4))
   const month = Number(date.slice(5, 7))
@@ -74,20 +96,11 @@ export function zonedTimeToUtc(date: string, time: string, timezone: string) {
     second: '2-digit',
     hourCycle: 'h23'
   })
-  const parts = Object.fromEntries(
-    formatter.formatToParts(new Date(utcGuess)).map((part) => [part.type, part.value])
-  )
-  const timezoneTimeAsUtc = Date.UTC(
-    Number(parts.year),
-    Number(parts.month) - 1,
-    Number(parts.day),
-    Number(parts.hour),
-    Number(parts.minute),
-    Number(parts.second)
-  )
-  const offset = timezoneTimeAsUtc - utcGuess
+  const first = utcGuess - zoneOffsetMs(formatter, utcGuess)
+  const offset = zoneOffsetMs(formatter, first)
+  const adjusted = utcGuess - offset
 
-  return new Date(utcGuess - offset)
+  return new Date(zoneOffsetMs(formatter, adjusted) === offset ? adjusted : first)
 }
 
 export function utcMsToLocalDate(utcMs: number, timezone: string): string {
@@ -221,8 +234,9 @@ export function buildFreeSlots({
   timeBlocks: TimeBlockRow[]
   serviceDuration: number
   /**
-   * The visit's own break: keeps the next visit away, may run into closing time, a work
-   * break or a time block, as in create_appointment_from_booking.
+   * The visit's own break: keeps the next visit away (as the master's buffer does, the
+   * larger wins), may run into closing time, a work break or a time block, as in
+   * create_appointment_from_booking.
    */
   visitBufferMinutes?: number
   timezone: string
@@ -241,11 +255,17 @@ export function buildFreeSlots({
   const minStartMs = nowMs + minNoticeMinutes * MINUTE_MS
   const slots = new Set<string>()
 
+  // Steps count from the start of the working day, as create_appointment_from_booking does,
+  // so a break that ends off the grid can't offer a slot the booking would refuse.
+  const gridStart = zonedTimeToUtc(date, scheduleDay.start!, timezone).getTime()
+  const gapAfter = Math.max(visitBufferMinutes, bufferMinutes) * MINUTE_MS
+
   for (const interval of workingIntervals) {
-    for (let t = interval.start; t + duration <= interval.end; t += step) {
+    const first = gridStart + Math.ceil((interval.start - gridStart) / step) * step
+    for (let t = first; t + duration <= interval.end; t += step) {
       if (t < minStartMs) continue
       const end = t + duration
-      const endWithBreak = end + visitBufferMinutes * MINUTE_MS
+      const endWithBreak = end + gapAfter
       const overlaps =
         visitIntervals.some((b) => t < b.end && endWithBreak > b.start) ||
         blockIntervals.some((b) => t < b.end && end > b.start)

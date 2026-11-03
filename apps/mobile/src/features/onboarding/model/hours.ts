@@ -6,6 +6,8 @@
  */
 import type { DaySchedule, TimeRange, WeeklySchedule } from '@/entities/master';
 
+export { copyMondayToWeekdays, nextBreak } from '@/shared/lib/scheduling';
+
 export type HoursMode = 'same' | 'days';
 
 export interface SameHours {
@@ -91,25 +93,4 @@ export function sameSummary(hours: WorkingHours, short: readonly string[]): stri
   if (hours.mode !== 'same') return null;
   const days = dayRuns(hours.same.days, short);
   return days ? `${days}, ${compactTime(hours.same.start)}–${compactTime(hours.same.end)}` : '';
-}
-
-const toClock = (minutes: number) => {
-  const m = ((minutes % 1440) + 1440) % 1440;
-  return `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
-};
-
-/** The design's next break: lunch first, then 30 min starting 2 h after the last. */
-export function nextBreak(breaks: readonly TimeRange[]): TimeRange {
-  const last = breaks[breaks.length - 1];
-  if (!last) return { ...LUNCH };
-  const start = toMinutes(last.end) + 120;
-  return { start: toClock(start), end: toClock(start + 30) };
-}
-
-/** "Скопировать понедельник на все будни" (Tue–Fri take Monday's hours). */
-export function copyMondayToWeekdays(days: readonly DaySchedule[]): DaySchedule[] {
-  const monday = days[0]!;
-  return days.map((day, i) =>
-    i >= 1 && i <= 4 ? { ...monday, breaks: monday.breaks.map((b) => ({ ...b })) } : day,
-  );
 }

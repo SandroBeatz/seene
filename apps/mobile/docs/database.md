@@ -27,7 +27,7 @@ six fall into two groups:
 | `service` | 0 | Services offered (duration, price, colour) |
 | `client` | 18 | Client address book |
 | `appointments` | 150 | Bookings (client + services + time + status) |
-| `time_block` | 9 | Unavailability blocks on the calendar |
+| `time_block` | 11 | Unavailability on the calendar: personal time, days off, vacations (`kind`); `close_online` says whether it closes online booking |
 | `payment_type` | 7 | Accepted payment methods (cash/card system + custom) |
 | `sale` | 131 | One financial record per completed appointment |
 | `sale_item` | 148 | Per-service line snapshots within a sale |

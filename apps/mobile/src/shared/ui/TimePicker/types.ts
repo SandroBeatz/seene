@@ -48,3 +48,24 @@ const MONTH_DAYS = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
 /** Days a birthday can fall on in a month, any year (29 February allowed). */
 export const daysInMonth = (month: number) => MONTH_DAYS[month - 1] ?? 31;
+
+export interface TimeWheelProps {
+  /** Wall-clock "HH:mm". */
+  value: string;
+  onChange: (time: string) => void;
+  /** Minutes between the times offered. Default 15. */
+  minuteStep?: number;
+  /** Android's dialog, and the field's label there. */
+  title: string;
+  cancelLabel: string;
+  doneLabel: string;
+}
+
+/** A day of times at this step, with `value` in place even when it's off the step. */
+export function wheelTimes(value: string, minuteStep = 15): string[] {
+  const times = Array.from({ length: Math.ceil(1440 / minuteStep) }, (_, i) => {
+    const minutes = i * minuteStep;
+    return toClock(Math.floor(minutes / 60), minutes % 60);
+  });
+  return times.includes(value) ? times : [...times, value].sort();
+}

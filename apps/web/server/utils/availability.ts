@@ -6,25 +6,28 @@ import {
   getProfileSchedule,
   getProfileTimezone,
   getScheduleDay,
+  MINUTE_MS,
   zonedTimeToUtc
 } from './slots'
 
 export type DailySlots = { date: string; slots: string[] }
 
+/** A visit that began this long before a day can still reach into it. */
+const LONGEST_VISIT_MS = 2 * 24 * 60 * MINUTE_MS
+
 type SlotSettings = {
   calendar_slot_step_minutes: number | null
   booking_buffer_minutes: number | null
   booking_min_notice_minutes: number | null
-  vacation_from: string | null
-  vacation_until: string | null
 }
 
 /**
  * Free slots for every day in [from, to] (YYYY-MM-DD, master's time zone) for a
  * visit of `durationMinutes`. Busy time is appointments, time
  * blocks and slots held by other clients on the details step (`holderHash` is
- * the caller's own hold, which stays free for her); vacation days have no
- * slots. One round trip for the whole range.
+ * the caller's own hold, which stays free for her). A day off or a vacation is a
+ * time block; one that leaves online booking open (`close_online = false`) isn't busy
+ * time here. One round trip for the whole range.
  */
 export async function loadDailySlots({
   supabase,
@@ -53,6 +56,8 @@ export async function loadDailySlots({
   const to = dates.at(-1)!
   const rangeStart = zonedTimeToUtc(from, '00:00:00', timezone).toISOString()
   const rangeEnd = zonedTimeToUtc(addDays(to, 1), '00:00:00', timezone).toISOString()
+  // A visit past midnight, or begun before the range, still takes time inside it.
+  const busyFrom = new Date(new Date(rangeStart).getTime() - LONGEST_VISIT_MS).toISOString()
 
   const [
     { data: appointments, error: appointmentsError },
@@ -65,11 +70,12 @@ export async function loadDailySlots({
       .eq('user_id', profile.user_id)
       .neq('status', 'cancelled')
       .lt('start_at', rangeEnd)
-      .gte('start_at', rangeStart),
+      .gte('start_at', busyFrom),
     supabase
       .from('time_block')
       .select('start_at, end_at, all_day')
       .eq('user_id', profile.user_id)
+      .eq('close_online', true)
       .lt('start_at', rangeEnd)
       .gt('end_at', rangeStart),
     supabase
@@ -78,7 +84,7 @@ export async function loadDailySlots({
       .eq('master_user_id', profile.user_id)
       .gt('expires_at', new Date(nowMs).toISOString())
       .lt('start_at', rangeEnd)
-      .gte('start_at', rangeStart)
+      .gt('end_at', rangeStart)
   ])
 
   if (appointmentsError || timeBlocksError || holdsError) {
@@ -101,14 +107,15 @@ export async function loadDailySlots({
 
   return dates.map((date) => {
     const scheduleDay = getScheduleDay(schedule, date)
-    if (!scheduleDay?.enabled || isVacationDay(settings, date)) return { date, slots: [] }
+    if (!scheduleDay?.enabled) return { date, slots: [] }
 
     const dayStart = zonedTimeToUtc(date, '00:00:00', timezone).getTime()
     const dayEnd = zonedTimeToUtc(addDays(date, 1), '00:00:00', timezone).getTime()
 
     const dayAppointments = busyRows.filter((a) => {
-      const t = new Date(a.start_at).getTime()
-      return t >= dayStart && t < dayEnd
+      const start = new Date(a.start_at).getTime()
+      const gap = Math.max(slotParams.bufferMinutes, a.buffer_after_minutes ?? 0)
+      return start < dayEnd && start + (a.duration + gap) * MINUTE_MS > dayStart
     })
 
     const dayBlocks = ((timeBlocks ?? []) as TimeBlockRow[]).filter(

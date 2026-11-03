@@ -275,3 +275,33 @@ export function firstOverlap<R extends TimedRecord>(
       .find((r) => start < ms(r.start_at) + r.duration * 60_000 && end > ms(r.start_at)) ?? null
   );
 }
+
+interface ClockRange {
+  start: string;
+  end: string;
+}
+
+const clockMinutes = (time: string) => Number(time.slice(0, 2)) * 60 + Number(time.slice(3, 5));
+
+const minutesClock = (minutes: number) => {
+  const m = ((minutes % 1440) + 1440) % 1440;
+  return `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+};
+
+/** The design's next break: lunch first, then 30 min starting 2 h after the last. */
+export function nextBreak(breaks: readonly ClockRange[]): ClockRange {
+  const last = breaks[breaks.length - 1];
+  if (!last) return { start: '13:00', end: '14:00' };
+  const start = clockMinutes(last.end) + 120;
+  return { start: minutesClock(start), end: minutesClock(start + 30) };
+}
+
+/** Tue–Fri take Monday's hours, in a Monday-first week. */
+export function copyMondayToWeekdays<Day extends { breaks: ClockRange[] }>(
+  days: readonly Day[],
+): Day[] {
+  const monday = days[0]!;
+  return days.map((day, i) =>
+    i >= 1 && i <= 4 ? { ...monday, breaks: monday.breaks.map((b) => ({ ...b })) } : day,
+  );
+}

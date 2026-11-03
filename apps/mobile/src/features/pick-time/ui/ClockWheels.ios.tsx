@@ -2,6 +2,7 @@
 import { Host, HStack, Picker, Text as SwiftText } from '@expo/ui/swift-ui';
 import { clipped, frame, labelsHidden, pickerStyle, tag } from '@expo/ui/swift-ui/modifiers';
 import { StyleSheet } from 'react-native';
+import { useThemeStore } from '@/shared/theme/theme.store';
 import type { ClockWheelsProps } from './ClockWheels.types';
 
 export type { ClockWheelsProps } from './ClockWheels.types';
@@ -11,8 +12,10 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
 export function ClockWheels({ hour, minute, minuteStep, onChange }: ClockWheelsProps) {
   const minutes = Array.from({ length: 60 / minuteStep }, (_, i) => i * minuteStep);
+  // The wheels follow the system unless told otherwise; the app's theme can differ from it.
+  const mode = useThemeStore((state) => state.mode);
   return (
-    <Host style={styles.host}>
+    <Host style={styles.host} colorScheme={mode === 'auto' ? undefined : mode}>
       <HStack spacing={0}>
         <Picker
           selection={hour}
