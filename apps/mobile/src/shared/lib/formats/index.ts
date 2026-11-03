@@ -20,7 +20,10 @@ export interface FormatContext {
 }
 
 /** UTC ISO → localized clock time. */
-export function formatTime(utcIso: string, ctx: Pick<FormatContext, 'zone' | 'timeFormat'>): string {
+export function formatTime(
+  utcIso: string,
+  ctx: Pick<FormatContext, 'zone' | 'timeFormat'>,
+): string {
   const dt = zonedDateTime(utcIso, ctx.zone);
   return dt.toFormat(ctx.timeFormat === 24 ? 'HH:mm' : 'h:mm a');
 }
@@ -47,7 +50,7 @@ export function formatPrice(
   ctx: Pick<FormatContext, 'currency' | 'locale'>,
 ): string {
   try {
-    return new Intl.NumberFormat(ctx.locale, {
+    return numberFormat(ctx.locale, {
       style: 'currency',
       currency: ctx.currency,
       maximumFractionDigits: 2,
@@ -55,6 +58,19 @@ export function formatPrice(
   } catch {
     return `${amount} ${ctx.currency}`;
   }
+}
+
+const NUMBER_FORMATS = new Map<string, Intl.NumberFormat>();
+
+/** Building a formatter is slow on Hermes, and a calendar page asks for hundreds. */
+function numberFormat(locale: string, options: Intl.NumberFormatOptions): Intl.NumberFormat {
+  const key = `${locale}|${JSON.stringify(options)}`;
+  let format = NUMBER_FORMATS.get(key);
+  if (!format) {
+    format = new Intl.NumberFormat(locale, options);
+    NUMBER_FORMATS.set(key, format);
+  }
+  return format;
 }
 
 /**
@@ -78,11 +94,11 @@ export function formatAmount(
 ): string {
   const local = localCurrencyName(ctx.currency, ctx.locale);
   if (local) {
-    const number = new Intl.NumberFormat(ctx.locale, { maximumFractionDigits: 2 }).format(amount);
+    const number = numberFormat(ctx.locale, { maximumFractionDigits: 2 }).format(amount);
     return `${number} ${local}`;
   }
   try {
-    return new Intl.NumberFormat(ctx.locale, {
+    return numberFormat(ctx.locale, {
       style: 'currency',
       currency: ctx.currency,
       minimumFractionDigits: 0,
@@ -98,7 +114,7 @@ export function currencySymbol(currency: string, locale: string): string {
   const local = localCurrencyName(currency, locale);
   if (local) return local;
   try {
-    const parts = new Intl.NumberFormat(locale, { style: 'currency', currency }).formatToParts(0);
+    const parts = numberFormat(locale, { style: 'currency', currency }).formatToParts(0);
     return parts.find((part) => part.type === 'currency')?.value ?? currency;
   } catch {
     return currency;

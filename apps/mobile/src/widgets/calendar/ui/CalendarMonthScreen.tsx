@@ -191,6 +191,7 @@ export function CalendarMonthScreen() {
           initialScrollIndex={MONTHS_PAST}
           initialNumToRender={2}
           windowSize={5}
+          maxToRenderPerBatch={1}
           getItemLayout={(_, i) => ({
             length: sectionHeight(months[i]),
             offset: offsets[i],
@@ -243,7 +244,7 @@ const MonthSection = memo(function MonthSection({
   const { t } = format;
   const { theme } = useUnistyles();
 
-  const marked = useMemo(() => {
+  const fresh = useMemo(() => {
     const barOf = (entry: CalendarEntry): MonthBar => {
       if (entry.visit) {
         const swatch = eventSwatch(entry.visit.color, theme.name);
@@ -279,8 +280,12 @@ const MonthSection = memo(function MonthSection({
         a11y: `${dayTitle(t, day)}, ${daySummary(entries, working || schedule === null, format)}`,
       };
     }
-    return marks as unknown as CalendarProps['markedDates'];
+    return marks;
   }, [month, index, todayKey, schedule, selected, theme, t, format]);
+  // Scrolling loads neighbours and rebuilds the index. The grid is slow to repaint, and a month
+  // whose own days look the same has no reason to.
+  const markedKey = JSON.stringify(fresh);
+  const marked = useMemo(() => JSON.parse(markedKey) as CalendarProps['markedDates'], [markedKey]);
 
   return (
     <View>

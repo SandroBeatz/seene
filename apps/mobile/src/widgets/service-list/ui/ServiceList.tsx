@@ -118,7 +118,8 @@ export function ServiceList() {
         contentInsetAdjustmentBehavior="automatic"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.content}>
-        {services.isPending ? (
+        {/* Without categories the rows would come flat, then jump into their groups. */}
+        {services.isPending || categories.isPending ? (
           <SkeletonList rows={5} />
         ) : total === 0 ? (
           <EmptyState

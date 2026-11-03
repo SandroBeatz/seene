@@ -1,12 +1,16 @@
 /**
  * A grey card of rows the master reorders by holding one (the services of a category,
  * the categories of a direction). A tap opens the row; the order is reported on drop.
+ *
+ * Sortable.Grid is slow to mount, one per card, and would hold the screen's push back by a good
+ * part of a second. So the rows come plain first, and it takes over once the screen has arrived.
  */
 import { useCallback, type ReactNode } from 'react';
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import type { AnimatedRef } from 'react-native-reanimated';
 import Sortable from 'react-native-sortables';
 import { StyleSheet } from 'react-native-unistyles';
+import { useTransitionDone } from '@/shared/lib/navigation/useTransitionDone';
 
 const HOLD_MS = 250;
 
@@ -28,6 +32,7 @@ export function ReorderCard<T extends { id: string }>({
   onReorder,
   footer,
 }: ReorderCardProps<T>) {
+  const sortable = useTransitionDone();
   const renderItem = useCallback(
     ({ item, index }: { item: T; index: number }) => (
       // The row carries its own background, to stay readable while lifted over the others,
@@ -46,20 +51,35 @@ export function ReorderCard<T extends { id: string }>({
   );
   return (
     <View style={styles.card}>
-      <Sortable.Grid
-        columns={1}
-        data={items}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        scrollableRef={scrollableRef}
-        dragActivationDelay={HOLD_MS}
-        activeItemScale={1.02}
-        inactiveItemOpacity={1}
-        overDrag="vertical"
-        onDragEnd={({ data, fromIndex, toIndex }) => {
-          if (fromIndex !== toIndex) onReorder(data.map((item) => item.id));
-        }}
-      />
+      {sortable ? (
+        <Sortable.Grid
+          columns={1}
+          data={items}
+          keyExtractor={(item) => item.id}
+          renderItem={renderItem}
+          scrollableRef={scrollableRef}
+          dragActivationDelay={HOLD_MS}
+          activeItemScale={1.02}
+          inactiveItemOpacity={1}
+          overDrag="vertical"
+          onDragEnd={({ data, fromIndex, toIndex }) => {
+            if (fromIndex !== toIndex) onReorder(data.map((item) => item.id));
+          }}
+        />
+      ) : (
+        items.map((item, index) => (
+          <Pressable
+            key={item.id}
+            onPress={() => onPress(item)}
+            style={[
+              styles.row,
+              index === 0 && styles.first,
+              index === items.length - 1 && !footer && styles.last,
+            ]}>
+            <View style={index > 0 && styles.divided}>{renderRow(item)}</View>
+          </Pressable>
+        ))
+      )}
       {footer ? <View style={styles.footer}>{footer}</View> : null}
     </View>
   );

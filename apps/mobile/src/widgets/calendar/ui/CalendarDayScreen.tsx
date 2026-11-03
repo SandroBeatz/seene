@@ -5,7 +5,7 @@
  * opens the same menu as on "Сегодня"; an empty cell lights up under the finger and
  * starts a new appointment at its time.
  */
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, startTransition, useCallback, useEffect, useMemo, useState } from 'react';
 import { router, Stack } from 'expo-router';
 import { useHeaderHeight } from 'expo-router/react-navigation';
 import { DateTime } from 'luxon';
@@ -293,21 +293,35 @@ export function CalendarDayScreen({ initialDate }: { initialDate?: string }) {
     [otherDays, todayKey, dayEvents, now, nowMinutes],
   );
 
-  const strip = useMemo<WeekStripState>(() => {
+  // Apart from the selection: picking a day repaints every mounted week, and the labels cost.
+  const stripDays = useMemo(() => {
     const working = (day: string) => workMinutes(workdayOf(schedule, day)) !== null;
+    const labels = new Map<string, string>();
     return {
-      selected: date,
-      todayKey,
-      isOff: (day) => schedule !== null && !working(day),
-      hasVisits: (day) => (index.get(day) ?? []).some((e) => e.visit && !e.continued),
-      a11y: (day) =>
-        `${dayTitle(t, day)}, ${daySummary(index.get(day), working(day) || schedule === null, {
-          t,
-          locale,
-          currency,
-        })}`,
+      isOff: (day: string) => schedule !== null && !working(day),
+      hasVisits: (day: string) => (index.get(day) ?? []).some((e) => e.visit && !e.continued),
+      a11y: (day: string) => {
+        let label = labels.get(day);
+        if (label === undefined) {
+          label = `${dayTitle(t, day)}, ${daySummary(
+            index.get(day),
+            working(day) || schedule === null,
+            {
+              t,
+              locale,
+              currency,
+            },
+          )}`;
+          labels.set(day, label);
+        }
+        return label;
+      },
     };
-  }, [date, todayKey, schedule, index, t, locale, currency]);
+  }, [schedule, index, t, locale, currency]);
+  const strip = useMemo<WeekStripState>(
+    () => ({ selected: date, todayKey, ...stripDays }),
+    [date, todayKey, stripDays],
+  );
 
   const actions = useVisitActions({ zone, todayKey, timeFormat, currency, locale });
   const blockActions = useTimeBlockActions();
@@ -442,7 +456,8 @@ export function CalendarDayScreen({ initialDate }: { initialDate?: string }) {
           // Library styles are built once per mount.
           key={theme.name}
           date={date}
-          onDateChanged={setDate}
+          // The swipe's animation comes first; the rest of the screen follows it.
+          onDateChanged={(next) => startTransition(() => setDate(next))}
           timelineLeftInset={TIME_INSET}
           theme={{ calendarBackground: theme.colors.bg.canvas }}>
           <View style={styles.weekdays}>
