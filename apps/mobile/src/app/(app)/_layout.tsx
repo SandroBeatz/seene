@@ -116,6 +116,10 @@ export default function AppLayout() {
         <Stack.Screen name="settings/messages" options={{ title: t('menuHome.messages.title') }} />
         <Stack.Screen name="(modals)/messages/[kind]" options={sheet} />
         <Stack.Screen name="(modals)/messages/language" options={fitSheet} />
+        <Stack.Screen name="settings/products" options={{ title: t('menuHome.products.title') }} />
+        <Stack.Screen name="(modals)/product/new" options={sheet} />
+        <Stack.Screen name="(modals)/product/[productId]" options={sheet} />
+        <Stack.Screen name="(modals)/product/services" options={sheet} />
         <Stack.Screen name="settings/expenses" options={{ title: t('expenses.title') }} />
         <Stack.Screen name="(modals)/appointment/[appointmentId]/index" options={sheet} />
         <Stack.Screen name="(modals)/appointment/[appointmentId]/note" options={sheet} />

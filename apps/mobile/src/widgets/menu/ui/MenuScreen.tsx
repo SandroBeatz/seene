@@ -12,6 +12,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { useMasterProfileQuery, useMasterSettingsQuery } from '@/entities/master';
 import { usePortfolioQuery } from '@/entities/portfolio';
+import { useProductsQuery } from '@/entities/product';
 import { useServicesQuery } from '@/entities/service';
 import { useUserId } from '@/entities/session';
 import { appVersionLabel } from '@/shared/lib/app-version';
@@ -37,6 +38,7 @@ export function MenuScreen({ moneySection }: MenuScreenProps) {
   const services = useServicesQuery(userId);
   const settings = useMasterSettingsQuery(userId);
   const portfolio = usePortfolioQuery(userId);
+  const products = useProductsQuery(userId);
   const servicesCount = services.data?.filter((service) => service.is_active).length;
 
   return (
@@ -62,6 +64,12 @@ export function MenuScreen({ moneySection }: MenuScreenProps) {
             title={t('menuHome.services')}
             value={servicesCount === undefined ? undefined : String(servicesCount)}
             onPress={() => router.push('/settings/services')}
+          />
+          <MenuRow
+            icon="services"
+            title={t('menuHome.products.title')}
+            value={products.data ? String(products.data.length) : undefined}
+            onPress={() => router.push('/settings/products')}
           />
           <MenuRow
             icon="gallery"
