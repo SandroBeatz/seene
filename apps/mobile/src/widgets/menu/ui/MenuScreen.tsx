@@ -106,6 +106,12 @@ export function MenuScreen({ moneySection }: MenuScreenProps) {
 
         <MenuGroup>
           <MenuRow
+            icon="verified"
+            title={t('menuHome.tariffs.title')}
+            value={t('menuHome.tariffs.currentPlan')}
+            onPress={() => router.push('/settings/tariffs')}
+          />
+          <MenuRow
             icon="settings"
             title={t('menuHome.settings')}
             onPress={() => router.push('/settings/preferences')}

@@ -1841,6 +1841,49 @@
       "cancelHours_many": "{{count}} hours before",
       "cancelHours_other": "{{count}} hours before",
       "servicesHint": "Clients won't see services that are off. You can still book them by hand."
+    },
+    "tariffs": {
+      "title": "Plan",
+      "currentPlan": "Free",
+      "periodA11y": "Billing period",
+      "month": "Month",
+      "year": "Year −20%",
+      "per": {
+        "month": "per month",
+        "year": "per year"
+      },
+      "current": "Your plan",
+      "soon": "Coming soon",
+      "footnote": "Prices for Kyrgyzstan. Paid plans are coming soon; until then every feature is free.",
+      "free": {
+        "title": "Free",
+        "note": "Forever, no card",
+        "f1": "Calendar and bookings",
+        "f2": "Clients and visit history",
+        "f3": "Online booking page",
+        "f4": "Manual WhatsApp reminders",
+        "m1": "Analytics and expenses",
+        "m2": "Products and portfolio"
+      },
+      "pro": {
+        "title": "Pro",
+        "badge": "Popular",
+        "note": "For a master who is growing",
+        "f1": "Everything in Free",
+        "f2": "Analytics, expenses, payment methods",
+        "f3": "Products, supplies and stock",
+        "f4": "Portfolio on the booking page",
+        "f5": "Reminder templates and broadcasts",
+        "f6": "No Seene logo on the page"
+      },
+      "team": {
+        "title": "Team",
+        "note": "For a small studio",
+        "f1": "Everything in Pro",
+        "f2": "Up to 5 masters in one account",
+        "f3": "Shared calendar and roles",
+        "f4": "Analytics per master"
+      }
     }
   }
 }

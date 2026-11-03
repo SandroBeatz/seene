@@ -1848,6 +1848,49 @@
       "cancelHours_many": "{{count}} heures avant",
       "cancelHours_other": "{{count}} heures avant",
       "servicesHint": "Les clients ne verront pas les services désactivés. Vous pouvez toujours les inscrire vous-même."
+    },
+    "tariffs": {
+      "title": "Forfait",
+      "currentPlan": "Gratuit",
+      "periodA11y": "Période de paiement",
+      "month": "Mois",
+      "year": "Année −20 %",
+      "per": {
+        "month": "par mois",
+        "year": "par an"
+      },
+      "current": "Votre forfait",
+      "soon": "Bientôt",
+      "footnote": "Prix pour le Kirghizistan. Les forfaits payants arrivent bientôt ; d'ici là, toutes les fonctions sont gratuites.",
+      "free": {
+        "title": "Gratuit",
+        "note": "Pour toujours, sans carte",
+        "f1": "Calendrier et réservations",
+        "f2": "Clients et historique des visites",
+        "f3": "Page de réservation en ligne",
+        "f4": "Rappels WhatsApp manuels",
+        "m1": "Analyses et dépenses",
+        "m2": "Produits et portfolio"
+      },
+      "pro": {
+        "title": "Pro",
+        "badge": "Populaire",
+        "note": "Pour un pro qui se développe",
+        "f1": "Tout le forfait gratuit",
+        "f2": "Analyses, dépenses, moyens de paiement",
+        "f3": "Produits, fournitures et stock",
+        "f4": "Portfolio sur la page de réservation",
+        "f5": "Modèles de rappels et envois groupés",
+        "f6": "Sans logo Seene sur la page"
+      },
+      "team": {
+        "title": "Team",
+        "note": "Pour un petit studio",
+        "f1": "Tout le forfait Pro",
+        "f2": "Jusqu'à 5 pros dans un compte",
+        "f3": "Calendrier partagé et rôles",
+        "f4": "Analyses par personne"
+      }
     }
   }
 }
