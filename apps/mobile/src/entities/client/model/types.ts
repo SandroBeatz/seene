@@ -17,6 +17,7 @@ export interface ClientCardDto {
   birth_month?: number | null;
   notes?: string | null;
   is_favorite?: boolean;
+  language?: string | null;
 }
 
 export type CreateClientDto = ClientCardDto;

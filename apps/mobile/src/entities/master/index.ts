@@ -2,6 +2,7 @@
  * onboarding feature composes them with the session store. */
 export { defaultTimeFormatForCountry, type TimeFormat } from './config/time-format';
 export { masterPageLabel, masterPageUrl } from './config/page-url';
+export { addressLine } from './lib/address';
 export { completeOnboarding, importAvatar } from './api/master.api';
 export { normalizeUsernameInput } from './lib/username-input';
 export { useUsernameStatus, type UsernameStatus } from './model/username';

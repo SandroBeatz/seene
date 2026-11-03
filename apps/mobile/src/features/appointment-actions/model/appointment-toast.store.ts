@@ -6,14 +6,14 @@
 import { create } from 'zustand';
 
 export interface AppointmentToastData {
-  /** "Запись создана" / "Запись перенесена". */
+  /** "Запись создана" / "Запись перенесена" / "Запись отменена". */
   title: string;
   /** "Айгерим · пт 31 окт, 11:00–13:00". */
   summary: string;
   /** Canonical digits for WhatsApp; null when the client has no number. */
   phone: string | null;
-  /** The ready text for the client. */
-  message: string;
+  /** The text for the client, made when the master sends it: it may mint a personal link. */
+  message: () => Promise<string>;
 }
 
 interface AppointmentToastState {

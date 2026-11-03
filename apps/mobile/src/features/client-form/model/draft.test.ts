@@ -38,6 +38,7 @@ describe('cardFromDraft', () => {
         birth_month: null,
         notes: null,
         is_favorite: false,
+        language: null,
       },
     });
     expect(cardFromDraft(draft({ firstName: ' ' }))).toEqual({ ok: false, error: 'name' });

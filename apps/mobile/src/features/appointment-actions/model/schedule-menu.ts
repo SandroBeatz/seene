@@ -31,6 +31,7 @@ export type ScheduleMenuAction =
   | 'reschedule'
   | 'propose_time'
   | 'book_again'
+  | 'ask_review'
   | 'whatsapp'
   | 'call'
   | 'open_client'
@@ -60,7 +61,7 @@ export const SCHEDULE_MENU: Record<AppointmentPhase, ScheduleMenu> = {
     regular: ['complete', 'edit', 'reschedule', ...CONTACT],
     danger: ['no_show', 'cancel'],
   },
-  completed: NONE,
+  completed: { regular: ['ask_review', ...NONE.regular], danger: [] },
   cancelled: NONE,
   no_show: NONE,
   expired: NONE,
@@ -73,6 +74,7 @@ export const MENU_ICON: Record<string, IconName> = {
   reschedule: 'reschedule',
   propose_time: 'send',
   book_again: 'repeat',
+  ask_review: 'starOutline',
   whatsapp: 'whatsapp',
   call: 'call',
   open_client: 'userCircle',

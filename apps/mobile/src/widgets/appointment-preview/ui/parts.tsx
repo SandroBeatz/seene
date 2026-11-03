@@ -88,6 +88,8 @@ export interface ClientCardProps {
   onCall: () => void;
   onWhatsApp: () => void;
   onRemind: () => void;
+  /** A finished visit: asks for a review instead of reminding. */
+  onAskReview?: () => void;
 }
 
 export function ClientCard({
@@ -97,6 +99,7 @@ export function ClientCard({
   onCall,
   onWhatsApp,
   onRemind,
+  onAskReview,
 }: ClientCardProps) {
   const { t } = useTranslation();
   const name = client ? [client.first_name, client.last_name].filter(Boolean).join(' ') : '…';
@@ -125,7 +128,11 @@ export function ClientCard({
       <View style={styles.quick}>
         <QuickButton icon="call" label={t('preview.call')} onPress={onCall} />
         <QuickButton icon="whatsapp" label="WhatsApp" onPress={onWhatsApp} />
-        <QuickButton icon="bell" label={t('preview.remind')} onPress={onRemind} />
+        {onAskReview ? (
+          <QuickButton icon="starOutline" label={t('preview.askReview')} onPress={onAskReview} />
+        ) : (
+          <QuickButton icon="bell" label={t('preview.remind')} onPress={onRemind} />
+        )}
       </View>
     </View>
   );

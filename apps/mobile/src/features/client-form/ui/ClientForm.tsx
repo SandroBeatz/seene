@@ -21,6 +21,7 @@ import {
 import { useUserId } from '@/entities/session';
 import { normalizeError } from '@/shared/api/errors';
 import { AVATAR_COLOR_KEYS, AVATAR_GRADIENTS } from '@/shared/config/palettes';
+import { LOCALE_NATIVE_NAMES, SUPPORTED_LOCALES } from '@/shared/lib/i18n';
 import { dialCode, resolvePhoneInput, type CountryCode } from '@/shared/lib/phone';
 import { pickPhoneBookContact } from '@/shared/lib/phone-book';
 import {
@@ -34,6 +35,7 @@ import {
   Text,
   VipBadge,
   type IconName,
+  Chip,
 } from '@/shared/ui';
 import {
   cardFromDraft,
@@ -348,6 +350,24 @@ export function ClientForm({ client, defaultCountry, prefill, onCreated }: Clien
             ) : null}
           </View>
 
+          <View style={styles.language}>
+            <Text variant="caption" color="tertiary">
+              {t('clients.form.language')}
+            </Text>
+            <View style={styles.languageChips}>
+              {[null, ...SUPPORTED_LOCALES].map((code) => (
+                <Chip
+                  key={code ?? 'auto'}
+                  size="sm"
+                  shape="pill"
+                  label={code ? LOCALE_NATIVE_NAMES[code] : t('clients.form.languageAuto')}
+                  selected={draft.language === code}
+                  onPress={() => set('language', code)}
+                />
+              ))}
+            </View>
+          </View>
+
           <Pressable
             accessibilityRole="switch"
             accessibilityState={{ checked: draft.vip }}
@@ -525,6 +545,8 @@ const styles = StyleSheet.create((theme) => ({
     borderRightWidth: 1,
     borderRightColor: theme.colors.border.default,
   },
+  language: { gap: theme.space[2] },
+  languageChips: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
   phoneInput: { flex: 1, justifyContent: 'center', gap: 2, paddingHorizontal: theme.space[3.5] },
   messenger: {
     height: FIELD_HEIGHT,

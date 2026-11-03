@@ -9,7 +9,11 @@ import { useTranslation } from 'react-i18next';
 import { Alert, Linking } from 'react-native';
 import { useDismissAttentionMutation } from '@/entities/attention';
 import { useUserId } from '@/entities/session';
-import { useVisitActions, type ScheduleMenuAction } from '@/features/appointment-actions';
+import {
+  useClientMessage,
+  useVisitActions,
+  type ScheduleMenuAction,
+} from '@/features/appointment-actions';
 import type { AppLocale } from '@/shared/lib/i18n';
 import { phoneCallUrl } from '@/shared/lib/phone';
 import { reminderKey, type AttentionAction, type AttentionMenuAction } from './attention';
@@ -36,6 +40,7 @@ export function useTodayActions(input: TodayActionsInput) {
   const { t } = useTranslation();
   const userId = useUserId() ?? '';
   const actions = useVisitActions(input);
+  const composeMessage = useClientMessage();
   const dismissMutation = useDismissAttentionMutation(userId);
 
   const dismiss = (key: string, until: string | null) =>
@@ -47,10 +52,12 @@ export function useTodayActions(input: TodayActionsInput) {
 
   const invite = (card: AttentionCard) => {
     if (card.kind !== 'recall' || !card.client) return;
-    actions.openWhatsApp(
-      card.client.phone ?? '',
-      t('today.attention.recallMessage', { name: card.client.first_name }),
-    );
+    const { client } = card;
+    void composeMessage({
+      kind: 'recall',
+      clientName: client.first_name,
+      clientLanguage: client.language,
+    }).then((text) => actions.openWhatsApp(client.phone ?? '', text));
     dismiss(card.key, inDays(INVITED_DAYS));
   };
 

@@ -139,6 +139,17 @@ export default defineEventHandler(async (event) => {
 
   const { created, booking } = parseBookingRpcResult(data)
 
+  // Only fills in what the master hasn't chosen; the booking stands either way.
+  const language = clientLanguageFromHeader(getHeader(event, 'accept-language'))
+  if (created && language) {
+    await supabase
+      .from('client')
+      .update({ language })
+      .eq('user_id', profile.user_id)
+      .eq('phone', phone)
+      .is('language', null)
+  }
+
   // The confirmation goes once, for the booking just made (not on a repeated tap).
   const linkUrl =
     created && profile

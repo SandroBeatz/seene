@@ -13,6 +13,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-na
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { getAppointmentPhase } from '@/entities/appointment';
 import { clientName } from '@/entities/client';
+import { useClientMessage } from '@/features/appointment-actions';
 import { useDeleteClient } from '@/features/client-form';
 import { errorMessageKey, normalizeError } from '@/shared/api/errors';
 import { formatAmount, formatTime } from '@/shared/lib/formats';
@@ -36,6 +37,7 @@ const NAME_SCROLLED_AWAY = 56;
 
 export function ClientProfile({ clientId }: { clientId: string }) {
   const { t, i18n } = useTranslation();
+  const composeMessage = useClientMessage();
   const { theme } = useUnistyles();
   const locale = isSupportedLocale(i18n.language) ? i18n.language : 'en';
   const profile = useClientProfile(clientId);
@@ -275,7 +277,11 @@ export function ClientProfile({ clientId }: { clientId: string }) {
                   date: dayMonth(stats.recallAt),
                 })}
                 onPress={() =>
-                  openWhatsApp(t('clients.list.recallMessage', { name: client.first_name }))
+                  void composeMessage({
+                    kind: 'recall',
+                    clientName: client.first_name,
+                    clientLanguage: client.language,
+                  }).then(openWhatsApp)
                 }
                 style={({ pressed }) => [styles.recall, pressed && styles.pressed]}>
                 <View style={styles.recallIcon}>

@@ -34,6 +34,8 @@ export interface ClientDraft {
   birthday: { day: number; month: number } | null;
   notes: string;
   vip: boolean;
+  /** Messages to this client; null = the master's language. */
+  language: string | null;
 }
 
 export type DraftError = 'name' | 'phone' | Messenger | 'birthday';
@@ -49,6 +51,7 @@ export function emptyDraft(country: CountryCode, avatarColor: AvatarColorKey): C
     birthday: null,
     notes: '',
     vip: false,
+    language: null,
   };
 }
 
@@ -74,6 +77,7 @@ export function draftFromClient(
         : null,
     notes: client.notes ?? '',
     vip: client.is_favorite,
+    language: client.language,
   };
 }
 
@@ -152,6 +156,7 @@ export function cardFromDraft(
       birth_month: draft.birthday?.month ?? null,
       notes: blankToNull(draft.notes),
       is_favorite: draft.vip,
+      language: draft.language,
     },
   };
 }
