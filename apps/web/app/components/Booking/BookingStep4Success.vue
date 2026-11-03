@@ -31,6 +31,7 @@ const serviceName = computed(() => booking.value?.services.map((s) => s.name).jo
 const serviceDetails = computed(() => {
   const list = booking.value?.services ?? []
   const minutes = list.reduce((sum, s) => sum + s.duration, 0)
+  if (!props.data.settings.booking_show_prices) return formatDuration(minutes)
   const amount = formatPrice(list.reduce((sum, s) => sum + priceToNumber(s.price), 0))
   const price = services.value.some((s) => s.price_from)
     ? $ts('booking.service.priceFrom', { price: amount })

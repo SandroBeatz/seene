@@ -16,7 +16,9 @@ export function useBookingSummary(data: MaybeRefOrGetter<MasterPageData>) {
 
   const name = computed(() => services.value.map((s) => s.name).join(' + '))
 
+  /** Empty when the master hides prices. */
   const priceLabel = computed(() => {
+    if (!page.value.settings.booking_show_prices) return ''
     const amount = formatPrice(price.value)
     return services.value.some((s) => s.price_from)
       ? $ts('booking.service.priceFrom', { price: amount })
@@ -24,7 +26,9 @@ export function useBookingSummary(data: MaybeRefOrGetter<MasterPageData>) {
   })
 
   /** "2 h · 800 som" */
-  const details = computed(() => `${formatDuration(duration.value)} · ${priceLabel.value}`)
+  const details = computed(() =>
+    [formatDuration(duration.value), priceLabel.value].filter(Boolean).join(' · ')
+  )
 
   /** "1 h 30 min · 2 services" */
   const count = computed(() => {

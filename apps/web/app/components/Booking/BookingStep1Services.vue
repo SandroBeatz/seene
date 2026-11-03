@@ -75,7 +75,11 @@ function priceLabel(service: MasterService) {
           <span class="text-[13px] text-muted">{{ formatDuration(service.duration) }}</span>
         </span>
         <span class="flex shrink-0 flex-col items-end gap-1.5">
-          <span class="text-[15px] font-semibold whitespace-nowrap">{{ priceLabel(service) }}</span>
+          <span
+            v-if="data.settings.booking_show_prices"
+            class="text-[15px] font-semibold whitespace-nowrap"
+            >{{ priceLabel(service) }}</span
+          >
           <span
             class="flex size-5.5 items-center justify-center rounded-[7px]"
             :class="isSelected(service.id) ? 'bg-primary text-inverted' : 'border-2 border-default'"

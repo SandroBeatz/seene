@@ -32,7 +32,10 @@ const { $localePath } = useI18n()
         class="flex min-w-0 flex-1 flex-col gap-0.5 text-start text-highlighted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
         @click="summaryTap && $emit('summary')"
       >
-        <span class="font-display text-xl leading-tight font-bold tracking-[-0.02em] whitespace-nowrap">
+        <span
+          v-if="summary.price"
+          class="font-display text-xl leading-tight font-bold tracking-[-0.02em] whitespace-nowrap"
+        >
           {{ summary.price }}
         </span>
         <span class="truncate text-[13px] text-muted">{{ summary.details }}</span>

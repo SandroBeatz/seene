@@ -156,6 +156,8 @@
         "price": "Prix",
         "knownHint": "Votre numéro est déjà confirmé sur ce téléphone, pas besoin de code. Un rappel arrivera sur WhatsApp la veille.",
         "firstName": "Votre prénom",
+        "comment": "Commentaire pour la professionnelle",
+        "commentPlaceholder": "Ce qu’il faut savoir avant la visite",
         "reminders": "Me rappeler le rendez-vous",
         "remindersHint": "sur WhatsApp la veille",
         "marketing": "M’informer des créneaux libres et des offres de {name}",

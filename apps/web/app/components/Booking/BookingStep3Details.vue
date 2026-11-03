@@ -45,7 +45,10 @@ const bookingState = useBookingState(username.value)
 const queryCache = useQueryCache()
 const savedPhone = useSavedPhone()
 const summary = useBookingSummary(() => props.data)
-const { formatTime } = useMasterFormat(() => props.data.settings, () => props.data.timezone)
+const { formatTime } = useMasterFormat(
+  () => props.data.settings,
+  () => props.data.timezone
+)
 
 const screen = ref<Screen>('phone')
 const error = ref('')
@@ -344,6 +347,9 @@ async function createBooking() {
         phone: bookingState.value.phone,
         ...(otpToken.value ? { otp_token: otpToken.value } : {}),
         ...(screen.value === 'first' ? { first_name: firstName.value.trim() } : {}),
+        ...(props.data.settings.booking_allow_comment && bookingState.value.note.trim()
+          ? { note: bookingState.value.note.trim() }
+          : {}),
         reminders_consent: bookingState.value.remindersConsent,
         marketing_consent: bookingState.value.marketingConsent
       }
@@ -482,7 +488,9 @@ defineExpose({ back })
         class="flex items-start gap-2.5 rounded-[14px] bg-muted p-3.5 text-[13px] leading-normal text-muted"
       >
         <UIcon name="i-lucide-lock" class="mt-0.5 size-4 shrink-0" />
-        <span>{{ $ts('booking.steps.confirm.privacyNote', { name: data.profile.first_name }) }}</span>
+        <span>{{
+          $ts('booking.steps.confirm.privacyNote', { name: data.profile.first_name })
+        }}</span>
       </div>
     </div>
 
@@ -529,15 +537,19 @@ defineExpose({ back })
           </dt>
           <dd class="text-end font-semibold text-highlighted">{{ summary.name.value }}</dd>
         </div>
-        <div class="flex justify-between gap-3 border-b border-default py-3">
+        <div
+          class="flex justify-between gap-3 py-3"
+          :class="{ 'border-b border-default': summary.priceLabel.value }"
+        >
           <dt class="text-muted">{{ $ts('booking.steps.confirm.when') }}</dt>
           <dd class="font-semibold text-highlighted">{{ whenShort }}</dd>
         </div>
-        <div class="flex justify-between gap-3 py-3">
+        <div v-if="summary.priceLabel.value" class="flex justify-between gap-3 py-3">
           <dt class="text-muted">{{ $ts('booking.steps.confirm.price') }}</dt>
           <dd class="font-semibold text-highlighted">{{ summary.priceLabel.value }}</dd>
         </div>
       </dl>
+      <BookingCommentField v-if="data.settings.booking_allow_comment" v-model="bookingState.note" />
       <p v-if="screen === 'known'" class="text-[13px] leading-normal text-muted">
         {{ $ts('booking.steps.confirm.knownHint') }}
       </p>
@@ -545,7 +557,11 @@ defineExpose({ back })
     </div>
 
     <!-- After the code: a new client -->
-    <div v-else-if="screen === 'first'" key="first" class="seene-reveal flex flex-col gap-4.5 px-5 pt-2">
+    <div
+      v-else-if="screen === 'first'"
+      key="first"
+      class="seene-reveal flex flex-col gap-4.5 px-5 pt-2"
+    >
       <div class="flex flex-col gap-2">
         <h1 class="font-display text-[26px] font-bold tracking-[-0.03em] text-highlighted">
           {{ $ts('booking.steps.confirm.firstTitle') }}
@@ -579,6 +595,7 @@ defineExpose({ back })
           {{ $ts('booking.errors.nameRequired') }}
         </p>
       </div>
+      <BookingCommentField v-if="data.settings.booking_allow_comment" v-model="bookingState.note" />
       <BookingReminderSwitch v-model="bookingState.remindersConsent" />
       <UCheckbox
         v-model="bookingState.marketingConsent"

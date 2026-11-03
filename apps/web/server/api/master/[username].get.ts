@@ -22,6 +22,9 @@ const DEFAULT_SETTINGS: MasterSettings = {
   page_accent: DEFAULT_PAGE_ACCENT,
   booking_horizon_days: 14,
   cancel_window_hours: 12,
+  allow_client_reschedule: true,
+  booking_show_prices: true,
+  booking_allow_comment: true,
   vacation_from: null,
   vacation_until: null
 }
@@ -42,6 +45,9 @@ type MasterSettingsRow = {
   page_accent: string | null
   booking_horizon_days: number | null
   cancel_window_hours: number | null
+  allow_client_reschedule: boolean | null
+  booking_show_prices: boolean | null
+  booking_allow_comment: boolean | null
 }
 
 /**
@@ -70,6 +76,10 @@ function resolveSettings(row: MasterSettingsRow | null): MasterSettings {
     page_accent: row.page_accent ?? DEFAULT_SETTINGS.page_accent,
     booking_horizon_days: row.booking_horizon_days ?? DEFAULT_SETTINGS.booking_horizon_days,
     cancel_window_hours: row.cancel_window_hours ?? DEFAULT_SETTINGS.cancel_window_hours,
+    allow_client_reschedule:
+      row.allow_client_reschedule ?? DEFAULT_SETTINGS.allow_client_reschedule,
+    booking_show_prices: row.booking_show_prices ?? DEFAULT_SETTINGS.booking_show_prices,
+    booking_allow_comment: row.booking_allow_comment ?? DEFAULT_SETTINGS.booking_allow_comment,
     vacation_from: null,
     vacation_until: null
   }
@@ -137,7 +147,7 @@ export default defineEventHandler(async (event) => {
     supabase
       .from('master_settings')
       .select(
-        'language, currency, time_format, date_format, online_booking_enabled, booking_default_status, booking_buffer_minutes, booking_min_notice_minutes, calendar_slot_step_minutes, page_theme, page_accent, booking_horizon_days, cancel_window_hours'
+        'language, currency, time_format, date_format, online_booking_enabled, booking_default_status, booking_buffer_minutes, booking_min_notice_minutes, calendar_slot_step_minutes, page_theme, page_accent, booking_horizon_days, cancel_window_hours, allow_client_reschedule, booking_show_prices, booking_allow_comment'
       )
       .eq('user_id', profile.user_id)
       .maybeSingle(),

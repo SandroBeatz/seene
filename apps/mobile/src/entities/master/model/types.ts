@@ -129,10 +129,33 @@ export type MasterProfilePatch = Partial<
 export type MasterImageKind = 'avatar' | 'cover';
 
 /** Display settings (`getMasterSettings`). */
+/** What "Онлайн-запись" reads and writes, besides the step it shares with the calendar. */
+type BookingSettingsColumn =
+  | 'online_booking_enabled'
+  | 'booking_default_status'
+  | 'booking_min_notice_minutes'
+  | 'booking_horizon_days'
+  | 'booking_buffer_minutes'
+  | 'cancel_window_hours'
+  | 'allow_client_reschedule'
+  | 'booking_show_prices'
+  | 'booking_allow_comment';
+
 export type MasterSettings = Pick<
   SettingsRow,
-  'currency' | 'time_format' | 'date_format' | 'calendar_slot_step_minutes' | 'language' | 'theme'
+  | 'currency'
+  | 'time_format'
+  | 'date_format'
+  | 'calendar_slot_step_minutes'
+  | 'language'
+  | 'theme'
+  | BookingSettingsColumn
 >;
 
 /** What the master changes on the settings screen. */
-export type MasterSettingsPatch = Partial<Pick<SettingsRow, 'currency' | 'language' | 'theme'>>;
+export type MasterSettingsPatch = Partial<
+  Pick<
+    SettingsRow,
+    'currency' | 'language' | 'theme' | 'calendar_slot_step_minutes' | BookingSettingsColumn
+  >
+>;

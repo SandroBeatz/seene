@@ -95,7 +95,10 @@ function priceLabel(service: MasterService) {
               {{ service.name }}
             </p>
             <p class="text-[13px] text-muted">
-              {{ formatDuration(service.duration) }} · {{ priceLabel(service) }}
+              {{ formatDuration(service.duration)
+              }}<template v-if="data.settings.booking_show_prices">
+                · {{ priceLabel(service) }}</template
+              >
             </p>
           </div>
 
