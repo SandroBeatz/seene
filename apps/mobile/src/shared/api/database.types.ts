@@ -980,6 +980,7 @@ export type Database = {
       }
       stock_movement: {
         Row: {
+          amount: number | null
           created_at: string
           delta: number
           expense_id: string | null
@@ -990,6 +991,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          amount?: number | null
           created_at?: string
           delta: number
           expense_id?: string | null
@@ -1000,6 +1002,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          amount?: number | null
           created_at?: string
           delta?: number
           expense_id?: string | null
@@ -1237,12 +1240,21 @@ export type Database = {
         Returns: undefined
       }
       reorder_services: { Args: { p_ids: string[] }; Returns: undefined }
+      restock_product: {
+        Args: {
+          p_id: string
+          p_quantity: number
+          p_to_expense: boolean
+          p_today: string
+          p_total?: number
+        }
+        Returns: undefined
+      }
       roll_recurring_expenses: { Args: never; Returns: number }
       save_product: {
         Args: {
           p_buy_price?: number
           p_content_unit?: string
-          p_expense_on_restock: boolean
           p_id?: string
           p_low_stock: number
           p_name: string
@@ -1250,7 +1262,6 @@ export type Database = {
           p_sell_price?: number
           p_services: Json
           p_stock_delta: number
-          p_today: string
           p_type: string
           p_unit: string
         }

@@ -1,6 +1,5 @@
 /** A new product or an existing one (design AppProdNew, AppProdEdit). */
 import { router, useLocalSearchParams } from 'expo-router';
-import { DateTime } from 'luxon';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, View } from 'react-native';
@@ -76,7 +75,7 @@ export function ProductSheet() {
 
 function ProductForm({ product, userId }: { product?: Product; userId: string }) {
   const { t } = useTranslation();
-  const { zone, currencyLabel, money, number } = useMoneyContext(userId);
+  const { currencyLabel, money, number } = useMoneyContext(userId);
   const services = useServicesQuery(userId);
   const save = useSaveProductMutation(userId);
   const remove = useDeleteProductMutation(userId);
@@ -93,7 +92,6 @@ function ProductForm({ product, userId }: { product?: Product; userId: string })
   const [lowEdit, setLowEdit] = useState<string | null>(null);
   const [buy, setBuy] = useState(product?.buy_price?.toString() ?? '');
   const [sell, setSell] = useState(product?.sell_price?.toString() ?? '');
-  const [toExpense, setToExpense] = useState(product?.expense_on_restock ?? true);
 
   const links = useProductLinks((s) => s.links);
   const beginLinks = useProductLinks((s) => s.begin);
@@ -145,7 +143,6 @@ function ProductForm({ product, userId }: { product?: Product; userId: string })
         buyPrice: buyValue,
         // Hidden on a product for work, and kept in case it goes on sale again.
         sellPrice: forSale ? sellValue : (product?.sell_price ?? null),
-        expenseOnRestock: toExpense,
         // Content added or removed changes what the amounts mean, as with the stock. What was
         // typed after that is already in the new unit.
         services: Object.entries(links).map(([service_id, quantity]) => {
@@ -157,7 +154,6 @@ function ProductForm({ product, userId }: { product?: Product; userId: string })
               : amount,
           };
         }),
-        today: DateTime.now().setZone(zone).toISODate() ?? '',
       },
       options,
     );
@@ -309,6 +305,17 @@ function ProductForm({ product, userId }: { product?: Product; userId: string })
         />
       </GroupedCard>
 
+      {product ? (
+        <Button
+          variant="secondary"
+          label={t('menuHome.products.restock')}
+          onPress={() =>
+            router.push({ pathname: '/product/restock', params: { productId: product.id } })
+          }
+          fullWidth
+        />
+      ) : null}
+
       <View style={styles.prices}>
         <View style={styles.grow}>
           <Input
@@ -346,19 +353,6 @@ function ProductForm({ product, userId }: { product?: Product; userId: string })
               pathname: '/product/services',
               params: { unit: packNow !== null ? contentUnit : unit },
             })
-          }
-        />
-        <ListItem
-          size="menu"
-          inset={false}
-          title={t('menuHome.products.toExpense')}
-          subtitle={t('menuHome.products.toExpenseHint')}
-          right={
-            <Switch
-              value={toExpense}
-              onValueChange={setToExpense}
-              accessibilityLabel={t('menuHome.products.toExpense')}
-            />
           }
         />
       </GroupedCard>

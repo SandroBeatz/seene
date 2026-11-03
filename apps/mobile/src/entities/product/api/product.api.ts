@@ -1,6 +1,6 @@
 /** Product api. Saving goes through one RPC: the stock moves together with its history. */
 import { supabase } from '@/shared/api/supabase';
-import type { Product, SaveProductDto } from '../model/types';
+import type { Product, RestockProductDto, SaveProductDto } from '../model/types';
 
 export async function getProducts(userId: string): Promise<Product[]> {
   const { data, error } = await supabase
@@ -24,10 +24,34 @@ export async function saveProduct(dto: SaveProductDto): Promise<string> {
     p_content_unit: dto.contentUnit ?? undefined,
     p_buy_price: dto.buyPrice ?? undefined,
     p_sell_price: dto.sellPrice ?? undefined,
-    p_expense_on_restock: dto.expenseOnRestock,
     p_services: dto.services,
+  });
+  if (error) throw error;
+  return data;
+}
+
+export async function restockProduct(dto: RestockProductDto): Promise<void> {
+  const { error } = await supabase.rpc('restock_product', {
+    p_id: dto.id,
+    p_quantity: dto.quantity,
+    p_total: dto.total ?? undefined,
+    p_to_expense: dto.toExpense,
     p_today: dto.today,
   });
+  if (error) throw error;
+}
+
+/** Purchases since a moment: what the screen's month numbers add up. */
+export async function getPurchases(
+  userId: string,
+  from: string,
+): Promise<{ amount: number | null; created_at: string }[]> {
+  const { data, error } = await supabase
+    .from('stock_movement')
+    .select('amount, created_at')
+    .eq('user_id', userId)
+    .eq('reason', 'restock')
+    .gte('created_at', from);
   if (error) throw error;
   return data;
 }

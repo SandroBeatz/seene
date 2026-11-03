@@ -33,8 +33,17 @@ export interface SaveProductDto {
   packSize: number;
   buyPrice: number | null;
   sellPrice: number | null;
-  expenseOnRestock: boolean;
   services: { service_id: string; quantity: number }[];
-  /** The master's day, for the restock's expense. */
+}
+
+/** A purchase: "Пополнить". */
+export interface RestockProductDto {
+  id: string;
+  /** Stored units, as the stock is: ml for a bottle used in parts. */
+  quantity: number;
+  /** What it cost in all. Null: not given, and not counted as spent. */
+  total: number | null;
+  toExpense: boolean;
+  /** The master's day, for the expense. */
   today: string;
 }

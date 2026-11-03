@@ -121,6 +121,7 @@ export default function AppLayout() {
         <Stack.Screen name="(modals)/product/new" options={sheet} />
         <Stack.Screen name="(modals)/product/[productId]" options={sheet} />
         <Stack.Screen name="(modals)/product/services" options={sheet} />
+        <Stack.Screen name="(modals)/product/restock" options={sheet} />
         <Stack.Screen name="settings/expenses" options={{ title: t('expenses.title') }} />
         <Stack.Screen name="(modals)/appointment/[appointmentId]/index" options={sheet} />
         <Stack.Screen name="(modals)/appointment/[appointmentId]/note" options={sheet} />
