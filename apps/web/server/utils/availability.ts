@@ -32,6 +32,7 @@ export async function loadDailySlots({
   settings,
   dates,
   durationMinutes,
+  visitBufferMinutes = 0,
   holderHash = null,
   nowMs = Date.now()
 }: {
@@ -40,6 +41,7 @@ export async function loadDailySlots({
   settings: SlotSettings
   dates: string[]
   durationMinutes: number
+  visitBufferMinutes?: number
   holderHash?: string | null
   nowMs?: number
 }): Promise<DailySlots[]> {
@@ -59,7 +61,7 @@ export async function loadDailySlots({
   ] = await Promise.all([
     supabase
       .from('appointments')
-      .select('start_at, duration')
+      .select('start_at, duration, buffer_after_minutes')
       .eq('user_id', profile.user_id)
       .neq('status', 'cancelled')
       .lt('start_at', rangeEnd)
@@ -119,6 +121,7 @@ export async function loadDailySlots({
       appointments: dayAppointments,
       timeBlocks: dayBlocks,
       serviceDuration: durationMinutes,
+      visitBufferMinutes,
       timezone,
       ...slotParams
     })
@@ -132,6 +135,11 @@ function intervalRow(start: string, end: string): AppointmentRow {
     start_at: start,
     duration: Math.round((new Date(end).getTime() - new Date(start).getTime()) / 60_000)
   }
+}
+
+/** The break a visit of these services leaves after itself: the longest of them. */
+export function visitBuffer(services: { buffer_after_minutes: number }[]): number {
+  return Math.max(0, ...services.map((s) => s.buffer_after_minutes))
 }
 
 export function buildDateRange(from: string, to: string): string[] {

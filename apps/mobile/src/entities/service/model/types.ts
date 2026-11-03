@@ -22,6 +22,10 @@ export interface CreateServiceDto {
   description?: string | null;
   duration: number;
   price: number;
+  price_from?: boolean;
+  show_online?: boolean;
+  specialization?: string | null;
+  buffer_after_minutes?: number;
   color?: string;
   is_active?: boolean;
   sort_order?: number;

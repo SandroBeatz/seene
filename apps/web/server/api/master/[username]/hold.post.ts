@@ -52,7 +52,7 @@ export default defineEventHandler(async (event) => {
       .maybeSingle(),
     supabase
       .from('service')
-      .select('duration')
+      .select('duration, buffer_after_minutes')
       .in('id', serviceIds)
       .eq('user_id', profile.user_id)
       .eq('is_active', true)
@@ -67,6 +67,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, message: 'Service is unavailable' })
   }
   const duration = services.reduce((total, s) => total + s.duration, 0)
+  const ownBuffer = visitBuffer(services)
 
   const holderHash = ensureHolderHash(event)
 
@@ -78,6 +79,7 @@ export default defineEventHandler(async (event) => {
     settings: settingsRow,
     dates: [date],
     durationMinutes: duration,
+    visitBufferMinutes: ownBuffer,
     holderHash
   })
 
@@ -85,13 +87,19 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 409, message: 'Slot is unavailable' })
   }
 
+  // The hold covers the visit's own break too, or someone else could book inside it and
+  // this client's booking would fail at the end. Everyone adds the master's buffer to a
+  // hold, so only what the break has over that goes in.
+  const heldAfter = Math.max(0, ownBuffer - (settingsRow.booking_buffer_minutes ?? 0))
+
   // Concurrent bookings and holds are settled under the master's lock.
   const { data: expiresAt, error } = await supabase.rpc('hold_booking_slot', {
     p_username: username,
     p_holder_hash: holderHash,
     p_starts_at: startsAt,
     p_duration: duration,
-    p_ttl_minutes: SLOT_HOLD_MINUTES
+    p_ttl_minutes: SLOT_HOLD_MINUTES,
+    p_after_minutes: heldAfter
   })
 
   if (error) {

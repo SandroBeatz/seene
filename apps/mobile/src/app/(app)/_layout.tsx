@@ -79,7 +79,17 @@ export default function AppLayout() {
         <Stack.Screen name="(modals)/settings/theme" options={fitSheet} />
         <Stack.Screen name="(modals)/settings/currency" options={pickerSheet} />
         <Stack.Screen name="(modals)/settings/timezone" options={pickerSheet} />
-        <Stack.Screen name="settings/services" options={{ title: t('services.title') }} />
+        <Stack.Screen name="settings/services" options={{ title: t('menuHome.services') }} />
+        <Stack.Screen
+          name="settings/service-directions"
+          options={{ title: t('menuHome.servicesPage.directions') }}
+        />
+        <Stack.Screen name="(modals)/service/new" options={sheet} />
+        <Stack.Screen name="(modals)/service/[serviceId]" options={sheet} />
+        <Stack.Screen
+          name="(modals)/service-category"
+          options={{ ...sheet, sheetAllowedDetents: [0.5] }}
+        />
         <Stack.Screen name="settings/expenses" options={{ title: t('expenses.title') }} />
         <Stack.Screen name="(modals)/appointment/[appointmentId]/index" options={sheet} />
         <Stack.Screen name="(modals)/appointment/[appointmentId]/note" options={sheet} />

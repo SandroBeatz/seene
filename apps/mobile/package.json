@@ -53,6 +53,7 @@
     "react-native-reanimated": "4.5.1",
     "react-native-safe-area-context": "~5.7.0",
     "react-native-screens": "~4.26.0",
+    "react-native-sortables": "^1.10.1",
     "react-native-svg": "15.15.4",
     "react-native-unistyles": "^3.3.0",
     "react-native-url-polyfill": "^4.0.0",

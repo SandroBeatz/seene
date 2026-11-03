@@ -157,6 +157,29 @@ export interface FreeCellInput {
   after: number;
 }
 
+/**
+ * The closed time after visits ("Перерыв после"), to draw and to keep free of "new visit"
+ * cells. Cut short where something else already begins: the time is taken either way, and
+ * the timeline would otherwise squeeze the two side by side.
+ */
+export function bufferSpans<T extends { id: string; from: number; to: number; buffer: number }>(
+  entries: readonly T[],
+): { entry: T; from: number; to: number }[] {
+  const spans: { entry: T; from: number; to: number }[] = [];
+  for (const entry of entries) {
+    if (entry.buffer <= 0 || entry.to >= DAY_MINUTES) continue;
+    const others = entries.filter((other) => other.id !== entry.id);
+    if (others.some((other) => other.from <= entry.to && entry.to < other.to)) continue;
+    const next = Math.min(
+      DAY_MINUTES,
+      ...others.filter((other) => other.from > entry.to).map((other) => other.from),
+    );
+    const to = Math.min(entry.to + entry.buffer, next);
+    if (to > entry.to) spans.push({ entry, from: entry.to, to });
+  }
+  return spans;
+}
+
 /** Starts of the grid's half-hour cells that are wholly free within a working day. */
 export function freeCells({ work, busy, after }: FreeCellInput): number[] {
   const first = Math.ceil(Math.max(work[0], after) / CELL_MINUTES) * CELL_MINUTES;

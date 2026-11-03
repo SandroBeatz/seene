@@ -5,6 +5,8 @@ export type ServiceCategory = Database['public']['Tables']['service_category']['
 
 export interface CreateServiceCategoryDto {
   name: string;
+  /** The direction it belongs to; null = offered under every direction. */
+  specialization?: string | null;
   sort_order?: number;
 }
 

@@ -42,19 +42,20 @@ export async function updateService(dto: UpdateServiceDto): Promise<Service> {
   return data;
 }
 
-/** Hot toggle backing the optimistic active switch in the services list. */
-export async function setServiceActive(id: string, isActive: boolean): Promise<Service> {
-  const { data, error } = await supabase
+/**
+ * "Удалить": past visits refer to services by id with no foreign key and read their names
+ * from here, so the row stays, out of every list and off the booking page.
+ */
+export async function archiveService(id: string): Promise<void> {
+  const { error } = await supabase
     .from('service')
-    .update({ is_active: isActive })
-    .eq('id', id)
-    .select('*')
-    .single();
+    .update({ is_active: false, show_online: false })
+    .eq('id', id);
   if (error) throw error;
-  return data;
 }
 
-export async function deleteService(id: string): Promise<void> {
-  const { error } = await supabase.from('service').delete().eq('id', id);
+/** Writes the order of the listed services, numbered from 1. */
+export async function reorderServices(ids: string[]): Promise<void> {
+  const { error } = await supabase.rpc('reorder_services', { p_ids: ids });
   if (error) throw error;
 }

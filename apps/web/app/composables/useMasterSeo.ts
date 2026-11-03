@@ -41,7 +41,7 @@ export function useMasterSeo(data: Ref<MasterPageData | undefined>) {
       DESCRIPTION_MAX
     )
 
-    return { name, title, description, image: masterCoverUrl(data.value) || p.avatar_url || undefined }
+    return { name, title, description, image: masterCoverUrl(d) || p.avatar_url || undefined }
   })
 
   useSeoMeta({

@@ -311,13 +311,13 @@
 
 ### Фаза 3. Услуги и цены · L
 
-- [ ] Миграция: `buffer_after_minutes`, `service_category.specialization`.
-- [ ] `AppSvcList` вместо текущего `ServiceList`: фильтр по направлениям, группы.
-- [ ] Шторки `AppSvcNew`, `AppSvcEdit`, вынос шторок из онбординга.
-- [ ] «Направления и категории», drag-and-drop порядка.
-- [ ] Удаление как архив (`is_active = false`), потому что `appointments.service_ids` ссылается на
+- [x] Миграция: `buffer_after_minutes`, `service_category.specialization`.
+- [x] `AppSvcList` вместо текущего `ServiceList`: фильтр по направлениям, группы.
+- [x] Шторки `AppSvcNew`, `AppSvcEdit`, вынос шторок из онбординга.
+- [x] «Направления и категории», drag-and-drop порядка.
+- [x] Удаление как архив (`is_active = false`), потому что `appointments.service_ids` ссылается на
       услуги без FK. Проверить поведение `category_id` и `portfolio_item.service_id`.
-- [ ] Учесть «Перерыв после» в `availability.ts`, в создании записи и в выборе времени в приложении.
+- [x] Учесть «Перерыв после» в `availability.ts`, в создании записи и в выборе времени в приложении.
 
 ### Фаза 4. Рабочие часы и выходные · L
 

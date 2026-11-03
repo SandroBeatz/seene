@@ -1,15 +1,15 @@
 /**
  * Service query + mutation hooks. Components call these, never the api, and pass the
  * master's `userId` (an entity may not import a sibling entity, so the widget/feature
- * resolves it via `useUserId()`). The active toggle updates the cache optimistically
- * (onMutate/onError); everything else invalidates on `onSettled`.
+ * resolves it via `useUserId()`). Reordering updates the cache optimistically; everything
+ * else invalidates on `onSettled`.
  */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
+  archiveService,
   createService,
-  deleteService,
   listServices,
-  setServiceActive,
+  reorderServices,
   updateService,
 } from '../api/service.api';
 import type { CreateServiceDto, ServiceWithCategory, UpdateServiceDto } from './types';
@@ -42,34 +42,32 @@ export function useUpdateServiceMutation(userId: string) {
   });
 }
 
-export function useDeleteServiceMutation(userId: string) {
+export function useArchiveServiceMutation(userId: string) {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => deleteService(id),
+    mutationFn: (id: string) => archiveService(id),
     onSettled: () => qc.invalidateQueries({ queryKey: serviceKeys.all(userId) }),
   });
 }
 
-export function useToggleServiceActiveMutation(userId: string) {
+/** The new order shows at once: the dragged rows must not jump back while it saves. */
+export function useReorderServicesMutation(userId: string) {
   const qc = useQueryClient();
   const key = serviceKeys.all(userId);
   return useMutation({
-    mutationFn: ({ id, isActive }: { id: string; isActive: boolean }) =>
-      setServiceActive(id, isActive),
-    onMutate: async ({ id, isActive }) => {
+    mutationFn: (ids: string[]) => reorderServices(ids),
+    onMutate: async (ids) => {
       await qc.cancelQueries({ queryKey: key });
       const previous = qc.getQueryData<ServiceWithCategory[]>(key);
-      if (previous) {
-        qc.setQueryData<ServiceWithCategory[]>(
-          key,
-          previous.map((s) => (s.id === id ? { ...s, is_active: isActive } : s)),
-        );
-      }
+      qc.setQueryData<ServiceWithCategory[]>(key, (current) =>
+        current?.map((service) => {
+          const index = ids.indexOf(service.id);
+          return index < 0 ? service : { ...service, sort_order: index + 1 };
+        }),
+      );
       return { previous };
     },
-    onError: (_error, _vars, context) => {
-      if (context?.previous) qc.setQueryData(key, context.previous);
-    },
+    onError: (_error, _ids, context) => qc.setQueryData(key, context?.previous),
     onSettled: () => qc.invalidateQueries({ queryKey: key }),
   });
 }

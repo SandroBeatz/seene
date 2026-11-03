@@ -70,7 +70,9 @@ export function ListItem({
           </Text>
         ) : null}
       </View>
-      {right ?? (
+      {right ? (
+        <View style={styles.trailing}>{right}</View>
+      ) : (
         <View style={styles.trailing}>
           {trailingText ? (
             <Text

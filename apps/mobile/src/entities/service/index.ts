@@ -5,8 +5,8 @@ export {
   useServicesQuery,
   useCreateServiceMutation,
   useUpdateServiceMutation,
-  useDeleteServiceMutation,
-  useToggleServiceActiveMutation,
+  useArchiveServiceMutation,
+  useReorderServicesMutation,
 } from './model/queries';
 export type {
   Service,
