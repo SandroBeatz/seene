@@ -1,4 +1,5 @@
 import { useSegments } from 'expo-router';
+import { useState } from 'react';
 import { NativeTabs } from 'expo-router/unstable-native-tabs';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
@@ -22,14 +23,15 @@ const TAB_BAR_HEIGHT = process.env.EXPO_OS === 'ios' ? 49 : 80;
 export default function TabsLayout() {
   const { t } = useTranslation();
   const { theme } = useUnistyles();
-  const insets = useSafeAreaInsets();
-  const onMenu = (useSegments() as string[]).includes('(settings)');
 
   return (
     <View style={styles.root}>
       <NativeTabs tintColor={theme.colors.content.primary}>
         <NativeTabs.Trigger name="(home)" disableAutomaticContentInsets>
-          <NativeTabs.Trigger.Icon sf={{ default: 'sun.max', selected: 'sun.max.fill' }} md="today" />
+          <NativeTabs.Trigger.Icon
+            sf={{ default: 'sun.max', selected: 'sun.max.fill' }}
+            md="today"
+          />
           <NativeTabs.Trigger.Label>{t('tabs.today')}</NativeTabs.Trigger.Label>
         </NativeTabs.Trigger>
         <NativeTabs.Trigger name="(calendar)" disableAutomaticContentInsets>
@@ -51,9 +53,25 @@ export default function TabsLayout() {
           <NativeTabs.Trigger.Label>{t('tabs.menu')}</NativeTabs.Trigger.Label>
         </NativeTabs.Trigger>
       </NativeTabs>
-      {onMenu ? null : <CreateMenu bottom={insets.bottom + TAB_BAR_HEIGHT + theme.space[3]} />}
+      <TabsCreateMenu />
     </View>
   );
+}
+
+/**
+ * On its own so that navigating, which changes the segments on every push, doesn't re-render the
+ * tabs. A pushed screen's segments no longer name a tab: then it stays as it was, or the "+" would
+ * show over the menu while the pushed screen slides in.
+ */
+function TabsCreateMenu() {
+  const { theme } = useUnistyles();
+  const insets = useSafeAreaInsets();
+  const segments = useSegments() as string[];
+  const [onMenu, setOnMenu] = useState(segments.includes('(settings)'));
+  if (segments.includes('(tabs)') && segments.includes('(settings)') !== onMenu) {
+    setOnMenu(!onMenu);
+  }
+  return onMenu ? null : <CreateMenu bottom={insets.bottom + TAB_BAR_HEIGHT + theme.space[3]} />;
 }
 
 const styles = StyleSheet.create({ root: { flex: 1 } });

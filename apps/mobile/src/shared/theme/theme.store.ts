@@ -3,6 +3,7 @@
  * `auto` follows the OS; explicit modes pin the theme. Persisted to MMKV so the
  * choice survives restarts and applies before first paint. See docs/state-management.md §3.
  */
+import { Appearance } from 'react-native';
 import { UnistylesRuntime } from 'react-native-unistyles';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
@@ -16,6 +17,10 @@ interface ThemeState {
 }
 
 export function applyThemeMode(mode: ThemeMode): void {
+  // Unistyles paints our views; native chrome (Liquid Glass tab bar, header buttons, menus) reads
+  // the window's style. Without this a pinned theme leaves it on the system's until glass
+  // has dark content to tint from, and a transition shows the light one for a moment.
+  Appearance.setColorScheme(mode === 'auto' ? 'unspecified' : mode);
   if (mode === 'auto') {
     UnistylesRuntime.setAdaptiveThemes(true);
     return;
