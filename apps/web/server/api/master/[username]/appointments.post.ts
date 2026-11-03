@@ -45,13 +45,19 @@ export default defineEventHandler(async (event) => {
     .from('master_profile')
     .select('id, user_id, first_name, last_name, schedule')
     .eq('username', username)
+    .is('deactivated_at', null)
     .maybeSingle()
+
+  // A deactivated master's page is closed; the RPC below doesn't know about that.
+  if (!profile) {
+    throw createError({ statusCode: 404, message: 'Master not found' })
+  }
 
   // The phone is proven either by a code entered just now (otp_token) or by
   // this device, trusted for this phone with this master after an earlier code.
   const phoneVerified =
     verifyPhoneVerificationToken(body.otp_token, phone) ||
-    (profile ? (await readDevicePhone(event, supabase, profile.user_id)) === phone : false)
+    (await readDevicePhone(event, supabase, profile.user_id)) === phone
 
   if (!phoneVerified) {
     throw createError({ statusCode: 401, message: 'Phone verification is required' })

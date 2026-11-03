@@ -3,8 +3,15 @@
  * Step 2; the actual profile/settings write is composed in the onboarding feature
  * (it also needs the session store), so it is not a hook here.
  */
-import { useQuery } from '@tanstack/react-query';
-import { checkUsernameAvailable, getMasterProfile, getMasterSettings } from '../api/master.api';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  checkUsernameAvailable,
+  getMasterProfile,
+  getMasterSettings,
+  updateMasterSettings,
+  updateMasterTimezone,
+} from '../api/master.api';
+import type { MasterProfile, MasterSettings, MasterSettingsPatch } from './types';
 
 export const masterKeys = {
   all: ['master'] as const,
@@ -26,6 +33,47 @@ export function useMasterSettingsQuery(userId: string) {
     queryKey: masterKeys.settings(userId),
     queryFn: () => getMasterSettings(userId),
     enabled: !!userId,
+  });
+}
+
+/** Saves settings; the screen shows the new value at once and returns if the write fails. */
+export function useUpdateMasterSettings(userId: string) {
+  const queryClient = useQueryClient();
+  const key = masterKeys.settings(userId);
+  return useMutation({
+    mutationFn: (patch: MasterSettingsPatch) => updateMasterSettings(userId, patch),
+    onMutate: async (patch) => {
+      await queryClient.cancelQueries({ queryKey: key });
+      const previous = queryClient.getQueryData<MasterSettings | null>(key);
+      if (previous) queryClient.setQueryData(key, { ...previous, ...patch });
+      return { previous };
+    },
+    onError: (_error, _patch, context) => queryClient.setQueryData(key, context?.previous),
+    onSettled: () => queryClient.invalidateQueries({ queryKey: key }),
+  });
+}
+
+/** Saves the time zone the same way. */
+export function useUpdateMasterTimezone(userId: string) {
+  const queryClient = useQueryClient();
+  const key = masterKeys.profile(userId);
+  return useMutation({
+    mutationFn: async (timezone: string) => {
+      const current = queryClient.getQueryData<MasterProfile | null>(key);
+      if (!current) throw new Error('profile is not loaded');
+      await updateMasterTimezone(userId, current.schedule, timezone);
+    },
+    onMutate: async (timezone) => {
+      await queryClient.cancelQueries({ queryKey: key });
+      const previous = queryClient.getQueryData<MasterProfile | null>(key);
+      if (previous) {
+        const schedule = { ...(previous.schedule as Record<string, unknown>), timezone };
+        queryClient.setQueryData(key, { ...previous, schedule });
+      }
+      return { previous };
+    },
+    onError: (_error, _timezone, context) => queryClient.setQueryData(key, context?.previous),
+    onSettled: () => queryClient.invalidateQueries({ queryKey: key }),
   });
 }
 

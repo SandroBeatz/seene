@@ -121,6 +121,7 @@ export async function getMasterUserId(supabase: ServiceSupabase, username: unkno
     .from('master_profile')
     .select('user_id')
     .eq('username', username.trim())
+    .is('deactivated_at', null)
     .maybeSingle()
 
   if (!profile) {

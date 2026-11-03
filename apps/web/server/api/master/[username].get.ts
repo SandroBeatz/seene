@@ -92,6 +92,7 @@ export default defineEventHandler(async (event) => {
       'id, user_id, first_name, last_name, username, specializations, city, address, house_number, zip_code, country, works_at_place, can_travel, avatar_url, bio, whatsapp, telegram, instagram, tiktok, contact_email, cover_url, experience_years, show_visits_count, map_url, is_verified, schedule'
     )
     .eq('username', username)
+    .is('deactivated_at', null)
     .single()
 
   if (profileError || !profile) {

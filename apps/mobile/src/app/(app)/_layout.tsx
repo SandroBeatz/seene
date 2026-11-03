@@ -34,6 +34,23 @@ export default function AppLayout() {
     contentStyle: { backgroundColor: theme.colors.bg.elevated },
   };
 
+  // The pickers draw their own chrome (shared with onboarding, which has no bar).
+  const pickerSheet: NativeStackNavigationOptions = {
+    ...sheet,
+    headerShown: false,
+    headerBackground: undefined,
+    // `SheetHeader` draws the grabber on both platforms.
+    sheetGrabberVisible: false,
+  };
+  const fitSheet: NativeStackNavigationOptions = {
+    presentation: 'formSheet',
+    headerShown: false,
+    headerBackground: undefined,
+    sheetAllowedDetents: 'fitToContents',
+    sheetCornerRadius: theme.radius.xxl,
+    sheetGrabberVisible: false,
+  };
+
   return (
     <View style={styles.root}>
       <Stack screenOptions={stackOptions}>
@@ -48,6 +65,11 @@ export default function AppLayout() {
           options={{ title: t('navigation.profileSettings') }}
         />
         <Stack.Screen name="settings/preferences" options={{ title: t('menuHome.settings') }} />
+        <Stack.Screen name="settings/help" options={{ title: t('menuHome.help.title') }} />
+        <Stack.Screen name="(modals)/settings/language" options={fitSheet} />
+        <Stack.Screen name="(modals)/settings/theme" options={fitSheet} />
+        <Stack.Screen name="(modals)/settings/currency" options={pickerSheet} />
+        <Stack.Screen name="(modals)/settings/timezone" options={pickerSheet} />
         <Stack.Screen name="settings/services" options={{ title: t('services.title') }} />
         <Stack.Screen name="settings/expenses" options={{ title: t('expenses.title') }} />
         <Stack.Screen name="(modals)/appointment/[appointmentId]/index" options={sheet} />

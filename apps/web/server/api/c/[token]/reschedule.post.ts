@@ -45,6 +45,7 @@ export default defineEventHandler(async (event) => {
       .from('master_profile')
       .select('id, user_id, username, first_name, last_name, schedule')
       .eq('user_id', masterUserId)
+      .is('deactivated_at', null)
       .maybeSingle(),
     supabase
       .from('master_settings')

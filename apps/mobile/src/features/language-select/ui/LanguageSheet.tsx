@@ -26,9 +26,11 @@ const SHEET_BOTTOM_GAP = space[7.5];
 
 export interface LanguageSheetProps {
   onClose: () => void;
+  /** Called with the picked language: signed-in screens also save it on the account. */
+  onPick?: (locale: AppLocale) => void;
 }
 
-export function LanguageSheet({ onClose }: LanguageSheetProps) {
+export function LanguageSheet({ onClose, onPick }: LanguageSheetProps) {
   const { t, i18n } = useTranslation();
   const insets = useSafeAreaInsets();
   const setLocale = useLocaleStore((state) => state.setLocale);
@@ -36,6 +38,7 @@ export function LanguageSheet({ onClose }: LanguageSheetProps) {
 
   function pick(locale: AppLocale) {
     setLocale(locale);
+    onPick?.(locale);
     onClose();
   }
 

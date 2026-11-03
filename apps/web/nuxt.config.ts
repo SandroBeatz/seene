@@ -32,6 +32,8 @@ export default defineNuxtConfig({
     supabaseUrl: '',
     supabaseServiceRoleKey: '',
     phoneVerificationTokenSecret: '',
+    // Vercel sends it as the bearer token of its cron requests.
+    cronSecret: process.env.CRON_SECRET ?? '',
     // Return the one-time code in the API response (NUXT_OTP_EXPOSE_CODE=true).
     // Only for test environments while no message provider is wired.
     otpExposeCode: false,

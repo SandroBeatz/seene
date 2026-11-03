@@ -74,8 +74,9 @@
     }
   },
   "account": {
-    "deactivatedTitle": "Account deactivated",
-    "deactivatedDescription": "This account has been deactivated. Sign out, or contact support to reactivate it."
+    "deactivatedTitle": "Account is being deleted",
+    "deactivatedDescription": "Your data will be deleted on {{date}}. Until then you can restore the account.",
+    "restore": "Restore account"
   },
   "clients": {
     "toggleFavorite": "Toggle favourite",
@@ -533,7 +534,7 @@
     "theme": "Theme",
     "language": "Language",
     "themeModes": {
-      "auto": "System",
+      "auto": "Same as phone",
       "light": "Light",
       "dark": "Dark"
     }
@@ -1456,6 +1457,31 @@
       "title": "QR code",
       "hint": "Clients point their camera here to open your booking page.",
       "share": "Share link"
+    },
+    "screen": {
+      "app": "App",
+      "account": "Account",
+      "language": "Language",
+      "timezone": "Time zone",
+      "currency": "Currency",
+      "theme": "Theme",
+      "email": "Sign-in email",
+      "logOut": "Log out",
+      "logOutConfirm": "Log out of your account?",
+      "delete": "Delete account",
+      "deleteConfirm": "Delete your account?",
+      "deleteText": "Your booking page closes right away. You can restore the account for 30 days, then all data is deleted for good.",
+      "currencyHint": "Prices and the Money section use this currency. Amounts already saved are not converted."
+    },
+    "help": {
+      "title": "Help",
+      "support": "Contact support",
+      "suggest": "Suggest a feature",
+      "suggestText": "Hello! I would like to suggest a feature for Seene: ",
+      "hours": "We reply on working days from 9 to 21.",
+      "documents": "Documents",
+      "terms": "Terms of use",
+      "privacy": "Privacy policy"
     }
   }
 }

@@ -41,6 +41,17 @@ export async function signOut(): Promise<void> {
   if (error) throw error;
 }
 
+/** Asks to delete the account: the page closes now, the data goes after 30 days. */
+export async function deactivateAccount(): Promise<void> {
+  const { error } = await supabase.rpc('deactivate_account');
+  if (error) throw error;
+}
+
+export async function reactivateAccount(): Promise<void> {
+  const { error } = await supabase.rpc('reactivate_account');
+  if (error) throw error;
+}
+
 export async function getCurrentSession(): Promise<Session | null> {
   const { data, error } = await supabase.auth.getSession();
   if (error) throw error;

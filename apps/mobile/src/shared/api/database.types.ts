@@ -978,6 +978,7 @@ export type Database = {
         }
         Returns: Json
       }
+      deactivate_account: { Args: never; Returns: undefined }
       get_money_clients: {
         Args: { p_from: string; p_to: string }
         Returns: {
@@ -1024,6 +1025,8 @@ export type Database = {
         Args: { p_from: string; p_to: string; p_tz: string; p_uid: string }
         Returns: Json
       }
+      purge_account_data: { Args: { p_user_id: string }; Returns: undefined }
+      reactivate_account: { Args: never; Returns: undefined }
       roll_recurring_expenses: { Args: never; Returns: number }
       specialization_keys: { Args: never; Returns: string[] }
       update_sale_details: {

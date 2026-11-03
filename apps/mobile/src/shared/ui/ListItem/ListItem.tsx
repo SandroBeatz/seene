@@ -76,7 +76,8 @@ export function ListItem({
             <Text
               variant={size === 'menu' ? 'footnote' : 'bodyStrong'}
               color={size === 'menu' ? 'tertiary' : 'primary'}
-              numberOfLines={1}>
+              numberOfLines={1}
+              style={styles.trailingText}>
               {trailingText}
             </Text>
           ) : null}
@@ -116,13 +117,22 @@ const styles = StyleSheet.create((theme) => ({
     },
   },
   left: { justifyContent: 'center' },
-  body: { flex: 1, minWidth: 0, gap: theme.space[0.25] },
+  body: {
+    flex: 1,
+    minWidth: 0,
+    gap: theme.space[0.25],
+    // Menu rows keep the title whole; a long value gives way instead.
+    variants: { size: { sm: {}, md: {}, menu: { flex: 0, flexShrink: 0 } } },
+  },
+  trailingText: { flexShrink: 1 },
   trailing: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: theme.space[2.5],
     flexShrink: 1,
-    variants: { size: { sm: {}, md: {}, menu: { gap: theme.space[3] } } },
+    variants: {
+      size: { sm: {}, md: {}, menu: { flex: 1, justifyContent: 'flex-end', gap: theme.space[3] } },
+    },
   },
   pressed: { opacity: 0.6 },
 }));

@@ -5,7 +5,13 @@
  */
 import { useMutation } from '@tanstack/react-query';
 import { type AppError, normalizeError } from '@/shared/api/errors';
-import { sendEmailCode, signInWithGoogle, verifyEmailCode } from '../api/session.api';
+import {
+  deactivateAccount,
+  reactivateAccount,
+  sendEmailCode,
+  signInWithGoogle,
+  verifyEmailCode,
+} from '../api/session.api';
 import { avatarFromUser } from './auth-avatar';
 import { type AuthName, nameFromUser } from './auth-name';
 import { useSessionStore } from './session.store';
@@ -60,6 +66,25 @@ export function useSignInWithGoogle() {
       } catch (e) {
         throw normalizeError(e);
       }
+    },
+  });
+}
+
+/** The root guard reads `deactivated_at` from the session profile, so reload it afterwards. */
+export function useDeactivateAccount() {
+  return useMutation({
+    mutationFn: async () => {
+      await deactivateAccount();
+      await useSessionStore.getState().refreshProfile();
+    },
+  });
+}
+
+export function useReactivateAccount() {
+  return useMutation({
+    mutationFn: async () => {
+      await reactivateAccount();
+      await useSessionStore.getState().refreshProfile();
     },
   });
 }
