@@ -149,10 +149,7 @@ export const GLYPHS = {
     'regular',
     <Path d="M9 5h11a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H9l-6-7zM12.5 9.5l5 5M17.5 9.5l-5 5" />,
   ),
-  receipt: stroke(
-    'regular',
-    <Path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6" />,
-  ),
+  receipt: stroke('regular', <Path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6" />),
   analytics: stroke('regular', <Path d="M4 20V10M10 20V4M16 20v-7M22 20H2" />),
   bell: stroke(
     'regular',
@@ -392,6 +389,15 @@ export const GLYPHS = {
       <Path d="M14 20v-5h5M8.5 9h7M8.5 12.5h4" />
     </>,
   ),
+  camera: stroke(
+    'regular',
+    <>
+      <Path d="M3 8.5h4l2-3h6l2 3h4V19H3z" />
+      <Circle cx={12} cy={13} r={3.5} />
+    </>,
+  ),
+  crop: stroke('regular', <Path d="M7 2v15h15M2 7h15v15" />),
+  arrowUpRight: stroke('regular', <Path d="M7 17 17 7M8 7h9v9" />),
   pencil: stroke(
     'regular',
     <>

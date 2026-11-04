@@ -1488,21 +1488,14 @@
       "privacy": "Политика конфиденциальности"
     },
     "profile": {
-      "photo": "Изменить фото",
       "uploading": "Загружаем…",
       "link": "Ссылка на страницу",
       "about": "О себе",
       "specialization": "Специализация",
       "contacts": "Контакты и адрес",
-      "contactsHint": "Видно клиентам на вашей странице записи.",
       "address": "Адрес",
       "add": "Добавить",
-      "page": "Страница записи",
       "cover": "Обложка",
-      "coverNone": "Не выбрана",
-      "coverChosen": "Выбрана",
-      "coverChange": "Выбрать другую",
-      "coverRemove": "Убрать обложку",
       "portfolio": "Портфолио",
       "portfolioCount_one": "{{count}} фото",
       "portfolioCount_few": "{{count}} фото",
@@ -1520,7 +1513,21 @@
       "contactHelp": "Оставьте поле пустым, чтобы убрать контакт.",
       "whatsappInvalid": "Проверьте номер: нужен код страны и все цифры.",
       "telegramInvalid": "От 5 до 32 символов: латиница, цифры и _",
-      "instagramInvalid": "До 30 символов: латиница, цифры, точка и _"
+      "instagramInvalid": "До 30 символов: латиница, цифры, точка и _",
+      "addCover": "Добавить обложку",
+      "coverHint": "Горизонтальное фото, от 1200 × 600",
+      "edit": "Изменить",
+      "photoA11y": "Изменить фото профиля",
+      "asClients": "Как видят клиенты",
+      "works": "Работы",
+      "coverGallery": "Выбрать из галереи",
+      "coverCamera": "Сделать фото",
+      "coverPortfolio": "Из портфолио",
+      "coverCrop": "Сдвинуть и обрезать",
+      "coverDelete": "Удалить обложку",
+      "coverCropHint": "Двигайте и увеличивайте фото двумя пальцами",
+      "cameraDenied": "Нет доступа к камере",
+      "coverPickTitle": "Выберите фото"
     },
     "servicesPage": {
       "addA11y": "Новая услуга",
@@ -1912,6 +1919,7 @@
     "serviceDeleted": "Услуга удалена",
     "categoryDeleted": "Категория удалена",
     "paymentDeleted": "Способ оплаты удалён",
-    "photoDeleted": "Фото удалено"
+    "photoDeleted": "Фото удалено",
+    "coverDeleted": "Обложка удалена"
   }
 }

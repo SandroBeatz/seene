@@ -1,5 +1,11 @@
 /** The system photo picker. It runs out of process, so it needs no photo permission. */
-import { launchImageLibraryAsync } from 'expo-image-picker';
+import {
+  launchCameraAsync,
+  launchImageLibraryAsync,
+  requestCameraPermissionsAsync,
+} from 'expo-image-picker';
+
+export { cropImage } from './crop';
 
 export interface PickedImage {
   uri: string;
@@ -14,6 +20,15 @@ export async function pickImage(options: { square?: boolean } = {}): Promise<Pic
     aspect: options.square ? [1, 1] : undefined,
     quality: 0.8,
   });
+  const asset = result.canceled ? undefined : result.assets[0];
+  return asset ? { uri: asset.uri, mimeType: asset.mimeType ?? 'image/jpeg' } : null;
+}
+
+/** The camera; it asks for permission first. `denied` when the master said no. */
+export async function takePhoto(): Promise<PickedImage | 'denied' | null> {
+  const permission = await requestCameraPermissionsAsync();
+  if (!permission.granted) return 'denied';
+  const result = await launchCameraAsync({ mediaTypes: 'images', quality: 0.8 });
   const asset = result.canceled ? undefined : result.assets[0];
   return asset ? { uri: asset.uri, mimeType: asset.mimeType ?? 'image/jpeg' } : null;
 }

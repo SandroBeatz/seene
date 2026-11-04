@@ -64,7 +64,7 @@
         "expo-image-picker",
         {
           "photosPermission": "Seene uses your photos for your profile picture and page cover.",
-          "cameraPermission": false,
+          "cameraPermission": "Seene uses the camera to take a cover photo for your page.",
           "microphonePermission": false
         }
       ],

@@ -75,6 +75,10 @@ export default function AppLayout() {
           options={{ ...sheet, sheetAllowedDetents: [0.62] }}
         />
         <Stack.Screen name="(modals)/settings/specializations" options={sheet} />
+        <Stack.Screen
+          name="(modals)/settings/cover"
+          options={{ presentation: 'fullScreenModal', headerShown: false, gestureEnabled: false }}
+        />
         <Stack.Screen name="(modals)/settings/language" options={fitSheet} />
         <Stack.Screen name="(modals)/settings/theme" options={fitSheet} />
         <Stack.Screen name="(modals)/settings/currency" options={pickerSheet} />

@@ -1,21 +1,19 @@
 /**
  * "Профиль" (design AppMenuProfile). Names, link and bio are saved by "Готово"; the
- * rows open sheets with their own save, and photos upload as soon as they are picked.
+ * rows open sheets with their own save, and photos upload as soon as they are ready.
  */
 import { usePreventRemove } from 'expo-router/react-navigation';
 import { router, Stack, useNavigation } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Pressable, View } from 'react-native';
+import { Alert, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import {
   addressLine,
   masterPageLabel,
   normalizeUsernameInput,
   useMasterProfileQuery,
-  useRemoveMasterCover,
   useUpdateMasterProfile,
-  useUploadMasterImage,
   useUsernameStatus,
   type MasterProfile,
 } from '@/entities/master';
@@ -23,21 +21,20 @@ import { usePortfolioQuery } from '@/entities/portfolio';
 import { useUserId } from '@/entities/session';
 import { UsernameStatusLine } from '@/features/onboarding';
 import { normalizeError } from '@/shared/api/errors';
-import { pickImage } from '@/shared/lib/image-picker';
 import { formatPhone } from '@/shared/lib/phone';
 import {
-  Avatar,
   Button,
   FormScreen,
   Input,
   MenuGroup,
   MenuRow,
   Skeleton,
-  Text,
   showFailedToast,
   showErrorToast,
   showToast,
 } from '@/shared/ui';
+
+import { ProfileCover } from './ProfileCover';
 
 /** `master_profile_bio_length` in the database. */
 const BIO_MAX_LENGTH = 600;
@@ -69,8 +66,6 @@ function ProfileForm({ profile, userId }: { profile: MasterProfile; userId: stri
   const [saved, setSaved] = useState(false);
 
   const update = useUpdateMasterProfile(userId);
-  const upload = useUploadMasterImage(userId);
-  const removeCover = useRemoveMasterCover(userId);
   const portfolio = usePortfolioQuery(userId);
   const checked = useUsernameStatus(username);
 
@@ -84,8 +79,6 @@ function ProfileForm({ profile, userId }: { profile: MasterProfile; userId: stri
     firstName.trim().length > 0 &&
     lastName.trim().length > 0 &&
     (!linkChanged || checked === 'free');
-
-  const failed = () => showFailedToast();
 
   // Leave only after the render that lifted the guard below.
   useEffect(() => {
@@ -140,39 +133,6 @@ function ProfileForm({ profile, userId }: { profile: MasterProfile; userId: stri
     }
   };
 
-  const pickAndUpload = async (kind: 'avatar' | 'cover') => {
-    const image = await pickImage({ square: kind === 'avatar' });
-    if (image) {
-      upload.mutate(
-        { kind, ...image },
-        {
-          onSuccess: () =>
-            showToast({
-              title: t(kind === 'cover' ? 'toasts.coverUpdated' : 'toasts.profileSaved'),
-            }),
-          onError: failed,
-        },
-      );
-    }
-  };
-
-  const editCover = () => {
-    if (!profile.cover_url) {
-      void pickAndUpload('cover');
-      return;
-    }
-    Alert.alert(t('menuHome.profile.cover'), undefined, [
-      { text: t('menuHome.profile.coverChange'), onPress: () => void pickAndUpload('cover') },
-      {
-        text: t('menuHome.profile.coverRemove'),
-        style: 'destructive',
-        onPress: () => removeCover.mutate(undefined, { onError: failed }),
-      },
-      { text: t('common.cancel'), style: 'cancel' },
-    ]);
-  };
-
-  const uploading = upload.isPending ? upload.variables.kind : null;
   const name = [profile.first_name, profile.last_name].filter(Boolean).join(' ');
   const specializations = (profile.specializations ?? [])
     .map((key) => t(`onboarding.specializations.${key}`))
@@ -212,20 +172,7 @@ function ProfileForm({ profile, userId }: { profile: MasterProfile; userId: stri
         edges={['left', 'right', 'bottom']}
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={styles.content}>
-        <View style={styles.photo}>
-          <Avatar name={name} imageUrl={profile.avatar_url} color="rose" size="profile" />
-          <Pressable
-            accessibilityRole="button"
-            disabled={uploading === 'avatar'}
-            onPress={() => void pickAndUpload('avatar')}
-            style={({ pressed }) => [styles.photoButton, pressed && styles.pressed]}>
-            <Text variant="subheadStrong" color="brandStrong">
-              {uploading === 'avatar'
-                ? t('menuHome.profile.uploading')
-                : t('menuHome.profile.photo')}
-            </Text>
-          </Pressable>
-        </View>
+        <ProfileCover profile={profile} name={name} userId={userId} />
 
         <View style={styles.fields}>
           <Input
@@ -301,25 +248,9 @@ function ProfileForm({ profile, userId }: { profile: MasterProfile; userId: stri
             onPress={() => router.push('/settings/address')}
           />
         </MenuGroup>
-        <Text variant="caption" color="tertiary" style={styles.hint}>
-          {t('menuHome.profile.contactsHint')}
-        </Text>
 
-        <MenuGroup label={t('menuHome.profile.page')}>
+        <MenuGroup label={t('menuHome.profile.works')}>
           <MenuRow
-            icon="image"
-            title={t('menuHome.profile.cover')}
-            value={
-              uploading === 'cover'
-                ? t('menuHome.profile.uploading')
-                : profile.cover_url
-                  ? t('menuHome.profile.coverChosen')
-                  : t('menuHome.profile.coverNone')
-            }
-            onPress={editCover}
-          />
-          <MenuRow
-            icon="gallery"
             title={t('menuHome.profile.portfolio')}
             value={t('menuHome.profile.portfolioCount', { count: portfolio.data?.length ?? 0 })}
             onPress={() => router.push('/settings/portfolio')}
@@ -334,16 +265,8 @@ const styles = StyleSheet.create((theme) => ({
   content: { paddingTop: theme.space[2], paddingBottom: theme.space[10] },
   photo: {
     alignItems: 'center',
-    gap: theme.space[2],
     paddingTop: theme.space[1.5],
-    paddingBottom: theme.space[1],
-  },
-  photoButton: {
-    height: 32,
-    paddingHorizontal: theme.space[3],
-    justifyContent: 'center',
+    paddingBottom: theme.space[3],
   },
   fields: { gap: theme.space[3] },
-  hint: { marginTop: theme.space[2], marginHorizontal: theme.space[1] },
-  pressed: { opacity: 0.6 },
 }));

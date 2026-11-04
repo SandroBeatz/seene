@@ -1468,21 +1468,14 @@
       "privacy": "Privacy policy"
     },
     "profile": {
-      "photo": "Change photo",
       "uploading": "Uploading…",
       "link": "Page link",
       "about": "About",
       "specialization": "Specialization",
       "contacts": "Contacts and address",
-      "contactsHint": "Clients see this on your booking page.",
       "address": "Address",
       "add": "Add",
-      "page": "Booking page",
       "cover": "Cover",
-      "coverNone": "Not selected",
-      "coverChosen": "Selected",
-      "coverChange": "Choose another",
-      "coverRemove": "Remove cover",
       "portfolio": "Portfolio",
       "portfolioCount_one": "{{count}} photo",
       "portfolioCount_other": "{{count}} photos",
@@ -1498,7 +1491,21 @@
       "contactHelp": "Leave it empty to remove this contact.",
       "whatsappInvalid": "Check the number: it needs the country code and all digits.",
       "telegramInvalid": "5 to 32 characters: Latin letters, digits and _",
-      "instagramInvalid": "Up to 30 characters: Latin letters, digits, dot and _"
+      "instagramInvalid": "Up to 30 characters: Latin letters, digits, dot and _",
+      "addCover": "Add a cover",
+      "coverHint": "A landscape photo, from 1200 × 600",
+      "edit": "Edit",
+      "photoA11y": "Change profile photo",
+      "asClients": "How clients see it",
+      "works": "Works",
+      "coverGallery": "Choose from gallery",
+      "coverCamera": "Take a photo",
+      "coverPortfolio": "From portfolio",
+      "coverCrop": "Move and crop",
+      "coverDelete": "Delete cover",
+      "coverCropHint": "Drag and pinch to fit the photo",
+      "cameraDenied": "No access to the camera",
+      "coverPickTitle": "Choose a photo"
     },
     "servicesPage": {
       "addA11y": "New service",
@@ -1890,6 +1897,7 @@
     "serviceDeleted": "Service deleted",
     "categoryDeleted": "Category deleted",
     "paymentDeleted": "Payment method deleted",
-    "photoDeleted": "Photo deleted"
+    "photoDeleted": "Photo deleted",
+    "coverDeleted": "Cover deleted"
   }
 }
