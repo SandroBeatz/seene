@@ -117,9 +117,9 @@ export const PREVIEW_ACTIONS: Record<AppointmentPhase, PreviewActions> = {
   ongoing: bar(null, 'complete', null, true),
   awaiting: bar('no_show', 'complete', 'reschedule'),
   completed: bar(null, 'book_again', null),
-  cancelled: bar('book_again', null, null),
-  no_show: bar('book_again', null, null),
-  expired: bar('book_again', null, null),
+  cancelled: bar(null, 'book_again', null),
+  no_show: bar(null, 'book_again', null),
+  expired: bar(null, 'book_again', null),
 };
 
 /** Actions drawn in the danger colour. */

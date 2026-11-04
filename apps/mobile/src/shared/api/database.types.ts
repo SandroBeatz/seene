@@ -20,21 +20,6 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      auto_complete_visits: { Args: never; Returns: number }
-      finish_visit: {
-        Args: {
-          p_amount: number
-          p_appointment_id: string
-          p_auto: boolean
-          p_duration: number
-          p_items: Json
-          p_payment_type_id: string
-          p_start_at: string
-          p_tip: number
-          p_user_id: string
-        }
-        Returns: string
-      }
       graphql: {
         Args: {
           extensions?: Json
@@ -594,6 +579,54 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      notification: {
+        Row: {
+          appointment_id: string | null
+          client_id: string | null
+          created_at: string
+          id: string
+          kind: string
+          payload: Json
+          read_at: string | null
+          user_id: string
+        }
+        Insert: {
+          appointment_id?: string | null
+          client_id?: string | null
+          created_at?: string
+          id?: string
+          kind: string
+          payload?: Json
+          read_at?: string | null
+          user_id: string
+        }
+        Update: {
+          appointment_id?: string | null
+          client_id?: string | null
+          created_at?: string
+          id?: string
+          kind?: string
+          payload?: Json
+          read_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'notification_appointment_id_fkey'
+            columns: ['appointment_id']
+            isOneToOne: false
+            referencedRelation: 'appointments'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'notification_client_id_fkey'
+            columns: ['client_id']
+            isOneToOne: false
+            referencedRelation: 'client'
+            referencedColumns: ['id']
+          },
+        ]
       }
       otp_codes: {
         Row: {
@@ -1161,6 +1194,7 @@ export type Database = {
           day: string
         }[]
       }
+      auto_complete_visits: { Args: never; Returns: number }
       cancel_appointment_by_link: {
         Args: { p_reason?: string; p_token_hash: string }
         Returns: Json
@@ -1217,6 +1251,20 @@ export type Database = {
         Returns: string
       }
       deactivate_account: { Args: never; Returns: undefined }
+      finish_visit: {
+        Args: {
+          p_amount: number
+          p_appointment_id: string
+          p_auto: boolean
+          p_duration: number
+          p_items: Json
+          p_payment_type_id: string
+          p_start_at: string
+          p_tip: number
+          p_user_id: string
+        }
+        Returns: string
+      }
       get_money_clients: {
         Args: { p_from: string; p_to: string }
         Returns: {
@@ -1263,6 +1311,14 @@ export type Database = {
       money_period_metrics: {
         Args: { p_from: string; p_to: string; p_tz: string; p_uid: string }
         Returns: Json
+      }
+      notify_visit: {
+        Args: {
+          p_extra: Json
+          p_kind: string
+          p_visit: Database['public']['Tables']['appointments']['Row']
+        }
+        Returns: undefined
       }
       purge_account_data: { Args: { p_user_id: string }; Returns: undefined }
       reactivate_account: { Args: never; Returns: undefined }

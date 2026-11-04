@@ -27,4 +27,11 @@ describe('hideFromLists', () => {
     hideFromLists(qc, [['clients', 'u']], 'a')();
     expect(qc.getQueryData(['clients', 'u'])).toEqual(rows);
   });
+
+  it('hides what a predicate picks', () => {
+    const qc = new QueryClient();
+    qc.setQueryData(['clients', 'u'], rows);
+    hideFromLists(qc, [['clients', 'u']], (row) => (row as { id: string }).id === 'b');
+    expect(qc.getQueryData(['clients', 'u'])).toEqual([{ id: 'a' }]);
+  });
 });

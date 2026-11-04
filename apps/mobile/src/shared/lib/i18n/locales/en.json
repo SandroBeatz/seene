@@ -859,7 +859,6 @@
   "today": {
     "openMenu": "Profile and menu",
     "notifications": "Notifications",
-    "notificationsEmpty": "No notifications yet.",
     "greeting": {
       "morning": "Good morning",
       "day": "Good afternoon",
@@ -905,7 +904,8 @@
       "unknownClient": "Client",
       "nowA11y": "Now {{time}}",
       "menuA11y": "Appointment actions",
-      "blockA11y": "Personal time: {{text}}"
+      "blockA11y": "Personal time: {{text}}",
+      "completed": "Completed"
     },
     "note": {
       "open": "Appointment note",
@@ -1928,5 +1928,44 @@
     "amount": "Amount",
     "listPrice": "List price {{amount}}",
     "payment": "Payment"
+  },
+  "notifications": {
+    "kinds": {
+      "booking_new": "New online booking",
+      "booking_cancelled": "Booking cancelled",
+      "booking_moved": "Client moved a booking"
+    },
+    "filters": {
+      "all": "All",
+      "visits": "Bookings",
+      "clients": "Clients",
+      "money": "Money",
+      "seene": "Seene"
+    },
+    "days": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "earlier": "Earlier"
+    },
+    "today": "today",
+    "tomorrow": "tomorrow",
+    "minutesAgo": "{{count}} min",
+    "hoursAgo": "{{count}} h",
+    "yesterdayAt": "Yesterday, {{time}}",
+    "slotFree": "The slot is free again.",
+    "confirm": "Confirm",
+    "decline": "Decline",
+    "proposeTime": "Offer a slot",
+    "write": "Message",
+    "markRead": "Read",
+    "more": "More actions",
+    "readAll": "Mark all read",
+    "clearRead": "Clear read",
+    "newCount": "{{count}} new",
+    "allRead": "All read",
+    "emptyTitle": "No new notifications",
+    "emptyText": "Online bookings, cancellations, moves and reminders will appear here",
+    "deleted": "Notification deleted",
+    "cleared": "Read notifications cleared"
   }
 }
