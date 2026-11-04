@@ -677,7 +677,8 @@
       "segmented": "Contrôle segmenté et puces",
       "groups": "Lignes groupées",
       "headers": "En-têtes d'étape et de feuille",
-      "code": "Code à usage unique"
+      "code": "Code à usage unique",
+      "toasts": "Toasts"
     },
     "labels": {
       "primary": "Principal",

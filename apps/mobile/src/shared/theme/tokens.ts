@@ -42,6 +42,8 @@ export const palette = {
     ring: '#F0D3DD',
     darkSubtle: '#3A1622',
     darkDefault: '#E0577F',
+    /** A word to press on a card that is dark in both themes. */
+    onDark: '#F6A6C6',
   },
   // Feedback hues (light base + dark-theme subtle pair).
   green: { base: '#0E7A3F', bright: '#3FBF7A', subtleLight: '#E3F3EA', subtleDark: '#0F2C1D' },

@@ -25,8 +25,7 @@ export {
   visitCardInfo,
   type BlockLook,
 } from './ui/EventPreview';
-export { useAppointmentToast, type AppointmentToastData } from './model/appointment-toast.store';
-export { AppointmentToast } from './ui/AppointmentToast';
+export { useAppointmentToast, type AppointmentToastData } from './model/useAppointmentToast';
 export { NoteEditor } from './ui/NoteEditor';
 export { ServicesEditor, type ServicesEditorProps } from './ui/ServicesEditor';
 export { CheckoutEditor, type CheckoutEditorProps } from './ui/CheckoutEditor';

@@ -671,7 +671,8 @@
       "segmented": "Segmented control and chips",
       "groups": "Grouped rows",
       "headers": "Step and sheet headers",
-      "code": "One-time code"
+      "code": "One-time code",
+      "toasts": "Toasts"
     },
     "labels": {
       "primary": "Primary",

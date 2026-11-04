@@ -2,8 +2,7 @@ import { type NativeStackNavigationOptions, Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
-import { AppointmentToast } from '@/features/appointment-actions';
-import { useStackScreenOptions } from '@/shared/ui';
+import { Toaster, useStackScreenOptions } from '@/shared/ui';
 
 export const unstable_settings = { anchor: '(tabs)' };
 
@@ -12,7 +11,7 @@ export const unstable_settings = { anchor: '(tabs)' };
  * tab (client profile, settings pages, analytics) and every modal is a sibling, so
  * it covers the tab bar instead of sitting under it.
  *
- * "Запись создана" sits after the Stack: native headers and tab bars draw above any
+ * The toast sits after the Stack: native headers and tab bars draw above any
  * screen's content, so a toast inside a screen ends up under the bar's buttons.
  */
 export default function AppLayout() {
@@ -195,7 +194,7 @@ export default function AppLayout() {
           }
         />
       </Stack>
-      <AppointmentToast />
+      <Toaster />
     </View>
   );
 }
