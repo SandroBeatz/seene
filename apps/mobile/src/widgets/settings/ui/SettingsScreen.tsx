@@ -3,12 +3,16 @@ import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Alert, Pressable } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
-import { parseStoredSchedule, useMasterProfileQuery, useMasterSettingsQuery } from '@/entities/master';
+import {
+  parseStoredSchedule,
+  useMasterProfileQuery,
+  useMasterSettingsQuery,
+} from '@/entities/master';
 import { useDeactivateAccount, useSessionStore, useUserId } from '@/entities/session';
 import { zoneOffsetLabel } from '@/shared/config/time-zones';
 import { isSupportedLocale, LOCALE_NATIVE_NAMES } from '@/shared/lib/i18n';
 import { useThemeStore } from '@/shared/theme/theme.store';
-import { Button, MenuGroup, MenuRow, ScreenScrollView, Text } from '@/shared/ui';
+import { Button, MenuGroup, MenuRow, ScreenScrollView, Text, showFailedToast } from '@/shared/ui';
 
 export function SettingsScreen() {
   const { t, i18n } = useTranslation();
@@ -22,7 +26,9 @@ export function SettingsScreen() {
 
   const timezone = parseStoredSchedule(profile.data?.schedule)?.timezone;
   const currency = settings.data?.currency;
-  const language = isSupportedLocale(i18n.language) ? LOCALE_NATIVE_NAMES[i18n.language] : undefined;
+  const language = isSupportedLocale(i18n.language)
+    ? LOCALE_NATIVE_NAMES[i18n.language]
+    : undefined;
 
   const confirmSignOut = () =>
     Alert.alert(t('menuHome.screen.logOutConfirm'), undefined, [
@@ -42,7 +48,7 @@ export function SettingsScreen() {
         style: 'destructive',
         onPress: () =>
           deactivate.mutate(undefined, {
-            onError: () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')),
+            onError: () => showFailedToast(),
           }),
       },
     ]);

@@ -1872,5 +1872,41 @@
         "f6": "No Seene logo on the page"
       }
     }
+  },
+  "toasts": {
+    "saved": "Changes saved",
+    "visitSummary": "{{name}}’s booking, {{day}}",
+    "visitFinished": "Visit completed · {{amount}}",
+    "visitConfirmed": "Booking confirmed",
+    "reminderSent": "Reminder sent",
+    "reminderSummary": "{{name}} · WhatsApp",
+    "personalTimeAdded": "Personal time added",
+    "clientAdded": "Client added",
+    "serviceAdded": "Service added",
+    "serviceSaved": "Service saved",
+    "productAdded": "Product added",
+    "productSaved": "Product saved",
+    "stockUpdated": "Stock updated",
+    "expenseAdded": "Expense added · {{amount}}",
+    "today": "today",
+    "hoursSaved": "Working hours saved",
+    "day_offAdded": "Day off added",
+    "vacationAdded": "Vacation added",
+    "profileSaved": "Profile saved",
+    "coverUpdated": "Cover updated",
+    "templateSaved": "Template saved",
+    "bookingOff": "Online booking is off",
+    "bookingOffHint": "New bookings by hand only",
+    "bookingOn": "Online booking is on",
+    "paymentsSaved": "Payment methods saved",
+    "retry": "Retry",
+    "failed": {
+      "title": "Couldn’t save",
+      "summary": "Check your connection"
+    },
+    "offline": {
+      "title": "No internet",
+      "summary": "Changes not saved"
+    }
   }
 }

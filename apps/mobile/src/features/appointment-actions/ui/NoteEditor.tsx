@@ -4,17 +4,16 @@
  * removes it.
  */
 import { router } from 'expo-router';
-import { useTranslation } from 'react-i18next';
-import { Alert } from 'react-native';
 import { useUpdateAppointmentMutation, type Appointment } from '@/entities/appointment';
 import { useUserId } from '@/entities/session';
 import { NOTE_MAX_LENGTH, useNoteSheetText } from '@/shared/lib/note';
-import { NoteSheet } from '@/shared/ui';
+import { NoteSheet, showFailedToast } from '@/shared/ui';
+import { useVisitSavedToast } from '../model/useVisitSavedToast';
 
 export function NoteEditor({ appointment }: { appointment: Appointment }) {
-  const { t } = useTranslation();
   const update = useUpdateAppointmentMutation(useUserId() ?? '');
   const { labels, chips, locale } = useNoteSheetText();
+  const showSaved = useVisitSavedToast(appointment);
 
   return (
     <NoteSheet
@@ -28,8 +27,11 @@ export function NoteEditor({ appointment }: { appointment: Appointment }) {
         update.mutate(
           { id: appointment.id, notes },
           {
-            onSuccess: () => router.back(),
-            onError: () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')),
+            onSuccess: () => {
+              showSaved();
+              router.back();
+            },
+            onError: () => showFailedToast(),
           },
         )
       }

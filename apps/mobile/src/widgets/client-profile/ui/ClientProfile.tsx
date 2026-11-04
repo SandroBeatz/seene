@@ -8,7 +8,7 @@ import { router, Stack, useNavigation } from 'expo-router';
 import { useHeaderHeight } from 'expo-router/react-navigation';
 import { DateTime } from 'luxon';
 import { useTranslation } from 'react-i18next';
-import { Alert, FlatList, Linking, Pressable, Share, View } from 'react-native';
+import { FlatList, Linking, Pressable, Share, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { getAppointmentPhase } from '@/entities/appointment';
@@ -28,6 +28,7 @@ import {
   Text,
   VipBadge,
   useRefreshControl,
+  showErrorToast,
 } from '@/shared/ui';
 import { clientSince } from '../model/profile';
 import { useClientProfile, type ProfileVisit } from '../model/useClientProfile';
@@ -94,11 +95,11 @@ export function ClientProfile({ clientId }: { clientId: string }) {
   };
 
   const openWhatsApp = (text?: string) => {
-    if (!messagePhone) return Alert.alert(t('actions.noPhone'));
+    if (!messagePhone) return showErrorToast(t('actions.noPhone'));
     void Linking.openURL(whatsappUrl(messagePhone, text));
   };
   const call = () => {
-    if (!client.phone) return Alert.alert(t('actions.noPhone'));
+    if (!client.phone) return showErrorToast(t('actions.noPhone'));
     void Linking.openURL(phoneCallUrl(client.phone));
   };
   const edit = () =>

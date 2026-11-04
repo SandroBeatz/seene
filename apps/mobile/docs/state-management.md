@@ -122,7 +122,7 @@ tiny Zustand store when several components must coordinate.
 
 - **Phase 1**: persist the TanStack Query cache to MMKV (`@tanstack/query-persist-client` +
   an MMKV persister). Wire `onlineManager` to `@react-native-community/netinfo`. Result:
-  read-offline from cache, and mutations pause while offline and resume on reconnect.
+  read-offline from cache, and mutations do not wait for a connection: offline they fail at once and a toast says so, nothing is queued (`networkMode: 'always'`).
 - **Phase 3+ (only if needed)**: promote to `expo-sqlite`/`op-sqlite` as an offline-first source of
   truth with an explicit sync layer. Not required for MVP. Q-ARCH-4.
 - Zustand `persist` (MMKV on native, `localStorage` on web) restores theme, locale, and other

@@ -1,3 +1,4 @@
+export { showErrorToast, showFailedToast } from './feedback';
 export { Toaster } from './Toast';
 export {
   dismissToast,

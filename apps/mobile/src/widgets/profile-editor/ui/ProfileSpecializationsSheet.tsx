@@ -3,7 +3,7 @@ import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Pressable } from 'react-native';
+import { Pressable } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import { useMasterProfileQuery, useUpdateMasterProfile } from '@/entities/master';
 import { useUserId } from '@/entities/session';
@@ -12,7 +12,15 @@ import {
   SPECIALIZATION_KEYS,
   type SpecializationKey,
 } from '@/shared/config/specializations';
-import { Button, FormScreen, SelectionMark, SheetChrome, Text } from '@/shared/ui';
+import {
+  Button,
+  FormScreen,
+  SelectionMark,
+  SheetChrome,
+  Text,
+  showFailedToast,
+  showToast,
+} from '@/shared/ui';
 
 export function ProfileSpecializationsSheet() {
   const userId = useUserId() ?? '';
@@ -35,8 +43,11 @@ function SpecializationsForm({ initial, userId }: { initial: string[]; userId: s
     update.mutate(
       { specializations: selected },
       {
-        onSuccess: () => router.back(),
-        onError: () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')),
+        onSuccess: () => {
+          showToast({ title: t('toasts.profileSaved') });
+          router.back();
+        },
+        onError: () => showFailedToast(),
       },
     );
 

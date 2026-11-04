@@ -4,9 +4,9 @@
  * write to: it only confirms.
  */
 import { useTranslation } from 'react-i18next';
-import { Alert, Linking } from 'react-native';
+import { Linking } from 'react-native';
 import { whatsappUrl } from '@/shared/lib/phone';
-import { showToast } from '@/shared/ui';
+import { showErrorToast, showToast } from '@/shared/ui';
 
 export interface AppointmentToastData {
   /** "Запись создана" / "Запись перенесена" / "Запись отменена". */
@@ -33,7 +33,7 @@ export function useAppointmentToast() {
             onPress: () => {
               void message()
                 .then((text) => Linking.openURL(whatsappUrl(phone, text)))
-                .catch(() => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')));
+                .catch(() => showErrorToast(t('actions.failedTitle')));
             },
           }
         : undefined,

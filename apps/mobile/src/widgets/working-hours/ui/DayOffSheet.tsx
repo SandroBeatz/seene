@@ -30,6 +30,8 @@ import {
   Switch,
   Text,
   TimePicker,
+  showFailedToast,
+  showToast,
 } from '@/shared/ui';
 import {
   dayOffRecord,
@@ -73,7 +75,7 @@ function DayOffForm({ block, ctx }: { block?: TimeBlock; ctx: TimeContext }) {
   const affected = (visits.data ?? []).filter((visit) => isAffectedVisit(visit, today));
   const warn = affected.length > 0 && (warnChoice ?? true);
 
-  const failed = () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage'));
+  const failed = () => showFailedToast();
   const saved = () => {
     if (warn && record) {
       router.replace({
@@ -81,13 +83,15 @@ function DayOffForm({ block, ctx }: { block?: TimeBlock; ctx: TimeContext }) {
         params: { from: record.start_at, to: record.end_at },
       });
     } else {
+      showToast({ title: t(block ? 'toasts.saved' : `toasts.${draft.kind}Added`) });
       router.back();
     }
   };
   const save = () => {
     if (!record) return;
-    if (block) update.mutate({ id: block.id, ...record }, { onSuccess: saved, onError: failed });
-    else create.mutate(record, { onSuccess: saved, onError: failed });
+    const options = { onSuccess: saved, onError: () => showFailedToast(save) };
+    if (block) update.mutate({ id: block.id, ...record }, options);
+    else create.mutate(record, options);
   };
   const confirmDelete = () =>
     Alert.alert(t('menuHome.hours.deleteTitle'), t('menuHome.hours.deleteText'), [
@@ -264,9 +268,7 @@ function DayOffForm({ block, ctx }: { block?: TimeBlock; ctx: TimeContext }) {
       <TimePicker
         visible={timeEdge !== null}
         value={timeEdge ? draft[timeEdge] : EMPTY_DRAFT.fromTime}
-        title={
-          timeEdge === 'toTime' ? t('menuHome.hours.toTime') : t('menuHome.hours.fromDay')
-        }
+        title={timeEdge === 'toTime' ? t('menuHome.hours.toTime') : t('menuHome.hours.fromDay')}
         cancelLabel={t('common.cancel')}
         doneLabel={t('common.done')}
         onCancel={() => setTimeEdge(null)}

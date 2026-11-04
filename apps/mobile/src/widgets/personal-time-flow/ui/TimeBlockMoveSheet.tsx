@@ -6,14 +6,14 @@ import { useEffect } from 'react';
 import { router } from 'expo-router';
 import { DateTime } from 'luxon';
 import { useTranslation } from 'react-i18next';
-import { Alert, ScrollView, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import {
   useTimeBlockQuery,
   useUpdateTimeBlockMutation,
   type TimeBlock,
 } from '@/entities/time-block';
-import { FlowStepFooter, SheetChrome, useNow } from '@/shared/ui';
+import { FlowStepFooter, SheetChrome, useNow, showFailedToast, showToast } from '@/shared/ui';
 import { usePersonalTimeDraft } from '../model/draft.store';
 import { draftOfBlock, staysInPlace } from '../model/record';
 import { usePersonalTime } from '../model/usePersonalTime';
@@ -66,8 +66,11 @@ function MoveForm({ block }: { block: TimeBlock }) {
       // Only the time: the name stays whatever it is by now.
       { id: block.id, start_at: record.start_at, end_at: record.end_at, all_day: record.all_day },
       {
-        onSuccess: () => router.back(),
-        onError: () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')),
+        onSuccess: () => {
+          showToast({ title: t('toasts.saved') });
+          router.back();
+        },
+        onError: () => showFailedToast(save),
       },
     );
   };

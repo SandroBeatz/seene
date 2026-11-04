@@ -38,6 +38,8 @@ import {
   Switch,
   Text,
   useNow,
+  showFailedToast,
+  showToast,
 } from '@/shared/ui';
 import { addDigits, eraseDigit } from '../model/amountKeys';
 
@@ -92,8 +94,7 @@ export function ExpenseForm({ expense, initialDay }: ExpenseFormProps) {
   const chipLabel = (item: string) => expenseCategoryLabel(item, t, 'chip');
   const saving = create.isPending || update.isPending;
 
-  const failed = () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage'));
-  const done = { onSuccess: () => router.back(), onError: failed };
+  const failed = () => showFailedToast();
 
   const save = () => {
     const input = {
@@ -103,8 +104,31 @@ export function ExpenseForm({ expense, initialDay }: ExpenseFormProps) {
       note: note.trim() || null,
       repeat_monthly: repeat,
     };
-    if (expense) update.mutate({ id: expense.id, ...input }, done);
-    else create.mutate(input, done);
+    const onError = () => showFailedToast(save);
+    const label = expenseCategoryLabel(category, t, 'chip');
+    if (expense) {
+      update.mutate(
+        { id: expense.id, ...input },
+        {
+          onSuccess: () => {
+            showToast({ title: t('toasts.saved'), summary: label });
+            router.back();
+          },
+          onError,
+        },
+      );
+    } else {
+      create.mutate(input, {
+        onSuccess: () => {
+          showToast({
+            title: t('toasts.expenseAdded', { amount: money.money(amount) }),
+            summary: `${label} · ${day === todayKey ? t('toasts.today') : dayLabel}`,
+          });
+          router.back();
+        },
+        onError,
+      });
+    }
   };
 
   const pickCategory = (item: string) => {
@@ -144,7 +168,8 @@ export function ExpenseForm({ expense, initialDay }: ExpenseFormProps) {
         {
           text: t('common.delete'),
           style: 'destructive',
-          onPress: () => remove.mutate(expense.id, done),
+          onPress: () =>
+            remove.mutate(expense.id, { onSuccess: () => router.back(), onError: failed }),
         },
       ],
     );

@@ -22,6 +22,7 @@ import {
   SelectionMark,
   SheetChrome,
   Text,
+  showFailedToast,
 } from '@/shared/ui';
 
 export function PortfolioPhotoSheet() {
@@ -49,7 +50,7 @@ function PhotoForm({
   const [caption, setCaption] = useState(item.caption ?? '');
   const [serviceId, setServiceId] = useState(item.service_id);
 
-  const failed = () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage'));
+  const failed = () => showFailedToast();
   const options = { onSuccess: () => router.back(), onError: failed };
 
   const save = () =>

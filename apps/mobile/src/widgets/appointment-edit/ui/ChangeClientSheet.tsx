@@ -6,13 +6,14 @@
 import { useCallback } from 'react';
 import { router, useFocusEffect } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Alert, View } from 'react-native';
+import { View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import { useUpdateAppointmentMutation, type Appointment } from '@/entities/appointment';
 import { useUserId } from '@/entities/session';
 import { ClientPicker } from '@/features/pick-client';
-import { SheetChrome } from '@/shared/ui';
+import { SheetChrome, showFailedToast } from '@/shared/ui';
 import { useClientHandoff } from '../model/client-handoff.store';
+import { useVisitSavedToast } from '@/features/appointment-actions';
 
 export interface ChangeClientSheetProps {
   appointment: Appointment;
@@ -23,6 +24,7 @@ export function ChangeClientSheet({ appointment }: ChangeClientSheetProps) {
   const userId = useUserId() ?? '';
   const update = useUpdateAppointmentMutation(userId);
   const { mutate, isPending } = update;
+  const showSaved = useVisitSavedToast(appointment);
 
   const choose = useCallback(
     (clientId: string) => {
@@ -32,12 +34,15 @@ export function ChangeClientSheet({ appointment }: ChangeClientSheetProps) {
       mutate(
         { id: appointment.id, client_id: clientId },
         {
-          onSuccess: () => router.back(),
-          onError: () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')),
+          onSuccess: () => {
+            showSaved(clientId);
+            router.back();
+          },
+          onError: () => showFailedToast(),
         },
       );
     },
-    [appointment.id, appointment.client_id, isPending, mutate, t],
+    [appointment.id, appointment.client_id, isPending, mutate, showSaved],
   );
 
   // Back from "Новый клиент" with the client just made: that's the pick.

@@ -6,7 +6,7 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Pressable, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import {
   scheduleForWeekday,
@@ -27,6 +27,8 @@ import {
   Text,
   TimePicker,
   TimeWheel,
+  showFailedToast,
+  showToast,
 } from '@/shared/ui';
 import { isDayValid, setDayEnabled, withDay } from '../lib/week';
 
@@ -74,8 +76,11 @@ function DayForm({
 
   const save = () =>
     update.mutate(withDay(week, index, day, index === MONDAY && sameForWeekdays), {
-      onSuccess: () => router.back(),
-      onError: () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')),
+      onSuccess: () => {
+        showToast({ title: t('toasts.hoursSaved') });
+        router.back();
+      },
+      onError: () => showFailedToast(save),
     });
 
   return (
@@ -156,7 +161,9 @@ function DayForm({
               })}
               <Pressable
                 accessibilityRole="button"
-                onPress={() => setDay((d) => ({ ...d, breaks: [...d.breaks, nextBreak(d.breaks)] }))}
+                onPress={() =>
+                  setDay((d) => ({ ...d, breaks: [...d.breaks, nextBreak(d.breaks)] }))
+                }
                 style={({ pressed }) => [styles.addBreak, pressed && styles.pressed]}>
                 <Text variant="subheadStrong">{t('menuHome.hours.addBreak')}</Text>
               </Pressable>
@@ -236,7 +243,11 @@ const styles = StyleSheet.create((theme) => ({
   edge: { flex: 1, gap: theme.space[1.5] },
   edgeLabel: { paddingLeft: theme.space[1] },
   wheel: { flexDirection: 'row' },
-  breaksLabel: { marginTop: theme.space[4], marginBottom: theme.space[2], marginLeft: theme.space[1] },
+  breaksLabel: {
+    marginTop: theme.space[4],
+    marginBottom: theme.space[2],
+    marginLeft: theme.space[1],
+  },
   breaks: { flexDirection: 'row', flexWrap: 'wrap', gap: theme.space[1.5] },
   chip: {
     height: theme.sizing.control.xs,

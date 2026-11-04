@@ -44,6 +44,8 @@ import {
   Skeleton,
   Switch,
   Text,
+  showFailedToast,
+  showToast,
 } from '@/shared/ui';
 import { useProductLinks } from '../model/links.store';
 
@@ -100,7 +102,7 @@ function ProductForm({ product, userId }: { product?: Product; userId: string })
   );
   useEffect(() => beginLinks(linksBefore), [linksBefore, beginLinks]);
 
-  const failed = () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage'));
+  const failed = () => showFailedToast();
   const options = { onSuccess: () => router.back(), onError: failed };
 
   const packNow = partial ? parseQuantity(content) || null : null;
@@ -155,7 +157,20 @@ function ProductForm({ product, userId }: { product?: Product; userId: string })
           };
         }),
       },
-      options,
+      {
+        onSuccess: () => {
+          showToast(
+            product
+              ? { title: t('toasts.productSaved'), summary: name.trim() }
+              : {
+                  title: t('toasts.productAdded'),
+                  summary: `${name.trim()} · ${number(stockValue)} ${unitLabel}`,
+                },
+          );
+          router.back();
+        },
+        onError: () => showFailedToast(submit),
+      },
     );
   };
 

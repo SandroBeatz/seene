@@ -13,7 +13,7 @@ import {
 } from '@/entities/service-category';
 import { useUserId } from '@/entities/session';
 import { errorMessageKey, normalizeError } from '@/shared/api/errors';
-import { Button, ErrorState, FormScreen, Input, SheetChrome } from '@/shared/ui';
+import { Button, ErrorState, FormScreen, Input, SheetChrome, showFailedToast } from '@/shared/ui';
 import { nextSortOrder } from '../lib/draft';
 
 export function ServiceCategorySheet() {
@@ -57,7 +57,7 @@ function CategoryForm({
   const remove = useDeleteServiceCategoryMutation(userId);
   const [name, setName] = useState(category?.name ?? '');
 
-  const failed = () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage'));
+  const failed = () => showFailedToast();
   const options = { onSuccess: () => router.back(), onError: failed };
 
   const save = () => {

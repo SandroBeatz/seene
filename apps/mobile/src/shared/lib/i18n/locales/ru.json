@@ -1894,5 +1894,41 @@
         "f6": "Без логотипа Seene на странице"
       }
     }
+  },
+  "toasts": {
+    "saved": "Изменения сохранены",
+    "visitSummary": "Запись {{name}}, {{day}}",
+    "visitFinished": "Визит завершён · {{amount}}",
+    "visitConfirmed": "Запись подтверждена",
+    "reminderSent": "Напоминание отправлено",
+    "reminderSummary": "{{name}} · WhatsApp",
+    "personalTimeAdded": "Личное время добавлено",
+    "clientAdded": "Клиент добавлен",
+    "serviceAdded": "Услуга добавлена",
+    "serviceSaved": "Услуга сохранена",
+    "productAdded": "Товар добавлен",
+    "productSaved": "Товар сохранён",
+    "stockUpdated": "Остаток обновлён",
+    "expenseAdded": "Расход добавлен · {{amount}}",
+    "today": "сегодня",
+    "hoursSaved": "Рабочие часы сохранены",
+    "day_offAdded": "Выходной добавлен",
+    "vacationAdded": "Отпуск добавлен",
+    "profileSaved": "Профиль сохранён",
+    "coverUpdated": "Обложка обновлена",
+    "templateSaved": "Шаблон сохранён",
+    "bookingOff": "Онлайн-запись выключена",
+    "bookingOffHint": "Новые записи только вручную",
+    "bookingOn": "Онлайн-запись включена",
+    "paymentsSaved": "Способы оплаты сохранены",
+    "retry": "Повторить",
+    "failed": {
+      "title": "Не удалось сохранить",
+      "summary": "Проверьте связь"
+    },
+    "offline": {
+      "title": "Нет интернета",
+      "summary": "Изменения не сохранены"
+    }
   }
 }

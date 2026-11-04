@@ -23,6 +23,8 @@ import {
   SectionLabel,
   Switch,
   Text,
+  showFailedToast,
+  showToast,
 } from '@/shared/ui';
 import { customMethods, isLastActive, systemMethods } from '../lib/methods';
 
@@ -55,7 +57,10 @@ export function PaymentMethodsScreen() {
     }
     toggle.mutate(
       { id: method.id, isActive },
-      { onError: () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')) },
+      {
+        onSuccess: () => showToast({ title: t('toasts.paymentsSaved') }),
+        onError: () => showFailedToast(() => flip(method, isActive)),
+      },
     );
   };
 
@@ -115,7 +120,11 @@ export function PaymentMethodsScreen() {
 const styles = StyleSheet.create((theme) => ({
   content: { paddingHorizontal: theme.space[5], paddingTop: theme.space[5.5] },
   hint: { marginTop: theme.space[2], marginHorizontal: theme.space[1] },
-  label: { marginTop: theme.space[5.5], marginBottom: theme.space[2], marginHorizontal: theme.space[1] },
+  label: {
+    marginTop: theme.space[5.5],
+    marginBottom: theme.space[2],
+    marginHorizontal: theme.space[1],
+  },
   add: {
     marginTop: theme.space[3.5],
     height: theme.sizing.control.lg,

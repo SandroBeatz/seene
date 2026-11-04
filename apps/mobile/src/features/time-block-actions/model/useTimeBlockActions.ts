@@ -8,6 +8,7 @@ import { Alert } from 'react-native';
 import { useUserId } from '@/entities/session';
 import { useDeleteTimeBlockMutation, type TimeBlock } from '@/entities/time-block';
 import type { IconName } from '@/shared/ui';
+import { showFailedToast } from '@/shared/ui';
 
 export type TimeBlockAction = 'rename' | 'reschedule' | 'delete';
 
@@ -55,7 +56,7 @@ export function useTimeBlockActions({ onDeleted }: { onDeleted?: () => void } = 
               onPress: () =>
                 remove.mutate(block.id, {
                   onSuccess: onDeleted,
-                  onError: () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')),
+                  onError: () => showFailedToast(),
                 }),
             },
           ],

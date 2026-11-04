@@ -6,7 +6,7 @@
 import { router } from 'expo-router';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Pressable, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import Animated, { useAnimatedRef } from 'react-native-reanimated';
 import { StyleSheet } from 'react-native-unistyles';
 import { useMasterProfileQuery } from '@/entities/master';
@@ -17,7 +17,7 @@ import {
   type ServiceCategory,
 } from '@/entities/service-category';
 import { useUserId } from '@/entities/session';
-import { GroupedCard, Icon, MenuGroup, MenuRow, Text } from '@/shared/ui';
+import { GroupedCard, Icon, MenuGroup, MenuRow, Text, showFailedToast } from '@/shared/ui';
 import { byOrder, directionOrder, withGroupOrder } from '../lib/grouping';
 import { DirectionHeading } from './DirectionHeading';
 import { ReorderCard } from './ReorderCard';
@@ -61,9 +61,15 @@ export function ServiceDirectionsScreen() {
 
   const sorted = [...(categories.data ?? [])].sort(byOrder);
   const saveOrder = (ids: string[]) =>
-    reorder.mutate(withGroupOrder(sorted.map((c) => c.id), ids), {
-      onError: () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')),
-    });
+    reorder.mutate(
+      withGroupOrder(
+        sorted.map((c) => c.id),
+        ids,
+      ),
+      {
+        onError: () => showFailedToast(),
+      },
+    );
 
   const addRow = (specialization: string) => (
     <Pressable

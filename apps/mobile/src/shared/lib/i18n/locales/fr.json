@@ -1879,5 +1879,41 @@
         "f6": "Sans logo Seene sur la page"
       }
     }
+  },
+  "toasts": {
+    "saved": "Modifications enregistrées",
+    "visitSummary": "Réservation de {{name}}, {{day}}",
+    "visitFinished": "Visite terminée · {{amount}}",
+    "visitConfirmed": "Réservation confirmée",
+    "reminderSent": "Rappel envoyé",
+    "reminderSummary": "{{name}} · WhatsApp",
+    "personalTimeAdded": "Temps personnel ajouté",
+    "clientAdded": "Client ajouté",
+    "serviceAdded": "Prestation ajoutée",
+    "serviceSaved": "Prestation enregistrée",
+    "productAdded": "Produit ajouté",
+    "productSaved": "Produit enregistré",
+    "stockUpdated": "Stock mis à jour",
+    "expenseAdded": "Dépense ajoutée · {{amount}}",
+    "today": "aujourd’hui",
+    "hoursSaved": "Horaires enregistrés",
+    "day_offAdded": "Jour de repos ajouté",
+    "vacationAdded": "Congés ajoutés",
+    "profileSaved": "Profil enregistré",
+    "coverUpdated": "Couverture mise à jour",
+    "templateSaved": "Modèle enregistré",
+    "bookingOff": "Réservation en ligne désactivée",
+    "bookingOffHint": "Nouvelles réservations à la main",
+    "bookingOn": "Réservation en ligne activée",
+    "paymentsSaved": "Moyens de paiement enregistrés",
+    "retry": "Réessayer",
+    "failed": {
+      "title": "Échec de l’enregistrement",
+      "summary": "Vérifiez la connexion"
+    },
+    "offline": {
+      "title": "Pas d’internet",
+      "summary": "Modifications non enregistrées"
+    }
   }
 }

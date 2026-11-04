@@ -2,11 +2,15 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, View } from 'react-native';
+import { View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
-import { useMasterProfileQuery, useUpdateMasterProfile, type MasterProfile } from '@/entities/master';
+import {
+  useMasterProfileQuery,
+  useUpdateMasterProfile,
+  type MasterProfile,
+} from '@/entities/master';
 import { useUserId } from '@/entities/session';
-import { Button, FormScreen, Input, SheetChrome } from '@/shared/ui';
+import { Button, FormScreen, Input, SheetChrome, showFailedToast, showToast } from '@/shared/ui';
 
 export function ProfileAddressSheet() {
   const userId = useUserId() ?? '';
@@ -30,8 +34,11 @@ function AddressForm({ profile, userId }: { profile: MasterProfile; userId: stri
         house_number: house.trim() || null,
       },
       {
-        onSuccess: () => router.back(),
-        onError: () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')),
+        onSuccess: () => {
+          showToast({ title: t('toasts.profileSaved') });
+          router.back();
+        },
+        onError: () => showFailedToast(),
       },
     );
 

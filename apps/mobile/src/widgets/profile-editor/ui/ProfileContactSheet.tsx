@@ -2,7 +2,6 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import { normalizeInstagram, normalizeTelegram } from '@/entities/client';
 import {
@@ -19,7 +18,7 @@ import {
   phoneDigits,
   resolvePhoneInput,
 } from '@/shared/lib/phone';
-import { Button, FormScreen, Input, SheetChrome } from '@/shared/ui';
+import { Button, FormScreen, Input, SheetChrome, showFailedToast, showToast } from '@/shared/ui';
 
 type ContactField = 'whatsapp' | 'instagram' | 'telegram';
 
@@ -73,8 +72,11 @@ function ContactForm({
     update.mutate(
       { [field]: next },
       {
-        onSuccess: () => router.back(),
-        onError: () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')),
+        onSuccess: () => {
+          showToast({ title: t('toasts.profileSaved') });
+          router.back();
+        },
+        onError: () => showFailedToast(),
       },
     );
   };

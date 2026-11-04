@@ -19,6 +19,7 @@ import { useUserId } from '@/entities/session';
 import { phoneCallUrl, whatsappUrl } from '@/shared/lib/phone';
 import { useAppointmentToast } from './useAppointmentToast';
 import { useClientMessage } from './useClientMessage';
+import { showFailedToast, showErrorToast, showToast } from '@/shared/ui';
 
 export type AppointmentActionKey =
   | AppointmentAction
@@ -56,9 +57,10 @@ export function useAppointmentActions(bound: AppointmentActionContext | null = n
   const update = useUpdateAppointmentMutation(userId);
   const remove = useDeleteAppointmentMutation(userId);
   const composeMessage = useClientMessage();
-  const showToast = useAppointmentToast();
+  const showVisitToast = useAppointmentToast();
 
-  const failed = () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage'));
+  const failed = () => showFailedToast();
+  const openFailed = () => showErrorToast(t('actions.failedTitle'));
 
   const patch = (ctx: AppointmentActionContext, dto: Omit<UpdateAppointmentDto, 'id'>) =>
     update.mutate({ id: ctx.appointment.id, ...dto }, { onError: failed });
@@ -93,7 +95,7 @@ export function useAppointmentActions(bound: AppointmentActionContext | null = n
       {
         onError: failed,
         onSuccess: () =>
-          showToast({
+          showVisitToast({
             title: t('actions.cancelledToast'),
             summary: `${ctx.clientFirstName} · ${ctx.when}`,
             phone: ctx.phone || null,
@@ -103,20 +105,38 @@ export function useAppointmentActions(bound: AppointmentActionContext | null = n
     );
 
   const openWhatsApp = (phone: string, text?: string) => {
-    if (!phone) return Alert.alert(t('actions.noPhone'));
-    void Linking.openURL(whatsappUrl(phone, text)).catch(failed);
+    if (!phone) return showErrorToast(t('actions.noPhone'));
+    void Linking.openURL(whatsappUrl(phone, text)).catch(openFailed);
   };
 
   const sendTemplate = (ctx: AppointmentActionContext, kind: MessageKind) => {
-    if (!ctx.phone) return Alert.alert(t('actions.noPhone'));
-    void templateMessage(ctx, kind).then((text) => openWhatsApp(ctx.phone, text));
+    if (!ctx.phone) return showErrorToast(t('actions.noPhone'));
+    void templateMessage(ctx, kind).then((text) => {
+      openWhatsApp(ctx.phone, text);
+      if (kind === 'reminder') {
+        showToast({
+          title: t('toasts.reminderSent'),
+          summary: t('toasts.reminderSummary', { name: ctx.clientFirstName }),
+        });
+      }
+    });
   };
 
   function runFor(ctx: AppointmentActionContext, action: AppointmentActionKey) {
     const id = ctx.appointment.id;
     switch (action) {
       case 'confirm':
-        return patch(ctx, { status: 'confirmed' });
+        return update.mutate(
+          { id, status: 'confirmed' },
+          {
+            onError: failed,
+            onSuccess: () =>
+              showToast({
+                title: t('toasts.visitConfirmed'),
+                summary: `${ctx.clientFirstName} · ${ctx.when}`,
+              }),
+          },
+        );
       case 'decline':
         return ask('decline', () => cancelByMaster(ctx));
       case 'cancel':
@@ -156,8 +176,8 @@ export function useAppointmentActions(bound: AppointmentActionContext | null = n
           params: { appointmentId: id },
         });
       case 'call':
-        if (!ctx.phone) return Alert.alert(t('actions.noPhone'));
-        return void Linking.openURL(phoneCallUrl(ctx.phone)).catch(failed);
+        if (!ctx.phone) return showErrorToast(t('actions.noPhone'));
+        return void Linking.openURL(phoneCallUrl(ctx.phone)).catch(openFailed);
       case 'whatsapp':
         return openWhatsApp(ctx.phone);
       case 'remind':
