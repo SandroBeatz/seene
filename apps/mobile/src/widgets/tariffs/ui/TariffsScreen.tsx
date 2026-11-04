@@ -7,25 +7,17 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
-import { useMoneyContext } from '@/entities/master';
-import { useUserId } from '@/entities/session';
-import { formatAmount } from '@/shared/lib/formats';
 import { Icon, ScreenScrollView, SegmentedControl, Text } from '@/shared/ui';
 
 type Period = 'month' | 'year';
 
-/** The design's prices, in Kyrgyzstan: the screen says so. */
-const PRICES = {
-  pro: { month: 490, year: 4690 },
-  team: { month: 990, year: 9490 },
-} as const;
+/** Plans are sold in US dollars, whatever currency the master works in. Pro's price is a working one. */
+const FREE_PRICE = '$0';
+const PRO_PRICE = { month: '$5.99', year: '$57.49' } as const;
 
 export function TariffsScreen() {
   const { t } = useTranslation();
-  const { locale } = useMoneyContext(useUserId() ?? '');
   const [period, setPeriod] = useState<Period>('month');
-  const som = (amount: number) => formatAmount(amount, { currency: 'KGS', locale });
-  const perPeriod = t(`menuHome.tariffs.per.${period}`);
 
   return (
     <ScreenScrollView contentContainerStyle={styles.content}>
@@ -41,7 +33,7 @@ export function TariffsScreen() {
 
       <PlanCard
         title={t('menuHome.tariffs.free.title')}
-        price={som(0)}
+        price={FREE_PRICE}
         note={t('menuHome.tariffs.free.note')}
         features={[
           t('menuHome.tariffs.free.f1'),
@@ -57,8 +49,8 @@ export function TariffsScreen() {
         featured
         title={t('menuHome.tariffs.pro.title')}
         badge={t('menuHome.tariffs.pro.badge')}
-        price={som(PRICES.pro[period])}
-        per={perPeriod}
+        price={PRO_PRICE[period]}
+        per={t(`menuHome.tariffs.per.${period}`)}
         note={t('menuHome.tariffs.pro.note')}
         features={[
           t('menuHome.tariffs.pro.f1'),
@@ -71,21 +63,7 @@ export function TariffsScreen() {
         status={t('menuHome.tariffs.soon')}
       />
 
-      <PlanCard
-        title={t('menuHome.tariffs.team.title')}
-        price={som(PRICES.team[period])}
-        per={perPeriod}
-        note={t('menuHome.tariffs.team.note')}
-        features={[
-          t('menuHome.tariffs.team.f1'),
-          t('menuHome.tariffs.team.f2'),
-          t('menuHome.tariffs.team.f3'),
-          t('menuHome.tariffs.team.f4'),
-        ]}
-        status={t('menuHome.tariffs.soon')}
-      />
-
-      <Text variant="caption" color="tertiary" style={styles.footnote}>
+      <Text variant="caption" color="tertiary" align="center" style={styles.footnote}>
         {t('menuHome.tariffs.footnote')}
       </Text>
     </ScreenScrollView>
