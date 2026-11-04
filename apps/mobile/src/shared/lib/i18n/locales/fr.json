@@ -960,8 +960,7 @@
         "snooze": "Rappeler dans une semaine",
         "decline": "Refuser la demande",
         "cancel": "Annuler le rendez-vous",
-        "no_show": "Absence",
-        "ask_review": "Demander un avis"
+        "no_show": "Absence"
       },
       "clients_one": "{{count}} client",
       "clients_few": "{{count}} clients",
@@ -1054,8 +1053,7 @@
     },
     "missingTitle": "Aucun rendez-vous",
     "missing": "Il a été supprimé ou n’est pas disponible.",
-    "changeClient": "Changer de client",
-    "askReview": "Avis"
+    "changeClient": "Changer de client"
   },
   "actions": {
     "failedTitle": "Échec",
@@ -1704,10 +1702,6 @@
         "recall": {
           "title": "Il est temps de réserver",
           "when": "Quand un client devrait revenir"
-        },
-        "review": {
-          "title": "Demander un avis",
-          "when": "Dans un rendez-vous terminé"
         },
         "cancellation": {
           "title": "Annulation",

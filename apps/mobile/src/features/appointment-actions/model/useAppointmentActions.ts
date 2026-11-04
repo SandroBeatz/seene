@@ -26,7 +26,6 @@ export type AppointmentActionKey =
   | 'whatsapp'
   | 'remind'
   | 'send_details'
-  | 'ask_review'
   | 'note'
   | 'delete'
   | 'open_client';
@@ -165,8 +164,6 @@ export function useAppointmentActions(bound: AppointmentActionContext | null = n
         return sendTemplate(ctx, 'reminder');
       case 'send_details':
         return sendTemplate(ctx, 'confirmation');
-      case 'ask_review':
-        return sendTemplate(ctx, 'review');
       case 'propose_time':
         return openWhatsApp(
           ctx.phone,

@@ -9,8 +9,6 @@ export const DEFAULT_TEMPLATES: Record<MessageLanguage, Record<MessageKind, stri
       '{client_name}, здравствуйте! Напоминаем о записи.\nЖдём вас {date_time} на: {service}.\nПодробнее: {booking_link}',
     recall:
       '{client_name}, здравствуйте! Напоминаем о себе, чтобы вы успели выбрать удобное время.\nСвободные окошки: {online_link}',
-    review:
-      '{client_name}, спасибо за доверие! Как всё прошло?\nБудем благодарны за отзыв: {booking_link}',
     cancellation: '{client_name}, ваша запись отменена.\n{date_time} — {service}.',
     reschedule:
       '{client_name}, ваша запись перенесена.\nЖдём вас {date_time} на: {service}.\nПодробнее: {booking_link}',
@@ -22,8 +20,6 @@ export const DEFAULT_TEMPLATES: Record<MessageLanguage, Record<MessageKind, stri
       'Hello {client_name}! A reminder about your booking.\nSee you {date_time} for: {service}.\nDetails: {booking_link}',
     recall:
       'Hello {client_name}! Just a reminder, so you can pick a time that suits you.\nOpen slots: {online_link}',
-    review:
-      '{client_name}, thank you for coming! How did it go?\nWe would love your feedback: {booking_link}',
     cancellation: '{client_name}, your booking is cancelled.\n{date_time} — {service}.',
     reschedule:
       '{client_name}, your booking has moved.\nSee you {date_time} for: {service}.\nDetails: {booking_link}',
@@ -35,8 +31,6 @@ export const DEFAULT_TEMPLATES: Record<MessageLanguage, Record<MessageKind, stri
       'Bonjour {client_name} ! Un rappel de votre rendez-vous.\nÀ bientôt, {date_time}, pour : {service}.\nDétails : {booking_link}',
     recall:
       'Bonjour {client_name} ! Un petit rappel pour que vous puissiez choisir un créneau qui vous convient.\nCréneaux libres : {online_link}',
-    review:
-      '{client_name}, merci de votre confiance ! Comment cela s’est-il passé ?\nVotre avis nous ferait plaisir : {booking_link}',
     cancellation: '{client_name}, votre rendez-vous est annulé.\n{date_time} — {service}.',
     reschedule:
       '{client_name}, votre rendez-vous a été déplacé.\nÀ bientôt, {date_time}, pour : {service}.\nDétails : {booking_link}',
