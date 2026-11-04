@@ -2,7 +2,6 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import {
   useCreateServiceCategoryMutation,
@@ -10,10 +9,19 @@ import {
   useServiceCategoriesQuery,
   useUpdateServiceCategoryMutation,
   type ServiceCategory,
+  serviceCategoryKeys,
 } from '@/entities/service-category';
 import { useUserId } from '@/entities/session';
 import { errorMessageKey, normalizeError } from '@/shared/api/errors';
-import { Button, ErrorState, FormScreen, Input, SheetChrome, showFailedToast } from '@/shared/ui';
+import {
+  Button,
+  ErrorState,
+  FormScreen,
+  Input,
+  SheetChrome,
+  showFailedToast,
+  removeWithUndo,
+} from '@/shared/ui';
 import { nextSortOrder } from '../lib/draft';
 
 export function ServiceCategorySheet() {
@@ -66,19 +74,17 @@ function CategoryForm({
     else create.mutate({ name: value, specialization, sort_order: nextSortOrder(all) }, options);
   };
 
-  const confirmDelete = () =>
-    Alert.alert(
-      t('menuHome.servicesPage.categoryDeleteTitle'),
-      t('menuHome.servicesPage.categoryDeleteText'),
-      [
-        { text: t('common.cancel'), style: 'cancel' },
-        {
-          text: t('menuHome.servicesPage.delete'),
-          style: 'destructive',
-          onPress: () => category && remove.mutate(category.id, options),
-        },
-      ],
-    );
+  const deleteCategory = () => {
+    if (!category) return;
+    router.back();
+    removeWithUndo({
+      title: t('toasts.categoryDeleted'),
+      summary: category.name,
+      id: category.id,
+      keys: [serviceCategoryKeys.all(userId)],
+      commit: () => remove.mutateAsync(category.id),
+    });
+  };
 
   return (
     <FormScreen
@@ -109,7 +115,7 @@ function CategoryForm({
                 sf: 'trash',
                 icon: 'trash',
                 destructive: true,
-                onPress: confirmDelete,
+                onPress: deleteCategory,
               }
             : undefined
         }

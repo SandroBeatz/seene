@@ -10,9 +10,18 @@ import {
   usePaymentTypesQuery,
   useUpdatePaymentTypeMutation,
   type PaymentType,
+  paymentTypeKeys,
 } from '@/entities/payment-type';
 import { useUserId } from '@/entities/session';
-import { Button, FormScreen, Input, SheetChrome, showFailedToast, showToast } from '@/shared/ui';
+import {
+  Button,
+  FormScreen,
+  Input,
+  SheetChrome,
+  showFailedToast,
+  showToast,
+  removeWithUndo,
+} from '@/shared/ui';
 import { isLastActive, nextMethodOrder } from '../lib/methods';
 
 export function PaymentMethodSheet() {
@@ -66,14 +75,15 @@ function MethodForm({
       Alert.alert(t('menuHome.payments.lastActive'));
       return;
     }
-    Alert.alert(t('menuHome.payments.deleteTitle'), t('menuHome.payments.deleteText'), [
-      { text: t('common.cancel'), style: 'cancel' },
-      {
-        text: t('common.delete'),
-        style: 'destructive',
-        onPress: () => method && remove.mutate(method.id, options),
-      },
-    ]);
+    if (!method) return;
+    router.back();
+    removeWithUndo({
+      title: t('toasts.paymentDeleted'),
+      summary: method.name,
+      id: method.id,
+      keys: [paymentTypeKeys.all(userId)],
+      commit: () => remove.mutateAsync(method.id),
+    });
   };
 
   return (

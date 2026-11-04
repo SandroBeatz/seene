@@ -6,7 +6,7 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, View } from 'react-native';
+import { View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import { useAppointmentsRangeQuery } from '@/entities/appointment';
 import {
@@ -15,6 +15,7 @@ import {
   useTimeBlockQuery,
   useUpdateTimeBlockMutation,
   type TimeBlock,
+  timeBlockKeys,
 } from '@/entities/time-block';
 import { type TimeContext, useTimeContext } from '@/features/pick-time';
 import { isSupportedLocale, pluralCategory } from '@/shared/lib/i18n';
@@ -32,6 +33,7 @@ import {
   TimePicker,
   showFailedToast,
   showToast,
+  removeWithUndo,
 } from '@/shared/ui';
 import {
   dayOffRecord,
@@ -40,6 +42,7 @@ import {
   pickRange,
   type DayOffDraft,
   type DayOffKind,
+  rangeLabel,
 } from '../lib/day-off';
 import { isAffectedVisit } from '../lib/visits';
 
@@ -75,7 +78,6 @@ function DayOffForm({ block, ctx }: { block?: TimeBlock; ctx: TimeContext }) {
   const affected = (visits.data ?? []).filter((visit) => isAffectedVisit(visit, today));
   const warn = affected.length > 0 && (warnChoice ?? true);
 
-  const failed = () => showFailedToast();
   const saved = () => {
     if (warn && record) {
       router.replace({
@@ -93,16 +95,21 @@ function DayOffForm({ block, ctx }: { block?: TimeBlock; ctx: TimeContext }) {
     if (block) update.mutate({ id: block.id, ...record }, options);
     else create.mutate(record, options);
   };
-  const confirmDelete = () =>
-    Alert.alert(t('menuHome.hours.deleteTitle'), t('menuHome.hours.deleteText'), [
-      { text: t('common.cancel'), style: 'cancel' },
-      {
-        text: t('common.delete'),
-        style: 'destructive',
-        onPress: () =>
-          block && remove.mutate(block.id, { onSuccess: () => router.back(), onError: failed }),
-      },
-    ]);
+  const deleteBlock = () => {
+    if (!block) return;
+    router.back();
+    removeWithUndo({
+      title: t(draft.kind === 'vacation' ? 'toasts.vacationDeleted' : 'toasts.dayOffDeleted'),
+      summary: rangeLabel(
+        draft.start,
+        draft.end || draft.start,
+        t('monthsGenitive', { returnObjects: true }) as string[],
+      ),
+      id: block.id,
+      keys: [timeBlockKeys.all(ctx.userId)],
+      commit: () => remove.mutateAsync(block.id),
+    });
+  };
 
   const kindLabel = t(
     draft.kind === 'vacation' ? 'menuHome.hours.kindVacation' : 'menuHome.hours.kindDayOff',
@@ -135,7 +142,7 @@ function DayOffForm({ block, ctx }: { block?: TimeBlock; ctx: TimeContext }) {
                   sf: 'trash',
                   icon: 'trash',
                   destructive: true,
-                  onPress: confirmDelete,
+                  onPress: deleteBlock,
                 }
               : undefined
           }

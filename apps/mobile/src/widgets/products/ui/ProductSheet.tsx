@@ -2,7 +2,7 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, View } from 'react-native';
+import { View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import { useMoneyContext } from '@/entities/master';
 import {
@@ -26,6 +26,7 @@ import {
   type ProductContentUnit,
   type ProductType,
   type ProductUnit,
+  productKeys,
 } from '@/entities/product';
 import { useServicesQuery } from '@/entities/service';
 import { useUserId } from '@/entities/session';
@@ -46,6 +47,7 @@ import {
   Text,
   showFailedToast,
   showToast,
+  removeWithUndo,
 } from '@/shared/ui';
 import { useProductLinks } from '../model/links.store';
 
@@ -101,9 +103,6 @@ function ProductForm({ product, userId }: { product?: Product; userId: string })
     Object.fromEntries((product?.services ?? []).map((s) => [s.service_id, String(s.quantity)])),
   );
   useEffect(() => beginLinks(linksBefore), [linksBefore, beginLinks]);
-
-  const failed = () => showFailedToast();
-  const options = { onSuccess: () => router.back(), onError: failed };
 
   const packNow = partial ? parseQuantity(content) || null : null;
   const packSize = packNow ?? 1;
@@ -174,15 +173,17 @@ function ProductForm({ product, userId }: { product?: Product; userId: string })
     );
   };
 
-  const confirmDelete = () =>
-    Alert.alert(t('menuHome.products.deleteTitle'), t('menuHome.products.deleteText'), [
-      { text: t('common.cancel'), style: 'cancel' },
-      {
-        text: t('common.delete'),
-        style: 'destructive',
-        onPress: () => product && remove.mutate(product.id, options),
-      },
-    ]);
+  const deleteProduct = () => {
+    if (!product) return;
+    router.back();
+    removeWithUndo({
+      title: t('toasts.productDeleted'),
+      summary: product.name,
+      id: product.id,
+      keys: [productKeys.all(userId)],
+      commit: () => remove.mutateAsync(product.id),
+    });
+  };
 
   const linkedNames = (services.data ?? [])
     .filter((service) => links[service.id] !== undefined)
@@ -226,7 +227,7 @@ function ProductForm({ product, userId }: { product?: Product; userId: string })
                 sf: 'trash',
                 icon: 'trash',
                 destructive: true,
-                onPress: confirmDelete,
+                onPress: deleteProduct,
               }
             : undefined
         }
