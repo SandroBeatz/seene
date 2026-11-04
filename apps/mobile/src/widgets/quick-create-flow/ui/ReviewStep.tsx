@@ -7,7 +7,7 @@
 import type { ReactNode } from 'react';
 import { router } from 'expo-router';
 import { DateTime } from 'luxon';
-import { Alert, Pressable, TextInput, View } from 'react-native';
+import { Pressable, TextInput, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { useCreateAppointmentMutation } from '@/entities/appointment';
@@ -15,7 +15,15 @@ import { clientName } from '@/entities/client';
 import { parseAmount, useAppointmentToast, useClientMessage } from '@/features/appointment-actions';
 import { formatDurationLabel } from '@/shared/lib/i18n';
 import { formatPhone } from '@/shared/lib/phone';
-import { Avatar, FlowStepFooter, Icon, Text, useCloseFlow, type IconName } from '@/shared/ui';
+import {
+  Avatar,
+  FlowStepFooter,
+  Icon,
+  Text,
+  useCloseFlow,
+  type IconName,
+  showFailedToast,
+} from '@/shared/ui';
 import { useFlowData } from '../model/useFlowData';
 import { StepChrome } from './StepChrome';
 
@@ -81,7 +89,7 @@ export function ReviewStep() {
           });
           close();
         },
-        onError: () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')),
+        onError: () => showFailedToast(submit),
       },
     );
   };

@@ -15,7 +15,15 @@ import { useUserId } from '@/entities/session';
 import type { ServiceWithCategory } from '@/entities/service';
 import { formatAmount } from '@/shared/lib/formats';
 import { formatDurationLabel, pluralCategory, type AppLocale } from '@/shared/lib/i18n';
-import { Button, Icon, SearchField, SheetChrome, Text } from '@/shared/ui';
+import {
+  Button,
+  Icon,
+  SearchField,
+  SheetChrome,
+  Text,
+  showFailedToast,
+  showErrorToast,
+} from '@/shared/ui';
 import {
   categoriesOf,
   directionColor,
@@ -27,6 +35,7 @@ import {
   VISIT_MAX_MINUTES,
   VISIT_MIN_MINUTES,
 } from '../model/services';
+import { useVisitSavedToast } from '../model/useVisitSavedToast';
 
 export interface ServicesEditorProps {
   appointment: Appointment;
@@ -47,6 +56,7 @@ export function ServicesEditor({
   const { theme } = useUnistyles();
   const insets = useSafeAreaInsets();
   const update = useUpdateAppointmentMutation(useUserId() ?? '');
+  const showSaved = useVisitSavedToast(appointment);
 
   const [selected, setSelected] = useState(() => new Set(appointment.service_ids));
   const [query, setQuery] = useState('');
@@ -87,15 +97,18 @@ export function ServicesEditor({
 
   const save = () => {
     const visit = resolveVisit(totals, durationInput, priceInput);
-    if (selected.size === 0) return Alert.alert(t('servicesSheet.pickOne'));
+    if (selected.size === 0) return showErrorToast(t('servicesSheet.pickOne'));
     if (visit.duration < VISIT_MIN_MINUTES || visit.duration > VISIT_MAX_MINUTES) {
       return Alert.alert(t('servicesSheet.badDuration'));
     }
     update.mutate(
       { id: appointment.id, service_ids: [...selected], ...visit },
       {
-        onSuccess: () => router.back(),
-        onError: () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')),
+        onSuccess: () => {
+          showSaved();
+          router.back();
+        },
+        onError: () => showFailedToast(save),
       },
     );
   };

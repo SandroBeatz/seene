@@ -1,7 +1,8 @@
 /**
  * TanStack Query client + MMKV cache persistence, plus focus/online managers wired
- * to AppState and NetInfo (so queries revalidate on foreground and mutations pause
- * offline). See docs/state-management.md §2 & §5.
+ * to AppState and NetInfo (so queries revalidate on foreground). Mutations don't wait
+ * for a connection: offline they fail at once and the master is told so, nothing is queued.
+ * See docs/state-management.md §2 & §5.
  */
 import { AppState, type AppStateStatus, Platform } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
@@ -23,6 +24,7 @@ export const queryClient = new QueryClient({
       retry: 2,
       refetchOnWindowFocus: true,
     },
+    mutations: { networkMode: 'always' },
   },
 });
 

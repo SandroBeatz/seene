@@ -5,11 +5,11 @@
  * "Личное время".
  */
 import { useTranslation } from 'react-i18next';
-import { Alert, View } from 'react-native';
+import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { StyleSheet } from 'react-native-unistyles';
 import { useCreateTimeBlockMutation } from '@/entities/time-block';
-import { FlowStepFooter, useCloseFlow } from '@/shared/ui';
+import { FlowStepFooter, useCloseFlow, showFailedToast, showToast } from '@/shared/ui';
 import { usePersonalTime } from '../model/usePersonalTime';
 import { NameFields } from './NameFields';
 import { PersonalTimeChrome } from './PersonalTimeChrome';
@@ -23,8 +23,11 @@ export function WhatStep() {
   const submit = () => {
     if (!record) return;
     create.mutate(record, {
-      onSuccess: close,
-      onError: () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')),
+      onSuccess: () => {
+        showToast({ title: t('toasts.personalTimeAdded'), summary: `${dayLabel}, ${span}` });
+        close();
+      },
+      onError: () => showFailedToast(submit),
     });
   };
 

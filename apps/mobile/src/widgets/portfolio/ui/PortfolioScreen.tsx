@@ -42,6 +42,7 @@ import {
   Switch,
   Text,
   type ContextMenuAnchor,
+  showFailedToast,
 } from '@/shared/ui';
 import { filterPhotos, portfolioFilters } from '../lib/filters';
 import { PhotoTile } from './PhotoTile';
@@ -75,7 +76,7 @@ export function PortfolioScreen() {
   const [menu, setMenu] = useState<{ item: PortfolioItem; anchor: ContextMenuAnchor } | null>(null);
   const tiles = useRef(new Map<string, View | null>());
 
-  const failed = () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage'));
+  const failed = () => showFailedToast();
 
   const pickAndAdd = async () => {
     const images = await pickImages(PICK_LIMIT);

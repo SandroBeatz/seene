@@ -45,6 +45,8 @@ import {
   Skeleton,
   Switch,
   Text,
+  showFailedToast,
+  showToast,
 } from '@/shared/ui';
 import {
   BUFFER_OPTIONS,
@@ -149,7 +151,7 @@ function ServiceForm({
   // A new service whose links failed to save exists already: trying again must not add another.
   const createdId = useRef<string | null>(null);
 
-  const failed = () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage'));
+  const failed = () => showFailedToast();
   const parsedPrice = parsePrice(price);
   const canSave =
     name.trim().length > 0 &&
@@ -221,9 +223,17 @@ function ServiceForm({
           })),
         });
       }
+      showToast(
+        existingId
+          ? { title: t('toasts.serviceSaved'), summary: dto.name }
+          : {
+              title: t('toasts.serviceAdded'),
+              summary: `${dto.name} · ${money.money(parsedPrice ?? 0)}`,
+            },
+      );
       router.back();
     } catch {
-      failed();
+      showFailedToast(() => void save());
     }
   };
 

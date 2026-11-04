@@ -1,12 +1,12 @@
 /** The language of messages; the design has no screen for this choice. */
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Alert, Pressable, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet } from 'react-native-unistyles';
 import { useMasterSettingsQuery, useUpdateMasterSettings } from '@/entities/master';
 import { useUserId } from '@/entities/session';
-import { SelectionMark, SheetHeader, Text } from '@/shared/ui';
+import { SelectionMark, SheetHeader, Text, showFailedToast } from '@/shared/ui';
 
 const OPTIONS = ['auto', 'ru', 'en', 'fr'] as const;
 
@@ -19,10 +19,7 @@ export function MessageLanguageSheet() {
   const current = settings.data?.message_language ?? 'auto';
 
   const pick = (message_language: (typeof OPTIONS)[number]) => {
-    update.mutate(
-      { message_language },
-      { onError: () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')) },
-    );
+    update.mutate({ message_language }, { onError: () => showFailedToast() });
     router.back();
   };
 

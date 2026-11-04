@@ -2,7 +2,7 @@
 import { router, Stack } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, View } from 'react-native';
+import { View } from 'react-native';
 import Animated, { useAnimatedRef } from 'react-native-reanimated';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { useMasterProfileQuery, useMoneyContext } from '@/entities/master';
@@ -26,6 +26,7 @@ import {
   MenuRow,
   SkeletonList,
   Text,
+  showFailedToast,
 } from '@/shared/ui';
 import { groupServices, withGroupOrder, type DirectionGroup } from '../lib/grouping';
 import { DirectionHeading } from './DirectionHeading';
@@ -96,7 +97,7 @@ export function ServiceList() {
       group.categories.flatMap(({ services: rows }) => rows.map((service) => service.id)),
     );
     reorder.mutate(withGroupOrder(listed, ids), {
-      onError: () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')),
+      onError: () => showFailedToast(),
     });
   };
 

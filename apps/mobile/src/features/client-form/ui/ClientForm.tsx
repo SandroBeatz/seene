@@ -36,6 +36,9 @@ import {
   VipBadge,
   type IconName,
   Chip,
+  showFailedToast,
+  showErrorToast,
+  showToast,
 } from '@/shared/ui';
 import {
   cardFromDraft,
@@ -103,7 +106,7 @@ export function ClientForm({ client, defaultCountry, prefill, onCreated }: Clien
       const card = contact ? contactToCard(contact, draft.phoneCountry) : null;
       if (card) setDraft((current) => withCard(current, card));
     } catch {
-      Alert.alert(t('actions.failedTitle'), t('actions.failedMessage'));
+      showErrorToast(t('actions.failedTitle'));
     }
   };
 
@@ -119,27 +122,35 @@ export function ClientForm({ client, defaultCountry, prefill, onCreated }: Clien
   const save = () => {
     const result = cardFromDraft(draft);
     if (!result.ok) return Alert.alert(t(`clients.form.errors.${result.error}`));
-    const done = {
-      onSuccess: () => router.back(),
-      onError: (error: unknown) => {
-        const kind = normalizeError(error).kind;
-        Alert.alert(
-          kind === 'duplicate_phone'
-            ? t('clients.form.errors.duplicate')
-            : t('actions.failedTitle'),
-          kind === 'duplicate_phone' ? undefined : t('actions.failedMessage'),
-        );
-      },
+    const name = [result.card.first_name, result.card.last_name].filter(Boolean).join(' ');
+    const onError = (error: unknown) => {
+      if (normalizeError(error).kind === 'duplicate_phone') {
+        Alert.alert(t('clients.form.errors.duplicate'));
+      } else {
+        showFailedToast(save);
+      }
     };
-    if (client) update.mutate({ id: client.id, ...result.card }, done);
-    else
+    if (client) {
+      update.mutate(
+        { id: client.id, ...result.card },
+        {
+          onSuccess: () => {
+            showToast({ title: t('toasts.saved'), summary: name });
+            router.back();
+          },
+          onError,
+        },
+      );
+    } else {
       create.mutate(result.card, {
-        ...done,
         onSuccess: (created) => {
+          showToast({ title: t('toasts.clientAdded'), summary: name });
           onCreated?.(created);
           router.back();
         },
+        onError,
       });
+    }
   };
 
   const birthdayLabel = draft.birthday

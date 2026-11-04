@@ -34,6 +34,9 @@ import {
   MenuRow,
   Skeleton,
   Text,
+  showFailedToast,
+  showErrorToast,
+  showToast,
 } from '@/shared/ui';
 
 /** `master_profile_bio_length` in the database. */
@@ -82,7 +85,7 @@ function ProfileForm({ profile, userId }: { profile: MasterProfile; userId: stri
     lastName.trim().length > 0 &&
     (!linkChanged || checked === 'free');
 
-  const failed = () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage'));
+  const failed = () => showFailedToast();
 
   // Leave only after the render that lifted the guard below.
   useEffect(() => {
@@ -109,11 +112,14 @@ function ProfileForm({ profile, userId }: { profile: MasterProfile; userId: stri
         bio: bio.trim() || null,
       },
       {
-        onSuccess: () => setSaved(true),
+        onSuccess: () => {
+          showToast({ title: t('toasts.profileSaved') });
+          setSaved(true);
+        },
         onError: (error) =>
           normalizeError(error).kind === 'username_taken'
-            ? Alert.alert(t('onboarding.profile.usernameTaken'))
-            : failed(),
+            ? showErrorToast(t('onboarding.profile.usernameTaken'))
+            : showFailedToast(save),
       },
     );
 
@@ -136,7 +142,18 @@ function ProfileForm({ profile, userId }: { profile: MasterProfile; userId: stri
 
   const pickAndUpload = async (kind: 'avatar' | 'cover') => {
     const image = await pickImage({ square: kind === 'avatar' });
-    if (image) upload.mutate({ kind, ...image }, { onError: failed });
+    if (image) {
+      upload.mutate(
+        { kind, ...image },
+        {
+          onSuccess: () =>
+            showToast({
+              title: t(kind === 'cover' ? 'toasts.coverUpdated' : 'toasts.profileSaved'),
+            }),
+          onError: failed,
+        },
+      );
+    }
   };
 
   const editCover = () => {
@@ -203,7 +220,9 @@ function ProfileForm({ profile, userId }: { profile: MasterProfile; userId: stri
             onPress={() => void pickAndUpload('avatar')}
             style={({ pressed }) => [styles.photoButton, pressed && styles.pressed]}>
             <Text variant="subheadStrong" color="brandStrong">
-              {uploading === 'avatar' ? t('menuHome.profile.uploading') : t('menuHome.profile.photo')}
+              {uploading === 'avatar'
+                ? t('menuHome.profile.uploading')
+                : t('menuHome.profile.photo')}
             </Text>
           </Pressable>
         </View>

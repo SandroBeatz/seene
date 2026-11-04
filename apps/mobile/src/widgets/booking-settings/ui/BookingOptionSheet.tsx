@@ -1,12 +1,12 @@
 /** Picks one value of a booking rule; the design has no screen for it. A pick saves. */
 import { router, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Alert, Pressable, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet } from 'react-native-unistyles';
 import { useMasterSettingsQuery, useUpdateMasterSettings } from '@/entities/master';
 import { useUserId } from '@/entities/session';
-import { SelectionMark, SheetHeader, Text } from '@/shared/ui';
+import { SelectionMark, SheetHeader, Text, showFailedToast } from '@/shared/ui';
 import {
   BOOKING_OPTIONS,
   isBookingOption,
@@ -38,7 +38,7 @@ export function BookingOptionSheet() {
   const pick = (value: number) => {
     update.mutate(
       { [BOOKING_OPTIONS[option].column]: value },
-      { onError: () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')) },
+      { onError: () => showFailedToast() },
     );
     router.back();
   };

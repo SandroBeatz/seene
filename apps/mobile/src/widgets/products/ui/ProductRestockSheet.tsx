@@ -6,7 +6,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { DateTime } from 'luxon';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, View } from 'react-native';
+import { View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import { useMoneyContext } from '@/entities/master';
 import {
@@ -28,6 +28,8 @@ import {
   SheetChrome,
   Switch,
   Text,
+  showFailedToast,
+  showToast,
 } from '@/shared/ui';
 
 export function ProductRestockSheet() {
@@ -70,8 +72,14 @@ function RestockForm({ product, userId }: { product: Product; userId: string }) 
         today: DateTime.now().setZone(zone).toISODate() ?? '',
       },
       {
-        onSuccess: () => router.back(),
-        onError: () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')),
+        onSuccess: () => {
+          showToast({
+            title: t('toasts.stockUpdated'),
+            summary: `${product.name} · ${number(after)} ${unit}`,
+          });
+          router.back();
+        },
+        onError: () => showFailedToast(submit),
       },
     );
   };

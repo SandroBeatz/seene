@@ -5,7 +5,7 @@
  */
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Alert, View } from 'react-native';
+import { View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import {
   masterPageLabel,
@@ -22,6 +22,8 @@ import {
   SectionLabel,
   Switch,
   Text,
+  showFailedToast,
+  showToast,
 } from '@/shared/ui';
 import { optionValue, type BookingOption } from '../lib/options';
 import { useOptionLabel } from './useOptionLabel';
@@ -45,7 +47,14 @@ export function BookingSettingsScreen() {
 
   const save = (patch: Parameters<typeof update.mutate>[0]) =>
     update.mutate(patch, {
-      onError: () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')),
+      onSuccess: () => {
+        if (patch.online_booking_enabled === false) {
+          showToast({ title: t('toasts.bookingOff'), summary: t('toasts.bookingOffHint') });
+        } else if (patch.online_booking_enabled === true) {
+          showToast({ title: t('toasts.bookingOn') });
+        }
+      },
+      onError: () => showFailedToast(() => save(patch)),
     });
 
   const toggle = (column: SwitchColumn, title: string, subtitle?: string) => (

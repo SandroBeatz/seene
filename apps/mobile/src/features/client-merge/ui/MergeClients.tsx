@@ -20,7 +20,15 @@ import {
 } from '@/entities/client';
 import { useUserId } from '@/entities/session';
 import { formatPhone } from '@/shared/lib/phone';
-import { Avatar, Icon, SearchField, SheetChrome, Skeleton, Text } from '@/shared/ui';
+import {
+  Avatar,
+  Icon,
+  SearchField,
+  SheetChrome,
+  Skeleton,
+  Text,
+  showFailedToast,
+} from '@/shared/ui';
 
 type Item =
   | { type: 'section'; key: string; label: string }
@@ -73,7 +81,7 @@ export function MergeClients({ client }: { client: Client }) {
               { keepId: client.id, mergeId: other.id },
               {
                 onSuccess: () => router.back(),
-                onError: () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')),
+                onError: () => showFailedToast(),
               },
             ),
         },

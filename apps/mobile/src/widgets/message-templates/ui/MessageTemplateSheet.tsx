@@ -2,7 +2,6 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import {
   BODY_MAX_LENGTH,
@@ -18,7 +17,17 @@ import {
   type MessageKind,
 } from '@/entities/message-template';
 import { useUserId } from '@/entities/session';
-import { Button, Chip, ChipRow, FormScreen, Input, SheetChrome, Text } from '@/shared/ui';
+import {
+  Button,
+  Chip,
+  ChipRow,
+  FormScreen,
+  Input,
+  SheetChrome,
+  Text,
+  showFailedToast,
+  showToast,
+} from '@/shared/ui';
 import { useShownLanguage } from './useShownLanguage';
 import { useVariableLabels } from './useVariableLabels';
 
@@ -61,8 +70,14 @@ function TemplateForm({
 
   const standard = DEFAULT_TEMPLATES[language][kind];
   const options = {
-    onSuccess: () => router.back(),
-    onError: () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')),
+    onSuccess: () => {
+      showToast({
+        title: t('toasts.templateSaved'),
+        summary: t(`menuHome.messages.kinds.${kind}.title`),
+      });
+      router.back();
+    },
+    onError: () => showFailedToast(),
   };
 
   const insert = (label: string) => {

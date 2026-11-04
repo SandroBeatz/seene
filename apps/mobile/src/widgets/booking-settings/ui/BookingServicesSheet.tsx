@@ -1,10 +1,10 @@
 /** Which services clients can book online; the design has no screen for it. */
 import { useTranslation } from 'react-i18next';
-import { Alert, ScrollView, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import { useServicesQuery, useUpdateServiceMutation } from '@/entities/service';
 import { useUserId } from '@/entities/session';
-import { GroupedCard, ListItem, SheetChrome, Switch, Text } from '@/shared/ui';
+import { GroupedCard, ListItem, SheetChrome, Switch, Text, showFailedToast } from '@/shared/ui';
 
 export function BookingServicesSheet() {
   const { t } = useTranslation();
@@ -35,8 +35,7 @@ export function BookingServicesSheet() {
                       update.mutate(
                         { id: service.id, show_online },
                         {
-                          onError: () =>
-                            Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')),
+                          onError: () => showFailedToast(),
                         },
                       )
                     }

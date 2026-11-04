@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Alert, View } from 'react-native';
+import { View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import { useUserId } from '@/entities/session';
 import {
@@ -10,7 +10,7 @@ import {
   useUpdateTimeBlockMutation,
   type TimeBlock,
 } from '@/entities/time-block';
-import { Button, FormScreen, SheetChrome } from '@/shared/ui';
+import { Button, FormScreen, SheetChrome, showFailedToast, showToast } from '@/shared/ui';
 import { BlockFallback } from './BlockFallback';
 import { NameFields } from './NameFields';
 
@@ -38,8 +38,11 @@ function NameForm({ block, userId }: { block: TimeBlock; userId: string }) {
     update.mutate(
       { id: block.id, notes: name.trim() || null },
       {
-        onSuccess: () => router.back(),
-        onError: () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')),
+        onSuccess: () => {
+          showToast({ title: t('toasts.saved') });
+          router.back();
+        },
+        onError: () => showFailedToast(save),
       },
     );
 

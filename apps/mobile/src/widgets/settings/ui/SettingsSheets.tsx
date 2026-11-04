@@ -1,7 +1,7 @@
 /** The settings pickers: each shows the current value and saves a pick on the account. */
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Alert, Pressable, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet } from 'react-native-unistyles';
 import {
@@ -21,19 +21,16 @@ import {
   SheetHeader,
   Text,
   TimezoneSheet,
+  showFailedToast,
 } from '@/shared/ui';
 
 const THEME_MODES: ThemeMode[] = ['auto', 'light', 'dark'];
 
-function useSaveFailedAlert() {
-  const { t } = useTranslation();
-  return () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage'));
-}
+const failed = () => showFailedToast();
 
 export function SettingsLanguageSheet() {
   const router = useRouter();
   const update = useUpdateMasterSettings(useUserId() ?? '');
-  const failed = useSaveFailedAlert();
   return (
     <LanguageSheet
       onClose={() => router.back()}
@@ -48,7 +45,6 @@ export function SettingsCurrencySheet() {
   const userId = useUserId() ?? '';
   const settings = useMasterSettingsQuery(userId);
   const update = useUpdateMasterSettings(userId);
-  const failed = useSaveFailedAlert();
   return (
     <CurrencySheet
       value={settings.data?.currency ?? ''}
@@ -64,7 +60,6 @@ export function SettingsTimezoneSheet() {
   const userId = useUserId() ?? '';
   const profile = useMasterProfileQuery(userId);
   const update = useUpdateMasterTimezone(userId);
-  const failed = useSaveFailedAlert();
   return (
     <TimezoneSheet
       value={parseStoredSchedule(profile.data?.schedule)?.timezone ?? deviceTimeZone()}
@@ -81,7 +76,6 @@ export function SettingsThemeSheet() {
   const mode = useThemeStore((state) => state.mode);
   const setMode = useThemeStore((state) => state.setMode);
   const update = useUpdateMasterSettings(useUserId() ?? '');
-  const failed = useSaveFailedAlert();
 
   const pick = (next: ThemeMode) => {
     setMode(next);

@@ -35,6 +35,8 @@ import {
   Text,
   TimePicker,
   useNow,
+  showFailedToast,
+  showToast,
 } from '@/shared/ui';
 import {
   clockOf,
@@ -138,8 +140,19 @@ export function CheckoutEditor({
         duration: changes.duration,
       },
       {
-        onSuccess: () => router.back(),
-        onError: () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')),
+        onSuccess: () => {
+          const method = active.find((m) => m.id === chosen);
+          showToast({
+            title: t('toasts.visitFinished', {
+              amount: formatAmount(amount + tip, { currency, locale }),
+            }),
+            summary: [clientName.split(' ')[0], method && methodLabel(method)]
+              .filter(Boolean)
+              .join(' · '),
+          });
+          router.back();
+        },
+        onError: () => showFailedToast(submit),
         onSettled: () => {
           invalidateAppointmentCaches(qc, userId);
           qc.invalidateQueries({ queryKey: appointmentKeys.detail(appointment.id) });

@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 import { router } from 'expo-router';
 import { DateTime } from 'luxon';
 import { useTranslation } from 'react-i18next';
-import { Alert, ScrollView, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet } from 'react-native-unistyles';
 import {
@@ -22,7 +22,7 @@ import { useAppointmentToast, useClientMessage } from '@/features/appointment-ac
 import { DayTimePicker, useTimeContext } from '@/features/pick-time';
 import { formatAmount } from '@/shared/lib/formats';
 import { isSupportedLocale } from '@/shared/lib/i18n';
-import { Button, SheetChrome, Skeleton, Text, useNow } from '@/shared/ui';
+import { Button, SheetChrome, Skeleton, Text, useNow, showFailedToast } from '@/shared/ui';
 import { useRescheduleDraft } from '../model/reschedule.store';
 
 export interface RescheduleSheetProps {
@@ -97,7 +97,7 @@ export function RescheduleSheet({ appointment }: RescheduleSheetProps) {
           showToast(movedToast(start));
           router.back();
         },
-        onError: () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')),
+        onError: () => showFailedToast(save),
       },
     );
   };

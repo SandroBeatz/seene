@@ -4,11 +4,10 @@
  */
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Alert } from 'react-native';
 import { useUpdateClientMutation, type Client } from '@/entities/client';
 import { useUserId } from '@/entities/session';
 import { useNoteSheetText } from '@/shared/lib/note';
-import { NoteSheet } from '@/shared/ui';
+import { NoteSheet, showFailedToast, showToast } from '@/shared/ui';
 
 /** Same limit as the note field of the client form. */
 export const CLIENT_NOTE_MAX_LENGTH = 1000;
@@ -30,8 +29,14 @@ export function ClientNoteEditor({ client }: { client: Client }) {
         update.mutate(
           { id: client.id, notes },
           {
-            onSuccess: () => router.back(),
-            onError: () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')),
+            onSuccess: () => {
+              showToast({
+                title: t('toasts.saved'),
+                summary: [client.first_name, client.last_name].filter(Boolean).join(' '),
+              });
+              router.back();
+            },
+            onError: () => showFailedToast(),
           },
         )
       }

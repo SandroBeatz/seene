@@ -6,7 +6,7 @@
  */
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Alert, Linking } from 'react-native';
+import { Linking } from 'react-native';
 import { useDismissAttentionMutation } from '@/entities/attention';
 import { useUserId } from '@/entities/session';
 import {
@@ -18,6 +18,7 @@ import type { AppLocale } from '@/shared/lib/i18n';
 import { phoneCallUrl } from '@/shared/lib/phone';
 import { reminderKey, type AttentionAction, type AttentionMenuAction } from './attention';
 import type { AttentionCard, AttentionVisit } from './useAttention';
+import { showFailedToast, showErrorToast } from '@/shared/ui';
 
 const DAY_MS = 86_400_000;
 /** "Позже" on "Пора позвать". */
@@ -45,7 +46,7 @@ export function useTodayActions(input: TodayActionsInput) {
 
   const dismiss = (key: string, until: string | null) =>
     dismissMutation.mutate([{ key, until }], {
-      onError: () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')),
+      onError: () => showFailedToast(),
     });
   const inDays = (days: number) => new Date(input.now + days * DAY_MS).toISOString();
   const run = actions.run;
@@ -62,7 +63,7 @@ export function useTodayActions(input: TodayActionsInput) {
   };
 
   const call = (phone: string | null | undefined) => {
-    if (!phone) return Alert.alert(t('actions.noPhone'));
+    if (!phone) return showErrorToast(t('actions.noPhone'));
     void Linking.openURL(phoneCallUrl(phone));
   };
 

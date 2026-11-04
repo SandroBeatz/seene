@@ -12,7 +12,7 @@ import {
   type PaymentType,
 } from '@/entities/payment-type';
 import { useUserId } from '@/entities/session';
-import { Button, FormScreen, Input, SheetChrome } from '@/shared/ui';
+import { Button, FormScreen, Input, SheetChrome, showFailedToast, showToast } from '@/shared/ui';
 import { isLastActive, nextMethodOrder } from '../lib/methods';
 
 export function PaymentMethodSheet() {
@@ -45,8 +45,14 @@ function MethodForm({
   const remove = useDeletePaymentTypeMutation(userId);
   const [name, setName] = useState(method?.name ?? '');
 
-  const failed = () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage'));
-  const options = { onSuccess: () => router.back(), onError: failed };
+  const failed = () => showFailedToast();
+  const options = {
+    onSuccess: () => {
+      showToast({ title: t('toasts.paymentsSaved') });
+      router.back();
+    },
+    onError: failed,
+  };
 
   const save = () => {
     const value = name.trim();

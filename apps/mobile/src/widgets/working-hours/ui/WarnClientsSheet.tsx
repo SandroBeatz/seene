@@ -6,13 +6,13 @@
 import { useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Linking, ScrollView, View } from 'react-native';
+import { Linking, ScrollView, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import { useAppointmentsRangeQuery } from '@/entities/appointment';
 import { useClientsQuery } from '@/entities/client';
 import { useTimeContext } from '@/features/pick-time';
 import { whatsappUrl } from '@/shared/lib/phone';
-import { GroupedCard, Icon, ListItem, SheetChrome, Text } from '@/shared/ui';
+import { GroupedCard, Icon, ListItem, SheetChrome, Text, showErrorToast } from '@/shared/ui';
 import { isAffectedVisit } from '../lib/visits';
 
 export function WarnClientsSheet() {
@@ -26,9 +26,9 @@ export function WarnClientsSheet() {
   const affected = (visits.data ?? []).filter((visit) => isAffectedVisit(visit, now));
   const clientOf = (id: string) => clients.data?.find((client) => client.id === id);
 
-  const failed = () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage'));
+  const failed = () => showErrorToast(t('actions.failedTitle'));
   const open = (visitId: string, phone: string | null | undefined, text: string) => {
-    if (!phone) return Alert.alert(t('actions.noPhone'));
+    if (!phone) return showErrorToast(t('actions.noPhone'));
     setMessaged((done) => new Set(done).add(visitId));
     void Linking.openURL(whatsappUrl(phone, text)).catch(failed);
   };
@@ -63,11 +63,7 @@ export function WarnClientsSheet() {
                       />
                     }
                     onPress={() =>
-                      open(
-                        visit.id,
-                        client?.phone,
-                        t('menuHome.hours.warnMessage', { name, when }),
-                      )
+                      open(visit.id, client?.phone, t('menuHome.hours.warnMessage', { name, when }))
                     }
                   />
                 );

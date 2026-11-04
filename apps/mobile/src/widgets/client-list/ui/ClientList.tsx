@@ -7,7 +7,7 @@
 import { useMemo, useState } from 'react';
 import { router, Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Alert, FlatList, Linking, Pressable, ScrollView, View } from 'react-native';
+import { FlatList, Linking, Pressable, ScrollView, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { useDismissAttentionMutation } from '@/entities/attention';
 import {
@@ -38,6 +38,7 @@ import {
   Text,
   VipBadge,
   useRefreshControl,
+  showFailedToast,
 } from '@/shared/ui';
 import { useClientList, type ClientRow } from '../model/useClientList';
 
@@ -101,7 +102,7 @@ export function ClientList() {
         },
       });
     } catch {
-      Alert.alert(t('actions.failedTitle'), t('actions.failedMessage'));
+      showFailedToast();
     }
   };
 

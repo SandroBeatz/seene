@@ -2,7 +2,7 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Pressable, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import {
   scheduleForWeekday,
@@ -21,6 +21,8 @@ import {
   SectionLabel,
   Switch,
   Text,
+  showFailedToast,
+  showToast,
 } from '@/shared/ui';
 import { blockDays, daysInRange, rangeLabel } from '../lib/day-off';
 import { setDayEnabled, withDay } from '../lib/week';
@@ -45,7 +47,8 @@ export function HoursScreen() {
   const week = WEEK.map((i) => scheduleForWeekday(schedule, i));
   const toggle = (index: number, enabled: boolean) =>
     update.mutate(withDay(week, index, setDayEnabled(week[index]!, enabled)), {
-      onError: () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')),
+      onSuccess: () => showToast({ title: t('toasts.hoursSaved') }),
+      onError: () => showFailedToast(() => toggle(index, enabled)),
     });
 
   return (
@@ -57,9 +60,7 @@ export function HoursScreen() {
             name={long[index] ?? ''}
             day={day}
             onToggle={(enabled) => toggle(index, enabled)}
-            onPress={() =>
-              router.push({ pathname: '/hours/day', params: { day: String(index) } })
-            }
+            onPress={() => router.push({ pathname: '/hours/day', params: { day: String(index) } })}
           />
         ))}
       </GroupedCard>
@@ -160,9 +161,19 @@ function DayOffRow({ block, zone }: { block: TimeBlock; zone: string }) {
 const styles = StyleSheet.create((theme) => ({
   content: { paddingHorizontal: theme.space[5], paddingTop: theme.space[2] },
   hint: { marginTop: theme.space[2], marginHorizontal: theme.space[1] },
-  label: { marginTop: theme.space[5.5], marginBottom: theme.space[2], marginHorizontal: theme.space[1] },
+  label: {
+    marginTop: theme.space[5.5],
+    marginBottom: theme.space[2],
+    marginHorizontal: theme.space[1],
+  },
   day: { minHeight: 62, flexDirection: 'row', alignItems: 'center', gap: theme.space[3] },
-  dayBody: { flex: 1, minWidth: 0, flexDirection: 'row', alignItems: 'center', gap: theme.space[2.5] },
+  dayBody: {
+    flex: 1,
+    minWidth: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.space[2.5],
+  },
   dayText: { flex: 1, minWidth: 0, gap: theme.space[0.5] },
   add: {
     marginTop: theme.space[2.5],
