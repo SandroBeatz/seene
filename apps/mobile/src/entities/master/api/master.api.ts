@@ -18,7 +18,7 @@ import type {
 const PROFILE_COLUMNS =
   'id, first_name, last_name, username, avatar_url, cover_url, bio, schedule, whatsapp, telegram, instagram, phone, address, house_number, city, country, specializations';
 const SETTINGS_COLUMNS =
-  'currency, time_format, date_format, calendar_slot_step_minutes, language, theme, online_booking_enabled, booking_default_status, booking_min_notice_minutes, booking_horizon_days, booking_buffer_minutes, cancel_window_hours, allow_client_reschedule, booking_show_prices, booking_allow_comment, show_portfolio, message_language';
+  'currency, time_format, date_format, calendar_slot_step_minutes, language, theme, online_booking_enabled, booking_default_status, booking_min_notice_minutes, booking_horizon_days, booking_buffer_minutes, cancel_window_hours, allow_client_reschedule, booking_show_prices, booking_allow_comment, show_portfolio, message_language, auto_complete_since, auto_complete_payment_type_id';
 
 /** The master's own profile (the fields the app screens read), or null before onboarding. */
 export async function getMasterProfile(userId: string): Promise<MasterProfile | null> {
@@ -170,7 +170,11 @@ export async function uploadMasterImage(
   file: { uri: string; mimeType: string },
 ): Promise<string> {
   const response = await fetch(file.uri);
-  const ext = file.mimeType.includes('png') ? 'png' : file.mimeType.includes('webp') ? 'webp' : 'jpg';
+  const ext = file.mimeType.includes('png')
+    ? 'png'
+    : file.mimeType.includes('webp')
+      ? 'webp'
+      : 'jpg';
   const name = `${kind}-${Date.now()}.${ext}`;
 
   const bucket = supabase.storage.from(IMAGE_BUCKET[kind]);

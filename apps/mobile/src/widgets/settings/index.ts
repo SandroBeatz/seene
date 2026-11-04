@@ -2,6 +2,7 @@
 export { HelpScreen } from './ui/HelpScreen';
 export { SettingsScreen } from './ui/SettingsScreen';
 export {
+  SettingsAutoPaymentSheet,
   SettingsCurrencySheet,
   SettingsLanguageSheet,
   SettingsThemeSheet,

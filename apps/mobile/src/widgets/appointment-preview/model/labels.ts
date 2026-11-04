@@ -13,7 +13,7 @@ export interface Label {
 /** The pill text: an i18n key under `preview.status` and its params. */
 export function statusLabel(
   phase: AppointmentPhase,
-  appointment: Pick<Appointment, 'start_at'>,
+  appointment: Pick<Appointment, 'start_at'> & Partial<Pick<Appointment, 'auto_completed'>>,
   now: number,
   formatTime: (iso: string) => string,
 ): Label {
@@ -27,6 +27,9 @@ export function statusLabel(
   }
   if (phase === 'ongoing') {
     return { key: 'preview.status.ongoing', params: { time: formatTime(appointment.start_at) } };
+  }
+  if (phase === 'completed' && appointment.auto_completed) {
+    return { key: 'preview.status.completedAuto' };
   }
   return { key: `preview.status.${phase}` };
 }
@@ -69,3 +72,13 @@ export const MORE_MENU: Record<AppointmentPhase, MoreMenu> = {
   no_show: { regular: ['book_again', 'note'], danger: ['delete'] },
   expired: { regular: ['book_again', 'note'], danger: ['delete'] },
 };
+
+/** It completes by itself: the setting is on, the visit is on, and it ends after it was turned on. */
+export function willAutoComplete(
+  phase: AppointmentPhase,
+  endAt: string,
+  since: string | null | undefined,
+): boolean {
+  if (!since || (phase !== 'upcoming' && phase !== 'ongoing')) return false;
+  return Date.parse(endAt) >= Date.parse(since);
+}

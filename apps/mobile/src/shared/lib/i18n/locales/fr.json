@@ -1015,7 +1015,8 @@
       "overdue": "Demande en retard",
       "cancelled": "Annulé",
       "no_show": "Absence",
-      "expired": "Demande expirée"
+      "expired": "Demande expirée",
+      "completedAuto": "Terminée automatiquement"
     },
     "reschedule": "Déplacer",
     "editServices": "Modifier les prestations, la durée et le prix",
@@ -1027,7 +1028,8 @@
     "progress": {
       "elapsed": "{{duration}} écoulées",
       "plan": "Prévu {{duration}} · jusqu’à {{time}}",
-      "hint": "La durée de la visite est enregistrée quand vous appuyez sur « Terminer »."
+      "hint": "La durée de la visite est enregistrée quand vous appuyez sur « Terminer ».",
+      "hintAuto": "La visite se termine seule à {{time}}. Pour finir plus tôt, touchez « Terminer »."
     },
     "timerA11y": "Terminer la visite, {{minutes}} min écoulées",
     "actions": {
@@ -1052,7 +1054,8 @@
     },
     "missingTitle": "Aucun rendez-vous",
     "missing": "Il a été supprimé ou n’est pas disponible.",
-    "changeClient": "Changer de client"
+    "changeClient": "Changer de client",
+    "autoCompleteAt": "Se termine automatiquement à {{time}}"
   },
   "actions": {
     "failedTitle": "Échec",
@@ -1450,7 +1453,13 @@
       "delete": "Supprimer le compte",
       "deleteConfirm": "Supprimer votre compte ?",
       "deleteText": "Votre page de réservation ferme aussitôt. Vous pouvez restaurer le compte pendant 30 jours, puis toutes les données sont supprimées définitivement.",
-      "currencyHint": "Les prix et la section Argent utilisent cette devise. Les montants déjà enregistrés ne sont pas convertis."
+      "currencyHint": "Les prix et la section Argent utilisent cette devise. Les montants déjà enregistrés ne sont pas convertis.",
+      "visits": "Rendez-vous",
+      "autoComplete": "Terminer les visites automatiquement",
+      "autoCompleteHint": "À la fin de l’horaire réservé",
+      "autoPayment": "Moyen de paiement",
+      "autoPaymentNone": "Choisir",
+      "autoPaymentHint": "Le montant vient du rendez-vous. Vous pouvez le modifier, ainsi que le moyen, sur la visite terminée."
     },
     "help": {
       "title": "Aide",

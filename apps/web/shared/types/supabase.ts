@@ -14,6 +14,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      auto_complete_visits: { Args: never; Returns: number }
+      finish_visit: {
+        Args: {
+          p_amount: number
+          p_appointment_id: string
+          p_auto: boolean
+          p_duration: number
+          p_items: Json
+          p_payment_type_id: string
+          p_start_at: string
+          p_tip: number
+          p_user_id: string
+        }
+        Returns: string
+      }
       graphql: {
         Args: {
           extensions?: Json
@@ -35,6 +50,7 @@ export type Database = {
     Tables: {
       appointments: {
         Row: {
+          auto_completed: boolean
           buffer_after_minutes: number
           cancel_reason: string | null
           cancelled_at: string | null
@@ -54,6 +70,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          auto_completed?: boolean
           buffer_after_minutes?: number
           cancel_reason?: string | null
           cancelled_at?: string | null
@@ -73,6 +90,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          auto_completed?: boolean
           buffer_after_minutes?: number
           cancel_reason?: string | null
           cancelled_at?: string | null
@@ -430,6 +448,8 @@ export type Database = {
           alert_upcoming_appointment_enabled: boolean
           alert_upcoming_offset_minutes: number
           allow_client_reschedule: boolean
+          auto_complete_payment_type_id: string | null
+          auto_complete_since: string | null
           booking_allow_comment: boolean
           booking_buffer_minutes: number
           booking_default_status: string
@@ -466,6 +486,8 @@ export type Database = {
           alert_upcoming_appointment_enabled?: boolean
           alert_upcoming_offset_minutes?: number
           allow_client_reschedule?: boolean
+          auto_complete_payment_type_id?: string | null
+          auto_complete_since?: string | null
           booking_allow_comment?: boolean
           booking_buffer_minutes?: number
           booking_default_status?: string
@@ -502,6 +524,8 @@ export type Database = {
           alert_upcoming_appointment_enabled?: boolean
           alert_upcoming_offset_minutes?: number
           allow_client_reschedule?: boolean
+          auto_complete_payment_type_id?: string | null
+          auto_complete_since?: string | null
           booking_allow_comment?: boolean
           booking_buffer_minutes?: number
           booking_default_status?: string
@@ -531,7 +555,15 @@ export type Database = {
           vacation_from?: string | null
           vacation_until?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: 'master_settings_auto_complete_payment_type_id_fkey'
+            columns: ['auto_complete_payment_type_id']
+            isOneToOne: false
+            referencedRelation: 'payment_type'
+            referencedColumns: ['id']
+          },
+        ]
       }
       message_template: {
         Row: {
