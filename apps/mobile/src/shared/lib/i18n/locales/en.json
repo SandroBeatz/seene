@@ -986,7 +986,6 @@
     "more": "More actions",
     "vip": "VIP client",
     "call": "Call",
-    "remind": "Remind",
     "visits_one": "{{count}} visit",
     "visits_few": "{{count}} visits",
     "visits_many": "{{count}} visits",
@@ -1041,7 +1040,6 @@
       "book_again": "Book again",
       "note": "Edit note",
       "addNote": "Add a note",
-      "send_details": "Send details to client",
       "no_show": "Mark as no-show",
       "cancel": "Cancel appointment",
       "delete": "Delete appointment"
@@ -1049,7 +1047,8 @@
     "missingTitle": "No appointment",
     "missing": "It was deleted or is unavailable.",
     "changeClient": "Change client",
-    "autoCompleteAt": "Completes automatically at {{time}}"
+    "autoCompleteAt": "Completes automatically at {{time}}",
+    "template": "Template"
   },
   "actions": {
     "failedTitle": "Something went wrong",
@@ -1681,6 +1680,14 @@
         "day_off": {
           "title": "Moved due to time off",
           "when": "When time off falls on bookings"
+        },
+        "thanks": {
+          "title": "Thanks for coming",
+          "when": "After the visit"
+        },
+        "missed": {
+          "title": "You did not come",
+          "when": "When a client did not come"
         }
       },
       "variables": {

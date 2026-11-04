@@ -992,7 +992,6 @@
     "more": "Plus d’actions",
     "vip": "Client VIP",
     "call": "Appeler",
-    "remind": "Rappeler",
     "visits_one": "{{count}} visite",
     "visits_few": "{{count}} visites",
     "visits_many": "{{count}} visites",
@@ -1047,7 +1046,6 @@
       "book_again": "Reprendre RDV",
       "note": "Modifier la note",
       "addNote": "Ajouter une note",
-      "send_details": "Envoyer les détails au client",
       "no_show": "Marquer absent",
       "cancel": "Annuler le rendez-vous",
       "delete": "Supprimer le rendez-vous"
@@ -1055,7 +1053,8 @@
     "missingTitle": "Aucun rendez-vous",
     "missing": "Il a été supprimé ou n’est pas disponible.",
     "changeClient": "Changer de client",
-    "autoCompleteAt": "Se termine automatiquement à {{time}}"
+    "autoCompleteAt": "Se termine automatiquement à {{time}}",
+    "template": "Modèle"
   },
   "actions": {
     "failedTitle": "Échec",
@@ -1688,6 +1687,14 @@
         "day_off": {
           "title": "Report pour cause d’absence",
           "when": "Quand une absence tombe sur des rendez-vous"
+        },
+        "thanks": {
+          "title": "Merci de votre visite",
+          "when": "Après la visite"
+        },
+        "missed": {
+          "title": "Rendez-vous manqué",
+          "when": "Quand un client n’est pas venu"
         }
       },
       "variables": {

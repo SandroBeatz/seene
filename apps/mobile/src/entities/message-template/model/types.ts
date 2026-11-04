@@ -9,6 +9,8 @@ export const MESSAGE_KINDS = [
   'cancellation',
   'reschedule',
   'day_off',
+  'thanks',
+  'missed',
 ] as const;
 export type MessageKind = (typeof MESSAGE_KINDS)[number];
 

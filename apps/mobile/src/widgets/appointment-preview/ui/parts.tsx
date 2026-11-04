@@ -3,7 +3,7 @@
  * pill, client card, the "add" row, the glass bottom bar and its timer variant, the
  * "⋯" menu and the VIP badge.
  */
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import type { SFSymbol } from 'expo-symbols';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
@@ -103,7 +103,8 @@ export interface ClientCardProps {
   onOpen?: () => void;
   onCall: () => void;
   onWhatsApp: () => void;
-  onRemind: () => void;
+  /** Left out: no message fits right now. `at` is where the row of buttons sits. */
+  onTemplate?: (at: { x: number; y: number; width: number }) => void;
 }
 
 export function ClientCard({
@@ -112,9 +113,10 @@ export function ClientCard({
   onOpen,
   onCall,
   onWhatsApp,
-  onRemind,
+  onTemplate,
 }: ClientCardProps) {
   const { t } = useTranslation();
+  const quick = useRef<View>(null);
   const name = client ? [client.first_name, client.last_name].filter(Boolean).join(' ') : '…';
   return (
     <View style={styles.card}>
@@ -138,10 +140,20 @@ export function ClientCard({
         </View>
         {onOpen ? <Icon name="chevronRight" size="sm" color="content.disabled" /> : null}
       </Pressable>
-      <View style={styles.quick}>
+      <View ref={quick} style={styles.quick} collapsable={false}>
         <QuickButton icon="call" label={t('preview.call')} onPress={onCall} />
         <QuickButton icon="whatsapp" label="WhatsApp" onPress={onWhatsApp} />
-        <QuickButton icon="bell" label={t('preview.remind')} onPress={onRemind} />
+        {onTemplate ? (
+          <QuickButton
+            icon="text"
+            label={t('preview.template')}
+            onPress={() =>
+              quick.current?.measureInWindow((x, y, width, height) =>
+                onTemplate({ x, y: y + height + 8, width }),
+              )
+            }
+          />
+        ) : null}
       </View>
     </View>
   );
@@ -358,7 +370,6 @@ export function TimerBar({
 export const MENU_SYMBOL: Record<MenuAction, SFSymbol> = {
   book_again: 'arrow.clockwise',
   note: 'pencil',
-  send_details: 'paperplane',
   no_show: 'person.crop.circle.badge.xmark',
   cancel: 'xmark.circle',
   delete: 'trash',
@@ -367,7 +378,6 @@ export const MENU_SYMBOL: Record<MenuAction, SFSymbol> = {
 export const MENU_ICON: Record<MenuAction, IconName> = {
   book_again: 'repeat',
   note: 'pencil',
-  send_details: 'send',
   no_show: 'noShow',
   cancel: 'cancelCircle',
   delete: 'trashBin',

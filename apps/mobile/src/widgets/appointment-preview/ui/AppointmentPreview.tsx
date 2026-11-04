@@ -6,17 +6,29 @@
  * holds the rest.
  */
 import { router } from 'expo-router';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet } from 'react-native-unistyles';
 import { PREVIEW_ACTIONS, visitProgress, type AppointmentPhase } from '@/entities/appointment';
-import { useAppointmentActions } from '@/features/appointment-actions';
+import type { MessageKind } from '@/entities/message-template';
+import { useAppointmentActions, visitTemplates } from '@/features/appointment-actions';
 import { errorMessageKey, normalizeError } from '@/shared/api/errors';
 import { DateTime, formatAmount, formatTime } from '@/shared/lib/formats';
 import { formatDurationLabel, isSupportedLocale, pluralCategory } from '@/shared/lib/i18n';
 import { formatPhone } from '@/shared/lib/phone';
-import { EmptyState, ErrorState, InfoRow, SheetChrome, Skeleton, Text } from '@/shared/ui';
+import {
+  ContextMenu,
+  EmptyState,
+  ErrorState,
+  InfoRow,
+  SheetChrome,
+  Skeleton,
+  Text,
+  showErrorToast,
+  type ContextMenuAnchor,
+} from '@/shared/ui';
 import { MORE_MENU, relativeDay, statusLabel, willAutoComplete } from '../model/labels';
 import { usePreview } from '../model/usePreview';
 import {
@@ -35,6 +47,8 @@ import {
  * Visits whose client can still change. A closed one keeps its client: the payment
  * (or the no-show) belongs to whoever came.
  */
+const AFTER_MENU_MS = 350;
+
 const CLIENT_CHANGEABLE = new Set<AppointmentPhase>([
   'request',
   'unconfirmed',
@@ -51,6 +65,7 @@ export function AppointmentPreview({ appointmentId }: { appointmentId: string })
   const preview = usePreview(appointmentId);
   const data = preview.data;
   const client = preview.client;
+  const [templateMenu, setTemplateMenu] = useState<ContextMenuAnchor | null>(null);
 
   const time = (iso: string) =>
     formatTime(iso, { zone: preview.zone, timeFormat: preview.timeFormat });
@@ -88,6 +103,23 @@ export function AppointmentPreview({ appointmentId }: { appointmentId: string })
   );
 
   const sheetBottom = Math.max(insets.bottom - 6, 16);
+
+  const templates = data
+    ? visitTemplates(data.phase, data.appointment.cancelled_by)
+    : ([] as readonly MessageKind[]);
+  const phone = client?.whatsapp ?? client?.phone;
+  const sendTemplate = (kind: MessageKind) => {
+    if (!data) return;
+    const label = statusLabel(data.phase, data.appointment, preview.now, time);
+    router.push({
+      pathname: '/appointment/[appointmentId]/send',
+      params: {
+        appointmentId: data.appointment.id,
+        kind,
+        event: t(label.key, label.params),
+      },
+    });
+  };
 
   return (
     // Kept as a real view: a form sheet (react-native-screens) pins a ScrollView that
@@ -182,7 +214,15 @@ export function AppointmentPreview({ appointmentId }: { appointmentId: string })
               }
               onCall={() => actions.run('call')}
               onWhatsApp={() => actions.run('whatsapp')}
-              onRemind={() => actions.run('remind')}
+              onTemplate={
+                templates.length
+                  ? (at) => {
+                      if (!phone) return showErrorToast(t('actions.noPhone'));
+                      if (templates.length === 1) return sendTemplate(templates[0]!);
+                      setTemplateMenu(at);
+                    }
+                  : undefined
+              }
             />
 
             <InfoRow
@@ -251,6 +291,21 @@ export function AppointmentPreview({ appointmentId }: { appointmentId: string })
               />
             ) : null}
           </ScrollView>
+
+          <ContextMenu
+            anchor={templateMenu}
+            items={templates.map((kind) => ({
+              key: kind,
+              label: t(`menuHome.messages.kinds.${kind}.title`),
+              icon: 'text' as const,
+            }))}
+            closeLabel={t('common.close')}
+            onClose={() => setTemplateMenu(null)}
+            onSelect={(kind) =>
+              // A sheet can't open over a modal that is still closing.
+              setTimeout(() => sendTemplate(kind as MessageKind), AFTER_MENU_MS)
+            }
+          />
 
           {PREVIEW_ACTIONS[data.phase].timer ? (
             <TimerBar

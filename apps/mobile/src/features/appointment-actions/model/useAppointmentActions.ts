@@ -23,14 +23,7 @@ import { useClientMessage } from './useClientMessage';
 import { showFailedToast, showErrorToast, showToast, removeWithUndo } from '@/shared/ui';
 
 export type AppointmentActionKey =
-  | AppointmentAction
-  | 'call'
-  | 'whatsapp'
-  | 'remind'
-  | 'send_details'
-  | 'note'
-  | 'delete'
-  | 'open_client';
+  AppointmentAction | 'call' | 'whatsapp' | 'remind' | 'note' | 'delete' | 'open_client';
 
 export interface AppointmentActionContext {
   appointment: Appointment;
@@ -202,8 +195,6 @@ export function useAppointmentActions(bound: AppointmentActionContext | null = n
         return openWhatsApp(ctx.phone);
       case 'remind':
         return sendTemplate(ctx, 'reminder');
-      case 'send_details':
-        return sendTemplate(ctx, 'confirmation');
       case 'propose_time':
         return openWhatsApp(
           ctx.phone,

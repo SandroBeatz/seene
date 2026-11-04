@@ -47,7 +47,7 @@ export function relativeDay(dayKey: string, todayKey: string): RelativeDay {
   return null;
 }
 
-export type MenuAction = 'book_again' | 'note' | 'send_details' | 'no_show' | 'cancel' | 'delete';
+export type MenuAction = 'book_again' | 'note' | 'no_show' | 'cancel' | 'delete';
 
 /** The "⋯" menu: a regular group and a red group under it. */
 export interface MoreMenu {
@@ -56,13 +56,13 @@ export interface MoreMenu {
 }
 
 const visit = (danger: MenuAction[]): MoreMenu => ({
-  regular: ['book_again', 'note', 'send_details'],
+  regular: ['book_again', 'note'],
   danger,
 });
 
 export const MORE_MENU: Record<AppointmentPhase, MoreMenu> = {
-  request: { regular: ['note', 'send_details'], danger: ['delete'] },
-  unconfirmed: { regular: ['note', 'send_details'], danger: ['delete'] },
+  request: { regular: ['note'], danger: ['delete'] },
+  unconfirmed: { regular: ['note'], danger: ['delete'] },
   overdue: { regular: ['note'], danger: ['delete'] },
   upcoming: visit(['no_show', 'delete']),
   ongoing: visit(['no_show', 'delete']),

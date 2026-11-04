@@ -59,7 +59,7 @@ describe('relativeDay', () => {
 describe('MORE_MENU', () => {
   it('matches the designed menu of an upcoming visit', () => {
     expect(MORE_MENU.upcoming).toEqual({
-      regular: ['book_again', 'note', 'send_details'],
+      regular: ['book_again', 'note'],
       danger: ['no_show', 'delete'],
     });
   });
