@@ -3,7 +3,7 @@ import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Pressable, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import {
   CAPTION_MAX_LENGTH,
@@ -11,6 +11,7 @@ import {
   usePortfolioQuery,
   useUpdatePortfolioItemMutation,
   type PortfolioItem,
+  portfolioKeys,
 } from '@/entities/portfolio';
 import { useServicesQuery } from '@/entities/service';
 import { useUserId } from '@/entities/session';
@@ -23,6 +24,7 @@ import {
   SheetChrome,
   Text,
   showFailedToast,
+  removeWithUndo,
 } from '@/shared/ui';
 
 export function PortfolioPhotoSheet() {
@@ -59,15 +61,15 @@ function PhotoForm({
       options,
     );
 
-  const confirmDelete = () =>
-    Alert.alert(t('menuHome.portfolio.deleteTitle'), t('menuHome.portfolio.deleteText'), [
-      { text: t('common.cancel'), style: 'cancel' },
-      {
-        text: t('common.delete'),
-        style: 'destructive',
-        onPress: () => remove.mutate(item, options),
-      },
-    ]);
+  const deletePhoto = () => {
+    router.back();
+    removeWithUndo({
+      title: t('toasts.photoDeleted'),
+      id: item.id,
+      keys: [portfolioKeys.all(userId)],
+      commit: () => remove.mutateAsync(item),
+    });
+  };
 
   // An archived service stays listed while the photo is linked to it.
   const choices = (services.data ?? []).filter((s) => s.is_active || s.id === item.service_id);
@@ -93,7 +95,7 @@ function PhotoForm({
           sf: 'trash',
           icon: 'trash',
           destructive: true,
-          onPress: confirmDelete,
+          onPress: deletePhoto,
         }}
       />
       <Image source={{ uri: item.photo_url }} style={styles.photo} contentFit="contain" />

@@ -12,7 +12,7 @@ import { useRef, useState } from 'react';
 import { router } from 'expo-router';
 import { DateTime } from 'luxon';
 import { useTranslation } from 'react-i18next';
-import { Alert, Keyboard, Pressable, ScrollView, TextInput, View } from 'react-native';
+import { Keyboard, Pressable, ScrollView, TextInput, View } from 'react-native';
 import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
@@ -25,6 +25,7 @@ import {
   useExpenseCategoriesQuery,
   useUpdateExpenseMutation,
   type Expense,
+  expenseKeys,
 } from '@/entities/expense';
 import { useMoneyContext } from '@/entities/master';
 import { useUserId } from '@/entities/session';
@@ -40,6 +41,7 @@ import {
   useNow,
   showFailedToast,
   showToast,
+  removeWithUndo,
 } from '@/shared/ui';
 import { addDigits, eraseDigit } from '../model/amountKeys';
 
@@ -159,20 +161,14 @@ export function ExpenseForm({ expense, initialDay }: ExpenseFormProps) {
 
   const confirmDelete = () => {
     if (!expense) return;
-    const stopsChain = expense.repeat_monthly && !expense.rolled_over;
-    Alert.alert(
-      t('expenses.deleteTitle'),
-      stopsChain ? t('expenses.deleteRepeatText') : undefined,
-      [
-        { text: t('common.cancel'), style: 'cancel' },
-        {
-          text: t('common.delete'),
-          style: 'destructive',
-          onPress: () =>
-            remove.mutate(expense.id, { onSuccess: () => router.back(), onError: failed }),
-        },
-      ],
-    );
+    router.back();
+    removeWithUndo({
+      title: t('toasts.expenseDeleted', { amount: money.money(expense.amount) }),
+      summary: expenseCategoryLabel(expense.category, t, 'chip'),
+      id: expense.id,
+      keys: [expenseKeys.all(userId)],
+      commit: () => remove.mutateAsync(expense.id),
+    });
   };
 
   return (

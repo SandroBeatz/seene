@@ -99,6 +99,7 @@ export { ErrorState, type ErrorStateProps } from './ErrorState';
 export { Sheet, type SheetProps, type SheetRef } from './Sheet';
 export {
   Toaster,
+  removeWithUndo,
   showErrorToast,
   showFailedToast,
   dismissToast,

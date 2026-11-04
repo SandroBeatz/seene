@@ -53,3 +53,4 @@ export type {
   VisitHistoryRow,
   ClientAppointment,
 } from './model/types';
+export { countClientAppointments } from './api/appointment.api';

@@ -189,8 +189,6 @@
         "name": "Saisissez le prénom du client.",
         "duplicate": "Un client avec ce numéro existe déjà."
       },
-      "deleteTitle": "Supprimer le client ?",
-      "deleteText": "{{name}} disparaîtra de la liste. Action irréversible.",
       "deleteBlocked": "Ce client a des visites, il ne peut pas être supprimé : l'historique et le chiffre d'affaires restent.",
       "countryTitle": "Indicatif du pays",
       "countrySearch": "Pays ou indicatif",
@@ -1070,16 +1068,6 @@
         "title": "Annuler le rendez-vous ?",
         "message": "Le créneau se libère. Le client n’est pas prévenu — écrivez-lui.",
         "action": "Annuler le rendez-vous"
-      },
-      "noShow": {
-        "title": "Marquer absent ?",
-        "message": "La visite ne comptera pas dans les gains.",
-        "action": "Absence"
-      },
-      "delete": {
-        "title": "Supprimer le rendez-vous ?",
-        "message": "Le rendez-vous et son paiement sont supprimés définitivement.",
-        "action": "Supprimer"
       }
     },
     "messages": {
@@ -1248,10 +1236,6 @@
       "rename": "Modifier le nom",
       "reschedule": "Déplacer",
       "delete": "Supprimer"
-    },
-    "deleteConfirm": {
-      "title": "Supprimer ce temps personnel ?",
-      "message": "Ce créneau sera de nouveau ouvert à la réservation en ligne."
     }
   },
   "expenses": {
@@ -1273,8 +1257,6 @@
     "total": "Total du mois",
     "empty": "Aucune dépense pour l’instant",
     "emptyHint": "Ajoutez fournitures, loyer et autres frais pour voir ce qu’il vous reste.",
-    "deleteTitle": "Supprimer cette dépense ?",
-    "deleteRepeatText": "Elle ne se répétera plus. Les mois passés restent.",
     "categories": {
       "materials": "Fournitures",
       "rent": "Loyer",
@@ -1561,12 +1543,8 @@
       "add": "Ajouter le service",
       "save": "Enregistrer",
       "delete": "Supprimer",
-      "deleteTitle": "Supprimer ce service ?",
-      "deleteText": "Il disparaîtra de la liste et de votre page de réservation. Les rendez-vous passés restent inchangés.",
       "categoryTitleNew": "Nouvelle catégorie",
       "categoryTitle": "Catégorie",
-      "categoryDeleteTitle": "Supprimer cette catégorie ?",
-      "categoryDeleteText": "Ses services restent, sans catégorie.",
       "addCategoryRow": "Nouvelle catégorie",
       "addDirectionRow": "Ajouter un domaine",
       "directionsHint": "Maintenez une catégorie pour changer l’ordre.",
@@ -1616,8 +1594,6 @@
       "note": "Note personnelle",
       "notePlaceholder": "Par exemple, un voyage à la maison",
       "addSubmit": "Ajouter",
-      "deleteTitle": "Supprimer ce jour de repos ?",
-      "deleteText": "La réservation en ligne rouvre pour ces jours.",
       "days_one": "{{count}} jour",
       "days_few": "{{count}} jours",
       "days_many": "{{count}} jours",
@@ -1645,8 +1621,6 @@
       "newTitle": "Nouveau mode",
       "editTitle": "Mode de paiement",
       "namePlaceholder": "Par exemple, MBank",
-      "deleteTitle": "Supprimer ce mode ?",
-      "deleteText": "Les paiements passés restent dans les statistiques, mais sans ce nom.",
       "lastActive": "Au moins un mode doit rester activé."
     },
     "portfolio": {
@@ -1670,9 +1644,7 @@
       "service": "Prestation",
       "noService": "Sans prestation",
       "linkService": "Lier à une prestation",
-      "changeOrder": "Changer l’ordre",
-      "deleteTitle": "Supprimer cette photo ?",
-      "deleteText": "Les clients ne la verront plus."
+      "changeOrder": "Changer l’ordre"
     },
     "clientsGroup": "Clients",
     "messages": {
@@ -1787,8 +1759,6 @@
       "toExpenseHint": "Dans « Matériel »",
       "less": "Moins",
       "more": "Plus",
-      "deleteTitle": "Supprimer ce produit ?",
-      "deleteText": "Il quitte la liste et n’est plus déduit. Les dépenses restent.",
       "restock": "Réapprovisionner",
       "restockTitle": "Réapprovisionner",
       "bought": "Quantité achetée",
@@ -1914,6 +1884,19 @@
     "offline": {
       "title": "Pas d’internet",
       "summary": "Modifications non enregistrées"
-    }
+    },
+    "undo": "Annuler",
+    "noShow": "Client absent",
+    "visitDeleted": "Réservation supprimée",
+    "clientDeleted": "Client supprimé",
+    "expenseDeleted": "Dépense supprimée · {{amount}}",
+    "personalTimeDeleted": "Temps personnel supprimé",
+    "dayOffDeleted": "Jour de repos supprimé",
+    "vacationDeleted": "Congés supprimés",
+    "productDeleted": "Produit supprimé",
+    "serviceDeleted": "Prestation supprimée",
+    "categoryDeleted": "Catégorie supprimée",
+    "paymentDeleted": "Moyen de paiement supprimé",
+    "photoDeleted": "Photo supprimée"
   }
 }

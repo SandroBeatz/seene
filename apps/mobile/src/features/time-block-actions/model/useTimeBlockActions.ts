@@ -1,14 +1,13 @@
 /**
  * What the master can do with personal time, from its preview and the schedule's
- * long-press menu: another name, another time, or delete it (asks first).
+ * long-press menu: another name, another time, or delete it (with "Отменить" on the toast).
  */
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Alert } from 'react-native';
 import { useUserId } from '@/entities/session';
-import { useDeleteTimeBlockMutation, type TimeBlock } from '@/entities/time-block';
+import { timeBlockKeys, useDeleteTimeBlockMutation, type TimeBlock } from '@/entities/time-block';
 import type { IconName } from '@/shared/ui';
-import { showFailedToast } from '@/shared/ui';
+import { removeWithUndo } from '@/shared/ui';
 
 export type TimeBlockAction = 'rename' | 'reschedule' | 'delete';
 
@@ -45,22 +44,14 @@ export function useTimeBlockActions({ onDeleted }: { onDeleted?: () => void } = 
           params: { blockId: block.id },
         });
       case 'delete':
-        return Alert.alert(
-          t('personalTime.deleteConfirm.title'),
-          t('personalTime.deleteConfirm.message'),
-          [
-            { text: t('common.cancel'), style: 'cancel' },
-            {
-              text: t('personalTime.actions.delete'),
-              style: 'destructive',
-              onPress: () =>
-                remove.mutate(block.id, {
-                  onSuccess: onDeleted,
-                  onError: () => showFailedToast(),
-                }),
-            },
-          ],
-        );
+        onDeleted?.();
+        return removeWithUndo({
+          title: t('toasts.personalTimeDeleted'),
+          summary: block.notes?.trim() || undefined,
+          id: block.id,
+          keys: [timeBlockKeys.all(userId)],
+          commit: () => remove.mutateAsync(block.id),
+        });
     }
   };
 

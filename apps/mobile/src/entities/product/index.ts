@@ -22,6 +22,7 @@ export {
 } from './lib/stock';
 export { createLinksStore } from './model/links.store';
 export {
+  productKeys,
   useDeleteProductMutation,
   useProductPurchasesQuery,
   useProductsQuery,

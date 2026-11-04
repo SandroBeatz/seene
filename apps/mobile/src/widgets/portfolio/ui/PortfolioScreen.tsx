@@ -6,7 +6,7 @@
 import { router, Stack } from 'expo-router';
 import { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Pressable, useWindowDimensions, View } from 'react-native';
+import { Pressable, useWindowDimensions, View } from 'react-native';
 import Animated, { useAnimatedRef } from 'react-native-reanimated';
 import Sortable from 'react-native-sortables';
 import { Image } from 'expo-image';
@@ -23,6 +23,7 @@ import {
   usePortfolioQuery,
   useReorderPortfolioMutation,
   type PortfolioItem,
+  portfolioKeys,
 } from '@/entities/portfolio';
 import { useServicesQuery } from '@/entities/service';
 import { useUserId } from '@/entities/session';
@@ -43,6 +44,7 @@ import {
   Text,
   type ContextMenuAnchor,
   showFailedToast,
+  removeWithUndo,
 } from '@/shared/ui';
 import { filterPhotos, portfolioFilters } from '../lib/filters';
 import { PhotoTile } from './PhotoTile';
@@ -86,15 +88,13 @@ export function PortfolioScreen() {
   const openPhoto = (item: PortfolioItem, focus?: 'caption') =>
     router.push({ pathname: '/portfolio/[itemId]', params: { itemId: item.id, focus } });
 
-  const confirmDelete = (item: PortfolioItem) =>
-    Alert.alert(t('menuHome.portfolio.deleteTitle'), t('menuHome.portfolio.deleteText'), [
-      { text: t('common.cancel'), style: 'cancel' },
-      {
-        text: t('common.delete'),
-        style: 'destructive',
-        onPress: () => remove.mutate(item, { onError: failed }),
-      },
-    ]);
+  const deletePhoto = (item: PortfolioItem) =>
+    removeWithUndo({
+      title: t('toasts.photoDeleted'),
+      id: item.id,
+      keys: [portfolioKeys.all(userId)],
+      commit: () => remove.mutateAsync(item),
+    });
 
   const openMenu = (item: PortfolioItem) =>
     tiles.current.get(item.id)?.measureInWindow((_x, y) =>
@@ -111,7 +111,7 @@ export function PortfolioScreen() {
     else if (key === 'order') {
       setFilter(null);
       setOrdering(true);
-    } else if (key === 'delete') confirmDelete(menu.item);
+    } else if (key === 'delete') deletePhoto(menu.item);
   };
 
   const size = (screen.width - theme.layout.gutter * 2 - GAP * (COLUMNS - 1)) / COLUMNS;

@@ -14,12 +14,13 @@ import {
   type Appointment,
   type AppointmentAction,
   type UpdateAppointmentDto,
+  appointmentKeys,
 } from '@/entities/appointment';
 import { useUserId } from '@/entities/session';
 import { phoneCallUrl, whatsappUrl } from '@/shared/lib/phone';
 import { useAppointmentToast } from './useAppointmentToast';
 import { useClientMessage } from './useClientMessage';
-import { showFailedToast, showErrorToast, showToast } from '@/shared/ui';
+import { showFailedToast, showErrorToast, showToast, removeWithUndo } from '@/shared/ui';
 
 export type AppointmentActionKey =
   | AppointmentAction
@@ -142,14 +143,32 @@ export function useAppointmentActions(bound: AppointmentActionContext | null = n
       case 'cancel':
         return ask('cancel', () => cancelByMaster(ctx));
       case 'no_show':
-        return ask('noShow', () => patch(ctx, { status: 'no_show' }));
-      case 'delete':
-        return ask('delete', () =>
-          remove.mutate(id, {
-            onSuccess: () => router.back(),
+        return update.mutate(
+          { id, status: 'no_show' },
+          {
             onError: failed,
-          }),
+            onSuccess: () =>
+              showToast({
+                title: t('toasts.noShow'),
+                summary: `${ctx.clientFirstName} · ${ctx.when}`,
+                tone: 'neutral',
+                icon: 'noShow',
+                action: {
+                  label: t('toasts.undo'),
+                  onPress: () => patch(ctx, { status: ctx.appointment.status }),
+                },
+              }),
+          },
         );
+      case 'delete':
+        router.back();
+        return removeWithUndo({
+          title: t('toasts.visitDeleted'),
+          summary: `${ctx.clientFirstName} · ${ctx.when}`,
+          id,
+          keys: [appointmentKeys.all(userId), appointmentKeys.actionable(userId)],
+          commit: () => remove.mutateAsync(id),
+        });
       case 'complete':
         return router.push({
           pathname: '/appointment/[appointmentId]/checkout',

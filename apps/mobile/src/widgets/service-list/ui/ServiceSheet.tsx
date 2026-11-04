@@ -5,7 +5,7 @@
 import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, View } from 'react-native';
+import { View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import { useMasterProfileQuery, useMoneyContext } from '@/entities/master';
 import {
@@ -23,6 +23,7 @@ import {
   useServicesQuery,
   useUpdateServiceMutation,
   type ServiceWithCategory,
+  serviceKeys,
 } from '@/entities/service';
 import {
   useCreateServiceCategoryMutation,
@@ -47,6 +48,7 @@ import {
   Text,
   showFailedToast,
   showToast,
+  removeWithUndo,
 } from '@/shared/ui';
 import {
   BUFFER_OPTIONS,
@@ -237,17 +239,17 @@ function ServiceForm({
     }
   };
 
-  const confirmDelete = () =>
-    Alert.alert(t('menuHome.servicesPage.deleteTitle'), t('menuHome.servicesPage.deleteText'), [
-      { text: t('common.cancel'), style: 'cancel' },
-      {
-        text: t('menuHome.servicesPage.delete'),
-        style: 'destructive',
-        onPress: () =>
-          service &&
-          archive.mutate(service.id, { onSuccess: () => router.back(), onError: failed }),
-      },
-    ]);
+  const deleteService = () => {
+    if (!service) return;
+    router.back();
+    removeWithUndo({
+      title: t('toasts.serviceDeleted'),
+      summary: service.name,
+      id: service.id,
+      keys: [serviceKeys.all(userId)],
+      commit: () => archive.mutateAsync(service.id),
+    });
+  };
 
   const linkedNames = (products.data ?? [])
     .filter((product) => links[product.id] !== undefined)
@@ -284,7 +286,7 @@ function ServiceForm({
                   sf: 'trash',
                   icon: 'trash',
                   destructive: true,
-                  onPress: confirmDelete,
+                  onPress: deleteService,
                 }
               : undefined
           }

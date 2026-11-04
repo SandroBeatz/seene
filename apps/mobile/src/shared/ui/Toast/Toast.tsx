@@ -5,7 +5,7 @@
  */
 import { Fragment, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, Pressable, View } from 'react-native';
+import { AppState, Platform, Pressable, View } from 'react-native';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated, {
   Easing,
@@ -23,6 +23,7 @@ import { Icon, type IconName } from '../Icon';
 import { Text } from '../Text';
 import {
   dismissToast,
+  pressToastAction,
   toastDuration,
   useToastStore,
   type ShownToast,
@@ -64,6 +65,14 @@ export function Toaster() {
   // the last one would cover it. It outlives the toast a moment for the card to leave.
   const [layerId, setLayerId] = useState<number | null>(null);
   if (toast && layerId !== toast.id) setLayerId(toast.id);
+
+  // The app may not come back: what waits on the toast shouldn't wait with it.
+  useEffect(() => {
+    const listener = AppState.addEventListener('change', (state) => {
+      if (state === 'background') dismissToast();
+    });
+    return () => listener.remove();
+  }, []);
 
   useEffect(() => {
     if (toast) return;
@@ -126,10 +135,7 @@ function ToastCard({ toast }: { toast: ShownToast }) {
 
   const followFinger = useAnimatedStyle(() => ({ transform: [{ translateY: offset.value }] }));
 
-  const press = (action: ToastAction) => () => {
-    dismissToast();
-    action.onPress();
-  };
+  const press = (action: ToastAction) => () => pressToastAction(action);
 
   return (
     <Animated.View entering={ENTERING} exiting={EXITING} accessibilityLiveRegion="polite">

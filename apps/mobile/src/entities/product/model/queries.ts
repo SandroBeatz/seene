@@ -14,7 +14,7 @@ import {
 } from '../api/product.api';
 import type { RestockProductDto, SaveProductDto } from './types';
 
-const productKeys = {
+export const productKeys = {
   all: (userId: string) => ['products', userId] as const,
 };
 

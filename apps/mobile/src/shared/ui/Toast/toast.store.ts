@@ -23,6 +23,8 @@ export interface ToastData {
   action?: ToastAction;
   /** A wide button under the title row: "Отправить клиенту". */
   cta?: ToastAction & { icon?: IconName };
+  /** When it goes any way but by its own button: the delayed half of an undoable action. */
+  onLeave?: () => void;
 }
 
 export type ShownToast = ToastData & { id: number };
@@ -38,11 +40,23 @@ let lastId = 0;
 
 export const useToastStore = create<{ toast: ShownToast | null }>()(() => ({ toast: null }));
 
+function replace(next: ShownToast | null) {
+  const left = useToastStore.getState().toast;
+  useToastStore.setState({ toast: next });
+  left?.onLeave?.();
+}
+
 /** Safe anywhere, mutation callbacks included. */
 export function showToast(toast: ToastData) {
-  useToastStore.setState({ toast: { ...toast, id: ++lastId } });
+  replace({ ...toast, id: ++lastId });
 }
 
 export function dismissToast() {
+  replace(null);
+}
+
+/** Its own button was pressed: `onLeave` doesn't run. */
+export function pressToastAction(action: ToastAction) {
   useToastStore.setState({ toast: null });
+  action.onPress();
 }

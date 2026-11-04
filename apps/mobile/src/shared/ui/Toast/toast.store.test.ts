@@ -1,6 +1,12 @@
-import { afterEach, describe, expect, it } from '@jest/globals';
+import { afterEach, describe, expect, it, jest } from '@jest/globals';
 
-import { dismissToast, showToast, toastDuration, useToastStore } from './toast.store';
+import {
+  dismissToast,
+  pressToastAction,
+  showToast,
+  toastDuration,
+  useToastStore,
+} from './toast.store';
 
 const action = { label: 'Отменить', onPress: () => {} };
 
@@ -37,6 +43,33 @@ describe('the toast store', () => {
   it('dismisses', () => {
     showToast({ title: 'Сохранено' });
     dismissToast();
+    expect(useToastStore.getState().toast).toBeNull();
+  });
+
+  it('runs onLeave when dismissed, once', () => {
+    const onLeave = jest.fn();
+    showToast({ title: 'Удалено', onLeave });
+    dismissToast();
+    dismissToast();
+    expect(onLeave).toHaveBeenCalledTimes(1);
+  });
+
+  it('runs onLeave when another toast takes its place', () => {
+    const onLeave = jest.fn();
+    showToast({ title: 'Удалено', onLeave });
+    showToast({ title: 'Сохранено' });
+    expect(onLeave).toHaveBeenCalledTimes(1);
+    expect(useToastStore.getState().toast?.title).toBe('Сохранено');
+  });
+
+  it('skips onLeave when its button is pressed', () => {
+    const onLeave = jest.fn();
+    const onPress = jest.fn();
+    const action = { label: 'Отменить', onPress };
+    showToast({ title: 'Удалено', action, onLeave });
+    pressToastAction(action);
+    expect(onPress).toHaveBeenCalledTimes(1);
+    expect(onLeave).not.toHaveBeenCalled();
     expect(useToastStore.getState().toast).toBeNull();
   });
 });

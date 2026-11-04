@@ -185,8 +185,6 @@
         "name": "Enter the client's name.",
         "duplicate": "A client with this number is already in your list."
       },
-      "deleteTitle": "Delete client?",
-      "deleteText": "{{name}} will be removed from the list. This can't be undone.",
       "deleteBlocked": "This client has visits, so they can’t be deleted: the visit history and revenue stay.",
       "countryTitle": "Country code",
       "countrySearch": "Country or code",
@@ -1064,16 +1062,6 @@
         "title": "Cancel the appointment?",
         "message": "The time frees up. The client won’t be told — message them.",
         "action": "Cancel appointment"
-      },
-      "noShow": {
-        "title": "Mark as no-show?",
-        "message": "The visit won’t count towards earnings.",
-        "action": "No-show"
-      },
-      "delete": {
-        "title": "Delete the appointment?",
-        "message": "The appointment and its payment are deleted for good.",
-        "action": "Delete"
       }
     },
     "messages": {
@@ -1242,10 +1230,6 @@
       "rename": "Edit name",
       "reschedule": "Move",
       "delete": "Delete"
-    },
-    "deleteConfirm": {
-      "title": "Delete personal time?",
-      "message": "This time will open for online booking again."
     }
   },
   "expenses": {
@@ -1267,8 +1251,6 @@
     "total": "Total this month",
     "empty": "No expenses yet",
     "emptyHint": "Add supplies, rent and other costs to see what you actually keep.",
-    "deleteTitle": "Delete this expense?",
-    "deleteRepeatText": "It will stop repeating. Past months stay.",
     "categories": {
       "materials": "Supplies",
       "rent": "Rent",
@@ -1554,12 +1536,8 @@
       "add": "Add service",
       "save": "Save",
       "delete": "Delete",
-      "deleteTitle": "Delete this service?",
-      "deleteText": "It will leave the list and your booking page. Past visits stay as they are.",
       "categoryTitleNew": "New category",
       "categoryTitle": "Category",
-      "categoryDeleteTitle": "Delete this category?",
-      "categoryDeleteText": "Its services stay, without a category.",
       "addCategoryRow": "New category",
       "addDirectionRow": "Add a direction",
       "directionsHint": "Hold a category to change the order.",
@@ -1609,8 +1587,6 @@
       "note": "Note to self",
       "notePlaceholder": "For example, a trip home",
       "addSubmit": "Add",
-      "deleteTitle": "Delete this day off?",
-      "deleteText": "Online booking opens again for these days.",
       "days_one": "{{count}} day",
       "days_few": "{{count}} days",
       "days_many": "{{count}} days",
@@ -1638,8 +1614,6 @@
       "newTitle": "New method",
       "editTitle": "Payment method",
       "namePlaceholder": "For example, MBank",
-      "deleteTitle": "Delete this method?",
-      "deleteText": "Past payments stay in analytics, but without this name.",
       "lastActive": "At least one method has to stay on."
     },
     "portfolio": {
@@ -1663,9 +1637,7 @@
       "service": "Service",
       "noService": "No service",
       "linkService": "Link to a service",
-      "changeOrder": "Change order",
-      "deleteTitle": "Delete this photo?",
-      "deleteText": "Clients will no longer see it."
+      "changeOrder": "Change order"
     },
     "clientsGroup": "Clients",
     "messages": {
@@ -1780,8 +1752,6 @@
       "toExpenseHint": "Under “Materials”",
       "less": "Less",
       "more": "More",
-      "deleteTitle": "Delete this product?",
-      "deleteText": "It leaves the list and stops being deducted. Expenses stay.",
       "restock": "Restock",
       "restockTitle": "Restock",
       "bought": "How much you bought",
@@ -1907,6 +1877,19 @@
     "offline": {
       "title": "No internet",
       "summary": "Changes not saved"
-    }
+    },
+    "undo": "Undo",
+    "noShow": "Client didn’t come",
+    "visitDeleted": "Booking deleted",
+    "clientDeleted": "Client deleted",
+    "expenseDeleted": "Expense deleted · {{amount}}",
+    "personalTimeDeleted": "Personal time deleted",
+    "dayOffDeleted": "Day off deleted",
+    "vacationDeleted": "Vacation deleted",
+    "productDeleted": "Product deleted",
+    "serviceDeleted": "Service deleted",
+    "categoryDeleted": "Category deleted",
+    "paymentDeleted": "Payment method deleted",
+    "photoDeleted": "Photo deleted"
   }
 }
