@@ -8,6 +8,7 @@ export const MESSAGE_KINDS = [
   'recall',
   'cancellation',
   'reschedule',
+  'day_off',
 ] as const;
 export type MessageKind = (typeof MESSAGE_KINDS)[number];
 
@@ -23,6 +24,7 @@ export const MESSAGE_VARIABLES = [
   'master',
   'booking_link',
   'online_link',
+  'off_period',
 ] as const;
 export type MessageVariable = (typeof MESSAGE_VARIABLES)[number];
 

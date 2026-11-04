@@ -1606,10 +1606,6 @@
       "days_many": "{{count}} jours",
       "days_other": "{{count}} jours",
       "warnTitle": "Prévenir les clients",
-      "warnListHint": "WhatsApp ouvre une conversation à la fois : écrivez à un client, puis revenez pour le suivant.",
-      "warnMessageA11y": "Écrire à {{name}}",
-      "warnMessage": "Bonjour {{name}} ! Vous avez un rendez-vous le {{when}}, mais je ne travaille pas à ce moment-là. Pouvons-nous le déplacer ?",
-      "warnEmpty": "Aucun rendez-vous ces jours-là",
       "clientFallback": "Client"
     },
     "payments": {
@@ -1690,6 +1686,10 @@
         "reschedule": {
           "title": "Déplacement",
           "when": "Quand un rendez-vous est déplacé"
+        },
+        "day_off": {
+          "title": "Report pour cause d’absence",
+          "when": "Quand une absence tombe sur des rendez-vous"
         }
       },
       "variables": {
@@ -1700,7 +1700,8 @@
         "address": "Adresse",
         "master": "Professionnel",
         "booking_link": "Lien du rendez-vous",
-        "online_link": "Lien de réservation"
+        "online_link": "Lien de réservation",
+        "off_period": "Période d’absence"
       }
     },
     "products": {
@@ -1905,6 +1906,27 @@
     "categoryDeleted": "Catégorie supprimée",
     "paymentDeleted": "Moyen de paiement supprimé",
     "photoDeleted": "Photo supprimée",
-    "coverDeleted": "Couverture supprimée"
+    "coverDeleted": "Couverture supprimée",
+    "dayOffVisits_one": "{{count}} rendez-vous ces jours-là",
+    "dayOffVisits_other": "{{count}} rendez-vous ces jours-là",
+    "writeClients_one": "Écrire à {{count}} client",
+    "writeClients_other": "Écrire à {{count}} clients"
+  },
+  "sendToClient": {
+    "send": "Envoyer sur WhatsApp",
+    "sendHint": "WhatsApp s’ouvre avec le texte prêt",
+    "template": "Modèle",
+    "message": "Texte du message",
+    "messageTo": "Message pour {{name}}",
+    "editHint": "Vous pouvez le modifier avant l’envoi",
+    "reset": "Rétablir le modèle",
+    "sent": "Envoyé",
+    "sendShort": "Envoyer",
+    "sendAgain": "Renvoyer",
+    "oneByOne": "WhatsApp s’ouvre pour chaque client séparément. Après l’envoi, revenez dans Seene : le client suivant sera ouvert.",
+    "progress": "Envoyé {{done}} sur {{count}}",
+    "period": "du {{from}} au {{to}}",
+    "visits_one": "{{count}} rendez-vous",
+    "visits_other": "{{count}} rendez-vous"
   }
 }

@@ -12,6 +12,8 @@ export const DEFAULT_TEMPLATES: Record<MessageLanguage, Record<MessageKind, stri
     cancellation: '{client_name}, ваша запись отменена.\n{date_time} — {service}.',
     reschedule:
       '{client_name}, ваша запись перенесена.\nЖдём вас {date_time} на: {service}.\nПодробнее: {booking_link}',
+    day_off:
+      '{client_name}, здравствуйте! Меня не будет {off_period}, поэтому вашу запись {date_time} нужно перенести.\nВыберите удобное время: {online_link}',
   },
   en: {
     confirmation:
@@ -23,6 +25,8 @@ export const DEFAULT_TEMPLATES: Record<MessageLanguage, Record<MessageKind, stri
     cancellation: '{client_name}, your booking is cancelled.\n{date_time} — {service}.',
     reschedule:
       '{client_name}, your booking has moved.\nSee you {date_time} for: {service}.\nDetails: {booking_link}',
+    day_off:
+      'Hello {client_name}! I am away {off_period}, so your booking {date_time} needs to move.\nPick a time that suits you: {online_link}',
   },
   fr: {
     confirmation:
@@ -34,6 +38,8 @@ export const DEFAULT_TEMPLATES: Record<MessageLanguage, Record<MessageKind, stri
     cancellation: '{client_name}, votre rendez-vous est annulé.\n{date_time} — {service}.',
     reschedule:
       '{client_name}, votre rendez-vous a été déplacé.\nÀ bientôt, {date_time}, pour : {service}.\nDétails : {booking_link}',
+    day_off:
+      'Bonjour {client_name} ! Je ne serai pas là {off_period}, votre rendez-vous {date_time} doit donc être déplacé.\nChoisissez un autre créneau : {online_link}',
   },
 };
 
@@ -55,5 +61,7 @@ const NO_VISIT_VARIABLES: readonly MessageVariable[] = [
   'online_link',
 ];
 
-export const variablesOf = (kind: MessageKind): readonly MessageVariable[] =>
-  kind === 'recall' ? NO_VISIT_VARIABLES : VISIT_VARIABLES;
+export const variablesOf = (kind: MessageKind): readonly MessageVariable[] => {
+  if (kind === 'recall') return NO_VISIT_VARIABLES;
+  return kind === 'day_off' ? [...VISIT_VARIABLES, 'off_period', 'online_link'] : VISIT_VARIABLES;
+};

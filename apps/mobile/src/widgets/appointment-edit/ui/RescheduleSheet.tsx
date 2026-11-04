@@ -10,18 +10,10 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet } from 'react-native-unistyles';
-import {
-  appointmentTotalPrice,
-  useUpdateAppointmentMutation,
-  type Appointment,
-} from '@/entities/appointment';
+import { useUpdateAppointmentMutation, type Appointment } from '@/entities/appointment';
 import { useClientQuery } from '@/entities/client';
-import { useMasterSettingsQuery } from '@/entities/master';
-import { useServicesQuery } from '@/entities/service';
-import { useAppointmentToast, useClientMessage } from '@/features/appointment-actions';
+import { useAppointmentToast } from '@/features/appointment-actions';
 import { DayTimePicker, useTimeContext } from '@/features/pick-time';
-import { formatAmount } from '@/shared/lib/formats';
-import { isSupportedLocale } from '@/shared/lib/i18n';
 import { Button, SheetChrome, Skeleton, Text, useNow, showFailedToast } from '@/shared/ui';
 import { useRescheduleDraft } from '../model/reschedule.store';
 
@@ -30,16 +22,13 @@ export interface RescheduleSheetProps {
 }
 
 export function RescheduleSheet({ appointment }: RescheduleSheetProps) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const ctx = useTimeContext();
   const now = useNow();
   const update = useUpdateAppointmentMutation(ctx.userId);
   const client = useClientQuery(appointment.client_id);
-  const services = useServicesQuery(ctx.userId);
-  const settings = useMasterSettingsQuery(ctx.userId);
   const showToast = useAppointmentToast();
-  const composeMessage = useClientMessage();
   const draft = useRescheduleDraft();
   const { begin } = draft;
 
@@ -51,35 +40,20 @@ export function RescheduleSheet({ appointment }: RescheduleSheetProps) {
     if (!ctx.isPending) begin(appointment.id, firstDay);
   }, [appointment.id, firstDay, begin, ctx.isPending]);
   const ready = draft.appointmentId === appointment.id && !ctx.isPending;
-  // The toast's text needs the client and the services too.
-  const canSave = ready && !client.isPending && !services.isPending;
+  // The toast's text needs the client too.
+  const canSave = ready && !client.isPending;
 
   const when = (iso: string) => `${ctx.dayLabel(ctx.dayKeyOf(iso))}, ${ctx.time(iso)}`;
 
   const movedToast = (start: string) => {
     const person = client.data;
     const span = `${ctx.dayLabel(ctx.dayKeyOf(start)).toLocaleLowerCase()}, ${ctx.range(start, appointment.duration)}`;
-    const catalog = services.data ?? [];
-    const picked = appointment.service_ids.flatMap((id) => catalog.find((s) => s.id === id) ?? []);
     return {
       title: t('reschedule.done'),
       summary: person ? `${person.first_name} · ${span}` : span,
       phone: person?.whatsapp ?? person?.phone ?? null,
-      message: () =>
-        composeMessage({
-          kind: 'reschedule',
-          clientName: person?.first_name ?? '',
-          clientLanguage: person?.language,
-          visit: {
-            id: appointment.id,
-            startAt: start,
-            services: picked.map((s) => s.name).join(', '),
-            price: formatAmount(appointmentTotalPrice(appointment, picked), {
-              currency: settings.data?.currency ?? 'EUR',
-              locale: isSupportedLocale(i18n.language) ? i18n.language : 'en',
-            }),
-          },
-        }),
+      appointmentId: appointment.id,
+      kind: 'reschedule' as const,
     };
   };
 
