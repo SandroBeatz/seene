@@ -176,11 +176,6 @@ export function AppointmentPreview({ appointmentId }: { appointmentId: string })
               onCall={() => actions.run('call')}
               onWhatsApp={() => actions.run('whatsapp')}
               onRemind={() => actions.run('remind')}
-              onAskReview={
-                data.appointment.status === 'completed'
-                  ? () => actions.run('ask_review')
-                  : undefined
-              }
             />
 
             <InfoRow

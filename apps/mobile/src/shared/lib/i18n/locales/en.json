@@ -954,8 +954,7 @@
         "snooze": "Remind me in a week",
         "decline": "Decline request",
         "cancel": "Cancel appointment",
-        "no_show": "No-show",
-        "ask_review": "Ask for a review"
+        "no_show": "No-show"
       },
       "clients_one": "{{count}} client",
       "clients_few": "{{count}} clients",
@@ -1048,8 +1047,7 @@
     },
     "missingTitle": "No appointment",
     "missing": "It was deleted or is unavailable.",
-    "changeClient": "Change client",
-    "askReview": "Review"
+    "changeClient": "Change client"
   },
   "actions": {
     "failedTitle": "Something went wrong",
@@ -1697,10 +1695,6 @@
         "recall": {
           "title": "Time to book",
           "when": "When a client is due back"
-        },
-        "review": {
-          "title": "Ask for a review",
-          "when": "In a completed visit"
         },
         "cancellation": {
           "title": "Cancellation",

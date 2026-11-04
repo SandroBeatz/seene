@@ -6,7 +6,6 @@ export const MESSAGE_KINDS = [
   'confirmation',
   'reminder',
   'recall',
-  'review',
   'cancellation',
   'reschedule',
 ] as const;
