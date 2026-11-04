@@ -27,6 +27,7 @@ export {
 } from './ui/EventPreview';
 export { useAppointmentToast, type AppointmentToastData } from './model/useAppointmentToast';
 export { useVisitSavedToast } from './model/useVisitSavedToast';
+export { visitTemplates } from './model/visit-templates';
 export { NoteEditor } from './ui/NoteEditor';
 export { VisitDetailsSheet } from './ui/VisitDetailsSheet';
 export { SendToClientSheet, type SendToClientSheetProps } from './ui/SendToClientSheet';

@@ -26,6 +26,7 @@ import {
   Skeleton,
   Text,
   showErrorToast,
+  showToast,
 } from '@/shared/ui';
 import { useClientMessage } from '../model/useClientMessage';
 
@@ -73,7 +74,15 @@ export function SendToClientSheet({ appointment, kind, event }: SendToClientShee
   const send = () => {
     if (!phone || !text) return;
     Linking.openURL(whatsappUrl(phone, text))
-      .then(() => router.back())
+      .then(() => {
+        if (kind === 'reminder' && client) {
+          showToast({
+            title: t('toasts.reminderSent'),
+            summary: t('toasts.reminderSummary', { name: client.first_name }),
+          });
+        }
+        router.back();
+      })
       .catch(() => showErrorToast(t('actions.failedTitle')));
   };
 
