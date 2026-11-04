@@ -183,6 +183,7 @@ export function TimelineEvent({
           </View>
         ) : null}
         {meta.ongoing ? <OngoingMark /> : null}
+        {meta.visit.appointment.status === 'completed' ? <CompletedMark /> : null}
       </View>
       {two ? (
         <Text variant="caption2" color="secondary" tabularNums numberOfLines={1}>
@@ -190,6 +191,15 @@ export function TimelineEvent({
         </Text>
       ) : null}
     </Pressable>
+  );
+}
+
+function CompletedMark() {
+  const { t } = useTranslation();
+  return (
+    <View accessible accessibilityLabel={t('today.schedule.completed')} style={styles.ongoing}>
+      <Icon name="completeVisit" size={14} color="tone.success.fg" />
+    </View>
   );
 }
 

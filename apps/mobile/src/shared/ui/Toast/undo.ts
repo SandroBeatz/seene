@@ -13,7 +13,9 @@ import { showToast } from './toast.store';
 export interface RemoveWithUndo {
   title: string;
   summary?: string;
-  id: string;
+  /** The row to hide, or `where` for several. */
+  id?: string;
+  where?: (row: unknown) => boolean;
   /** The cached lists the row is in. */
   keys: readonly QueryKey[];
   commit: () => Promise<unknown>;
@@ -23,8 +25,8 @@ export interface RemoveWithUndo {
 }
 
 export function removeWithUndo(input: RemoveWithUndo) {
-  const { title, summary, id, keys, commit, onFailed, icon = 'trash' } = input;
-  const restore = hideFromLists(queryClient, keys, id);
+  const { title, summary, id, where, keys, commit, onFailed, icon = 'trash' } = input;
+  const restore = hideFromLists(queryClient, keys, where ?? id ?? (() => false));
   showToast({
     title,
     summary,

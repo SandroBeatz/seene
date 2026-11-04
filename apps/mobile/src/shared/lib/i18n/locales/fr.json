@@ -865,7 +865,6 @@
   "today": {
     "openMenu": "Profil et menu",
     "notifications": "Notifications",
-    "notificationsEmpty": "Aucune notification pour le moment.",
     "greeting": {
       "morning": "Bonjour",
       "day": "Bon après-midi",
@@ -911,7 +910,8 @@
       "unknownClient": "Client",
       "nowA11y": "Maintenant {{time}}",
       "menuA11y": "Actions du rendez-vous",
-      "blockA11y": "Temps personnel : {{text}}"
+      "blockA11y": "Temps personnel : {{text}}",
+      "completed": "Terminée"
     },
     "note": {
       "open": "Note du rendez-vous",
@@ -1935,5 +1935,44 @@
     "amount": "Montant",
     "listPrice": "Prix affiché {{amount}}",
     "payment": "Paiement"
+  },
+  "notifications": {
+    "kinds": {
+      "booking_new": "Nouvelle réservation en ligne",
+      "booking_cancelled": "Réservation annulée",
+      "booking_moved": "Le client a déplacé sa réservation"
+    },
+    "filters": {
+      "all": "Toutes",
+      "visits": "Rendez-vous",
+      "clients": "Clients",
+      "money": "Argent",
+      "seene": "Seene"
+    },
+    "days": {
+      "today": "Aujourd’hui",
+      "yesterday": "Hier",
+      "earlier": "Plus tôt"
+    },
+    "today": "aujourd’hui",
+    "tomorrow": "demain",
+    "minutesAgo": "{{count}} min",
+    "hoursAgo": "{{count}} h",
+    "yesterdayAt": "Hier, {{time}}",
+    "slotFree": "Le créneau est de nouveau libre.",
+    "confirm": "Confirmer",
+    "decline": "Refuser",
+    "proposeTime": "Proposer un créneau",
+    "write": "Écrire",
+    "markRead": "Lu",
+    "more": "Plus d’actions",
+    "readAll": "Tout marquer lu",
+    "clearRead": "Effacer les lues",
+    "newCount": "{{count}} nouvelles",
+    "allRead": "Toutes lues",
+    "emptyTitle": "Aucune nouvelle notification",
+    "emptyText": "Réservations en ligne, annulations, déplacements et rappels apparaîtront ici",
+    "deleted": "Notification supprimée",
+    "cleared": "Notifications lues effacées"
   }
 }

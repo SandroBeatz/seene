@@ -110,6 +110,14 @@ export function EventContent({
             <Icon name="unconfirmed" size={14} color="tone.warning.fg" />
           </View>
         ) : null}
+        {visit.appointment.status === 'completed' ? (
+          <View
+            accessible
+            accessibilityLabel={t('today.schedule.completed')}
+            style={eventCardStyles.headMark}>
+            <Icon name="completeVisit" size={14} color="tone.success.fg" />
+          </View>
+        ) : null}
         {ongoing ? (
           <View
             accessible

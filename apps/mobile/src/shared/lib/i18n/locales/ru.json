@@ -871,7 +871,6 @@
   "today": {
     "openMenu": "Профиль и меню",
     "notifications": "Уведомления",
-    "notificationsEmpty": "Пока уведомлений нет.",
     "greeting": {
       "morning": "Доброе утро",
       "day": "Добрый день",
@@ -917,7 +916,8 @@
       "unknownClient": "Клиент",
       "nowA11y": "Сейчас {{time}}",
       "menuA11y": "Действия с записью",
-      "blockA11y": "Личное время: {{text}}"
+      "blockA11y": "Личное время: {{text}}",
+      "completed": "Завершена"
     },
     "note": {
       "open": "Заметка к записи",
@@ -1956,5 +1956,44 @@
     "amount": "Сумма",
     "listPrice": "По прайсу {{amount}}",
     "payment": "Оплата"
+  },
+  "notifications": {
+    "kinds": {
+      "booking_new": "Новая онлайн-запись",
+      "booking_cancelled": "Запись отменена",
+      "booking_moved": "Клиент перенёс запись"
+    },
+    "filters": {
+      "all": "Все",
+      "visits": "Записи",
+      "clients": "Клиенты",
+      "money": "Деньги",
+      "seene": "Seene"
+    },
+    "days": {
+      "today": "Сегодня",
+      "yesterday": "Вчера",
+      "earlier": "Ранее"
+    },
+    "today": "сегодня",
+    "tomorrow": "завтра",
+    "minutesAgo": "{{count}} мин",
+    "hoursAgo": "{{count}} ч",
+    "yesterdayAt": "Вчера, {{time}}",
+    "slotFree": "Окно снова свободно.",
+    "confirm": "Подтвердить",
+    "decline": "Отклонить",
+    "proposeTime": "Предложить окно",
+    "write": "Написать",
+    "markRead": "Прочитано",
+    "more": "Ещё действия",
+    "readAll": "Прочитать все",
+    "clearRead": "Очистить прочитанные",
+    "newCount": "{{count}} новых",
+    "allRead": "Все прочитаны",
+    "emptyTitle": "Новых уведомлений нет",
+    "emptyText": "Здесь появятся онлайн-записи, отмены, переносы и напоминания",
+    "deleted": "Уведомление удалено",
+    "cleared": "Прочитанные очищены"
   }
 }
