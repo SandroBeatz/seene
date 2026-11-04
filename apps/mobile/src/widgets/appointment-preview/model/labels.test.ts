@@ -4,7 +4,7 @@ import { describe, expect, it, jest } from '@jest/globals';
 jest.mock('@/shared/api/supabase', () => ({ supabase: {} }));
 
 /* eslint-disable import/first -- must be imported after the mock is registered */
-import { MORE_MENU, relativeDay, statusLabel } from './labels';
+import { MORE_MENU, relativeDay, statusLabel, willAutoComplete } from './labels';
 /* eslint-enable import/first */
 
 const START = '2026-10-30T10:00:00.000Z';
@@ -66,5 +66,35 @@ describe('MORE_MENU', () => {
 
   it('offers delete in every phase', () => {
     for (const menu of Object.values(MORE_MENU)) expect(menu.danger).toContain('delete');
+  });
+});
+
+describe('auto-complete labels', () => {
+  const time = () => '';
+
+  it('says a visit completed by itself', () => {
+    expect(
+      statusLabel('completed', { start_at: '2026-11-04T10:00:00Z', auto_completed: true }, 0, time),
+    ).toEqual({ key: 'preview.status.completedAuto' });
+  });
+
+  it('keeps the plain label for a visit completed by hand', () => {
+    expect(
+      statusLabel(
+        'completed',
+        { start_at: '2026-11-04T10:00:00Z', auto_completed: false },
+        0,
+        time,
+      ),
+    ).toEqual({ key: 'preview.status.completed' });
+  });
+
+  it('offers the icon only while the setting covers the visit', () => {
+    const end = '2026-11-04T12:00:00Z';
+    expect(willAutoComplete('upcoming', end, '2026-11-04T09:00:00Z')).toBe(true);
+    expect(willAutoComplete('ongoing', end, '2026-11-04T09:00:00Z')).toBe(true);
+    expect(willAutoComplete('upcoming', end, null)).toBe(false);
+    expect(willAutoComplete('request', end, '2026-11-04T09:00:00Z')).toBe(false);
+    expect(willAutoComplete('upcoming', end, '2026-11-04T13:00:00Z')).toBe(false);
   });
 });

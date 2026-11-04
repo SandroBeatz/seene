@@ -79,6 +79,10 @@ export default function AppLayout() {
         />
         <Stack.Screen name="(modals)/settings/specializations" options={sheet} />
         <Stack.Screen
+          name="(modals)/settings/auto-payment"
+          options={{ ...sheet, sheetAllowedDetents: [0.6] }}
+        />
+        <Stack.Screen
           name="(modals)/settings/cover"
           options={{ presentation: 'fullScreenModal', headerShown: false, gestureEnabled: false }}
         />

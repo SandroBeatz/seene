@@ -389,6 +389,10 @@ export const GLYPHS = {
       <Path d="M14 20v-5h5M8.5 9h7M8.5 12.5h4" />
     </>,
   ),
+  autoComplete: stroke(
+    'regular',
+    <Path d="M20 12a8 8 0 1 1-2.6-5.9M20 4.5v4h-4M8.5 12.3l2.4 2.4 4.6-4.8" />,
+  ),
   camera: stroke(
     'regular',
     <>

@@ -1,4 +1,7 @@
-/** "Настройки" (design AppMenuSettings). "Уведомления мне" joins with push notifications. */
+/**
+ * "Настройки" (design AppMenuSettings; the visits group is the owner's addition for
+ * auto-complete). "Уведомления мне" joins with push notifications.
+ */
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Alert, Pressable } from 'react-native';
@@ -7,12 +10,23 @@ import {
   parseStoredSchedule,
   useMasterProfileQuery,
   useMasterSettingsQuery,
+  useUpdateMasterSettings,
 } from '@/entities/master';
+import { usePaymentTypesQuery } from '@/entities/payment-type';
 import { useDeactivateAccount, useSessionStore, useUserId } from '@/entities/session';
 import { zoneOffsetLabel } from '@/shared/config/time-zones';
 import { isSupportedLocale, LOCALE_NATIVE_NAMES } from '@/shared/lib/i18n';
 import { useThemeStore } from '@/shared/theme/theme.store';
-import { Button, MenuGroup, MenuRow, ScreenScrollView, Text, showFailedToast } from '@/shared/ui';
+import {
+  Button,
+  ListItem,
+  MenuGroup,
+  MenuRow,
+  ScreenScrollView,
+  Switch,
+  Text,
+  showFailedToast,
+} from '@/shared/ui';
 
 export function SettingsScreen() {
   const { t, i18n } = useTranslation();
@@ -23,6 +37,22 @@ export function SettingsScreen() {
   const email = useSessionStore((state) => state.session?.user.email);
   const signOut = useSessionStore((state) => state.signOut);
   const deactivate = useDeactivateAccount();
+  const update = useUpdateMasterSettings(userId);
+  const methods = usePaymentTypesQuery(userId).data;
+
+  const autoOn = !!settings.data?.auto_complete_since;
+  const autoMethod = methods?.find((m) => m.id === settings.data?.auto_complete_payment_type_id);
+  const setAutoComplete = (on: boolean) =>
+    update.mutate(
+      { auto_complete_since: on ? new Date().toISOString() : null },
+      {
+        // The visits it closes need a method: asked right away, as the owner wants.
+        onSuccess: () => {
+          if (on && !autoMethod) router.push('/settings/auto-payment');
+        },
+        onError: () => showFailedToast(() => setAutoComplete(on)),
+      },
+    );
 
   const timezone = parseStoredSchedule(profile.data?.schedule)?.timezone;
   const currency = settings.data?.currency;
@@ -55,6 +85,36 @@ export function SettingsScreen() {
 
   return (
     <ScreenScrollView contentContainerStyle={styles.content}>
+      <MenuGroup label={t('menuHome.screen.visits')}>
+        <ListItem
+          size="menu"
+          inset={false}
+          title={t('menuHome.screen.autoComplete')}
+          subtitle={t('menuHome.screen.autoCompleteHint')}
+          right={
+            <Switch
+              value={autoOn}
+              onValueChange={setAutoComplete}
+              accessibilityLabel={t('menuHome.screen.autoComplete')}
+            />
+          }
+        />
+        {autoOn ? (
+          <MenuRow
+            icon="cash"
+            title={t('menuHome.screen.autoPayment')}
+            value={
+              autoMethod
+                ? autoMethod.kind === 'custom'
+                  ? autoMethod.name
+                  : t(`checkout.methods.${autoMethod.kind}`)
+                : t('menuHome.screen.autoPaymentNone')
+            }
+            onPress={() => router.push('/settings/auto-payment')}
+          />
+        ) : null}
+      </MenuGroup>
+
       <MenuGroup label={t('menuHome.screen.app')}>
         <MenuRow
           icon="globe"

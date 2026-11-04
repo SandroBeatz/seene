@@ -151,6 +151,8 @@ export type MasterSettings = Pick<
   | 'calendar_slot_step_minutes'
   | 'language'
   | 'theme'
+  | 'auto_complete_since'
+  | 'auto_complete_payment_type_id'
   | BookingSettingsColumn
 >;
 
@@ -158,6 +160,12 @@ export type MasterSettings = Pick<
 export type MasterSettingsPatch = Partial<
   Pick<
     SettingsRow,
-    'currency' | 'language' | 'theme' | 'calendar_slot_step_minutes' | BookingSettingsColumn
+    | 'auto_complete_since'
+    | 'auto_complete_payment_type_id'
+    | 'currency'
+    | 'language'
+    | 'theme'
+    | 'calendar_slot_step_minutes'
+    | BookingSettingsColumn
   >
 >;

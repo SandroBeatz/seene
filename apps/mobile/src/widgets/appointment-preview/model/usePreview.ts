@@ -74,6 +74,7 @@ export function usePreview(appointmentId: string) {
     timeFormat: (settings.data?.time_format === 12 ? 12 : 24) as 12 | 24,
     client: client.data ?? null,
     sale: sale.data ?? null,
+    autoCompleteSince: settings.data?.auto_complete_since ?? null,
     visitCount: visits.data ?? null,
     data: derived,
   };

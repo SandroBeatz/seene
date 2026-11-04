@@ -1009,7 +1009,8 @@
       "overdue": "Request overdue",
       "cancelled": "Cancelled",
       "no_show": "No-show",
-      "expired": "Request expired"
+      "expired": "Request expired",
+      "completedAuto": "Completed automatically"
     },
     "reschedule": "Reschedule",
     "editServices": "Edit services, duration and price",
@@ -1021,7 +1022,8 @@
     "progress": {
       "elapsed": "{{duration}} in",
       "plan": "Planned {{duration}} · until {{time}}",
-      "hint": "We record the visit time when you tap “Complete”."
+      "hint": "We record the visit time when you tap “Complete”.",
+      "hintAuto": "The visit completes by itself at {{time}}. To finish earlier, tap “Complete”."
     },
     "timerA11y": "Complete the visit, {{minutes}} min in",
     "actions": {
@@ -1046,7 +1048,8 @@
     },
     "missingTitle": "No appointment",
     "missing": "It was deleted or is unavailable.",
-    "changeClient": "Change client"
+    "changeClient": "Change client",
+    "autoCompleteAt": "Completes automatically at {{time}}"
   },
   "actions": {
     "failedTitle": "Something went wrong",
@@ -1444,7 +1447,13 @@
       "delete": "Delete account",
       "deleteConfirm": "Delete your account?",
       "deleteText": "Your booking page closes right away. You can restore the account for 30 days, then all data is deleted for good.",
-      "currencyHint": "Prices and the Money section use this currency. Amounts already saved are not converted."
+      "currencyHint": "Prices and the Money section use this currency. Amounts already saved are not converted.",
+      "visits": "Bookings",
+      "autoComplete": "Complete visits automatically",
+      "autoCompleteHint": "When the booked time is over",
+      "autoPayment": "Payment method",
+      "autoPaymentNone": "Choose",
+      "autoPaymentHint": "The amount comes from the booking. You can change it and the method on the finished visit."
     },
     "help": {
       "title": "Help",

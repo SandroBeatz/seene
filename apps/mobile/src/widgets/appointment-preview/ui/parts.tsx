@@ -27,6 +27,7 @@ import {
   Avatar,
   Icon,
   Text,
+  showToast,
   useNow,
   useReducedMotion,
   VipBadge,
@@ -76,6 +77,21 @@ export function PulseDot({ color }: { color: string }) {
   }, [opacity, reduced]);
   const animated = useAnimatedStyle(() => ({ opacity: opacity.value }));
   return <Animated.View style={[styles.dot, { backgroundColor: color }, animated]} />;
+}
+
+/** "Завершится автоматически в 18:00": no words on the card, the words on a tap. */
+export function AutoCompleteMark({ label }: { label: string }) {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      hitSlop={6}
+      onPress={() => showToast({ title: label, icon: 'autoComplete' })}
+      onLongPress={() => showToast({ title: label, icon: 'autoComplete' })}
+      style={({ pressed }) => [styles.autoMark, pressed && styles.pressed]}>
+      <Icon name="autoComplete" size={16} color="tone.success.fg" />
+    </Pressable>
+  );
 }
 
 // ---- Client card ----
@@ -358,6 +374,14 @@ export const MENU_ICON: Record<MenuAction, IconName> = {
 };
 
 const styles = StyleSheet.create((theme) => ({
+  autoMark: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: theme.colors.bg.surface,
+  },
   servicesRow: {
     flexDirection: 'row',
     alignItems: 'center',

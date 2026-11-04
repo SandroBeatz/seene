@@ -17,10 +17,11 @@ import { DateTime, formatAmount, formatTime } from '@/shared/lib/formats';
 import { formatDurationLabel, isSupportedLocale, pluralCategory } from '@/shared/lib/i18n';
 import { formatPhone } from '@/shared/lib/phone';
 import { EmptyState, ErrorState, InfoRow, SheetChrome, Skeleton, Text } from '@/shared/ui';
-import { MORE_MENU, relativeDay, statusLabel } from '../model/labels';
+import { MORE_MENU, relativeDay, statusLabel, willAutoComplete } from '../model/labels';
 import { usePreview } from '../model/usePreview';
 import {
   AddRow,
+  AutoCompleteMark,
   BottomBar,
   ClientCard,
   MENU_ICON,
@@ -145,13 +146,18 @@ export function AppointmentPreview({ appointmentId }: { appointmentId: string })
             contentInsetAdjustmentBehavior="automatic"
             contentContainerStyle={[styles.content, { paddingBottom: sheetBottom + 68 + 32 }]}
             showsVerticalScrollIndicator={false}>
-            <StatusPill
-              phase={data.phase}
-              label={(() => {
-                const label = statusLabel(data.phase, data.appointment, preview.now, time);
-                return t(label.key, label.params);
-              })()}
-            />
+            <View style={styles.statusRow}>
+              <StatusPill
+                phase={data.phase}
+                label={(() => {
+                  const label = statusLabel(data.phase, data.appointment, preview.now, time);
+                  return t(label.key, label.params);
+                })()}
+              />
+              {willAutoComplete(data.phase, data.endAt, preview.autoCompleteSince) ? (
+                <AutoCompleteMark label={t('preview.autoCompleteAt', { time: time(data.endAt) })} />
+              ) : null}
+            </View>
 
             <ClientCard
               client={client}
@@ -237,7 +243,12 @@ export function AppointmentPreview({ appointmentId }: { appointmentId: string })
             )}
 
             {data.phase === 'ongoing' ? (
-              <OngoingProgress data={data} now={preview.now} time={time} />
+              <OngoingProgress
+                data={data}
+                now={preview.now}
+                time={time}
+                auto={willAutoComplete(data.phase, data.endAt, preview.autoCompleteSince)}
+              />
             ) : null}
           </ScrollView>
 
@@ -266,10 +277,12 @@ function OngoingProgress({
   data,
   now,
   time,
+  auto,
 }: {
   data: NonNullable<ReturnType<typeof usePreview>['data']>;
   now: number;
   time: (iso: string) => string;
+  auto: boolean;
 }) {
   const { t } = useTranslation();
   const progress = visitProgress(data.appointment, now);
@@ -292,13 +305,16 @@ function OngoingProgress({
         <View style={[styles.fill, { width: `${progress.ratio * 100}%` }]} />
       </View>
       <Text variant="caption" color="tertiary">
-        {t('preview.progress.hint')}
+        {t(auto ? 'preview.progress.hintAuto' : 'preview.progress.hint', {
+          time: time(data.endAt),
+        })}
       </Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create((theme) => ({
+  statusRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   root: { flex: 1, backgroundColor: theme.colors.bg.elevated },
   scroll: { flex: 1 },
   content: {
