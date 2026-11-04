@@ -26,7 +26,7 @@ export function ReviewStep() {
   const { t, zone, draft, client } = flow;
   const { theme } = useUnistyles();
   const create = useCreateAppointmentMutation(flow.userId);
-  const showToast = useAppointmentToast((s) => s.show);
+  const showToast = useAppointmentToast();
   const composeMessage = useClientMessage();
   const close = useCloseFlow();
 

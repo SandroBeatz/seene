@@ -122,6 +122,10 @@ export const lightTheme = {
       ink: n[950],
       /** Success green on fixed white surfaces (WhatsApp reply card over a photo). */
       success: palette.green.base,
+      /** The toast's dark card: its grey and red marks, its word to press. */
+      toastNeutral: n[700],
+      toastDanger: palette.tone.red,
+      toastAction: palette.rose.onDark,
     },
     feedback: {
       success: palette.green.base,
@@ -257,6 +261,10 @@ export const darkTheme = {
       ink: n[950],
       /** Success green on fixed white surfaces (WhatsApp reply card over a photo). */
       success: palette.green.base,
+      /** The toast's dark card: its grey and red marks, its word to press. */
+      toastNeutral: n[700],
+      toastDanger: palette.tone.red,
+      toastAction: palette.rose.onDark,
     },
     feedback: {
       success: palette.green.bright,

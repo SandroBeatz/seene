@@ -38,7 +38,7 @@ export function RescheduleSheet({ appointment }: RescheduleSheetProps) {
   const client = useClientQuery(appointment.client_id);
   const services = useServicesQuery(ctx.userId);
   const settings = useMasterSettingsQuery(ctx.userId);
-  const showToast = useAppointmentToast((s) => s.show);
+  const showToast = useAppointmentToast();
   const composeMessage = useClientMessage();
   const draft = useRescheduleDraft();
   const { begin } = draft;

@@ -17,7 +17,7 @@ import {
 } from '@/entities/appointment';
 import { useUserId } from '@/entities/session';
 import { phoneCallUrl, whatsappUrl } from '@/shared/lib/phone';
-import { useAppointmentToast } from './appointment-toast.store';
+import { useAppointmentToast } from './useAppointmentToast';
 import { useClientMessage } from './useClientMessage';
 
 export type AppointmentActionKey =
@@ -56,7 +56,7 @@ export function useAppointmentActions(bound: AppointmentActionContext | null = n
   const update = useUpdateAppointmentMutation(userId);
   const remove = useDeleteAppointmentMutation(userId);
   const composeMessage = useClientMessage();
-  const showToast = useAppointmentToast((s) => s.show);
+  const showToast = useAppointmentToast();
 
   const failed = () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage'));
 

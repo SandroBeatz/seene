@@ -27,6 +27,8 @@ import {
   StepHeader,
   Switch,
   Text,
+  showToast,
+  type ToastData,
 } from '@/shared/ui';
 import { UIKitScreen, UIKitSectionTitle } from '@/widgets/uikit-catalog';
 
@@ -37,6 +39,30 @@ const STATUSES: AppointmentStatusColorKey[] = [
   'cancelled',
   'no_show',
   'expired',
+];
+
+const noop = () => undefined;
+
+const TOASTS: ToastData[] = [
+  {
+    title: 'Запись создана',
+    summary: 'Айгерим · пт 31 окт, 11:00–13:00',
+    cta: { label: 'Отправить клиенту', icon: 'whatsapp', onPress: noop },
+  },
+  {
+    title: 'Запись удалена',
+    summary: 'Айгерим · пт 31 окт, 11:00',
+    tone: 'neutral',
+    icon: 'trash',
+    action: { label: 'Отменить', onPress: noop },
+  },
+  { title: 'Изменения сохранены', summary: 'Запись Айгерим, пт 31 окт' },
+  {
+    title: 'Не удалось сохранить',
+    summary: 'Проверьте связь',
+    tone: 'danger',
+    action: { label: 'Повторить', onPress: noop },
+  },
 ];
 
 const DURATIONS = ['15 min', '30 min', '45 min', '1 h', '1:30', '2 h', '2:30', '3 h'];
@@ -115,6 +141,19 @@ export default function UIKitComponentsScreen() {
           variant="glass"
           onPress={() => undefined}
         />
+      </View>
+
+      <UIKitSectionTitle>{t('uikit.components.toasts')}</UIKitSectionTitle>
+      <View style={styles.stack}>
+        {TOASTS.map((toast) => (
+          <Button
+            key={toast.title}
+            label={toast.title}
+            variant="secondary"
+            size="md"
+            onPress={() => showToast(toast)}
+          />
+        ))}
       </View>
 
       <UIKitSectionTitle>{t('uikit.components.headers')}</UIKitSectionTitle>
