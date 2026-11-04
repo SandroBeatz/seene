@@ -1474,21 +1474,14 @@
       "privacy": "Politique de confidentialité"
     },
     "profile": {
-      "photo": "Changer la photo",
       "uploading": "Envoi…",
       "link": "Lien de la page",
       "about": "À propos",
       "specialization": "Spécialité",
       "contacts": "Contacts et adresse",
-      "contactsHint": "Visible par les clients sur votre page de réservation.",
       "address": "Adresse",
       "add": "Ajouter",
-      "page": "Page de réservation",
       "cover": "Couverture",
-      "coverNone": "Non choisie",
-      "coverChosen": "Choisie",
-      "coverChange": "En choisir une autre",
-      "coverRemove": "Retirer la couverture",
       "portfolio": "Portfolio",
       "portfolioCount_one": "{{count}} photo",
       "portfolioCount_many": "{{count}} photos",
@@ -1505,7 +1498,21 @@
       "contactHelp": "Laissez vide pour retirer ce contact.",
       "whatsappInvalid": "Vérifiez le numéro : il faut l’indicatif du pays et tous les chiffres.",
       "telegramInvalid": "5 à 32 caractères : lettres latines, chiffres et _",
-      "instagramInvalid": "30 caractères maximum : lettres latines, chiffres, point et _"
+      "instagramInvalid": "30 caractères maximum : lettres latines, chiffres, point et _",
+      "addCover": "Ajouter une couverture",
+      "coverHint": "Photo horizontale, à partir de 1200 × 600",
+      "edit": "Modifier",
+      "photoA11y": "Changer la photo de profil",
+      "asClients": "Vue par les clients",
+      "works": "Réalisations",
+      "coverGallery": "Choisir dans la galerie",
+      "coverCamera": "Prendre une photo",
+      "coverPortfolio": "Depuis le portfolio",
+      "coverCrop": "Déplacer et recadrer",
+      "coverDelete": "Supprimer la couverture",
+      "coverCropHint": "Faites glisser et pincez pour ajuster",
+      "cameraDenied": "Pas d’accès à l’appareil photo",
+      "coverPickTitle": "Choisissez une photo"
     },
     "servicesPage": {
       "addA11y": "Nouveau service",
@@ -1897,6 +1904,7 @@
     "serviceDeleted": "Prestation supprimée",
     "categoryDeleted": "Catégorie supprimée",
     "paymentDeleted": "Moyen de paiement supprimé",
-    "photoDeleted": "Photo supprimée"
+    "photoDeleted": "Photo supprimée",
+    "coverDeleted": "Couverture supprimée"
   }
 }

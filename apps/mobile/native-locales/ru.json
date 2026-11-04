@@ -1,4 +1,5 @@
 {
   "NSContactsUsageDescription": "Seene показывает ваши контакты, чтобы вы могли добавить клиентов из телефонной книги.",
-  "NSPhotoLibraryUsageDescription": "Seene использует ваши фото для аватара и обложки страницы."
+  "NSPhotoLibraryUsageDescription": "Seene использует ваши фото для аватара и обложки страницы.",
+  "NSCameraUsageDescription": "Seene использует камеру, чтобы снять обложку для вашей страницы."
 }

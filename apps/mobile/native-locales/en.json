@@ -1,4 +1,5 @@
 {
   "NSContactsUsageDescription": "Seene shows your contacts so you can add clients from your phone book.",
-  "NSPhotoLibraryUsageDescription": "Seene uses your photos for your profile picture and page cover."
+  "NSPhotoLibraryUsageDescription": "Seene uses your photos for your profile picture and page cover.",
+  "NSCameraUsageDescription": "Seene uses the camera to take a cover photo for your page."
 }
