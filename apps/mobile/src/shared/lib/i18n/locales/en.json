@@ -1848,7 +1848,7 @@
       },
       "current": "Your plan",
       "soon": "Coming soon",
-      "footnote": "Prices for Kyrgyzstan. Paid plans are coming soon; until then every feature is free.",
+      "footnote": "Paid plans are coming soon; until then every feature is free.",
       "free": {
         "title": "Free",
         "note": "Forever, no card",
@@ -1869,14 +1869,6 @@
         "f4": "Portfolio on the booking page",
         "f5": "Reminder templates and broadcasts",
         "f6": "No Seene logo on the page"
-      },
-      "team": {
-        "title": "Team",
-        "note": "For a small studio",
-        "f1": "Everything in Pro",
-        "f2": "Up to 5 masters in one account",
-        "f3": "Shared calendar and roles",
-        "f4": "Analytics per master"
       }
     }
   }

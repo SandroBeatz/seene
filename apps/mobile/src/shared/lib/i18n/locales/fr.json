@@ -1855,7 +1855,7 @@
       },
       "current": "Votre forfait",
       "soon": "Bientôt",
-      "footnote": "Prix pour le Kirghizistan. Les forfaits payants arrivent bientôt ; d'ici là, toutes les fonctions sont gratuites.",
+      "footnote": "Les forfaits payants arrivent bientôt ; d'ici là, toutes les fonctions sont gratuites.",
       "free": {
         "title": "Gratuit",
         "note": "Pour toujours, sans carte",
@@ -1876,14 +1876,6 @@
         "f4": "Portfolio sur la page de réservation",
         "f5": "Modèles de rappels et envois groupés",
         "f6": "Sans logo Seene sur la page"
-      },
-      "team": {
-        "title": "Team",
-        "note": "Pour un petit studio",
-        "f1": "Tout le forfait Pro",
-        "f2": "Jusqu'à 5 pros dans un compte",
-        "f3": "Calendrier partagé et rôles",
-        "f4": "Analyses par personne"
       }
     }
   }
