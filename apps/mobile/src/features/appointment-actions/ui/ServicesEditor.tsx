@@ -7,11 +7,18 @@
 import { useMemo, useState } from 'react';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Alert, Pressable, ScrollView, TextInput, View } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
-import { useUpdateAppointmentMutation, type Appointment } from '@/entities/appointment';
+import {
+  invalidateAppointmentCaches,
+  useUpdateAppointmentMutation,
+  type Appointment,
+} from '@/entities/appointment';
+import { useUpdateFinishedVisitMutation } from '@/entities/sale';
+import { useQueryClient } from '@tanstack/react-query';
 import { useUserId } from '@/entities/session';
+import { saleItems } from '../model/checkout';
 import type { ServiceWithCategory } from '@/entities/service';
 import { formatAmount } from '@/shared/lib/formats';
 import { formatDurationLabel, pluralCategory, type AppLocale } from '@/shared/lib/i18n';
@@ -30,9 +37,7 @@ import {
   directions,
   groupServices,
   OTHER_DIRECTION,
-  resolveVisit,
   totalsOf,
-  VISIT_MAX_MINUTES,
   VISIT_MIN_MINUTES,
 } from '../model/services';
 import { useVisitSavedToast } from '../model/useVisitSavedToast';
@@ -55,21 +60,16 @@ export function ServicesEditor({
   const { t } = useTranslation();
   const { theme } = useUnistyles();
   const insets = useSafeAreaInsets();
-  const update = useUpdateAppointmentMutation(useUserId() ?? '');
+  const userId = useUserId() ?? '';
+  const qc = useQueryClient();
+  const update = useUpdateAppointmentMutation(userId);
+  const updateFinished = useUpdateFinishedVisitMutation(userId);
   const showSaved = useVisitSavedToast(appointment);
 
   const [selected, setSelected] = useState(() => new Set(appointment.service_ids));
   const [query, setQuery] = useState('');
   const [direction, setDirection] = useState('all');
   const [category, setCategory] = useState('all');
-
-  const initialTotals = totalsOf(services, new Set(appointment.service_ids));
-  const [durationInput, setDurationInput] = useState<string | null>(
-    appointment.duration !== initialTotals.listDuration ? String(appointment.duration) : null,
-  );
-  const [priceInput, setPriceInput] = useState<string | null>(
-    appointment.price !== null ? String(appointment.price) : null,
-  );
 
   const allDirections = useMemo(() => directions(services.filter((s) => s.is_active)), [services]);
   const categories =
@@ -81,8 +81,6 @@ export function ServicesEditor({
         );
   const groups = groupServices(services, selected, { direction, category, query });
   const totals = totalsOf(services, selected);
-  const changed = durationInput !== null || priceInput !== null;
-  const number = new Intl.NumberFormat(locale, { maximumFractionDigits: 2 });
 
   const directionLabel = (key: string) =>
     key === OTHER_DIRECTION ? t('servicesSheet.other') : t(`onboarding.specializations.${key}`);
@@ -95,22 +93,46 @@ export function ServicesEditor({
       return next;
     });
 
+  const finished = appointment.status === 'completed';
+  const pending = update.isPending || updateFinished.isPending;
+
+  const done = () => {
+    showSaved();
+    router.back();
+  };
+
   const save = () => {
-    const visit = resolveVisit(totals, durationInput, priceInput);
     if (selected.size === 0) return showErrorToast(t('servicesSheet.pickOne'));
-    if (visit.duration < VISIT_MIN_MINUTES || visit.duration > VISIT_MAX_MINUTES) {
-      return Alert.alert(t('servicesSheet.badDuration'));
-    }
-    update.mutate(
-      { id: appointment.id, service_ids: [...selected], ...visit },
-      {
-        onSuccess: () => {
-          showSaved();
-          router.back();
+    const ids = [...selected];
+    const same =
+      ids.length === appointment.service_ids.length &&
+      ids.every((id) => appointment.service_ids.includes(id));
+    if (same) return router.back();
+    if (finished) {
+      // What was paid and how long it took stay: the chips change those.
+      updateFinished.mutate(
+        {
+          appointmentId: appointment.id,
+          serviceIds: ids,
+          items: saleItems(ids, services),
         },
-        onError: () => showFailedToast(save),
-      },
-    );
+        {
+          onSuccess: done,
+          onError: () => showFailedToast(save),
+          onSettled: () => invalidateAppointmentCaches(qc, userId),
+        },
+      );
+    } else {
+      update.mutate(
+        {
+          id: appointment.id,
+          service_ids: ids,
+          duration: Math.max(totals.listDuration, VISIT_MIN_MINUTES),
+          price: null,
+        },
+        { onSuccess: done, onError: () => showFailedToast(save) },
+      );
+    }
   };
 
   return (
@@ -266,53 +288,13 @@ export function ServicesEditor({
                 })
               : t('servicesSheet.pickOne')}
           </Text>
-          {changed ? (
-            <Pressable
-              accessibilityRole="button"
-              hitSlop={8}
-              onPress={() => {
-                setDurationInput(null);
-                setPriceInput(null);
-              }}>
-              <Text variant="footnoteStrong" color="brand">
-                {t('servicesSheet.asListed')}
-              </Text>
-            </Pressable>
-          ) : (
-            <Text variant="caption" color="tertiary">
-              {t('servicesSheet.canChange')}
+          {selected.size ? (
+            <Text variant="footnoteStrong" tabularNums>
+              {`${formatDurationLabel(totals.listDuration, t)} · ${formatAmount(totals.listPrice, { currency, locale })}`}
             </Text>
-          )}
+          ) : null}
         </View>
-        <View style={styles.fields}>
-          <View style={styles.field}>
-            <Icon name="clock" size="sm" color="content.tertiary" />
-            <TextInput
-              accessibilityLabel={t('servicesSheet.durationA11y')}
-              value={durationInput ?? String(totals.listDuration)}
-              onChangeText={setDurationInput}
-              keyboardType="number-pad"
-              style={styles.input}
-            />
-            <Text variant="footnote" color="tertiary">
-              {t('servicesSheet.minutes')}
-            </Text>
-          </View>
-          <View style={styles.field}>
-            <Icon name="tag" size="sm" color="content.tertiary" />
-            <TextInput
-              accessibilityLabel={t('servicesSheet.priceA11y', { currency: currencyLabel })}
-              value={priceInput ?? number.format(totals.listPrice)}
-              onChangeText={setPriceInput}
-              keyboardType="number-pad"
-              style={styles.input}
-            />
-            <Text variant="footnote" color="tertiary">
-              {currencyLabel}
-            </Text>
-          </View>
-        </View>
-        <Button label={t('common.save')} onPress={save} loading={update.isPending} fullWidth />
+        <Button label={t('common.save')} onPress={save} loading={pending} fullWidth />
       </View>
     </View>
   );

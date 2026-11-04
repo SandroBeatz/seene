@@ -27,6 +27,7 @@ import {
   MENU_SYMBOL,
   StatusPill,
   TimerBar,
+  VisitCard,
 } from './parts';
 
 /**
@@ -190,29 +191,29 @@ export function AppointmentPreview({ appointmentId }: { appointmentId: string })
               onPress={() => actions.run('reschedule')}
             />
 
-            <InfoRow
-              icon="services"
-              title={
-                <Text variant="bodyStrong" numberOfLines={2}>
-                  {data.serviceNames.join(', ') || t('preview.noServices')}
-                </Text>
+            <VisitCard
+              names={data.serviceNames.join(', ') || t('preview.noServices')}
+              count={t(`servicesSheet.count_${pluralCategory(data.serviceNames.length, locale)}`, {
+                count: data.serviceNames.length,
+              })}
+              duration={formatDurationLabel(data.appointment.duration, t)}
+              amount={money(preview.sale?.amount ?? data.price)}
+              method={
+                preview.sale?.payment_type
+                  ? preview.sale.payment_type.kind === 'custom'
+                    ? preview.sale.payment_type.name
+                    : t(`checkout.methods.${preview.sale.payment_type.kind}`, {
+                        defaultValue: preview.sale.payment_type.name,
+                      })
+                  : null
               }
-              subtitle={
-                <Text variant="footnote" color="tertiary" tabularNums>
-                  {formatDurationLabel(data.appointment.duration, t)}
-                  {' · '}
-                  {data.ownPrice ? (
-                    <Text variant="footnote" color="tertiary" style={styles.strike}>
-                      {money(data.listPrice)}
-                    </Text>
-                  ) : null}
-                  {data.ownPrice ? ' ' : null}
-                  <Text variant="footnoteStrong">{money(data.price)}</Text>
-                  {data.ownPrice ? ` · ${t('preview.ownPrice')}` : null}
-                </Text>
+              onServices={() => actions.run('edit')}
+              onChip={() =>
+                router.push({
+                  pathname: '/appointment/[appointmentId]/details',
+                  params: { appointmentId: data.appointment.id },
+                })
               }
-              accessibilityLabel={t('preview.editServices')}
-              onPress={() => actions.run('edit')}
             />
 
             {data.appointment.notes?.trim() ? (

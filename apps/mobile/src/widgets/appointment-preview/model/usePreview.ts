@@ -13,6 +13,7 @@ import {
   useClientVisitCountQuery,
 } from '@/entities/appointment';
 import { useClientQuery } from '@/entities/client';
+import { useSaleByAppointmentQuery } from '@/entities/sale';
 import {
   parseStoredSchedule,
   useMasterProfileQuery,
@@ -29,6 +30,9 @@ export function usePreview(appointmentId: string) {
 
   const appointment = useAppointmentQuery(appointmentId);
   const client = useClientQuery(appointment.data?.client_id);
+  const sale = useSaleByAppointmentQuery(
+    appointment.data?.status === 'completed' ? appointmentId : undefined,
+  );
   const services = useServicesQuery(userId);
   const visits = useClientVisitCountQuery(userId, appointment.data?.client_id);
   const profile = useMasterProfileQuery(userId);
@@ -69,6 +73,7 @@ export function usePreview(appointmentId: string) {
     currency: settings.data?.currency ?? 'EUR',
     timeFormat: (settings.data?.time_format === 12 ? 12 : 24) as 12 | 24,
     client: client.data ?? null,
+    sale: sale.data ?? null,
     visitCount: visits.data ?? null,
     data: derived,
   };

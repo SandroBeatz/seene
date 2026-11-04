@@ -4,7 +4,6 @@ import {
   directions,
   groupServices,
   parseAmount,
-  resolveVisit,
   totalsOf,
   type PickableService,
 } from './services';
@@ -104,15 +103,6 @@ describe('totals and overrides', () => {
 
   it('sums the selected services', () => {
     expect(totals).toEqual({ listDuration: 120, listPrice: 3100 });
-  });
-
-  it('keeps the price list when nothing was typed', () => {
-    expect(resolveVisit(totals, null, null)).toEqual({ duration: 120, price: null });
-  });
-
-  it('stores a typed price, and null when it equals the list', () => {
-    expect(resolveVisit(totals, '90', '2 500')).toEqual({ duration: 90, price: 2500 });
-    expect(resolveVisit(totals, null, '3 100')).toEqual({ duration: 120, price: null });
   });
 
   it('parses typed amounts', () => {

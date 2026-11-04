@@ -89,9 +89,9 @@ describe('PREVIEW_ACTIONS', () => {
       timer: false,
     });
     expect(PREVIEW_ACTIONS.completed).toEqual({
-      start: 'book_again',
-      primary: null,
-      end: 'edit',
+      start: null,
+      primary: 'book_again',
+      end: null,
       timer: false,
     });
   });

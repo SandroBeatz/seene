@@ -1102,12 +1102,7 @@
     "count_one": "{{count}} prestation",
     "count_few": "{{count}} prestations",
     "count_many": "{{count}} prestations",
-    "count_other": "{{count}} prestations",
-    "asListed": "Comme dans la grille",
-    "canChange": "Modifiable pour ce rendez-vous",
-    "minutes": "min",
-    "durationA11y": "Durée de ce rendez-vous, minutes",
-    "priceA11y": "Prix de ce rendez-vous, {{currency}}"
+    "count_other": "{{count}} prestations"
   },
   "reschedule": {
     "title": "Déplacer",
@@ -1124,27 +1119,23 @@
   "checkout": {
     "title": "Terminer la visite",
     "amountA11y": "Montant à payer, {{currency}}",
-    "planned": "Prévu {{amount}} ·",
-    "restore": "Rétablir",
+    "planned": "Prévu {{amount}}",
     "canChange": "Montant du rendez-vous, modifiable",
     "method": "Moyen de paiement",
     "methods": {
       "cash": "Espèces",
       "card": "Carte",
       "transfer": "Virement",
-      "qr": "Paiement QR"
+      "qr": "QR"
     },
-    "time": "Heure de la visite",
-    "asPlanned": "Comme prévu",
+    "asPlanned": "Heure de la visite, comme prévu",
     "plannedTime": "Prévu {{range}}",
     "change": "Modifier",
     "done": "OK",
     "start": "Début",
     "end": "Fin",
-    "timeNote": "Si la visite a fini plus tôt ou plus tard, corrigez l'heure : votre planning et vos stats resteront justes.",
     "submit": "Terminer · {{amount}}",
-    "tip": "Pourboire",
-    "tipA11y": "Pourboire, {{currency}}"
+    "toPay": "À payer"
   },
   "months": [
     "Janvier",
@@ -1357,8 +1348,7 @@
       "avgCheck": "Panier moyen",
       "noShows": "Absences",
       "newClients": "Nouveaux clients",
-      "load": "Occupation",
-      "tips": "Pourboires"
+      "load": "Occupation"
     },
     "incomeExpenses": "Revenus et dépenses",
     "allOperations": "Toutes les opérations",
@@ -1412,7 +1402,6 @@
         "in": "Revenus",
         "out": "Dépenses"
       },
-      "tip": "pourboire {{amount}}",
       "empty": "Aucune opération sur cette période"
     },
     "periodClients": {
@@ -1928,5 +1917,14 @@
     "period": "du {{from}} au {{to}}",
     "visits_one": "{{count}} rendez-vous",
     "visits_other": "{{count}} rendez-vous"
+  },
+  "visitDetails": {
+    "title": "Durée et montant",
+    "titleFinished": "Durée et paiement",
+    "duration": "Durée",
+    "endsAt": "Se termine à {{time}}",
+    "amount": "Montant",
+    "listPrice": "Prix affiché {{amount}}",
+    "payment": "Paiement"
   }
 }

@@ -28,6 +28,7 @@ export {
 export { useAppointmentToast, type AppointmentToastData } from './model/useAppointmentToast';
 export { useVisitSavedToast } from './model/useVisitSavedToast';
 export { NoteEditor } from './ui/NoteEditor';
+export { VisitDetailsSheet } from './ui/VisitDetailsSheet';
 export { SendToClientSheet, type SendToClientSheetProps } from './ui/SendToClientSheet';
 export { ServicesEditor, type ServicesEditorProps } from './ui/ServicesEditor';
 export { CheckoutEditor, type CheckoutEditorProps } from './ui/CheckoutEditor';

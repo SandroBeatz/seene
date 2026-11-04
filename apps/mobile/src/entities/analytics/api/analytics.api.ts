@@ -40,7 +40,7 @@ export async function listSaleOperations(
     const { data, error } = await supabase
       .from('sale')
       .select(
-        'id, appointment_id, amount, tip, paid_at, client:client(first_name, last_name, avatar_color), payment_type:payment_type(kind, name), items:sale_item(name_snapshot)',
+        'id, appointment_id, amount, paid_at, client:client(first_name, last_name, avatar_color), payment_type:payment_type(kind, name), items:sale_item(name_snapshot)',
       )
       .eq('user_id', userId)
       .gte('paid_at', from)
