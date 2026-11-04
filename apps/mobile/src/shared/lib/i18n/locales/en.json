@@ -1599,10 +1599,6 @@
       "days_many": "{{count}} days",
       "days_other": "{{count}} days",
       "warnTitle": "Warn clients",
-      "warnListHint": "WhatsApp opens one chat at a time: message a client, then come back for the next.",
-      "warnMessageA11y": "Message {{name}}",
-      "warnMessage": "Hi {{name}}! You have a booking on {{when}}, but I'm not working then. Shall we move your visit?",
-      "warnEmpty": "No bookings on these days",
       "clientFallback": "Client"
     },
     "payments": {
@@ -1683,6 +1679,10 @@
         "reschedule": {
           "title": "Reschedule",
           "when": "When a booking is moved"
+        },
+        "day_off": {
+          "title": "Moved due to time off",
+          "when": "When time off falls on bookings"
         }
       },
       "variables": {
@@ -1693,7 +1693,8 @@
         "address": "Address",
         "master": "Professional",
         "booking_link": "Booking link",
-        "online_link": "Online booking link"
+        "online_link": "Online booking link",
+        "off_period": "Time away"
       }
     },
     "products": {
@@ -1898,6 +1899,27 @@
     "categoryDeleted": "Category deleted",
     "paymentDeleted": "Payment method deleted",
     "photoDeleted": "Photo deleted",
-    "coverDeleted": "Cover deleted"
+    "coverDeleted": "Cover deleted",
+    "dayOffVisits_one": "{{count}} booking on these days",
+    "dayOffVisits_other": "{{count}} bookings on these days",
+    "writeClients_one": "Message {{count}} client",
+    "writeClients_other": "Message {{count}} clients"
+  },
+  "sendToClient": {
+    "send": "Send in WhatsApp",
+    "sendHint": "WhatsApp opens with the text ready",
+    "template": "Template",
+    "message": "Message text",
+    "messageTo": "Message to {{name}}",
+    "editHint": "You can edit it before sending",
+    "reset": "Restore template",
+    "sent": "Sent",
+    "sendShort": "Send",
+    "sendAgain": "Send again",
+    "oneByOne": "WhatsApp opens for each client separately. After sending, come back to Seene and the next client will be open.",
+    "progress": "Sent {{done}} of {{count}}",
+    "period": "from {{from}} to {{to}}",
+    "visits_one": "{{count}} booking",
+    "visits_other": "{{count}} bookings"
   }
 }

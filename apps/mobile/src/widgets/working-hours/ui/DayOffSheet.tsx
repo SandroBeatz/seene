@@ -46,6 +46,9 @@ import {
 } from '../lib/day-off';
 import { isAffectedVisit } from '../lib/visits';
 
+const parseDay = (key: string) => Number(key.slice(8, 10));
+const parseMonth = (key: string) => Number(key.slice(5, 7)) - 1;
+
 export function DayOffSheet() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const ctx = useTimeContext();
@@ -79,15 +82,44 @@ function DayOffForm({ block, ctx }: { block?: TimeBlock; ctx: TimeContext }) {
   const warn = affected.length > 0 && (warnChoice ?? true);
 
   const saved = () => {
-    if (warn && record) {
-      router.replace({
-        pathname: '/hours/warn',
-        params: { from: record.start_at, to: record.end_at },
-      });
-    } else {
-      showToast({ title: t(block ? 'toasts.saved' : `toasts.${draft.kind}Added`) });
-      router.back();
-    }
+    const first = draft.start;
+    const last = draft.end || draft.start;
+    const months = t('monthsGenitive', { returnObjects: true }) as string[];
+    const range = rangeLabel(first, last, months);
+    const count = affected.length;
+    const forms = pluralCategory(count, locale);
+    showToast({
+      title: t(block ? 'toasts.saved' : `toasts.${draft.kind}Added`),
+      summary: warn ? `${range} · ${t(`toasts.dayOffVisits_${forms}`, { count })}` : range,
+      cta:
+        warn && record
+          ? {
+              label: t(`toasts.writeClients_${forms}`, { count }),
+              icon: 'whatsapp',
+              onPress: () =>
+                router.push({
+                  pathname: '/hours/warn',
+                  params: {
+                    from: record.start_at,
+                    to: record.end_at,
+                    label: `${t(
+                      draft.kind === 'vacation'
+                        ? 'menuHome.hours.kindVacation'
+                        : 'menuHome.hours.kindDayOff',
+                    )} ${range}`,
+                    period:
+                      first === last
+                        ? `${parseDay(first)} ${months[parseMonth(first)]}`
+                        : t('sendToClient.period', {
+                            from: parseDay(first),
+                            to: `${parseDay(last)} ${months[parseMonth(last)]}`,
+                          }),
+                  },
+                }),
+            }
+          : undefined,
+    });
+    router.back();
   };
   const save = () => {
     if (!record) return;

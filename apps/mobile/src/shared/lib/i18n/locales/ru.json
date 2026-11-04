@@ -1621,10 +1621,6 @@
       "days_many": "{{count}} дней",
       "days_other": "{{count}} дня",
       "warnTitle": "Предупредить клиентов",
-      "warnListHint": "WhatsApp открывает один чат за раз: напишите клиенту и вернитесь к следующему.",
-      "warnMessageA11y": "Написать: {{name}}",
-      "warnMessage": "Здравствуйте, {{name}}! У вас запись {{when}}, но в это время я не работаю. Давайте перенесём визит?",
-      "warnEmpty": "Записей на эти дни нет",
       "clientFallback": "Клиент"
     },
     "payments": {
@@ -1705,6 +1701,10 @@
         "reschedule": {
           "title": "Перенос записи",
           "when": "Когда запись перенесена"
+        },
+        "day_off": {
+          "title": "Перенос из-за отпуска",
+          "when": "Когда отпуск или выходной попал на записи"
         }
       },
       "variables": {
@@ -1715,7 +1715,8 @@
         "address": "Адрес",
         "master": "Мастер",
         "booking_link": "Ссылка на запись",
-        "online_link": "Ссылка на онлайн-запись"
+        "online_link": "Ссылка на онлайн-запись",
+        "off_period": "Период отсутствия"
       }
     },
     "products": {
@@ -1920,6 +1921,33 @@
     "categoryDeleted": "Категория удалена",
     "paymentDeleted": "Способ оплаты удалён",
     "photoDeleted": "Фото удалено",
-    "coverDeleted": "Обложка удалена"
+    "coverDeleted": "Обложка удалена",
+    "dayOffVisits_one": "на эти дни {{count}} запись",
+    "dayOffVisits_few": "на эти дни {{count}} записи",
+    "dayOffVisits_many": "на эти дни {{count}} записей",
+    "dayOffVisits_other": "на эти дни {{count}} записи",
+    "writeClients_one": "Написать {{count}} клиенту",
+    "writeClients_few": "Написать {{count}} клиентам",
+    "writeClients_many": "Написать {{count}} клиентам",
+    "writeClients_other": "Написать {{count}} клиентам"
+  },
+  "sendToClient": {
+    "send": "Отправить в WhatsApp",
+    "sendHint": "Откроется WhatsApp с готовым текстом",
+    "template": "Шаблон",
+    "message": "Текст сообщения",
+    "messageTo": "Сообщение: {{name}}",
+    "editHint": "Можно поправить перед отправкой",
+    "reset": "Вернуть шаблон",
+    "sent": "Отправлено",
+    "sendShort": "Отправить",
+    "sendAgain": "Отправить ещё раз",
+    "oneByOne": "WhatsApp открывается для каждого клиента отдельно. После отправки вернитесь в Seene, следующий клиент уже будет открыт.",
+    "progress": "Отправлено {{done}} из {{count}}",
+    "period": "с {{from}} по {{to}}",
+    "visits_one": "{{count}} запись",
+    "visits_few": "{{count}} записи",
+    "visits_many": "{{count}} записей",
+    "visits_other": "{{count}} записи"
   }
 }

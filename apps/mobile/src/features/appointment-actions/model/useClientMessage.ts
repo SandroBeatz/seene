@@ -33,6 +33,8 @@ export interface ClientMessageInput {
   clientName: string;
   clientLanguage: string | null | undefined;
   visit?: { id: string; startAt: string; services: string; price: string };
+  /** "с 22 по 29 декабря": when a day off is the reason. */
+  offPeriod?: string;
 }
 
 export function useClientMessage() {
@@ -84,6 +86,7 @@ export function useClientMessage() {
       master: profile?.first_name,
       booking_link: bookingLink,
       online_link: profile ? sitePath(SITE_URL, language, profile.username) : null,
+      off_period: input.offPeriod ?? null,
     });
   };
 }

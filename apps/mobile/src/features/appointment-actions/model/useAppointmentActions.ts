@@ -100,7 +100,8 @@ export function useAppointmentActions(bound: AppointmentActionContext | null = n
             title: t('actions.cancelledToast'),
             summary: `${ctx.clientFirstName} · ${ctx.when}`,
             phone: ctx.phone || null,
-            message: () => templateMessage(ctx, 'cancellation'),
+            appointmentId: ctx.appointment.id,
+            kind: 'cancellation',
           }),
       },
     );
