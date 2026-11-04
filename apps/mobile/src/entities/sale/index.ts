@@ -4,9 +4,11 @@ export {
   useSaleByAppointmentQuery,
   useSaleAmountsRangeQuery,
   useCompleteAppointmentMutation,
+  useUpdateFinishedVisitMutation,
 } from './model/queries';
 export type {
   CompleteAppointmentDto,
+  UpdateFinishedVisitDto,
   SaleAmount,
   Sale,
   SaleItem,

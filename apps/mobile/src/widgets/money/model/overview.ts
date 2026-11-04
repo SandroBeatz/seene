@@ -88,7 +88,6 @@ export interface MetricDeltas {
   newClients: Delta;
   /** In percentage points; null without working hours in either period. */
   load: Delta | null;
-  tips: Delta;
 }
 
 export function metricDeltas(now: PeriodMetrics, before: PeriodMetrics): MetricDeltas {
@@ -105,7 +104,6 @@ export function metricDeltas(now: PeriodMetrics, before: PeriodMetrics): MetricD
       now.load_pct !== null && before.load_pct !== null
         ? deltaOf(now.load_pct, before.load_pct)
         : null,
-    tips: deltaOf(now.tips, before.tips),
   };
 }
 

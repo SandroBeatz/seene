@@ -1108,12 +1108,7 @@
     "count_one": "{{count}} услуга",
     "count_few": "{{count}} услуги",
     "count_many": "{{count}} услуг",
-    "count_other": "{{count}} услуги",
-    "asListed": "Как в прайсе",
-    "canChange": "Можно поменять для этой записи",
-    "minutes": "мин",
-    "durationA11y": "Длительность этой записи, минут",
-    "priceA11y": "Цена этой записи, {{currency}}"
+    "count_other": "{{count}} услуги"
   },
   "reschedule": {
     "title": "Перенести",
@@ -1130,27 +1125,23 @@
   "checkout": {
     "title": "Завершить визит",
     "amountA11y": "Сумма к оплате, {{currency}}",
-    "planned": "По записи {{amount}} ·",
-    "restore": "Вернуть",
+    "planned": "По записи {{amount}}",
     "canChange": "Сумма из записи, можно поменять",
     "method": "Способ оплаты",
     "methods": {
       "cash": "Наличные",
       "card": "Карта",
       "transfer": "Перевод",
-      "qr": "QR-оплата"
+      "qr": "QR"
     },
-    "time": "Время визита",
-    "asPlanned": "Как в записи",
+    "asPlanned": "Время визита, как в записи",
     "plannedTime": "По записи {{range}}",
     "change": "Изменить",
     "done": "Готово",
     "start": "Начало",
     "end": "Конец",
-    "timeNote": "Если визит закончился раньше или позже, поправьте время: так расписание и статистика будут честными.",
     "submit": "Завершить · {{amount}}",
-    "tip": "Чаевые",
-    "tipA11y": "Чаевые, {{currency}}"
+    "toPay": "К оплате"
   },
   "months": [
     "Январь",
@@ -1365,8 +1356,7 @@
       "avgCheck": "Средний чек",
       "noShows": "Неявок",
       "newClients": "Новых клиентов",
-      "load": "Загрузка",
-      "tips": "Чаевые"
+      "load": "Загрузка"
     },
     "incomeExpenses": "Доходы и расходы",
     "allOperations": "Все операции",
@@ -1426,7 +1416,6 @@
         "in": "Доходы",
         "out": "Расходы"
       },
-      "tip": "чаевые {{amount}}",
       "empty": "За этот период операций нет"
     },
     "periodClients": {
@@ -1949,5 +1938,14 @@
     "visits_few": "{{count}} записи",
     "visits_many": "{{count}} записей",
     "visits_other": "{{count}} записи"
+  },
+  "visitDetails": {
+    "title": "Время и сумма",
+    "titleFinished": "Время и оплата",
+    "duration": "Длительность",
+    "endsAt": "Закончится в {{time}}",
+    "amount": "Сумма",
+    "listPrice": "По прайсу {{amount}}",
+    "payment": "Оплата"
   }
 }

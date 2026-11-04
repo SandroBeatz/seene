@@ -151,6 +151,81 @@ function QuickButton({
   );
 }
 
+// ---- Services and chips ----
+
+/** The services in a line and the time, amount and payment as chips (design AppEventDone). */
+export function VisitCard({
+  names,
+  count,
+  duration,
+  amount,
+  method,
+  onServices,
+  onChip,
+}: {
+  names: string;
+  count: string;
+  duration: string;
+  amount: string;
+  /** Only a finished visit has one. */
+  method: string | null;
+  onServices: () => void;
+  onChip: () => void;
+}) {
+  return (
+    <View style={styles.card}>
+      <Pressable
+        accessibilityRole="button"
+        onPress={onServices}
+        style={({ pressed }) => [styles.servicesRow, pressed && styles.pressed]}>
+        <Icon name="services" size="md" color="content.tertiary" />
+        <View style={styles.grow}>
+          <Text variant="bodyStrong" numberOfLines={1}>
+            {names}
+          </Text>
+          <Text variant="footnote" color="tertiary" numberOfLines={1}>
+            {count}
+          </Text>
+        </View>
+        <Icon name="chevronRight" size="sm" color="content.disabled" />
+      </Pressable>
+      <View style={styles.chips}>
+        <Chip icon="clock" label={duration} onPress={onChip} />
+        <Chip icon="tag" label={amount} onPress={onChip} />
+        {method ? <Chip icon="check" label={method} paid onPress={onChip} /> : null}
+      </View>
+    </View>
+  );
+}
+
+function Chip({
+  icon,
+  label,
+  paid = false,
+  onPress,
+}: {
+  icon: IconName;
+  label: string;
+  paid?: boolean;
+  onPress: () => void;
+}) {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      onPress={onPress}
+      style={({ pressed }) => [styles.chip, paid && styles.chipPaid, pressed && styles.pressed]}>
+      <Icon name={icon} size={14} color={paid ? 'tone.success.fg' : 'content.tertiary'} />
+      <Text
+        variant="footnoteStrong"
+        tabularNums
+        numberOfLines={1}
+        style={paid ? styles.chipPaidText : undefined}>
+        {label}
+      </Text>
+    </Pressable>
+  );
+}
+
 // ---- Add row ----
 
 export function AddRow({
@@ -283,6 +358,33 @@ export const MENU_ICON: Record<MenuAction, IconName> = {
 };
 
 const styles = StyleSheet.create((theme) => ({
+  servicesRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.space[3],
+    paddingHorizontal: theme.space[3.5],
+    paddingTop: theme.space[3.5],
+    paddingBottom: 10,
+  },
+  chips: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    paddingHorizontal: theme.space[3.5],
+    paddingBottom: theme.space[3.5],
+  },
+  chip: {
+    height: 32,
+    paddingLeft: theme.space[2],
+    paddingRight: 10,
+    borderRadius: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    backgroundColor: theme.colors.bg.surface,
+  },
+  chipPaid: { backgroundColor: theme.colors.tone.success.bg },
+  chipPaidText: { color: theme.colors.tone.success.fg },
   pill: {
     alignSelf: 'flex-start',
     flexDirection: 'row',

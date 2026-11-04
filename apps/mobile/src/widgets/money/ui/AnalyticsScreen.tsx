@@ -15,21 +15,8 @@ import { periodDays, useMoneyOverviewQuery, type PeriodUnit } from '@/entities/a
 import { useMoneyContext } from '@/entities/master';
 import { errorMessageKey, normalizeError } from '@/shared/api/errors';
 import { pluralCategory } from '@/shared/lib/i18n';
-import {
-  ErrorState,
-  Icon,
-  ScreenScrollView,
-  Skeleton,
-  Text,
-  useRefreshControl,
-} from '@/shared/ui';
-import {
-  barsOf,
-  metricDeltas,
-  percentChange,
-  type Delta,
-  type DeltaTone,
-} from '../model/overview';
+import { ErrorState, Icon, ScreenScrollView, Skeleton, Text, useRefreshControl } from '@/shared/ui';
+import { barsOf, metricDeltas, percentChange, type Delta, type DeltaTone } from '../model/overview';
 import { usePeriod, usePeriodName } from '../model/usePeriod';
 import { AnalyticsSections } from './AnalyticsSections';
 import { RevenueBars } from './charts';
@@ -194,13 +181,6 @@ export function AnalyticsScreen() {
                 value: c.load_pct === null ? '—' : `${c.load_pct}%`,
                 delta: deltaText(deltas.load, 'percent'),
                 tone: deltas.load?.tone ?? 'neutral',
-              },
-              {
-                key: 'tips',
-                value: ctx.number(c.tips),
-                currency: true,
-                delta: deltaText(deltas.tips, 'money'),
-                tone: deltas.tips.tone,
               },
             ];
 

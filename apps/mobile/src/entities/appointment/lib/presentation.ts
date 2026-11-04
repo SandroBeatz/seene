@@ -116,7 +116,7 @@ export const PREVIEW_ACTIONS: Record<AppointmentPhase, PreviewActions> = {
   upcoming: bar('reschedule', 'complete', 'cancel'),
   ongoing: bar(null, 'complete', null, true),
   awaiting: bar('no_show', 'complete', 'reschedule'),
-  completed: bar('book_again', null, 'edit'),
+  completed: bar(null, 'book_again', null),
   cancelled: bar('book_again', null, null),
   no_show: bar('book_again', null, null),
   expired: bar('book_again', null, null),

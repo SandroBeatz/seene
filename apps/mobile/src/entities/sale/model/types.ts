@@ -11,6 +11,7 @@ export type SaleItem = Database['public']['Tables']['sale_item']['Row'];
 export interface PaymentTypeRef {
   name: string;
   color: string;
+  kind: string;
 }
 
 export interface Sale extends SaleRow {
@@ -24,14 +25,21 @@ export type SaleAmount = Pick<SaleRow, 'appointment_id' | 'amount'>;
 /** Checkout input for `complete_appointment`. */
 export interface CompleteAppointmentDto {
   appointmentId: string;
-  /** All the client paid, tip included. */
   amount: number;
-  /** The part of `amount` left as a tip. */
-  tip: number;
   paymentTypeId: string | null;
   items: { service_id: string; name: string; price: number }[];
   /** Actual start (UTC ISO), or null to keep the planned one. */
   startAt: string | null;
   /** Actual length in minutes, or null to keep the planned one. */
   duration: number | null;
+}
+
+/** `update_finished_visit`: what is left out stays as it is. */
+export interface UpdateFinishedVisitDto {
+  appointmentId: string;
+  amount?: number | null;
+  paymentTypeId?: string | null;
+  duration?: number | null;
+  serviceIds?: string[] | null;
+  items?: { service_id: string; name: string; price: number }[] | null;
 }

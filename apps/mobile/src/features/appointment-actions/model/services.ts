@@ -141,16 +141,6 @@ export function parseAmount(input: string): number | null {
  * What to save: the typed duration/price, or the list values when left as is. A price
  * equal to the list price is stored as `null` (follows the price list).
  */
-export function resolveVisit(
-  totals: VisitTotals,
-  durationInput: string | null,
-  priceInput: string | null,
-): { duration: number; price: number | null } {
-  const duration = durationInput === null ? totals.listDuration : (parseAmount(durationInput) ?? 0);
-  const typed = priceInput === null ? null : parseAmount(priceInput);
-  return { duration, price: typed === null || typed === totals.listPrice ? null : typed };
-}
-
 /** Duration bounds the database accepts for a visit. */
 export const VISIT_MIN_MINUTES = 5;
 export const VISIT_MAX_MINUTES = 1440;

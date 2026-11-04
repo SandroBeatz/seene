@@ -4,8 +4,9 @@ import {
   completeAppointment,
   getSaleByAppointment,
   listSaleAmountsByRange,
+  updateFinishedVisit,
 } from '../api/sale.api';
-import type { CompleteAppointmentDto } from './types';
+import type { CompleteAppointmentDto, UpdateFinishedVisitDto } from './types';
 
 export const saleKeys = {
   byAppointment: (appointmentId: string) => ['sale-by-appointment', appointmentId] as const,
@@ -44,6 +45,19 @@ export function useCompleteAppointmentMutation(userId: string) {
       qc.invalidateQueries({ queryKey: saleKeys.byAppointment(dto.appointmentId) });
       // What the visit used came off the stock (product entity's `productKeys.all`).
       qc.invalidateQueries({ queryKey: ['products', userId] });
+    },
+  });
+}
+
+/** Invalidates the sale caches; the caller also refreshes the appointment caches (another entity). */
+export function useUpdateFinishedVisitMutation(userId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (dto: UpdateFinishedVisitDto) => updateFinishedVisit(dto),
+    onSettled: (_data, _error, dto) => {
+      qc.invalidateQueries({ queryKey: saleKeys.all(userId) });
+      qc.invalidateQueries({ queryKey: saleKeys.byAppointment(dto.appointmentId) });
+      qc.invalidateQueries({ queryKey: ['appointment', dto.appointmentId] });
     },
   });
 }

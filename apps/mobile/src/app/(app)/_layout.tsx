@@ -147,7 +147,14 @@ export default function AppLayout() {
           options={{ ...sheet, sheetAllowedDetents: [0.62] }}
         />
         <Stack.Screen name="(modals)/appointment/[appointmentId]/client" options={sheet} />
-        <Stack.Screen name="(modals)/appointment/[appointmentId]/checkout" options={sheet} />
+        <Stack.Screen
+          name="(modals)/appointment/[appointmentId]/checkout"
+          options={{ ...sheet, sheetAllowedDetents: [0.78, 1] }}
+        />
+        <Stack.Screen
+          name="(modals)/appointment/[appointmentId]/details"
+          options={{ ...sheet, sheetAllowedDetents: [0.7, 1] }}
+        />
         <Stack.Screen
           name="(modals)/expense/new"
           options={{ ...sheet, sheetAllowedDetents: [0.82, 1] }}

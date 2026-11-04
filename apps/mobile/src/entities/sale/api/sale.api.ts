@@ -3,9 +3,14 @@
  * the `complete_appointment` RPC (checkout). Owner-scoped by RLS.
  */
 import { supabase } from '@/shared/api/supabase';
-import type { CompleteAppointmentDto, Sale, SaleAmount } from '../model/types';
+import type {
+  CompleteAppointmentDto,
+  Sale,
+  SaleAmount,
+  UpdateFinishedVisitDto,
+} from '../model/types';
 
-const SELECT_WITH_RELATIONS = '*, payment_type:payment_type(name, color), items:sale_item(*)';
+const SELECT_WITH_RELATIONS = '*, payment_type:payment_type(name, color, kind), items:sale_item(*)';
 
 /** The single sale for a completed appointment (its `appointment_id` is UNIQUE), or null. */
 export async function getSaleByAppointment(appointmentId: string): Promise<Sale | null> {
@@ -43,7 +48,6 @@ export async function completeAppointment(dto: CompleteAppointmentDto): Promise<
   const { data, error } = await supabase.rpc('complete_appointment', {
     p_appointment_id: dto.appointmentId,
     p_amount: dto.amount,
-    p_tip: dto.tip,
     // The RPC accepts null (no method); the generated type does not say so.
     p_payment_type_id: dto.paymentTypeId as string,
     p_items: dto.items,
@@ -52,4 +56,17 @@ export async function completeAppointment(dto: CompleteAppointmentDto): Promise<
   });
   if (error) throw error;
   return data;
+}
+
+/** A finished visit edited in place: the visit and its sale together. Null fields stay as they are. */
+export async function updateFinishedVisit(dto: UpdateFinishedVisitDto): Promise<void> {
+  const { error } = await supabase.rpc('update_finished_visit', {
+    p_appointment_id: dto.appointmentId,
+    p_amount: dto.amount ?? undefined,
+    p_payment_type_id: dto.paymentTypeId ?? undefined,
+    p_duration: dto.duration ?? undefined,
+    p_service_ids: dto.serviceIds ?? undefined,
+    p_items: dto.items ?? undefined,
+  });
+  if (error) throw error;
 }

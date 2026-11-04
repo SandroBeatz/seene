@@ -1266,6 +1266,17 @@ export type Database = {
         Returns: undefined
       }
       specialization_keys: { Args: never; Returns: string[] }
+      update_finished_visit: {
+        Args: {
+          p_amount?: number
+          p_appointment_id: string
+          p_duration?: number
+          p_items?: Json
+          p_payment_type_id?: string
+          p_service_ids?: string[]
+        }
+        Returns: undefined
+      }
       update_sale_details: {
         Args: { p_amount: number; p_items: Json; p_sale_id: string }
         Returns: undefined

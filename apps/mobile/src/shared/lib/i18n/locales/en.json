@@ -1096,12 +1096,7 @@
     "count_one": "{{count}} service",
     "count_few": "{{count}} services",
     "count_many": "{{count}} services",
-    "count_other": "{{count}} services",
-    "asListed": "As in the price list",
-    "canChange": "You can change it for this appointment",
-    "minutes": "min",
-    "durationA11y": "Duration of this appointment, minutes",
-    "priceA11y": "Price of this appointment, {{currency}}"
+    "count_other": "{{count}} services"
   },
   "reschedule": {
     "title": "Reschedule",
@@ -1118,27 +1113,23 @@
   "checkout": {
     "title": "Complete visit",
     "amountA11y": "Amount to pay, {{currency}}",
-    "planned": "Booked at {{amount}} ·",
-    "restore": "Restore",
+    "planned": "As booked {{amount}}",
     "canChange": "Amount from the appointment, you can change it",
     "method": "Payment method",
     "methods": {
       "cash": "Cash",
       "card": "Card",
       "transfer": "Transfer",
-      "qr": "QR payment"
+      "qr": "QR"
     },
-    "time": "Visit time",
-    "asPlanned": "As booked",
+    "asPlanned": "Visit time, as booked",
     "plannedTime": "Booked {{range}}",
     "change": "Change",
     "done": "Done",
     "start": "Start",
     "end": "End",
-    "timeNote": "If the visit ended earlier or later, adjust the time so your schedule and stats stay accurate.",
     "submit": "Complete · {{amount}}",
-    "tip": "Tip",
-    "tipA11y": "Tip, {{currency}}"
+    "toPay": "To pay"
   },
   "months": [
     "January",
@@ -1351,8 +1342,7 @@
       "avgCheck": "Average check",
       "noShows": "No-shows",
       "newClients": "New clients",
-      "load": "Load",
-      "tips": "Tips"
+      "load": "Load"
     },
     "incomeExpenses": "Income and expenses",
     "allOperations": "All transactions",
@@ -1406,7 +1396,6 @@
         "in": "Income",
         "out": "Expenses"
       },
-      "tip": "tip {{amount}}",
       "empty": "No transactions in this period"
     },
     "periodClients": {
@@ -1921,5 +1910,14 @@
     "period": "from {{from}} to {{to}}",
     "visits_one": "{{count}} booking",
     "visits_other": "{{count}} bookings"
+  },
+  "visitDetails": {
+    "title": "Time and amount",
+    "titleFinished": "Time and payment",
+    "duration": "Duration",
+    "endsAt": "Ends at {{time}}",
+    "amount": "Amount",
+    "listPrice": "List price {{amount}}",
+    "payment": "Payment"
   }
 }

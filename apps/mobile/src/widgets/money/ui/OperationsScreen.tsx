@@ -13,7 +13,15 @@ import { useSaleOperationsQuery, type SaleOperation } from '@/entities/analytics
 import { useExpensesRangeQuery, type Expense } from '@/entities/expense';
 import { useMoneyContext } from '@/entities/master';
 import { errorMessageKey, normalizeError } from '@/shared/api/errors';
-import { Avatar, Chip, EmptyState, ErrorState, SkeletonList, Text, useRefreshControl } from '@/shared/ui';
+import {
+  Avatar,
+  Chip,
+  EmptyState,
+  ErrorState,
+  SkeletonList,
+  Text,
+  useRefreshControl,
+} from '@/shared/ui';
 import { useDayTitle, usePeriod, usePeriodName } from '../model/usePeriod';
 import { ExpenseRow } from './ExpenseRow';
 
@@ -25,9 +33,7 @@ type Operation =
   | { type: 'expense'; day: string; sort: string; expense: Expense };
 
 type DayItem = { type: 'day'; key: string; day: string; net: number };
-type Item =
-  | DayItem
-  | { type: 'row'; key: string; operation: Operation; divided: boolean };
+type Item = DayItem | { type: 'row'; key: string; operation: Operation; divided: boolean };
 
 export function OperationsScreen() {
   const { t } = useTranslation();
@@ -38,7 +44,9 @@ export function OperationsScreen() {
   const sales = useSaleOperationsQuery(userId, range.from, range.to);
   const expenses = useExpensesRangeQuery(userId, period.startKey, period.endKey);
   const [filter, setFilter] = useState<Filter>('all');
-  const refreshControl = useRefreshControl(() => Promise.all([sales.refetch(), expenses.refetch()]));
+  const refreshControl = useRefreshControl(() =>
+    Promise.all([sales.refetch(), expenses.refetch()]),
+  );
 
   const income = (sales.data ?? []).reduce((sum, s) => sum + s.amount, 0);
   const spent = (expenses.data ?? []).reduce((sum, e) => sum + e.amount, 0);
@@ -101,7 +109,12 @@ export function OperationsScreen() {
           <Text variant="caption" color="secondary">
             {t('money.income')}
           </Text>
-          <Text variant="stat" color={income > 0 ? 'success' : 'primary'} tabularNums numberOfLines={1} adjustsFontSizeToFit>
+          <Text
+            variant="stat"
+            color={income > 0 ? 'success' : 'primary'}
+            tabularNums
+            numberOfLines={1}
+            adjustsFontSizeToFit>
             {`${income > 0 ? '+' : ''}${ctx.money(income)}`}
           </Text>
         </View>
@@ -178,11 +191,7 @@ export function OperationsScreen() {
         }
         const { sale } = operation;
         const name = [sale.client?.first_name, sale.client?.last_name].filter(Boolean).join(' ');
-        const subtitle = [
-          sale.items.map((i) => i.name_snapshot).join(' + '),
-          methodLabel(sale),
-          sale.tip > 0 ? t('money.operations.tip', { amount: ctx.money(sale.tip) }) : null,
-        ]
+        const subtitle = [sale.items.map((i) => i.name_snapshot).join(' + '), methodLabel(sale)]
           .filter(Boolean)
           .join(' · ');
         return (

@@ -57,7 +57,6 @@ export interface SaleOperation {
   id: string;
   appointment_id: string;
   amount: number;
-  tip: number;
   paid_at: string;
   client: { first_name: string; last_name: string | null; avatar_color: string | null } | null;
   payment_type: { kind: string; name: string } | null;
