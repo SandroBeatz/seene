@@ -83,6 +83,11 @@
     "seo": {
       "description": "Book {name} online: {services}. Work, prices and free slots.",
       "descriptionShort": "Book {name} online. Work, prices and free slots."
+    },
+    "page": {
+      "loading": "Loading the page",
+      "loadFailed": "Could not load the page",
+      "retry": "Retry"
     }
   },
   "specializations": {

@@ -83,6 +83,11 @@
     "seo": {
       "description": "Réservez en ligne chez {name} : {services}. Réalisations, tarifs et créneaux libres.",
       "descriptionShort": "Réservez en ligne chez {name}. Réalisations, tarifs et créneaux libres."
+    },
+    "page": {
+      "loading": "Chargement de la page",
+      "loadFailed": "Impossible de charger la page",
+      "retry": "Réessayer"
     }
   },
   "specializations": {

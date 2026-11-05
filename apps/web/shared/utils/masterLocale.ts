@@ -1,5 +1,5 @@
 /**
- * Pure, framework-free helpers backing the `master-locale` route middleware.
+ * Pure, framework-free helpers backing the `master-locale` route middleware and `useMasterLocale`.
  *
  * Kept out of the middleware file so they can be unit-tested without the Nuxt
  * runtime, and — more importantly — so the loop-termination invariant

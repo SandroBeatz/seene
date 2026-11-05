@@ -69,12 +69,11 @@ async function share() {
 <template>
   <header>
     <div class="relative h-56 overflow-hidden bg-primary">
-      <img
+      <MasterPhoto
         v-if="coverUrl"
         :src="coverUrl"
         :alt="$ts('master.poster.alt', { name: fullName })"
-        class="size-full object-cover"
-        fetchpriority="high"
+        priority
       />
       <div class="absolute inset-0 bg-linear-to-b from-transparent from-45% to-(--ui-bg)" />
       <UButton

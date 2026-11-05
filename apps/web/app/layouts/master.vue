@@ -11,7 +11,10 @@ const uiLocale = computed(() => ({ en, fr, ru })[getLocale() as 'en' | 'fr' | 'r
 
 <template>
   <UApp :locale="uiLocale">
-    <UMain class="min-h-dvh bg-default text-default">
+    <!-- The fade softens the switch from the default theme to the master's. -->
+    <UMain
+      class="min-h-dvh bg-default text-default transition-colors duration-300 motion-reduce:transition-none"
+    >
       <slot />
     </UMain>
   </UApp>
