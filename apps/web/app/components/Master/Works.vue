@@ -73,12 +73,10 @@ watch(
           :aria-label="$ts('master.works.open', { index: i + 1 })"
           @click="openViewer(i)"
         >
-          <img
+          <MasterPhoto
             :src="photo.photo_url"
             :alt="photo.alt"
-            loading="lazy"
-            decoding="async"
-            class="size-full object-cover transition-transform duration-400 ease-out hover:scale-105"
+            img-class="transition-[opacity,scale] hover:scale-105"
           />
         </button>
       </li>

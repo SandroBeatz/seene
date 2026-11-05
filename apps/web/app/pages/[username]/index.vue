@@ -6,7 +6,8 @@ const route = useRoute()
 
 const username = computed(() => route.params.username as string)
 
-const { data, status, error } = useMasterData(username)
+const { data, error, refetch, isLoading } = useMasterData(username)
+const localeReady = useMasterLocale(username, data)
 
 // The master's theme and color for the layout.
 watch(
@@ -57,20 +58,10 @@ function book(serviceId?: string) {
 
 <template>
   <div class="mx-auto flex min-h-dvh max-w-lg flex-col">
-    <template v-if="status === 'pending' && !data">
-      <USkeleton class="h-56 rounded-none" />
-      <div class="-mt-13 flex flex-col gap-3 px-5">
-        <USkeleton class="size-23 rounded-full border-4 border-(--ui-bg)" />
-        <USkeleton class="h-7 w-48" />
-        <USkeleton class="h-4 w-32" />
-        <USkeleton class="mt-2 h-16 w-full rounded-[16px]" />
-      </div>
-    </template>
+    <template v-if="data && localeReady">
+      <MasterHero :data="data" class="seene-reveal" />
 
-    <template v-else-if="data">
-      <MasterHero :data="data" />
-
-      <div class="flex flex-col gap-3.5 px-5 pt-3.5">
+      <div class="seene-reveal flex flex-col gap-3.5 px-5 pt-3.5 [animation-delay:60ms]">
         <MasterAbout :data="data" />
         <MasterContacts :profile="data.profile" />
       </div>
@@ -78,13 +69,13 @@ function book(serviceId?: string) {
       <MasterWorks
         :items="data.portfolio"
         :services="data.services"
-        class="seene-reveal px-5 pt-8"
+        class="seene-reveal px-5 pt-8 [animation-delay:120ms]"
       />
 
       <MasterServices
         :data="data"
         :booking-enabled="bookingEnabled"
-        class="seene-reveal px-5 pt-8 pb-2"
+        class="seene-reveal px-5 pt-8 pb-2 [animation-delay:180ms]"
         @book="book"
       />
 
@@ -95,5 +86,23 @@ function book(serviceId?: string) {
 
       <BookingSheet :data="data" :booking-enabled="bookingEnabled" />
     </template>
+
+    <!-- A failed load on a bad connection: the skeleton must not spin forever. -->
+    <div
+      v-else-if="error && !isLoading"
+      class="seene-reveal flex flex-1 flex-col items-center justify-center gap-4 px-5 text-center"
+      role="alert"
+    >
+      <p class="text-[15px] text-muted">{{ $ts('master.page.loadFailed') }}</p>
+      <UButton
+        color="neutral"
+        variant="outline"
+        :label="$ts('master.page.retry')"
+        class="rounded-full px-4 font-semibold"
+        @click="refetch()"
+      />
+    </div>
+
+    <MasterSkeleton v-else />
   </div>
 </template>

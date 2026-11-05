@@ -185,6 +185,15 @@ export default defineEventHandler(async (event) => {
       .maybeSingle()
   ])
 
+  // Public data, so the CDN answers most visits without a trip to the database. A
+  // change on the page shows within 30 s; a page nobody opened refreshes on the
+  // visit after next. Booking re-checks everything on the server.
+  setResponseHeader(
+    event,
+    'Cache-Control',
+    'public, max-age=0, s-maxage=30, stale-while-revalidate=300'
+  )
+
   const paymentTypes: MasterPaymentType[] = (paymentRows ?? []).map((row) => ({
     id: row.id,
     kind: PAYMENT_KINDS.has(row.kind as PaymentTypeKind) ? (row.kind as PaymentTypeKind) : 'custom',

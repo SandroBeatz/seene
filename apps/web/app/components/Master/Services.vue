@@ -74,14 +74,9 @@ function priceLabel(service: MasterService) {
           :key="service.id"
           class="flex items-center gap-3.5 border-b border-default py-3"
         >
-          <img
-            v-if="service.photo_url"
-            :src="service.photo_url"
-            alt=""
-            loading="lazy"
-            decoding="async"
-            class="size-14 shrink-0 rounded-[14px] object-cover"
-          />
+          <span v-if="service.photo_url" class="size-14 shrink-0 overflow-hidden rounded-[14px]">
+            <MasterPhoto :src="service.photo_url" alt="" />
+          </span>
           <span
             v-else
             class="flex size-14 shrink-0 items-center justify-center rounded-[14px] bg-(--seene-accent-soft) font-display text-lg font-bold text-(--seene-accent-text)"
