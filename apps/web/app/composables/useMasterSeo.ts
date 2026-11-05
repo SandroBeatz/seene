@@ -50,6 +50,10 @@ export function useMasterSeo(data: Ref<MasterPageData | undefined>) {
     ogTitle: () => meta.value?.title,
     ogDescription: () => meta.value?.description,
     ogImage: () => meta.value?.image,
+    // The site's image sizes (app.vue) are wrong for a master's own photo, and a
+    // preview may crop or drop an image by them. Its real size isn't known here.
+    ogImageWidth: () => (meta.value?.image ? null : undefined),
+    ogImageHeight: () => (meta.value?.image ? null : undefined),
     ogType: 'profile',
     ogUrl: url.href,
     twitterCard: () => (data.value && masterCoverUrl(data.value) ? 'summary_large_image' : 'summary')
