@@ -1,3 +1,5 @@
+import { createHmac } from 'node:crypto'
+
 /**
  * One-time code rules from the master page spec. Pure, so it is unit-tested
  * without a server (test/otpPolicy.test.ts).
@@ -55,4 +57,13 @@ export function otpSendBlock(input: {
 function secondsUntilFree(sortedTimes: number[], limit: number, now: number) {
   const oldest = sortedTimes[sortedTimes.length - limit]!
   return Math.max(1, Math.ceil((oldest + 60 * 60_000 - now) / 1000))
+}
+
+/**
+ * What `otp_codes.code_hash` stores instead of the code. Keyed with the server
+ * secret: a plain hash of 4 digits is reversed by trying all 10 000 of them.
+ * The phone is mixed in so one code never hashes the same for two phones.
+ */
+export function hashOtpCode(phone: string, code: string, secret: string) {
+  return createHmac('sha256', secret).update(`${phone}:${code}`).digest('hex')
 }

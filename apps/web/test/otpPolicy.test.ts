@@ -3,6 +3,7 @@ import {
   OTP_MAX_PER_IP_HOUR,
   OTP_MAX_PER_PHONE_HOUR,
   OTP_RESEND_SECONDS,
+  hashOtpCode,
   otpSendBlock
 } from '../server/utils/otpPolicy'
 
@@ -42,5 +43,26 @@ describe('otpSendBlock', () => {
       reason: 'ip_limit',
       retryAfterSeconds: 300
     })
+  })
+})
+
+describe('hashOtpCode', () => {
+  it('never stores the code itself', () => {
+    const hash = hashOtpCode('996555123456', '1234', 'secret')
+    expect(hash).toMatch(/^[0-9a-f]{64}$/)
+    expect(hash).not.toContain('1234')
+  })
+
+  it('is stable for the same phone, code and secret', () => {
+    expect(hashOtpCode('996555123456', '1234', 'secret')).toBe(
+      hashOtpCode('996555123456', '1234', 'secret')
+    )
+  })
+
+  it('differs by phone, code and secret', () => {
+    const base = hashOtpCode('996555123456', '1234', 'secret')
+    expect(hashOtpCode('996555123457', '1234', 'secret')).not.toBe(base)
+    expect(hashOtpCode('996555123456', '1235', 'secret')).not.toBe(base)
+    expect(hashOtpCode('996555123456', '1234', 'other')).not.toBe(base)
   })
 })

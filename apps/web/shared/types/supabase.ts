@@ -629,7 +629,7 @@ export type Database = {
         Row: {
           attempts: number
           channel: string | null
-          code: string
+          code_hash: string
           created_at: string
           expires_at: string
           id: string
@@ -640,7 +640,7 @@ export type Database = {
         Insert: {
           attempts?: number
           channel?: string | null
-          code: string
+          code_hash: string
           created_at?: string
           expires_at: string
           id?: string
@@ -651,7 +651,7 @@ export type Database = {
         Update: {
           attempts?: number
           channel?: string | null
-          code?: string
+          code_hash?: string
           created_at?: string
           expires_at?: string
           id?: string
@@ -1371,6 +1371,10 @@ export type Database = {
       update_sale_details: {
         Args: { p_amount: number; p_items: Json; p_sale_id: string }
         Returns: undefined
+      }
+      verify_otp_code: {
+        Args: { p_code_hash: string; p_max_attempts: number; p_phone: string }
+        Returns: string
       }
     }
     Enums: {

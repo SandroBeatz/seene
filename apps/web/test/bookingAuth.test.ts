@@ -27,8 +27,31 @@ function fakeSupabase() {
   return {
     from(table: string) {
       return new Query(table)
+    },
+    rpc(name: string, args: Row) {
+      if (name !== 'verify_otp_code') throw new Error(`Unexpected rpc ${name}`)
+      return Promise.resolve({ data: verifyOtpCode(args), error: null })
     }
   }
+}
+
+/** Mirrors public.verify_otp_code (migration 20261114120000_otp_code_hash). */
+function verifyOtpCode({ p_phone, p_code_hash, p_max_attempts }: Row) {
+  const now = new Date().toISOString()
+  const otp = (db.otp_codes ?? [])
+    .filter((row) => row.phone === p_phone && !row.used && String(row.expires_at) > now)
+    .sort((a, b) => (String(a.created_at) < String(b.created_at) ? 1 : -1))[0]
+
+  if (!otp) return 'expired_code'
+  const attempts = otp.attempts as number
+  const max = p_max_attempts as number
+  if (attempts >= max) return 'too_many_attempts'
+  otp.attempts = attempts + 1
+  if (otp.code_hash === p_code_hash) {
+    otp.used = true
+    return 'ok'
+  }
+  return attempts + 1 >= max ? 'too_many_attempts' : 'invalid_code'
 }
 
 class Query {
@@ -180,7 +203,7 @@ function issueCode(phone: string, code = '1234') {
   db.otp_codes!.push({
     id: crypto.randomUUID(),
     phone,
-    code,
+    code_hash: otpPolicy.hashOtpCode(phone, code, 'test-secret'),
     used: false,
     attempts: 0,
     created_at: new Date().toISOString(),
