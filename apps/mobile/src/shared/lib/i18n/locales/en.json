@@ -1973,6 +1973,33 @@
     "emptyTitle": "No new notifications",
     "emptyText": "Online bookings, cancellations, moves and reminders will appear here",
     "deleted": "Notification deleted",
-    "cleared": "Read notifications cleared"
+    "cleared": "Read notifications cleared",
+    "configure": "Set up notifications",
+    "settings": {
+      "title": "Notification settings",
+      "booking_new": "New online booking",
+      "booking_cancelled": "Booking cancelled",
+      "booking_moved": "Client moved a booking",
+      "visit_unconfirmed": "Client didn’t confirm",
+      "visit_unconfirmedHint": "3 hours before the visit",
+      "broadcast_due": "Time to message clients",
+      "broadcast_dueHint": "Every day at 19:00",
+      "birthday": "Client’s birthday",
+      "birthdayHint": "The day before",
+      "day_summary": "Daily summary",
+      "day_summaryHint": "Every day at 21:00",
+      "week_summary": "Weekly summary",
+      "week_summaryHint": "On Sunday evening",
+      "low_stock": "Supplies running low",
+      "seene_news": "News and tips",
+      "seene_newsHint": "At most once a month",
+      "mode": "Mode",
+      "quiet_hours": "Quiet hours",
+      "quietHint": "No sound from {{from}} to {{to}}",
+      "quiet_from": "From",
+      "quiet_to": "To",
+      "badge": "Badge on the app icon",
+      "note": "Notifications reach only you. Messages to clients are set up under “Reminders”."
+    }
   }
 }

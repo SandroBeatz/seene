@@ -1980,6 +1980,33 @@
     "emptyTitle": "Aucune nouvelle notification",
     "emptyText": "Réservations en ligne, annulations, déplacements et rappels apparaîtront ici",
     "deleted": "Notification supprimée",
-    "cleared": "Notifications lues effacées"
+    "cleared": "Notifications lues effacées",
+    "configure": "Régler les notifications",
+    "settings": {
+      "title": "Réglages des notifications",
+      "booking_new": "Nouvelle réservation en ligne",
+      "booking_cancelled": "Réservation annulée",
+      "booking_moved": "Le client a déplacé sa réservation",
+      "visit_unconfirmed": "Le client n’a pas confirmé",
+      "visit_unconfirmedHint": "3 heures avant la visite",
+      "broadcast_due": "Moment d’écrire aux clients",
+      "broadcast_dueHint": "Chaque jour à 19:00",
+      "birthday": "Anniversaire du client",
+      "birthdayHint": "La veille",
+      "day_summary": "Bilan du jour",
+      "day_summaryHint": "Chaque jour à 21:00",
+      "week_summary": "Bilan de la semaine",
+      "week_summaryHint": "Le dimanche soir",
+      "low_stock": "Fournitures bientôt épuisées",
+      "seene_news": "Actualités et conseils",
+      "seene_newsHint": "Au plus une fois par mois",
+      "mode": "Mode",
+      "quiet_hours": "Heures calmes",
+      "quietHint": "Sans son de {{from}} à {{to}}",
+      "quiet_from": "De",
+      "quiet_to": "À",
+      "badge": "Pastille sur l’icône",
+      "note": "Les notifications n’arrivent qu’à vous. Les messages aux clients se règlent dans « Rappels »."
+    }
   }
 }

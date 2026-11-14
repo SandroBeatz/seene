@@ -153,6 +153,7 @@ export type MasterSettings = Pick<
   | 'theme'
   | 'auto_complete_since'
   | 'auto_complete_payment_type_id'
+  | 'notification_prefs'
   | BookingSettingsColumn
 >;
 
@@ -162,6 +163,7 @@ export type MasterSettingsPatch = Partial<
     SettingsRow,
     | 'auto_complete_since'
     | 'auto_complete_payment_type_id'
+    | 'notification_prefs'
     | 'currency'
     | 'language'
     | 'theme'

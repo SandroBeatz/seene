@@ -453,6 +453,7 @@ export type Database = {
           id: string
           language: string
           message_language: string
+          notification_prefs: Json
           online_booking_enabled: boolean
           page_accent: string
           page_theme: string
@@ -491,6 +492,7 @@ export type Database = {
           id?: string
           language?: string
           message_language?: string
+          notification_prefs?: Json
           online_booking_enabled?: boolean
           page_accent?: string
           page_theme?: string
@@ -529,6 +531,7 @@ export type Database = {
           id?: string
           language?: string
           message_language?: string
+          notification_prefs?: Json
           online_booking_enabled?: boolean
           page_accent?: string
           page_theme?: string
