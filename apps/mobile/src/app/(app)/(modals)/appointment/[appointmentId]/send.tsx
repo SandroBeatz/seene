@@ -5,10 +5,12 @@ import { SendToClientSheet } from '@/features/appointment-actions';
 import { Screen, Skeleton } from '@/shared/ui';
 
 export default function AppointmentSendScreen() {
-  const { appointmentId, kind, event } = useLocalSearchParams<{
+  const { appointmentId, kind, event, slots } = useLocalSearchParams<{
     appointmentId: string;
     kind: MessageKind;
     event: string;
+    /** Comma-separated starts, for "Предложить другое время". */
+    slots?: string;
   }>();
   const appointment = useAppointmentQuery(appointmentId);
   if (!appointment.data) {
@@ -18,5 +20,12 @@ export default function AppointmentSendScreen() {
       </Screen>
     );
   }
-  return <SendToClientSheet appointment={appointment.data} kind={kind} event={event} />;
+  return (
+    <SendToClientSheet
+      appointment={appointment.data}
+      kind={kind}
+      event={event}
+      slots={slots ? slots.split(',') : undefined}
+    />
+  );
 }

@@ -19,6 +19,8 @@ export const DEFAULT_TEMPLATES: Record<MessageLanguage, Record<MessageKind, stri
       '{client_name}, спасибо, что пришли! Будем рады видеть вас снова.\nЗаписаться: {online_link}',
     missed:
       '{client_name}, мы не дождались вас {date_time}. Запишемся на другое время?\nСвободные окошки: {online_link}',
+    propose_time:
+      '{client_name}, здравствуйте! Могу предложить другое время для записи на {service}:\n{slots}\nНапишите, какое вам удобно.',
   },
   en: {
     confirmation:
@@ -37,6 +39,8 @@ export const DEFAULT_TEMPLATES: Record<MessageLanguage, Record<MessageKind, stri
       '{client_name}, thank you for coming! We would love to see you again.\nBook here: {online_link}',
     missed:
       '{client_name}, we missed you {date_time}. Shall we find another time?\nOpen slots: {online_link}',
+    propose_time:
+      'Hello {client_name}! I can offer another time for {service}:\n{slots}\nLet me know which one suits you.',
   },
   fr: {
     confirmation:
@@ -55,6 +59,8 @@ export const DEFAULT_TEMPLATES: Record<MessageLanguage, Record<MessageKind, stri
       '{client_name}, merci de votre visite ! Au plaisir de vous revoir.\nRéserver : {online_link}',
     missed:
       '{client_name}, nous vous avons attendu {date_time}. On trouve un autre créneau ?\nCréneaux libres : {online_link}',
+    propose_time:
+      'Bonjour {client_name} ! Je peux vous proposer un autre horaire pour {service} :\n{slots}\nDites-moi lequel vous convient.',
   },
 };
 
@@ -79,6 +85,7 @@ const NO_VISIT_VARIABLES: readonly MessageVariable[] = [
 export const variablesOf = (kind: MessageKind): readonly MessageVariable[] => {
   if (kind === 'recall') return NO_VISIT_VARIABLES;
   if (kind === 'day_off') return [...VISIT_VARIABLES, 'off_period', 'online_link'];
+  if (kind === 'propose_time') return [...VISIT_VARIABLES, 'slots', 'online_link'];
   return kind === 'thanks' || kind === 'missed' || kind === 'cancellation'
     ? [...VISIT_VARIABLES, 'online_link']
     : VISIT_VARIABLES;

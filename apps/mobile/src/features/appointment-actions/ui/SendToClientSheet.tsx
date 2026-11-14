@@ -35,9 +35,11 @@ export interface SendToClientSheetProps {
   kind: MessageKind;
   /** "Запись создана". */
   event: string;
+  /** "Предложить другое время": the starts the master picked (UTC ISO). */
+  slots?: string[];
 }
 
-export function SendToClientSheet({ appointment, kind, event }: SendToClientSheetProps) {
+export function SendToClientSheet({ appointment, kind, event, slots }: SendToClientSheetProps) {
   const { t } = useTranslation();
   const userId = useUserId() ?? '';
   const client = useClientQuery(appointment.client_id).data;
@@ -55,6 +57,7 @@ export function SendToClientSheet({ appointment, kind, event }: SendToClientShee
       kind,
       clientName: client?.first_name ?? '',
       clientLanguage: client?.language,
+      slots,
       visit: {
         id: appointment.id,
         startAt: appointment.start_at,

@@ -15,6 +15,7 @@ import {
   createBookingLink,
   messageDateTime,
   messageLanguageFor,
+  messageSlots,
   messageTemplatesOptions,
   renderTemplate,
   sitePath,
@@ -35,6 +36,8 @@ export interface ClientMessageInput {
   visit?: { id: string; startAt: string; services: string; price: string };
   /** "с 22 по 29 декабря": when a day off is the reason. */
   offPeriod?: string;
+  /** Starts offered as another time (UTC ISO). */
+  slots?: string[];
 }
 
 export function useClientMessage() {
@@ -71,15 +74,15 @@ export function useClientMessage() {
     }
 
     const { visit } = input;
+    const clock = {
+      zone: parseStoredSchedule(profile?.schedule)?.timezone ?? deviceTimeZone(),
+      timeFormat: settings?.time_format === 12 ? (12 as const) : (24 as const),
+      language,
+    };
     return renderTemplate(body, {
       client_name: input.clientName,
-      date_time: visit
-        ? messageDateTime(visit.startAt, {
-            zone: parseStoredSchedule(profile?.schedule)?.timezone ?? deviceTimeZone(),
-            timeFormat: settings?.time_format === 12 ? 12 : 24,
-            language,
-          })
-        : null,
+      date_time: visit ? messageDateTime(visit.startAt, clock) : null,
+      slots: input.slots?.length ? messageSlots(input.slots, clock) : null,
       service: visit?.services,
       price: visit?.price,
       address: profile ? addressLine(profile) : null,

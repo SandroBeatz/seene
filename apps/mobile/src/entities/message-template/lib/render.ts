@@ -81,6 +81,31 @@ export function messageDateTime(
   return `${date} ${JOIN[options.language]} ${time}`;
 }
 
+/**
+ * The slots offered for another time, a line per day in the client's language:
+ * "пн, 16 ноября: 11:00, 13:30".
+ */
+export function messageSlots(
+  utcIsos: string[],
+  options: { zone: string; timeFormat: 12 | 24; language: MessageLanguage },
+): string {
+  const days = new Map<string, DateTime[]>();
+  for (const iso of [...utcIsos].sort()) {
+    const local = DateTime.fromISO(iso, { zone: 'utc' })
+      .setZone(options.zone)
+      .setLocale(options.language);
+    const key = local.toISODate()!;
+    days.set(key, [...(days.get(key) ?? []), local]);
+  }
+  return [...days.values()]
+    .map((times) => {
+      const day = times[0]!.toFormat(options.language === 'en' ? 'ccc, MMMM d' : 'ccc d MMMM');
+      const list = times.map((t) => t.toFormat(options.timeFormat === 12 ? 'h:mm a' : 'HH:mm'));
+      return `${day}: ${list.join(', ')}`;
+    })
+    .join('\n');
+}
+
 /** The master's fixed language, else the client's, else the master's own. */
 export function messageLanguageFor(
   setting: string | null | undefined,

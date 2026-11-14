@@ -6,6 +6,7 @@ export {
   labelToken,
   messageDateTime,
   messageLanguageFor,
+  messageSlots,
   renderTemplate,
   sitePath,
   templateSegments,
