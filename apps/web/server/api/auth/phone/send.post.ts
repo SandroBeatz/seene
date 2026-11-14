@@ -52,7 +52,7 @@ export default defineEventHandler(async (event) => {
 
   const { error } = await supabase.from('otp_codes').insert({
     phone,
-    code,
+    code_hash: hashOtpCode(phone, code, getTokenSecret()),
     channel,
     ip_hash: ipHash,
     expires_at: expiresAt,

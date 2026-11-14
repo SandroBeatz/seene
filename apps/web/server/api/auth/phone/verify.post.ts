@@ -10,68 +10,22 @@ export default defineEventHandler(async (event) => {
   const supabase = useServiceSupabase()
   const masterUserId = await getMasterUserId(supabase, body.username)
 
-  const { data: otp, error: otpError } = await supabase
-    .from('otp_codes')
-    .select('id, code, attempts')
-    .eq('phone', phone)
-    .eq('used', false)
-    .gt('expires_at', new Date().toISOString())
-    .order('created_at', { ascending: false })
-    .limit(1)
-    .maybeSingle()
+  // Locks the code row, compares and counts the try in one call, so parallel
+  // requests can't beat OTP_MAX_ATTEMPTS and only one of them can use the code.
+  const { data: result, error: otpError } = await supabase.rpc('verify_otp_code', {
+    p_phone: phone,
+    p_code_hash: hashOtpCode(phone, code, getTokenSecret()),
+    p_max_attempts: OTP_MAX_ATTEMPTS
+  })
 
   if (otpError) {
-    throw createError({ statusCode: 500, message: 'Failed to load OTP code' })
+    throw createError({ statusCode: 500, message: 'Failed to check OTP code' })
   }
 
-  if (!otp) {
+  if (result !== 'ok') {
     return {
       success: false,
-      error: 'expired_code'
-    }
-  }
-
-  if (otp.attempts >= OTP_MAX_ATTEMPTS) {
-    return {
-      success: false,
-      error: 'too_many_attempts'
-    }
-  }
-
-  if (otp.code !== code) {
-    const attempts = otp.attempts + 1
-    const { error: updateError } = await supabase
-      .from('otp_codes')
-      .update({ attempts })
-      .eq('id', otp.id)
-
-    if (updateError) {
-      throw createError({ statusCode: 500, message: 'Failed to update OTP attempts' })
-    }
-
-    return {
-      success: false,
-      error: attempts >= OTP_MAX_ATTEMPTS ? 'too_many_attempts' : 'invalid_code'
-    }
-  }
-
-  // Only the request that flips `used` wins: a parallel request with the same
-  // code finds nothing to update and fails.
-  const { data: claimed, error: updateError } = await supabase
-    .from('otp_codes')
-    .update({ used: true })
-    .eq('id', otp.id)
-    .eq('used', false)
-    .select('id')
-
-  if (updateError) {
-    throw createError({ statusCode: 500, message: 'Failed to mark OTP code as used' })
-  }
-
-  if (!claimed?.length) {
-    return {
-      success: false,
-      error: 'expired_code'
+      error: result
     }
   }
 
