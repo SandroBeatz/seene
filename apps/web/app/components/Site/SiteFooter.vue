@@ -5,6 +5,7 @@
  * "Comparisons" column wait for their pages.
  */
 const { $ts, $localePath, $switchLocalePath, getLocale } = useI18n()
+const { rememberLocale } = useSiteLocale()
 
 const homePath = computed(() => $localePath('/'))
 
@@ -102,6 +103,7 @@ const languages = ['ru', 'en', 'fr'] as const
             :aria-current="getLocale() === code ? 'true' : undefined"
             class="rounded-full px-2.5 py-1.5 uppercase"
             :class="getLocale() === code ? 'bg-white text-ink' : 'text-[#A6A6AD] hover:text-white'"
+            @click="rememberLocale(code)"
           >
             {{ code }}
           </NuxtLink>
