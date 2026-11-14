@@ -94,6 +94,8 @@ export function menuRows(
     label: t(`today.attention.menu.${key}`),
     icon: MENU_ICON[key],
     danger,
+    // The step the card is waiting for: drawn apart so it's the one to tap.
+    primary: key === 'confirm',
   });
   return [...groups.regular.map(item(false)), ...groups.danger.map(item(true))];
 }

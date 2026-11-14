@@ -17,6 +17,8 @@ export interface ContextMenuItem {
   label: string;
   icon: IconName;
   danger?: boolean;
+  /** The action the card is waiting for: its own filled group, first. */
+  primary?: boolean;
 }
 
 /** Where the pressed card sits on screen (`measureInWindow`). */
@@ -58,12 +60,13 @@ export function ContextMenu({
   const screen = useWindowDimensions();
   const [height, setHeight] = useState(0);
 
-  const regular = items.filter((i) => !i.danger);
+  const primary = items.filter((i) => i.primary && !i.danger);
+  const regular = items.filter((i) => !i.danger && !i.primary);
   const danger = items.filter((i) => i.danger);
 
   const group = (list: ContextMenuItem[]) =>
     list.length ? (
-      <View style={styles.group}>
+      <View style={[styles.group, list[0]?.primary && styles.primaryGroup]}>
         {list.map((item, index) => (
           <Pressable
             key={item.key}
@@ -75,18 +78,28 @@ export function ContextMenu({
             style={({ pressed }) => [
               styles.item,
               index > 0 && styles.divider,
-              pressed && styles.pressed,
+              pressed && (item.primary ? styles.primaryPressed : styles.pressed),
             ]}>
             <Text
-              variant="bodyMedium"
+              variant={item.primary ? 'bodyStrong' : 'bodyMedium'}
               numberOfLines={1}
-              style={[styles.grow, item.danger && styles.dangerText]}>
+              style={[
+                styles.grow,
+                item.danger && styles.dangerText,
+                item.primary && styles.primaryText,
+              ]}>
               {item.label}
             </Text>
             <Icon
               name={item.icon}
               size="base"
-              color={item.danger ? 'tone.danger.fg' : 'content.secondary'}
+              color={
+                item.danger
+                  ? 'tone.danger.fg'
+                  : item.primary
+                    ? 'accent.onAccent'
+                    : 'content.secondary'
+              }
             />
           </Pressable>
         ))}
@@ -137,6 +150,7 @@ export function ContextMenu({
             </View>
           ) : null}
           <View accessibilityRole="menu" style={styles.menu}>
+            {group(primary)}
             {group(regular)}
             {group(danger)}
           </View>
@@ -177,4 +191,7 @@ const styles = StyleSheet.create((theme) => ({
   pressed: { backgroundColor: theme.colors.interaction.onSurfacePressed },
   grow: { flex: 1, minWidth: 0, gap: 3 },
   dangerText: { color: theme.colors.tone.danger.fg },
+  primaryGroup: { backgroundColor: theme.colors.accent.default },
+  primaryPressed: { backgroundColor: theme.colors.accent.pressed },
+  primaryText: { color: theme.colors.accent.onAccent },
 }));
