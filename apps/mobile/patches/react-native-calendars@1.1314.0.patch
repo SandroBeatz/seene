@@ -1,3 +1,24 @@
+diff --git a/src/infinite-list/index.js b/src/infinite-list/index.js
+index 93dcd521d9c2f4179a157c8def4cc6fe4b733285..94f4976bc72d3b2420e5a1c8c25e6382d6d89a31 100644
+--- a/src/infinite-list/index.js
++++ b/src/infinite-list/index.js
+@@ -7,7 +7,7 @@ import constants from '../commons/constants';
+ import { useCombinedRefs } from '../hooks';
+ const dataProviderMaker = (items) => new DataProvider((item1, item2) => item1 !== item2).cloneWithRows(items);
+ const InfiniteList = (props, ref) => {
+-    const { isHorizontal, renderItem, data, reloadPages = noop, pageWidth = constants.screenWidth, pageHeight = constants.screenHeight, onPageChange, onReachEdge, onReachNearEdge, onReachNearEdgeThreshold, initialPageIndex = 0, initialOffset, extendedState, scrollViewProps, positionIndex = 0, disableScrollOnDataChange, onEndReachedThreshold, onVisibleIndicesChanged, layoutProvider, onScroll, onEndReached, renderFooter } = props;
++    const { isHorizontal, renderItem, data, reloadPages = noop, pageWidth = constants.screenWidth, pageHeight = constants.screenHeight, onPageChange, onReachEdge, onReachNearEdge, onReachNearEdgeThreshold, initialPageIndex = 0, initialOffset, extendedState, scrollViewProps, positionIndex = 0, disableScrollOnDataChange, onEndReachedThreshold, onVisibleIndicesChanged, layoutProvider, onScroll, onEndReached, renderFooter, renderAheadOffset } = props;
+     const dataProvider = useMemo(() => {
+         return dataProviderMaker(data);
+     }, [data]);
+@@ -95,6 +95,6 @@ const InfiniteList = (props, ref) => {
+     }, [pageHeight]);
+     return (<RecyclerListView 
+     // @ts-expect-error
+-    ref={listRef} isHorizontal={isHorizontal} rowRenderer={renderItem} dataProvider={dataProvider} layoutProvider={layoutProvider ?? _layoutProvider.current} extendedState={extendedState} initialRenderIndex={initialOffset ? undefined : initialPageIndex} initialOffset={initialOffset} renderAheadOffset={5 * pageWidth} onScroll={_onScroll} style={style} scrollViewProps={scrollViewPropsMemo} onEndReached={onEndReached} onEndReachedThreshold={onEndReachedThreshold} onVisibleIndicesChanged={onVisibleIndicesChanged} renderFooter={renderFooter}/>);
++    ref={listRef} isHorizontal={isHorizontal} rowRenderer={renderItem} dataProvider={dataProvider} layoutProvider={layoutProvider ?? _layoutProvider.current} extendedState={extendedState} initialRenderIndex={initialOffset ? undefined : initialPageIndex} initialOffset={initialOffset} renderAheadOffset={renderAheadOffset ?? 5 * pageWidth} onScroll={_onScroll} style={style} scrollViewProps={scrollViewPropsMemo} onEndReached={onEndReached} onEndReachedThreshold={onEndReachedThreshold} onVisibleIndicesChanged={onVisibleIndicesChanged} renderFooter={renderFooter}/>);
+ };
+ export default forwardRef(InfiniteList);
 diff --git a/src/timeline/NowIndicator.js b/src/timeline/NowIndicator.js
 index 9d8218898df0aee11cde112af953755acb86413d..2974c5e7931e2bb262aac1fd25966bb358a4a50f 100644
 --- a/src/timeline/NowIndicator.js
@@ -104,6 +125,26 @@ index 38f76e599e28775716ca6fc23668a5359e465438..6d01f3514ba1e1cf1ca260cedceff2b3
            </React.Fragment>);
          })}
        {times(numberOfDays, (index) => <View key={index} style={[styles.verticalLine, { right: (index + 1) * width / numberOfDays }]}/>)}
+diff --git a/src/timeline-list/index.js b/src/timeline-list/index.js
+index 18814e23562f4262a51e7ac744d38ecff9812254..27738a3d94917574edb9458c8ed3e256d7b54a30 100644
+--- a/src/timeline-list/index.js
++++ b/src/timeline-list/index.js
+@@ -88,9 +88,11 @@ const TimelineList = (props) => {
+           {/* NOTE: Keeping this for easy debugging */}
+           {/* <Text style={{position: 'absolute'}}>{item}</Text>*/}
+         </>);
+-    }, [events, timelineOffset, showNowIndicator, numberOfDays]);
+-    return (<InfiniteList isHorizontal ref={listRef} data={pages} renderItem={renderPage} onPageChange={onPageChange} onReachNearEdge={onReachNearEdge} onReachNearEdgeThreshold={NEAR_EDGE_THRESHOLD} onScroll={onScroll} extendedState={{ todayEvents: events[date], pages }} initialOffset={initialOffset} scrollViewProps={{
+-            onMomentumScrollEnd
+-        }}/>);
++    }, [events, timelineOffset, showNowIndicator, numberOfDays, renderItem, timelineProps]);
++    // A new object re-renders every mounted page: build it only when a page can look different.
++    const extendedState = useMemo(() => ({ todayEvents: events[date], renderPage, pages }), [events, date, renderPage, pages]);
++    const scrollViewProps = useMemo(() => ({ onMomentumScrollEnd }), [onMomentumScrollEnd]);
++    // One page each side instead of five: each mounted page is a full Timeline, and every date change re-renders them all.
++    return (<InfiniteList isHorizontal ref={listRef} data={pages} renderItem={renderPage} onPageChange={onPageChange} onReachNearEdge={onReachNearEdge} onReachNearEdgeThreshold={NEAR_EDGE_THRESHOLD} onScroll={onScroll} extendedState={extendedState} initialOffset={initialOffset} renderAheadOffset={constants.screenWidth} scrollViewProps={scrollViewProps}/>);
+ };
+ export default TimelineList;
 diff --git a/src/timeline-list/useTimelinePages.js b/src/timeline-list/useTimelinePages.js
 index 000a15673446218dbd5f056f2e7eda4088ab9365..e74b0da106154b75e21b86b9a4dd6182223cae68 100644
 --- a/src/timeline-list/useTimelinePages.js
