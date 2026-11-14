@@ -5,6 +5,7 @@ import {
   fromEditable,
   messageDateTime,
   messageLanguageFor,
+  messageSlots,
   renderTemplate,
   sitePath,
   templateSegments,
@@ -105,5 +106,24 @@ describe('standard texts', () => {
         for (const name of used(language)) expect(variablesOf(kind)).toContain(name);
       }
     }
+  });
+});
+
+describe('messageSlots', () => {
+  const clock = { zone: 'Asia/Bishkek', timeFormat: 24 as const, language: 'ru' as const };
+
+  it('puts a line per day, days and times in order, in the master zone', () => {
+    // Bishkek is UTC+6.
+    const text = messageSlots(
+      ['2026-11-17T08:00:00.000Z', '2026-11-16T07:30:00.000Z', '2026-11-16T05:00:00.000Z'],
+      clock,
+    );
+    expect(text).toBe('пн 16 ноября: 11:00, 13:30\nвт 17 ноября: 14:00');
+  });
+
+  it('follows the language and the 12-hour clock', () => {
+    expect(
+      messageSlots(['2026-11-16T05:00:00.000Z'], { ...clock, language: 'en', timeFormat: 12 }),
+    ).toBe('Mon, November 16: 11:00 AM');
   });
 });

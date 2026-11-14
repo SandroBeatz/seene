@@ -1072,9 +1072,7 @@
         "action": "Annuler le rendez-vous"
       }
     },
-    "messages": {
-      "proposeTime": "Bonjour {{name}} ! Malheureusement, {{when}} ne sera pas possible. Trouvons un autre horaire ?"
-    },
+    "messages": {},
     "sendToClient": "Envoyer au client",
     "cancelledToast": "Rendez-vous annulé"
   },
@@ -1695,6 +1693,10 @@
         "missed": {
           "title": "Rendez-vous manqué",
           "when": "Quand un client n’est pas venu"
+        },
+        "propose_time": {
+          "title": "Proposer un autre horaire",
+          "when": "Quand vous proposez des créneaux libres"
         }
       },
       "variables": {
@@ -1706,7 +1708,8 @@
         "master": "Professionnel",
         "booking_link": "Lien du rendez-vous",
         "online_link": "Lien de réservation",
-        "off_period": "Période d’absence"
+        "off_period": "Période d’absence",
+        "slots": "Créneaux libres"
       }
     },
     "products": {
@@ -1923,7 +1926,6 @@
     "template": "Modèle",
     "message": "Texte du message",
     "messageTo": "Message pour {{name}}",
-    "editHint": "Vous pouvez le modifier avant l’envoi",
     "reset": "Rétablir le modèle",
     "sent": "Envoyé",
     "sendShort": "Envoyer",
@@ -1932,7 +1934,9 @@
     "progress": "Envoyé {{done}} sur {{count}}",
     "period": "du {{from}} au {{to}}",
     "visits_one": "{{count}} rendez-vous",
-    "visits_other": "{{count}} rendez-vous"
+    "visits_other": "{{count}} rendez-vous",
+    "copy": "Copier",
+    "copied": "Texte copié"
   },
   "visitDetails": {
     "title": "Durée et montant",
@@ -2008,5 +2012,15 @@
       "badge": "Pastille sur l’icône",
       "note": "Les notifications n’arrivent qu’à vous. Les messages aux clients se règlent dans « Rappels »."
     }
+  },
+  "propose": {
+    "title": "Proposer un autre horaire",
+    "hint": "Cochez les créneaux libres des 2 prochaines semaines à proposer. Le client choisit sur WhatsApp.",
+    "empty": "Aucun créneau libre sur les {{count}} prochains jours",
+    "pick": "Choisissez des créneaux",
+    "submit": "Envoyer · {{count}}",
+    "event": "Autre horaire",
+    "chooseTitle": "Déplacer le rendez-vous",
+    "moveNow": "Déplacer"
   }
 }

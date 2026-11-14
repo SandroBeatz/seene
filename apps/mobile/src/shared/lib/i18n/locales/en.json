@@ -1066,9 +1066,7 @@
         "action": "Cancel appointment"
       }
     },
-    "messages": {
-      "proposeTime": "Hi {{name}}! Unfortunately {{when}} won’t work. Shall we find another time?"
-    },
+    "messages": {},
     "sendToClient": "Send to client",
     "cancelledToast": "Booking cancelled"
   },
@@ -1688,6 +1686,10 @@
         "missed": {
           "title": "You did not come",
           "when": "When a client did not come"
+        },
+        "propose_time": {
+          "title": "Offer another time",
+          "when": "When you offer the client open slots"
         }
       },
       "variables": {
@@ -1699,7 +1701,8 @@
         "master": "Professional",
         "booking_link": "Booking link",
         "online_link": "Online booking link",
-        "off_period": "Time away"
+        "off_period": "Time away",
+        "slots": "Open slots"
       }
     },
     "products": {
@@ -1916,7 +1919,6 @@
     "template": "Template",
     "message": "Message text",
     "messageTo": "Message to {{name}}",
-    "editHint": "You can edit it before sending",
     "reset": "Restore template",
     "sent": "Sent",
     "sendShort": "Send",
@@ -1925,7 +1927,9 @@
     "progress": "Sent {{done}} of {{count}}",
     "period": "from {{from}} to {{to}}",
     "visits_one": "{{count}} booking",
-    "visits_other": "{{count}} bookings"
+    "visits_other": "{{count}} bookings",
+    "copy": "Copy",
+    "copied": "Text copied"
   },
   "visitDetails": {
     "title": "Time and amount",
@@ -2001,5 +2005,15 @@
       "badge": "Badge on the app icon",
       "note": "Notifications reach only you. Messages to clients are set up under “Reminders”."
     }
+  },
+  "propose": {
+    "title": "Offer another time",
+    "hint": "Tick the open slots in the next 2 weeks you can offer. The client picks one in WhatsApp.",
+    "empty": "No open slots in the next {{count}} days",
+    "pick": "Pick slots",
+    "submit": "Send · {{count}}",
+    "event": "Another time",
+    "chooseTitle": "Move booking",
+    "moveNow": "Move"
   }
 }

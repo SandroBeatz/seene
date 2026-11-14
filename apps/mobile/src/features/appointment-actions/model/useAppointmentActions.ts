@@ -126,6 +126,10 @@ export function useAppointmentActions(bound: AppointmentActionContext | null = n
     });
   };
 
+  /** Pick free slots, then the send sheet with them. */
+  const proposeTime = (appointmentId: string) =>
+    router.push({ pathname: '/appointment/[appointmentId]/propose', params: { appointmentId } });
+
   function runFor(ctx: AppointmentActionContext, action: AppointmentActionKey) {
     const id = ctx.appointment.id;
     switch (action) {
@@ -174,10 +178,19 @@ export function useAppointmentActions(bound: AppointmentActionContext | null = n
           params: { appointmentId: id },
         });
       case 'reschedule':
-        return router.push({
-          pathname: '/appointment/[appointmentId]/reschedule',
-          params: { appointmentId: id },
-        });
+        // Offer the client a few times, or move the visit now.
+        return Alert.alert(t('propose.chooseTitle'), undefined, [
+          { text: t('propose.title'), onPress: () => proposeTime(id) },
+          {
+            text: t('propose.moveNow'),
+            onPress: () =>
+              router.push({
+                pathname: '/appointment/[appointmentId]/reschedule',
+                params: { appointmentId: id },
+              }),
+          },
+          { text: t('common.cancel'), style: 'cancel' },
+        ]);
       case 'edit':
         return router.push({
           pathname: '/appointment/[appointmentId]/services',
@@ -201,10 +214,8 @@ export function useAppointmentActions(bound: AppointmentActionContext | null = n
       case 'remind':
         return sendTemplate(ctx, 'reminder');
       case 'propose_time':
-        return openWhatsApp(
-          ctx.phone,
-          t('actions.messages.proposeTime', { name: ctx.clientFirstName, when: ctx.when }),
-        );
+        if (!ctx.phone) return showErrorToast(t('actions.noPhone'));
+        return proposeTime(id);
       case 'open_client':
         return router.push({
           pathname: '/clients/[clientId]',

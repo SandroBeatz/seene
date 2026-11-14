@@ -81,6 +81,43 @@ export function messageDateTime(
   return `${date} ${JOIN[options.language]} ${time}`;
 }
 
+/** Short weekdays, Monday first: Hermes' Intl gives luxon no weekday names ("null"). */
+const WEEKDAYS: Record<MessageLanguage, string[]> = {
+  ru: ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс'],
+  en: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+  fr: ['lun.', 'mar.', 'mer.', 'jeu.', 'ven.', 'sam.', 'dim.'],
+};
+
+/**
+ * The slots offered for another time, a line per day in the client's language:
+ * "пн, 16 ноября: 11:00, 13:30".
+ */
+export function messageSlots(
+  utcIsos: string[],
+  options: { zone: string; timeFormat: 12 | 24; language: MessageLanguage },
+): string {
+  const days = new Map<string, DateTime[]>();
+  for (const iso of [...utcIsos].sort()) {
+    const local = DateTime.fromISO(iso, { zone: 'utc' })
+      .setZone(options.zone)
+      .setLocale(options.language);
+    const key = local.toISODate()!;
+    days.set(key, [...(days.get(key) ?? []), local]);
+  }
+  return [...days.values()]
+    .map((times) => {
+      const first = times[0]!;
+      const weekday = WEEKDAYS[options.language][first.weekday - 1];
+      const day =
+        options.language === 'en'
+          ? `${weekday}, ${first.toFormat('MMMM d')}`
+          : `${weekday} ${first.toFormat('d MMMM')}`;
+      const list = times.map((t) => t.toFormat(options.timeFormat === 12 ? 'h:mm a' : 'HH:mm'));
+      return `${day}: ${list.join(', ')}`;
+    })
+    .join('\n');
+}
+
 /** The master's fixed language, else the client's, else the master's own. */
 export function messageLanguageFor(
   setting: string | null | undefined,

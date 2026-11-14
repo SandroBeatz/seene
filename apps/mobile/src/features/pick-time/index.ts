@@ -8,3 +8,4 @@ export {
 export { MonthSheet, type MonthSheetProps } from './ui/MonthSheet';
 export { OwnTimeSheet, type OwnTimeSheetProps } from './ui/OwnTimeSheet';
 export { useTimeContext, type TimeContext } from './model/useTimeContext';
+export { useDayGrid, type DayGridInput } from './model/useDayGrid';

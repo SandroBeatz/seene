@@ -147,6 +147,7 @@ export default function AppLayout() {
         />
         <Stack.Screen name="(modals)/appointment/[appointmentId]/services" options={sheet} />
         <Stack.Screen name="(modals)/appointment/[appointmentId]/reschedule" options={sheet} />
+        <Stack.Screen name="(modals)/appointment/[appointmentId]/propose" options={sheet} />
         <Stack.Screen
           name="(modals)/appointment/[appointmentId]/reschedule-month"
           options={{ ...sheet, sheetAllowedDetents: [0.85] }}

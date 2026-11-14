@@ -11,6 +11,7 @@ export const MESSAGE_KINDS = [
   'day_off',
   'thanks',
   'missed',
+  'propose_time',
 ] as const;
 export type MessageKind = (typeof MESSAGE_KINDS)[number];
 
@@ -27,6 +28,7 @@ export const MESSAGE_VARIABLES = [
   'booking_link',
   'online_link',
   'off_period',
+  'slots',
 ] as const;
 export type MessageVariable = (typeof MESSAGE_VARIABLES)[number];
 
