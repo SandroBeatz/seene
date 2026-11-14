@@ -81,6 +81,13 @@ export function messageDateTime(
   return `${date} ${JOIN[options.language]} ${time}`;
 }
 
+/** Short weekdays, Monday first: Hermes' Intl gives luxon no weekday names ("null"). */
+const WEEKDAYS: Record<MessageLanguage, string[]> = {
+  ru: ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс'],
+  en: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+  fr: ['lun.', 'mar.', 'mer.', 'jeu.', 'ven.', 'sam.', 'dim.'],
+};
+
 /**
  * The slots offered for another time, a line per day in the client's language:
  * "пн, 16 ноября: 11:00, 13:30".
@@ -99,7 +106,12 @@ export function messageSlots(
   }
   return [...days.values()]
     .map((times) => {
-      const day = times[0]!.toFormat(options.language === 'en' ? 'ccc, MMMM d' : 'ccc d MMMM');
+      const first = times[0]!;
+      const weekday = WEEKDAYS[options.language][first.weekday - 1];
+      const day =
+        options.language === 'en'
+          ? `${weekday}, ${first.toFormat('MMMM d')}`
+          : `${weekday} ${first.toFormat('d MMMM')}`;
       const list = times.map((t) => t.toFormat(options.timeFormat === 12 ? 'h:mm a' : 'HH:mm'));
       return `${day}: ${list.join(', ')}`;
     })
