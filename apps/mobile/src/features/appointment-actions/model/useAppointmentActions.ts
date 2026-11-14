@@ -18,7 +18,6 @@ import {
 } from '@/entities/appointment';
 import { useUserId } from '@/entities/session';
 import { phoneCallUrl, whatsappUrl } from '@/shared/lib/phone';
-import { useAppointmentToast } from './useAppointmentToast';
 import { useClientMessage } from './useClientMessage';
 import { showFailedToast, showErrorToast, showToast, removeWithUndo } from '@/shared/ui';
 
@@ -51,7 +50,6 @@ export function useAppointmentActions(bound: AppointmentActionContext | null = n
   const update = useUpdateAppointmentMutation(userId);
   const remove = useDeleteAppointmentMutation(userId);
   const composeMessage = useClientMessage();
-  const showVisitToast = useAppointmentToast();
 
   const failed = () => showFailedToast();
   const openFailed = () => showErrorToast(t('actions.failedTitle'));
@@ -78,6 +76,24 @@ export function useAppointmentActions(bound: AppointmentActionContext | null = n
       },
     });
 
+  /**
+   * After the master confirms or cancels: the send sheet with that template, so the client
+   * hears about it. Without a number there's nothing to send: just the toast.
+   */
+  const tellClient = (
+    ctx: AppointmentActionContext,
+    kind: 'confirmation' | 'cancellation',
+    event: string,
+  ) => {
+    if (!ctx.phone) {
+      return showToast({ title: event, summary: `${ctx.clientFirstName} · ${ctx.when}` });
+    }
+    router.push({
+      pathname: '/appointment/[appointmentId]/send',
+      params: { appointmentId: ctx.appointment.id, kind, event },
+    });
+  };
+
   const cancelByMaster = (ctx: AppointmentActionContext) =>
     update.mutate(
       {
@@ -88,14 +104,7 @@ export function useAppointmentActions(bound: AppointmentActionContext | null = n
       },
       {
         onError: failed,
-        onSuccess: () =>
-          showVisitToast({
-            title: t('actions.cancelledToast'),
-            summary: `${ctx.clientFirstName} · ${ctx.when}`,
-            phone: ctx.phone || null,
-            appointmentId: ctx.appointment.id,
-            kind: 'cancellation',
-          }),
+        onSuccess: () => tellClient(ctx, 'cancellation', t('actions.cancelledToast')),
       },
     );
 
@@ -125,11 +134,7 @@ export function useAppointmentActions(bound: AppointmentActionContext | null = n
           { id, status: 'confirmed' },
           {
             onError: failed,
-            onSuccess: () =>
-              showToast({
-                title: t('toasts.visitConfirmed'),
-                summary: `${ctx.clientFirstName} · ${ctx.when}`,
-              }),
+            onSuccess: () => tellClient(ctx, 'confirmation', t('toasts.visitConfirmed')),
           },
         );
       case 'decline':

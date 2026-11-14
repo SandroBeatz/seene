@@ -1,5 +1,5 @@
 /**
- * The toast after a visit is created, moved or cancelled (design "Тосты · записи"): what
+ * The toast after a visit is created or moved (design "Тосты · записи"): what
  * happened, who and when, and "Отправить клиенту", which opens the send sheet. No number to
  * write to: it only confirms.
  */
