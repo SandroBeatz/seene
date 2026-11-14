@@ -67,6 +67,10 @@ export default function AppLayout() {
           options={{ title: t('navigation.profileSettings') }}
         />
         <Stack.Screen name="settings/preferences" options={{ title: t('menuHome.settings') }} />
+        <Stack.Screen
+          name="settings/notifications"
+          options={{ title: t('notifications.settings.title') }}
+        />
         <Stack.Screen name="settings/help" options={{ title: t('menuHome.help.title') }} />
         <Stack.Screen name="notifications" options={{ title: t('today.notifications') }} />
         <Stack.Screen name="settings/tariffs" options={{ title: t('menuHome.tariffs.title') }} />

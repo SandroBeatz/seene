@@ -1,5 +1,6 @@
 /** The menu's "Настройки" and "Помощь" pages and the settings pickers. */
 export { HelpScreen } from './ui/HelpScreen';
+export { NotificationSettingsScreen } from './ui/NotificationSettingsScreen';
 export { SettingsScreen } from './ui/SettingsScreen';
 export {
   SettingsAutoPaymentSheet,

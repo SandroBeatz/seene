@@ -2,7 +2,7 @@
  * "Уведомления" (design AppNotifs, AppNotifsMore, AppNotifsEmpty): the filter chips with their
  * counts, how many are new, and the feed by day. Only the master's, clients get nothing.
  */
-import { Stack } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Pressable, View } from 'react-native';
@@ -54,6 +54,7 @@ export function NotificationsScreen() {
   const clear = useDeleteReadNotificationsMutation(userId);
   const [filter, setFilter] = useState<Filter>('all');
 
+  const openSettings = () => router.push('/settings/notifications');
   const keys = [notificationKeys.all(userId)];
   const rows = feed.data ?? [];
   const count = (which: Filter) =>
@@ -88,6 +89,9 @@ export function NotificationsScreen() {
         <Stack.Toolbar.MenuAction icon="checkmark.circle" onPress={readAll}>
           {t('notifications.readAll')}
         </Stack.Toolbar.MenuAction>
+        <Stack.Toolbar.MenuAction icon="gearshape" onPress={openSettings}>
+          {t('notifications.settings.title')}
+        </Stack.Toolbar.MenuAction>
         <Stack.Toolbar.MenuAction icon="trash" destructive onPress={clearRead}>
           {t('notifications.clearRead')}
         </Stack.Toolbar.MenuAction>
@@ -108,6 +112,7 @@ export function NotificationsScreen() {
               onPress={() =>
                 Alert.alert(t('notifications.more'), undefined, [
                   { text: t('notifications.readAll'), onPress: readAll },
+                  { text: t('notifications.settings.title'), onPress: openSettings },
                   {
                     text: t('notifications.clearRead'),
                     style: 'destructive',
@@ -142,6 +147,8 @@ export function NotificationsScreen() {
           icon="bell"
           title={t('notifications.emptyTitle')}
           description={t('notifications.emptyText')}
+          actionLabel={t('notifications.configure')}
+          onAction={openSettings}
         />
       </>
     );

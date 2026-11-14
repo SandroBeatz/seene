@@ -1,6 +1,6 @@
 /**
  * "Настройки" (design AppMenuSettings; the visits group is the owner's addition for
- * auto-complete). "Уведомления мне" joins with push notifications.
+ * auto-complete). Notifications have their own screen instead of the board's three switches.
  */
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -116,6 +116,11 @@ export function SettingsScreen() {
       </MenuGroup>
 
       <MenuGroup label={t('menuHome.screen.app')}>
+        <MenuRow
+          icon="bell"
+          title={t('notifications.settings.title')}
+          onPress={() => router.push('/settings/notifications')}
+        />
         <MenuRow
           icon="globe"
           title={t('menuHome.screen.language')}
