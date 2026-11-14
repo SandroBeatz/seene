@@ -2,6 +2,7 @@
  * "Отправить клиенту" (design AppSendConfirm, AppSendMove, AppSendCancel): the template filled
  * in with the visit, editable, and WhatsApp with that text. wa.me can't tell whether it was sent.
  */
+import * as Clipboard from 'expo-clipboard';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -72,6 +73,13 @@ export function SendToClientSheet({ appointment, kind, event, slots }: SendToCli
     // Once the visit's data is here: later on the text is the master's.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready]);
+
+  const copy = () => {
+    if (!text) return;
+    Clipboard.setStringAsync(text)
+      .then(() => showToast({ title: t('sendToClient.copied') }))
+      .catch(() => showErrorToast(t('actions.failedTitle')));
+  };
 
   const phone = client?.whatsapp ?? client?.phone ?? null;
   const send = () => {
@@ -165,9 +173,19 @@ export function SendToClientSheet({ appointment, kind, event, slots }: SendToCli
         />
       )}
       <View style={styles.below}>
-        <Text variant="caption" color="tertiary" numberOfLines={1} style={styles.grow}>
-          {t('sendToClient.editHint')}
-        </Text>
+        {/* Quiet on purpose: WhatsApp is the way; this is for another messenger. */}
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t('sendToClient.copy')}
+          hitSlop={8}
+          disabled={!text}
+          onPress={copy}
+          style={({ pressed }) => [styles.copy, pressed && styles.pressedText]}>
+          <Icon name="copy" size={13} color="content.tertiary" />
+          <Text variant="caption" color="tertiary">
+            {t('sendToClient.copy')}
+          </Text>
+        </Pressable>
         <Pressable accessibilityRole="button" hitSlop={8} onPress={() => void compose()}>
           <Text variant="caption2Strong" color="brandStrong">
             {t('sendToClient.reset')}
@@ -221,8 +239,11 @@ const styles = StyleSheet.create((theme) => ({
   below: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     gap: theme.space[2],
     paddingHorizontal: theme.space[1],
   },
+  copy: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  pressedText: { opacity: 0.5 },
   pressed: { opacity: 0.7 },
 }));

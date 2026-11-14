@@ -1919,7 +1919,6 @@
     "template": "Template",
     "message": "Message text",
     "messageTo": "Message to {{name}}",
-    "editHint": "You can edit it before sending",
     "reset": "Restore template",
     "sent": "Sent",
     "sendShort": "Send",
@@ -1928,7 +1927,9 @@
     "progress": "Sent {{done}} of {{count}}",
     "period": "from {{from}} to {{to}}",
     "visits_one": "{{count}} booking",
-    "visits_other": "{{count}} bookings"
+    "visits_other": "{{count}} bookings",
+    "copy": "Copy",
+    "copied": "Text copied"
   },
   "visitDetails": {
     "title": "Time and amount",

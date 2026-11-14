@@ -167,6 +167,13 @@ export const GLYPHS = {
   ),
   // Content
   chat: stroke('medium', <Path d="M3.5 20.5l1.3-4.2A8.5 8.5 0 1 1 8 19.4z" />),
+  copy: stroke(
+    'regular',
+    <>
+      <Rect x={8.5} y={8.5} width={12} height={12} rx={2.5} />
+      <Path d="M15.5 8.5V6A2.5 2.5 0 0 0 13 3.5H6A2.5 2.5 0 0 0 3.5 6v7A2.5 2.5 0 0 0 6 15.5h2.5" />
+    </>,
+  ),
   note: stroke(
     'regular',
     <>

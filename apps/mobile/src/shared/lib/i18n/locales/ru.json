@@ -1945,7 +1945,6 @@
     "template": "Шаблон",
     "message": "Текст сообщения",
     "messageTo": "Сообщение: {{name}}",
-    "editHint": "Можно поправить перед отправкой",
     "reset": "Вернуть шаблон",
     "sent": "Отправлено",
     "sendShort": "Отправить",
@@ -1956,7 +1955,9 @@
     "visits_one": "{{count}} запись",
     "visits_few": "{{count}} записи",
     "visits_many": "{{count}} записей",
-    "visits_other": "{{count}} записи"
+    "visits_other": "{{count}} записи",
+    "copy": "Скопировать",
+    "copied": "Текст скопирован"
   },
   "visitDetails": {
     "title": "Время и сумма",
