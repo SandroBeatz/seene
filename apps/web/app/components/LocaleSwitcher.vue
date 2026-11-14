@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { getLocale, getLocales, switchLocale } = useI18n()
+const { rememberLocale } = useSiteLocale()
 
 const localeNames: Record<string, string> = {
   en: 'English',
@@ -13,6 +14,7 @@ const items = computed(() =>
   getLocales().map((locale) => ({
     label: localeNames[locale.code] ?? locale.code,
     onSelect() {
+      rememberLocale(locale.code)
       switchLocale(locale.code)
     }
   }))
