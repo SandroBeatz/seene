@@ -22,6 +22,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
+import { haptics } from '@/shared/lib/haptics';
 import { Button, GlassSurface, Icon, Text, useReducedMotion, type IconName } from '@/shared/ui';
 
 export interface CreateMenuProps {
@@ -70,6 +71,7 @@ export function CreateMenu({ bottom }: CreateMenuProps) {
   const contentStyle = scrimStyle;
 
   const show = () => {
+    haptics.tap();
     setMounted(true);
     // A frame later, so the card mounts without glass and the material animates in.
     requestAnimationFrame(() => setOpen(true));

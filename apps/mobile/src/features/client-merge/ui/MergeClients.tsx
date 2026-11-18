@@ -6,7 +6,7 @@
 import { useMemo, useState } from 'react';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Alert, FlatList, Pressable, View } from 'react-native';
+import { FlatList, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet } from 'react-native-unistyles';
 import {
@@ -29,6 +29,7 @@ import {
   Text,
   showFailedToast,
 } from '@/shared/ui';
+import { showAlert } from '@/shared/lib/haptics';
 
 type Item =
   | { type: 'section'; key: string; label: string }
@@ -68,7 +69,7 @@ export function MergeClients({ client }: { client: Client }) {
 
   const pick = (other: Client) => {
     const mergeName = clientName(other);
-    Alert.alert(
+    showAlert(
       t('clients.merge.confirmTitle', { name: mergeName }),
       t('clients.merge.confirmText', { merge: mergeName, keep: keepName }),
       [

@@ -24,6 +24,7 @@ import { formatTime } from '@/shared/lib/formats';
 import { ongoingItem, type TimeInterval, type TimelineItem } from '@/shared/lib/scheduling';
 import { Text, type ContextMenuAnchor } from '@/shared/ui';
 import type { ScheduleVisit } from '../model/useToday';
+import { haptics } from '@/shared/lib/haptics';
 
 type Item = TimelineItem<Appointment, TimeBlock>;
 
@@ -222,9 +223,10 @@ function VisitRow({
           .filter(Boolean)
           .join(', ')}
         onPress={onPress}
-        onLongPress={() =>
-          ref.current?.measureInWindow((x, y, width) => onLongPress({ x, y, width }))
-        }
+        onLongPress={() => {
+          haptics.longPress();
+          ref.current?.measureInWindow((x, y, width) => onLongPress({ x, y, width }));
+        }}
         style={({ pressed }) => [
           eventCardStyles.event,
           { backgroundColor: swatch.fill },
@@ -275,9 +277,10 @@ function BlockRow({
         accessibilityRole="button"
         accessibilityLabel={t('today.schedule.blockA11y', { text: `${look.range}, ${look.name}` })}
         onPress={onPress}
-        onLongPress={() =>
-          ref.current?.measureInWindow((x, y, width) => onLongPress({ x, y, width }))
-        }
+        onLongPress={() => {
+          haptics.longPress();
+          ref.current?.measureInWindow((x, y, width) => onLongPress({ x, y, width }));
+        }}
         style={({ pressed }) => [
           eventCardStyles.event,
           eventCardStyles.block,

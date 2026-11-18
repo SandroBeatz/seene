@@ -1,9 +1,10 @@
 import { DateTime } from 'luxon';
 import { useTranslation } from 'react-i18next';
-import { Alert, View } from 'react-native';
+import { View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import { useReactivateAccount, useSessionStore } from '@/entities/session';
 import { Button, EmptyState, Screen } from '@/shared/ui';
+import { showAlert } from '@/shared/lib/haptics';
 
 const GRACE_DAYS = 30;
 
@@ -36,7 +37,7 @@ export default function AccountDeactivatedScreen() {
           loading={reactivate.isPending}
           onPress={() =>
             reactivate.mutate(undefined, {
-              onError: () => Alert.alert(t('actions.failedTitle'), t('actions.failedMessage')),
+              onError: () => showAlert(t('actions.failedTitle'), t('actions.failedMessage')),
             })
           }
         />

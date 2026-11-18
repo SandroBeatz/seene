@@ -6,7 +6,7 @@
  * The language switch only reports the press (`onOpenLanguage`) — the route owns
  * the sheet, so this feature stays independent of `language-select`.
  */
-import { Alert, Pressable, ScrollView, View } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { openBrowserAsync } from 'expo-web-browser';
 import { Trans, useTranslation } from 'react-i18next';
@@ -20,6 +20,7 @@ import { isSupportedLocale, LOCALE_NATIVE_NAMES } from '@/shared/lib/i18n';
 import { layout } from '@/shared/theme/tokens';
 import { Button, Icon, Logo, Text } from '@/shared/ui';
 import { WelcomeHero } from './WelcomeHero';
+import { showAlert } from '@/shared/lib/haptics';
 
 const LOGO_HEIGHT = 30;
 /** The title stays on one line; it shrinks to fit narrow screens and long locales. */
@@ -40,12 +41,12 @@ export function Welcome({ onOpenLanguage }: WelcomeProps) {
 
   function onApple() {
     // Native Apple Sign In lands once the Apple Developer account exists (Q-PROD-2).
-    if (!featureFlags.appleSignIn) Alert.alert(t('auth.appleComingSoon'));
+    if (!featureFlags.appleSignIn) showAlert(t('auth.appleComingSoon'));
   }
 
   function onGoogle() {
     google.mutate(undefined, {
-      onError: (e) => Alert.alert(t(errorMessageKey(e))),
+      onError: (e) => showAlert(t(errorMessageKey(e))),
     });
   }
 

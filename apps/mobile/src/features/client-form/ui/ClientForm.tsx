@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from 'react-i18next';
-import { Alert, Pressable, TextInput, View, type TextInputProps } from 'react-native';
+import { Pressable, TextInput, View, type TextInputProps } from 'react-native';
 import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
@@ -54,6 +54,7 @@ import {
 import { useDeleteClient } from '../model/useDeleteClient';
 import { CLIENT_NOTE_MAX_LENGTH } from './ClientNoteEditor';
 import { CountrySheet } from './CountrySheet';
+import { showAlert } from '@/shared/lib/haptics';
 
 export interface ClientFormProps {
   /** The client being edited; absent for a new one. */
@@ -121,11 +122,11 @@ export function ClientForm({ client, defaultCountry, prefill, onCreated }: Clien
 
   const save = () => {
     const result = cardFromDraft(draft);
-    if (!result.ok) return Alert.alert(t(`clients.form.errors.${result.error}`));
+    if (!result.ok) return showAlert(t(`clients.form.errors.${result.error}`));
     const name = [result.card.first_name, result.card.last_name].filter(Boolean).join(' ');
     const onError = (error: unknown) => {
       if (normalizeError(error).kind === 'duplicate_phone') {
-        Alert.alert(t('clients.form.errors.duplicate'));
+        showAlert(t('clients.form.errors.duplicate'));
       } else {
         showFailedToast(save);
       }

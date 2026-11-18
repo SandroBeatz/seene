@@ -48,6 +48,7 @@ import {
 } from '@/shared/ui';
 import { filterPhotos, portfolioFilters } from '../lib/filters';
 import { PhotoTile } from './PhotoTile';
+import { haptics } from '@/shared/lib/haptics';
 
 const COLUMNS = 3;
 const GAP = 6;
@@ -304,7 +305,10 @@ export function PortfolioScreen() {
                   ]}
                   onAccessibilityAction={() => openMenu(item)}
                   onPress={() => openPhoto(item)}
-                  onLongPress={() => openMenu(item)}
+                  onLongPress={() => {
+                    haptics.longPress();
+                    openMenu(item);
+                  }}
                   style={({ pressed }) => pressed && styles.pressed}>
                   <PhotoTile
                     uri={item.photo_url}

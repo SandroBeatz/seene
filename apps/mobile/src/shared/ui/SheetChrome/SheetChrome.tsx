@@ -14,13 +14,14 @@
  */
 import { router, Stack } from 'expo-router';
 import { useHeaderHeight } from 'expo-router/react-navigation';
-import { Alert, View } from 'react-native';
+import { View } from 'react-native';
 import type { SFSymbol } from 'expo-symbols';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { IconButton } from '../IconButton';
 import type { IconName } from '../Icon';
 import { SheetHeader } from '../SheetHeader';
 import { Text } from '../Text';
+import { showAlert } from '@/shared/lib/haptics';
 
 export interface SheetChromeAction {
   key: string;
@@ -139,7 +140,7 @@ export function SheetChrome({
       variant="neutral"
       accessibilityLabel={menu.label}
       onPress={() =>
-        Alert.alert(menu.label, undefined, [
+        showAlert(menu.label, undefined, [
           ...menu.items.map((item) => ({
             text: item.label,
             style: item.destructive ? ('destructive' as const) : ('default' as const),

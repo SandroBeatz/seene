@@ -10,7 +10,7 @@
  * Reduced motion: everything appears at once.
  */
 import { useEffect, useState } from 'react';
-import { Alert, View } from 'react-native';
+import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import Animated, {
   type CSSAnimationKeyframes,
@@ -31,6 +31,7 @@ import { useOnboardingDraft } from '../model/draft.store';
 import { formatDurationLabel, formatHoursLabel } from '../model/format';
 import { serviceColorKey, serviceName } from '../model/services';
 import { useCompleteOnboarding, useEnterApp } from '../model/submit';
+import { showAlert } from '@/shared/lib/haptics';
 
 /** Seconds at which each status line ticks off (the design's timeline). */
 const STEP_DONE_AT = [1.1, 2.3, 3.2, 4.3] as const;
@@ -339,7 +340,7 @@ export function CreatingStep({ onBack, preview = false }: CreatingStepProps) {
                   preview
                     ? onBack()
                     : enter.mutate(undefined, {
-                        onError: (e) => Alert.alert(t(errorMessageKey(e))),
+                        onError: (e) => showAlert(t(errorMessageKey(e))),
                       })
                 }
               />

@@ -5,7 +5,7 @@
 import { router, Stack } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Pressable, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import { useMoneyContext } from '@/entities/master';
 import {
@@ -37,6 +37,7 @@ import {
   useNow,
 } from '@/shared/ui';
 import { NotificationCard } from './NotificationCard';
+import { showAlert } from '@/shared/lib/haptics';
 
 type Filter = 'all' | NotificationCategory;
 
@@ -110,7 +111,7 @@ export function NotificationsScreen() {
               icon="more"
               accessibilityLabel={t('notifications.more')}
               onPress={() =>
-                Alert.alert(t('notifications.more'), undefined, [
+                showAlert(t('notifications.more'), undefined, [
                   { text: t('notifications.readAll'), onPress: readAll },
                   { text: t('notifications.settings.title'), onPress: openSettings },
                   {

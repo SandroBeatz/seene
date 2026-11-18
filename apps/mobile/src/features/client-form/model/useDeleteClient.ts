@@ -4,12 +4,12 @@
  */
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Alert } from 'react-native';
 import { countClientAppointments } from '@/entities/appointment';
 import { clientKeys, useDeleteClientMutation, type Client } from '@/entities/client';
 import { useUserId } from '@/entities/session';
 import { normalizeError } from '@/shared/api/errors';
 import { removeWithUndo, showFailedToast } from '@/shared/ui';
+import { showAlert } from '@/shared/lib/haptics';
 
 export function useDeleteClient() {
   const { t } = useTranslation();
@@ -23,7 +23,7 @@ export function useDeleteClient() {
     } catch {
       return showFailedToast();
     }
-    if (visits > 0) return Alert.alert(t('clients.form.deleteBlocked'));
+    if (visits > 0) return showAlert(t('clients.form.deleteBlocked'));
     router.dismissTo('/clients');
     removeWithUndo({
       title: t('toasts.clientDeleted'),
@@ -34,7 +34,7 @@ export function useDeleteClient() {
       // A visit booked online in those five seconds.
       onFailed: (error) => {
         if (normalizeError(error).kind !== 'has_related_records') return false;
-        Alert.alert(t('clients.form.deleteBlocked'));
+        showAlert(t('clients.form.deleteBlocked'));
         return true;
       },
     });
