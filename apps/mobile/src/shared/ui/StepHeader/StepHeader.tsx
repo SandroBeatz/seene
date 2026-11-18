@@ -18,8 +18,8 @@ import Animated, {
 } from 'react-native-reanimated';
 import { StyleSheet } from 'react-native-unistyles';
 import { motion } from '@/shared/theme/tokens';
-import { IconButton } from '@/shared/ui/IconButton';
 import { Text } from '@/shared/ui/Text';
+import { StepBackButton } from './StepBackButton';
 
 export interface StepHeaderProps {
   /** 1-based current step. */
@@ -29,11 +29,20 @@ export interface StepHeaderProps {
   counterLabel: string;
   onBack?: () => void;
   backLabel: string;
+  /** false: only the back button (a screen after the last step). @default true */
+  showProgress?: boolean;
 }
 
 const EASING = Easing.bezier(...motion.easing.emphasized);
 
-export function StepHeader({ step, total, counterLabel, onBack, backLabel }: StepHeaderProps) {
+export function StepHeader({
+  step,
+  total,
+  counterLabel,
+  onBack,
+  backLabel,
+  showProgress = true,
+}: StepHeaderProps) {
   const reduceMotion = useReducedMotion();
   const progress = useSharedValue(step);
 
@@ -45,20 +54,19 @@ export function StepHeader({ step, total, counterLabel, onBack, backLabel }: Ste
 
   return (
     <View style={styles.row}>
-      <IconButton
-        icon="chevronLeft"
-        variant="neutral"
-        accessibilityLabel={backLabel}
-        onPress={onBack}
-      />
-      <View style={styles.track} accessibilityElementsHidden importantForAccessibility="no">
-        {Array.from({ length: total }, (_, index) => (
-          <Segment key={index} index={index} progress={progress} />
-        ))}
-      </View>
-      <Text variant="footnoteStrong" color="secondary" accessibilityRole="text">
-        {counterLabel}
-      </Text>
+      <StepBackButton label={backLabel} onPress={onBack} />
+      {showProgress ? (
+        <>
+          <View style={styles.track} accessibilityElementsHidden importantForAccessibility="no">
+            {Array.from({ length: total }, (_, index) => (
+              <Segment key={index} index={index} progress={progress} />
+            ))}
+          </View>
+          <Text variant="footnoteStrong" color="secondary" accessibilityRole="text">
+            {counterLabel}
+          </Text>
+        </>
+      ) : null}
     </View>
   );
 }

@@ -13,7 +13,6 @@ export default function OnboardingReviewScreen() {
   const router = useRouter();
   return (
     <ReviewStep
-      onBack={() => router.back()}
       onEdit={(target) => router.dismissTo(STEP_ROUTE[target])}
       onCreate={() => router.push('/onboarding/creating')}
     />

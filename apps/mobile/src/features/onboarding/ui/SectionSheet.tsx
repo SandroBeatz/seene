@@ -12,7 +12,7 @@ import {
   SPECIALIZATION_KEYS,
   type SpecializationKey,
 } from '@/shared/config/specializations';
-import { Button, FormScreen, SectionLabel, SelectionMark, SheetHeader, Text } from '@/shared/ui';
+import { Button, FormScreen, SectionLabel, SelectionMark, SheetChrome, Text } from '@/shared/ui';
 import { useOnboardingDraft } from '../model/draft.store';
 import { useServiceEditor } from '../model/service-editor.store';
 
@@ -37,7 +37,7 @@ export function SectionSheet({ onBack }: SectionSheetProps) {
       padded={false}
       contentContainerStyle={styles.body}
       header={
-        <SheetHeader
+        <SheetChrome
           title={t('onboarding.sectionSheet.title')}
           leading="back"
           leadingLabel={t('onboarding.sectionSheet.back')}

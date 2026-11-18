@@ -16,10 +16,11 @@ import { router, Stack } from 'expo-router';
 import { useHeaderHeight } from 'expo-router/react-navigation';
 import { Alert, View } from 'react-native';
 import type { SFSymbol } from 'expo-symbols';
-import { useUnistyles } from 'react-native-unistyles';
+import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { IconButton } from '../IconButton';
 import type { IconName } from '../Icon';
 import { SheetHeader } from '../SheetHeader';
+import { Text } from '../Text';
 
 export interface SheetChromeAction {
   key: string;
@@ -34,6 +35,8 @@ export interface SheetChromeAction {
 
 export interface SheetChromeProps {
   title: string;
+  /** A second line under the title ("в разделе Маникюр"). */
+  subtitle?: string;
   /** `close` dismisses the sheet; `back` returns to the sheet under it. */
   leading?: 'close' | 'back';
   leadingLabel: string;
@@ -49,6 +52,7 @@ export interface SheetChromeProps {
 
 export function SheetChrome({
   title,
+  subtitle,
   leading = 'close',
   leadingLabel,
   onLeadingPress = () => router.back(),
@@ -71,7 +75,25 @@ export function SheetChrome({
     return (
       <>
         {spacer ? <View style={{ height: headerHeight }} /> : null}
-        <Stack.Screen options={{ title }} />
+        <Stack.Screen
+          options={
+            subtitle
+              ? {
+                  title,
+                  headerTitle: () => (
+                    <View style={styles.titles} accessibilityRole="header">
+                      <Text variant="headline" numberOfLines={1}>
+                        {title}
+                      </Text>
+                      <Text variant="caption" color="secondary" numberOfLines={1}>
+                        {subtitle}
+                      </Text>
+                    </View>
+                  ),
+                }
+              : { title }
+          }
+        />
         <Stack.Toolbar placement="left">
           <Stack.Toolbar.Button
             icon={leading === 'close' ? 'xmark' : 'chevron.backward'}
@@ -132,6 +154,7 @@ export function SheetChrome({
   return (
     <SheetHeader
       title={title}
+      subtitle={subtitle}
       leading={leading}
       leadingLabel={leadingLabel}
       onLeadingPress={onLeadingPress}
@@ -139,3 +162,7 @@ export function SheetChrome({
     />
   );
 }
+
+const styles = StyleSheet.create((theme) => ({
+  titles: { alignItems: 'center', gap: theme.space[0.25], maxWidth: 260 },
+}));
