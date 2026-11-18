@@ -46,7 +46,7 @@ export function TodayHeader({ firstName, lastName, avatarUrl, greeting }: TodayH
       </Stack.Toolbar>
       <Stack.Toolbar placement="right">
         <Stack.Toolbar.Button
-          icon="chart.bar.xaxis"
+          icon="chart.xyaxis.line"
           accessibilityLabel={t('tabs.analytics')}
           onPress={() => router.push('/analytics')}
         />
