@@ -2,7 +2,8 @@ import { View } from 'react-native';
 import { type NativeStackNavigationOptions, Stack, useRouter, useSegments } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
-import { OnboardingHeader, useConfirmSignOut } from '@/features/onboarding';
+import { ONBOARDING_REVIEW_STEP, OnboardingHeader, useConfirmSignOut } from '@/features/onboarding';
+import { useStackScreenOptions } from '@/shared/ui';
 
 /** Which step each onboarding route belongs to (sheets keep their step's header). */
 const STEP_BY_ROUTE: Partial<Record<string, number>> = {
@@ -16,6 +17,7 @@ const STEP_BY_ROUTE: Partial<Record<string, number>> = {
   service: 4,
   'service-section': 4,
   'service-category': 4,
+  review: ONBOARDING_REVIEW_STEP,
 };
 
 /**
@@ -23,8 +25,8 @@ const STEP_BY_ROUTE: Partial<Record<string, number>> = {
  * progress, "N из 4") floats above the stack on a canvas-to-clear fade: it stays put
  * while steps slide and scroll under it, and its progress animates between steps. Back on step 1 = sign out (confirmed).
  * The step sheets (time zone, currency, hours; the step-4 service editor and its
- * section/category pickers) are native form sheets. The review and "creating" screens
- * after step 4 have no step header.
+ * section/category pickers) are native form sheets. The review after step 4 keeps only
+ * the header's back button; the "creating" screen has no header.
  */
 export default function OnboardingLayout() {
   const { theme } = useUnistyles();
@@ -32,14 +34,27 @@ export default function OnboardingLayout() {
   const router = useRouter();
   const segments = useSegments();
   const confirmSignOut = useConfirmSignOut();
+  const stackOptions = useStackScreenOptions();
+  const isIOS = process.env.EXPO_OS === 'ios';
   const step = STEP_BY_ROUTE[segments[segments.length - 1] ?? ''];
 
-  // Step sheets: full height; the grabber is drawn in content so iOS and Android match.
+  // Picker sheets shared with the app (time zone, currency): full height, their own
+  // in-content chrome and grabber.
   const sheet: NativeStackNavigationOptions = {
     presentation: 'formSheet',
     sheetAllowedDetents: [1],
     sheetCornerRadius: theme.radius.xxl,
     sheetGrabberVisible: false,
+  };
+  // Onboarding's own sheets (hours, the service editor and its pickers): on iOS the
+  // native bar of the sheet holds close/back, the title and actions (`SheetChrome`,
+  // Liquid Glass on iOS 26), translucent over the content, plus the system grabber.
+  // Android form sheets have no header; `SheetChrome` draws the chrome in content.
+  const nativeSheet: NativeStackNavigationOptions = {
+    ...stackOptions,
+    ...sheet,
+    headerShown: isIOS,
+    sheetGrabberVisible: isIOS,
   };
 
   return (
@@ -56,11 +71,11 @@ export default function OnboardingLayout() {
         <Stack.Screen name="onboarding/settings" />
         <Stack.Screen name="onboarding/timezone" options={sheet} />
         <Stack.Screen name="onboarding/currency" options={sheet} />
-        <Stack.Screen name="onboarding/hours" options={sheet} />
+        <Stack.Screen name="onboarding/hours" options={nativeSheet} />
         <Stack.Screen name="onboarding/services" />
-        <Stack.Screen name="onboarding/service" options={sheet} />
-        <Stack.Screen name="onboarding/service-section" options={sheet} />
-        <Stack.Screen name="onboarding/service-category" options={sheet} />
+        <Stack.Screen name="onboarding/service" options={nativeSheet} />
+        <Stack.Screen name="onboarding/service-section" options={nativeSheet} />
+        <Stack.Screen name="onboarding/service-category" options={nativeSheet} />
         <Stack.Screen name="onboarding/review" />
         {/* Finishing: no going back while the profile is being created. */}
         <Stack.Screen name="onboarding/creating" options={{ gestureEnabled: false }} />

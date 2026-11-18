@@ -8,7 +8,7 @@
  * (→ onboarding for a new master, → the app for an existing one).
  */
 import { useState } from 'react';
-import { Alert, Pressable, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native-unistyles';
 import { useSendEmailCode, useVerifyEmailCode } from '@/entities/session';
@@ -17,6 +17,7 @@ import { Button, CodeInput, FormScreen, Text } from '@/shared/ui';
 import { EMAIL_CODE_LENGTH } from '../model/schema';
 import { formatCountdown, useCountdown } from '../model/useCountdown';
 import { AuthHeading } from './AuthHeading';
+import { showAlert } from '@/shared/lib/haptics';
 
 export interface CodeStepProps {
   email: string;
@@ -32,7 +33,7 @@ export function CodeStep({ email, onBack }: CodeStepProps) {
   const [invalid, setInvalid] = useState(false);
 
   function showError(e: AppError) {
-    Alert.alert(t(errorMessageKey(e)));
+    showAlert(t(errorMessageKey(e)));
   }
 
   function submit(value: string = code) {

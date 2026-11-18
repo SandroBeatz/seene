@@ -6,7 +6,7 @@
 import { useEffect, useState } from 'react';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Alert, Pressable, ScrollView, View } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
 import { useQueryClient } from '@tanstack/react-query';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet } from 'react-native-unistyles';
@@ -47,6 +47,7 @@ import {
 } from '../model/checkout';
 import { parseAmount } from '../model/services';
 import { PaymentMethodGrid } from './PaymentMethodGrid';
+import { showAlert } from '@/shared/lib/haptics';
 
 export interface CheckoutEditorProps {
   appointment: Appointment;
@@ -119,7 +120,7 @@ export function CheckoutEditor({
     const endClock = editing === 'end' ? clock : clockOf(endAt, zone);
     setEditing(null);
     const next = windowFromClocks(appointment.start_at, zone, startClock, endClock);
-    if (!next) return Alert.alert(t('servicesSheet.badDuration'));
+    if (!next) return showAlert(t('servicesSheet.badDuration'));
     setVisit(next);
   };
 

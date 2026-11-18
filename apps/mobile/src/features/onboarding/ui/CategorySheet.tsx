@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { isSupportedLocale, pluralCategory } from '@/shared/lib/i18n';
 import { MAX_FONT_SCALE } from '@/shared/theme/tokens';
-import { Button, FormScreen, IconButton, SelectionMark, SheetHeader, Text } from '@/shared/ui';
+import { Button, FormScreen, SelectionMark, SheetChrome, Text } from '@/shared/ui';
 import { useOnboardingDraft } from '../model/draft.store';
 import { useServiceEditor } from '../model/service-editor.store';
 
@@ -57,7 +57,7 @@ export function CategorySheet({ onBack }: CategorySheetProps) {
       padded={false}
       contentContainerStyle={styles.body}
       header={
-        <SheetHeader
+        <SheetChrome
           title={t('onboarding.categorySheet.title')}
           subtitle={t('onboarding.categorySheet.inSection', {
             section: t(`onboarding.specializations.${service.specialization}`),
@@ -65,20 +65,18 @@ export function CategorySheet({ onBack }: CategorySheetProps) {
           leading="back"
           leadingLabel={t('onboarding.sectionSheet.back')}
           onLeadingPress={onBack}
-          trailing={
-            <IconButton
-              icon={adding ? 'close' : 'add'}
-              variant={adding ? 'accent' : 'neutral'}
-              accessibilityLabel={
-                adding ? t('onboarding.categorySheet.cancelAdd') : t('onboarding.categorySheet.add')
-              }
-              accessibilityState={{ expanded: adding }}
-              onPress={() => {
-                setAdding((value) => !value);
-                setName('');
-              }}
-            />
-          }
+          action={{
+            key: adding ? 'cancel-add' : 'add',
+            label: adding
+              ? t('onboarding.categorySheet.cancelAdd')
+              : t('onboarding.categorySheet.add'),
+            sf: adding ? 'xmark' : 'plus',
+            icon: adding ? 'close' : 'add',
+            onPress: () => {
+              setAdding((value) => !value);
+              setName('');
+            },
+          }}
         />
       }
       footerDivider

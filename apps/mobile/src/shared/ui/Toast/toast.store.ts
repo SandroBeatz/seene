@@ -3,6 +3,7 @@
  * the place of the last. Lives in memory: it is about what was just done.
  */
 import { create } from 'zustand';
+import { haptics } from '@/shared/lib/haptics';
 import type { IconName } from '../Icon';
 
 export type ToastTone = 'success' | 'neutral' | 'danger';
@@ -46,8 +47,12 @@ function replace(next: ShownToast | null) {
   left?.onLeave?.();
 }
 
-/** Safe anywhere, mutation callbacks included. */
+/** Safe anywhere, mutation callbacks included. Felt as well as seen: a haptic by tone. */
 export function showToast(toast: ToastData) {
+  const tone = toast.tone ?? 'success';
+  if (tone === 'success') haptics.success();
+  else if (tone === 'danger') haptics.error();
+  else haptics.tap();
   replace({ ...toast, id: ++lastId });
 }
 

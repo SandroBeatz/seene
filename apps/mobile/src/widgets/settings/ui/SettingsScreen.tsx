@@ -4,7 +4,7 @@
  */
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Alert, Pressable } from 'react-native';
+import { Pressable } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import {
   parseStoredSchedule,
@@ -27,6 +27,7 @@ import {
   Text,
   showFailedToast,
 } from '@/shared/ui';
+import { showAlert } from '@/shared/lib/haptics';
 
 export function SettingsScreen() {
   const { t, i18n } = useTranslation();
@@ -61,7 +62,7 @@ export function SettingsScreen() {
     : undefined;
 
   const confirmSignOut = () =>
-    Alert.alert(t('menuHome.screen.logOutConfirm'), undefined, [
+    showAlert(t('menuHome.screen.logOutConfirm'), undefined, [
       { text: t('common.cancel'), style: 'cancel' },
       {
         text: t('menuHome.screen.logOut'),
@@ -71,7 +72,7 @@ export function SettingsScreen() {
     ]);
 
   const confirmDelete = () =>
-    Alert.alert(t('menuHome.screen.deleteConfirm'), t('menuHome.screen.deleteText'), [
+    showAlert(t('menuHome.screen.deleteConfirm'), t('menuHome.screen.deleteText'), [
       { text: t('common.cancel'), style: 'cancel' },
       {
         text: t('menuHome.screen.delete'),

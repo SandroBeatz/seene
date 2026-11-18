@@ -34,6 +34,7 @@ import {
   type IconName,
 } from '@/shared/ui';
 import type { MenuAction } from '../model/labels';
+import { haptics } from '@/shared/lib/haptics';
 
 // ---- Status pill ----
 
@@ -87,7 +88,10 @@ export function AutoCompleteMark({ label }: { label: string }) {
       accessibilityLabel={label}
       hitSlop={6}
       onPress={() => showToast({ title: label, icon: 'autoComplete' })}
-      onLongPress={() => showToast({ title: label, icon: 'autoComplete' })}
+      onLongPress={() => {
+        haptics.longPress();
+        showToast({ title: label, icon: 'autoComplete' });
+      }}
       style={({ pressed }) => [styles.autoMark, pressed && styles.pressed]}>
       <Icon name="autoComplete" size={16} color="tone.success.fg" />
     </Pressable>

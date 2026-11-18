@@ -6,7 +6,7 @@
  */
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Alert, Linking } from 'react-native';
+import { Linking } from 'react-native';
 import type { MessageKind } from '@/entities/message-template';
 import {
   useDeleteAppointmentMutation,
@@ -20,6 +20,7 @@ import { useUserId } from '@/entities/session';
 import { phoneCallUrl, whatsappUrl } from '@/shared/lib/phone';
 import { useClientMessage } from './useClientMessage';
 import { showFailedToast, showErrorToast, showToast, removeWithUndo } from '@/shared/ui';
+import { showAlert } from '@/shared/lib/haptics';
 
 export type AppointmentActionKey =
   AppointmentAction | 'call' | 'whatsapp' | 'remind' | 'note' | 'delete' | 'open_client';
@@ -58,7 +59,7 @@ export function useAppointmentActions(bound: AppointmentActionContext | null = n
     update.mutate({ id: ctx.appointment.id, ...dto }, { onError: failed });
 
   const ask = (key: string, onConfirm: () => void) =>
-    Alert.alert(t(`actions.confirm.${key}.title`), t(`actions.confirm.${key}.message`), [
+    showAlert(t(`actions.confirm.${key}.title`), t(`actions.confirm.${key}.message`), [
       { text: t('common.cancel'), style: 'cancel' },
       { text: t(`actions.confirm.${key}.action`), style: 'destructive', onPress: onConfirm },
     ]);
@@ -179,7 +180,7 @@ export function useAppointmentActions(bound: AppointmentActionContext | null = n
         });
       case 'reschedule':
         // Offer the client a few times, or move the visit now.
-        return Alert.alert(t('propose.chooseTitle'), undefined, [
+        return showAlert(t('propose.chooseTitle'), undefined, [
           { text: t('propose.title'), onPress: () => proposeTime(id) },
           {
             text: t('propose.moveNow'),

@@ -976,6 +976,18 @@
       "cadenceDays_few": "Usually every {{count}} days",
       "cadenceDays_many": "Usually every {{count}} days",
       "cadenceDays_other": "Usually every {{count}} days"
+    },
+    "profileCreated": {
+      "title": "Profile created",
+      "text": "Now finish your page. Clients book more readily when there’s a photo and a description.",
+      "todo": {
+        "avatar": "Avatar",
+        "cover": "Cover",
+        "about": "Description",
+        "contacts": "Contacts"
+      },
+      "fill": "Fill in profile · 2 min",
+      "later": "Later"
     }
   },
   "duration": {

@@ -982,6 +982,18 @@
       "cadenceDays_few": "D'habitude tous les {{count}} jours",
       "cadenceDays_many": "D'habitude tous les {{count}} jours",
       "cadenceDays_other": "D'habitude tous les {{count}} jours"
+    },
+    "profileCreated": {
+      "title": "Profil créé",
+      "text": "Il reste à soigner votre page. Avec une photo et une description, les clients réservent plus volontiers.",
+      "todo": {
+        "avatar": "Avatar",
+        "cover": "Couverture",
+        "about": "Description",
+        "contacts": "Contacts"
+      },
+      "fill": "Compléter le profil · 2 min",
+      "later": "Plus tard"
     }
   },
   "duration": {

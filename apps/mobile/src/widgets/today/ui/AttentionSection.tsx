@@ -14,6 +14,7 @@ import { pluralCategory, type AppLocale } from '@/shared/lib/i18n';
 import { Avatar, Icon, Text, type ContextMenuAnchor, type IconName } from '@/shared/ui';
 import { ATTENTION_ACTIONS, ATTENTION_TONE, type AttentionAction } from '../model/attention';
 import type { AttentionCard } from '../model/useAttention';
+import { haptics } from '@/shared/lib/haptics';
 
 const CARD_WIDTH = 292;
 const CARD_GAP = 10;
@@ -129,7 +130,10 @@ function AttentionCardItem({
       onLongPress={
         card.kind === 'tomorrow_reminders'
           ? undefined
-          : () => ref.current?.measureInWindow((x, y, w) => onMenu({ x, y, width: w }))
+          : () => {
+              haptics.longPress();
+              ref.current?.measureInWindow((x, y, w) => onMenu({ x, y, width: w }));
+            }
       }
       style={({ pressed }) => [pressed && styles.pressed]}>
       <AttentionCardView

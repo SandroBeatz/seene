@@ -19,6 +19,7 @@ import {
 import { eventSwatch } from '@/shared/lib/color';
 import { formatDurationLabel } from '@/shared/lib/i18n';
 import { Icon, Text, VipBadge, type ContextMenuAnchor } from '@/shared/ui';
+import { haptics } from '@/shared/lib/haptics';
 
 export type EventMeta =
   | { kind: 'visit'; visit: ScheduleVisit; range: string; dimmed: boolean; ongoing: boolean }
@@ -109,11 +110,12 @@ export function TimelineEvent({
         accessibilityRole="button"
         accessibilityLabel={t('today.schedule.blockA11y', { text: `${look.range}, ${look.name}` })}
         onPress={() => handlers.onBlock(block)}
-        onLongPress={() =>
+        onLongPress={() => {
+          haptics.longPress();
           ref.current?.measureInWindow((x, y, w) =>
             handlers.onBlockMenu(block, { x, y, width: w }, look),
-          )
-        }
+          );
+        }}
         style={({ pressed }) => [
           styles.event,
           two ? styles.eventTall : styles.eventShort,
@@ -152,11 +154,12 @@ export function TimelineEvent({
         .filter(Boolean)
         .join(', ')}
       onPress={() => handlers.onVisit(visit)}
-      onLongPress={() =>
+      onLongPress={() => {
+        haptics.longPress();
         ref.current?.measureInWindow((x, y, w) =>
           handlers.onVisitMenu(visit, { x, y, width: w }, range),
-        )
-      }
+        );
+      }}
       style={({ pressed }) => [
         styles.event,
         two ? styles.eventTall : styles.eventShort,
