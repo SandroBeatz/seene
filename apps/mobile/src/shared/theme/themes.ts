@@ -156,6 +156,21 @@ export const lightTheme = {
       info: { fg: palette.tone.slate, bg: palette.tone.slateSubtle, dot: palette.tone.slate },
       summaryNow: palette.tone.roseNow,
     },
+    // "Сегодня" hero sheet (light): warm base with a pink and a lavender wash, ink
+    // type, the summary on a white glass card.
+    hero: {
+      bg: palette.hero.lightBase,
+      image: `radial-gradient(80% 90% at 0% 0%, ${palette.hero.lightPink} 0%, ${palette.hero.lightPinkClear} 70%), radial-gradient(80% 90% at 100% 20%, ${palette.hero.lightLavender} 0%, ${palette.hero.lightLavenderClear} 70%)`,
+      fg: n[950],
+      muted: n[600],
+      card: palette.hero.lightCard,
+      cardShadow: '0px 6px 20px rgba(80, 30, 60, 0.08)',
+      divider: palette.hero.inkLine,
+      track: palette.hero.inkLine,
+      ahead: palette.hero.inkAhead,
+      now: palette.rose[500],
+      statusBar: 'dark' as 'light' | 'dark',
+    },
     vip: palette.vip,
   },
   elevation: {
@@ -303,6 +318,21 @@ export const darkTheme = {
         dot: palette.tone.slateBright,
       },
       summaryNow: palette.tone.roseNow,
+    },
+    // "Сегодня" hero sheet (dark): ink with a rose and a violet glow, white type. A
+    // step lighter than the canvas so the sheet still reads.
+    hero: {
+      bg: n[850],
+      image: `radial-gradient(90% 70% at 100% 0%, ${palette.hero.glowRose} 0%, ${palette.hero.glowRoseClear} 70%), radial-gradient(70% 60% at 0% 100%, ${palette.hero.glowViolet} 0%, ${palette.hero.glowVioletClear} 70%)`,
+      fg: n[0],
+      muted: palette.hero.muted,
+      card: 'transparent',
+      cardShadow: '0px 0px 0px transparent',
+      divider: palette.hero.divider,
+      track: palette.hero.track,
+      ahead: palette.hero.ahead,
+      now: palette.hero.now,
+      statusBar: 'light' as 'light' | 'dark',
     },
     vip: palette.vip,
   },

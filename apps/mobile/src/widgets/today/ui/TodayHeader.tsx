@@ -2,7 +2,8 @@
  * "Сегодня" header (design "Таб · Сегодня"): the master's avatar (→ Меню) and the
  * greeting with their name on the left of the native header, analytics and
  * notifications on its right — native bar items side by side, so iOS 26 draws them as one
- * Liquid Glass capsule. The bell carries how many notifications are new.
+ * Liquid Glass capsule. The bell carries how many notifications are new. The header
+ * is transparent over the hero sheet (`TodayHero`), its text in the sheet's colours.
  */
 import { router, Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -34,10 +35,10 @@ export function TodayHeader({ firstName, lastName, avatarUrl, greeting }: TodayH
             style={styles.row}>
             <Avatar name={`${firstName} ${lastName}`} imageUrl={avatarUrl} size="md" tone="brand" />
             <View style={styles.names}>
-              <Text variant="footnote" color="secondary" numberOfLines={1}>
+              <Text variant="footnote" numberOfLines={1} style={styles.muted}>
                 {t(`today.greeting.${greeting}`)}
               </Text>
-              <Text variant="calloutStrong" numberOfLines={1}>
+              <Text variant="calloutStrong" numberOfLines={1} style={styles.fg}>
                 {firstName}
               </Text>
             </View>
@@ -64,4 +65,6 @@ export function TodayHeader({ firstName, lastName, avatarUrl, greeting }: TodayH
 const styles = StyleSheet.create((theme) => ({
   row: { flexDirection: 'row', alignItems: 'center', gap: theme.space[3] },
   names: { maxWidth: 200, gap: 1 },
+  fg: { color: theme.colors.hero.fg },
+  muted: { color: theme.colors.hero.muted },
 }));
