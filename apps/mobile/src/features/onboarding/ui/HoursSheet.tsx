@@ -19,7 +19,7 @@ import {
   IconButton,
   SectionLabel,
   SegmentedControl,
-  SheetHeader,
+  SheetChrome,
   Switch,
   Text,
   TimePicker,
@@ -144,10 +144,12 @@ export function HoursSheet({ onClose }: HoursSheetProps) {
         contentContainerStyle={styles.body}
         header={
           <View>
-            <SheetHeader
+            {/* The mode switch stays pinned above the scroll: `spacer` puts it under the bar. */}
+            <SheetChrome
               title={t('onboarding.hoursSheet.title')}
               leadingLabel={t('common.close')}
               onLeadingPress={onClose}
+              spacer
             />
             <View style={styles.mode}>
               <SegmentedControl

@@ -2,7 +2,6 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import {
   useCreatePaymentTypeMutation,
@@ -23,6 +22,7 @@ import {
   removeWithUndo,
 } from '@/shared/ui';
 import { isLastActive, nextMethodOrder } from '../lib/methods';
+import { showAlert } from '@/shared/lib/haptics';
 
 export function PaymentMethodSheet() {
   const { id } = useLocalSearchParams<{ id?: string }>();
@@ -72,7 +72,7 @@ function MethodForm({
   const confirmDelete = () => {
     // Checkout would have nothing to offer.
     if (method && isLastActive(method, all)) {
-      Alert.alert(t('menuHome.payments.lastActive'));
+      showAlert(t('menuHome.payments.lastActive'));
       return;
     }
     if (!method) return;

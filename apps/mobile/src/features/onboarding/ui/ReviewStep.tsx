@@ -14,7 +14,6 @@ import {
   Avatar,
   Button,
   FormScreen,
-  IconButton,
   ListItem,
   LogoMark,
   ScreenTitle,
@@ -22,18 +21,19 @@ import {
 } from '@/shared/ui';
 import { useOnboardingDraft } from '../model/draft.store';
 import { formatHoursLabel, formatSentenceList } from '../model/format';
+import { useOnboardingHeaderInset } from './OnboardingHeader';
 
 export type ReviewTarget = 'profile' | 'professions' | 'settings' | 'services';
 
 export interface ReviewStepProps {
-  onBack: () => void;
   /** "Изменить" / a row: go back to that step. */
   onEdit: (target: ReviewTarget) => void;
   onCreate: () => void;
 }
 
-export function ReviewStep({ onBack, onEdit, onCreate }: ReviewStepProps) {
+export function ReviewStep({ onEdit, onCreate }: ReviewStepProps) {
   const { t, i18n } = useTranslation();
+  const headerInset = useOnboardingHeaderInset();
   const photo = useAuthAvatar();
   const locale = isSupportedLocale(i18n.language) ? i18n.language : 'en';
   const draft = useOnboardingDraft(
@@ -96,7 +96,10 @@ export function ReviewStep({ onBack, onEdit, onCreate }: ReviewStepProps) {
 
   return (
     <FormScreen
-      edges={['top', 'right', 'bottom', 'left']}
+      edges={['right', 'bottom', 'left']}
+      // The floating step header (back, full progress) owns the top inset.
+      contentInsetAdjustmentBehavior="never"
+      contentContainerStyle={{ paddingTop: headerInset }}
       footer={
         <Button
           label={t('onboarding.review.create')}
@@ -104,12 +107,6 @@ export function ReviewStep({ onBack, onEdit, onCreate }: ReviewStepProps) {
           onPress={onCreate}
         />
       }>
-      <IconButton
-        icon="chevronLeft"
-        variant="neutral"
-        accessibilityLabel={t('common.back')}
-        onPress={onBack}
-      />
       <View style={styles.title}>
         <ScreenTitle
           title={t('onboarding.review.title')}

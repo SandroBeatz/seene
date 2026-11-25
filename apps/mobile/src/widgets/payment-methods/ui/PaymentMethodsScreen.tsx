@@ -5,7 +5,7 @@
 import { router } from 'expo-router';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Pressable, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import {
   useEnsureSystemPaymentTypesMutation,
@@ -27,6 +27,7 @@ import {
   showToast,
 } from '@/shared/ui';
 import { customMethods, isLastActive, systemMethods } from '../lib/methods';
+import { showAlert } from '@/shared/lib/haptics';
 
 export function PaymentMethodsScreen() {
   const { t } = useTranslation();
@@ -52,7 +53,7 @@ export function PaymentMethodsScreen() {
 
   const flip = (method: PaymentType, isActive: boolean) => {
     if (!isActive && isLastActive(method, all)) {
-      Alert.alert(t('menuHome.payments.lastActive'));
+      showAlert(t('menuHome.payments.lastActive'));
       return;
     }
     toggle.mutate(

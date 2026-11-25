@@ -1,5 +1,6 @@
 /**
- * Step header for the 4 onboarding steps: back, segmented progress, "N из 4".
+ * Step header for the 4 onboarding steps and the review after them: back,
+ * segmented progress, "N из 4" (the review shows only back).
  * The layout floats it over the steps; each step pads its scroll content by
  * `useOnboardingHeaderInset()` so the title starts below it and scrolls under it.
  */
@@ -10,8 +11,11 @@ import { StepHeader } from '@/shared/ui';
 
 export const ONBOARDING_STEP_COUNT = 4;
 
+/** The "Всё верно?" screen after step 4: only the back button, no progress. */
+export const ONBOARDING_REVIEW_STEP = ONBOARDING_STEP_COUNT + 1;
+
 export interface OnboardingHeaderProps {
-  /** 1-based. */
+  /** 1-based; `ONBOARDING_REVIEW_STEP` on the review screen. */
   step: number;
   onBack: () => void;
 }
@@ -20,9 +24,10 @@ export function OnboardingHeader({ step, onBack }: OnboardingHeaderProps) {
   const { t } = useTranslation();
   return (
     <StepHeader
-      step={step}
+      step={Math.min(step, ONBOARDING_STEP_COUNT)}
       total={ONBOARDING_STEP_COUNT}
       counterLabel={t('onboarding.step', { step, total: ONBOARDING_STEP_COUNT })}
+      showProgress={step !== ONBOARDING_REVIEW_STEP}
       backLabel={t('common.back')}
       onBack={onBack}
     />

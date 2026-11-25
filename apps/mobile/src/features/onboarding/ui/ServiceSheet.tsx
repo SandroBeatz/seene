@@ -28,7 +28,7 @@ import {
   Input,
   ListItem,
   SectionLabel,
-  SheetHeader,
+  SheetChrome,
   Switch,
   Text,
 } from '@/shared/ui';
@@ -112,7 +112,7 @@ export function ServiceSheet({ onClose, onOpenSection, onOpenCategory }: Service
         padded={false}
         contentContainerStyle={styles.body}
         header={
-          <SheetHeader
+          <SheetChrome
             title={isNew ? t('onboarding.serviceSheet.titleNew') : t('onboarding.serviceSheet.titleEdit')}
             leadingLabel={t('common.close')}
             onLeadingPress={close}

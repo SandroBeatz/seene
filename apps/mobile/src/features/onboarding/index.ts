@@ -15,6 +15,7 @@ export { CreatingStep, type CreatingStepProps } from './ui/CreatingStep';
 export { ProfileCreatedModal, type ProfileCreatedModalProps } from './ui/ProfileCreatedModal';
 export {
   OnboardingHeader,
+  ONBOARDING_REVIEW_STEP,
   ONBOARDING_STEP_COUNT,
   useOnboardingHeaderInset,
 } from './ui/OnboardingHeader';

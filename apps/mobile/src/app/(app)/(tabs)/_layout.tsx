@@ -1,11 +1,12 @@
 import { useSegments } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { NativeTabs } from 'expo-router/unstable-native-tabs';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { CreateMenu } from '@/features/create-menu';
+import { haptics } from '@/shared/lib/haptics';
 
 /** Height of the native tab bar above the bottom safe area (UIKit 49, Material 80). */
 const TAB_BAR_HEIGHT = process.env.EXPO_OS === 'ios' ? 49 : 80;
@@ -15,7 +16,8 @@ const TAB_BAR_HEIGHT = process.env.EXPO_OS === 'ios' ? 49 : 80;
  * Календарь · Клиенты · Меню — and the "+" floating over its right end, which opens
  * the create card. Pushed screens live in the app stack above the tabs, so the bar
  * and the "+" slide away with them. Analytics opens from "Сегодня" the same way.
- * "Меню" creates nothing, so it has no "+".
+ * "Клиенты" adds from its own header and "Меню" creates nothing, so neither has the "+".
+ * Switching tabs taps like the "+" (light impact).
  *
  * Each tab is a Stack whose screens set their own scroll insets (a native header,
  * or "never" under a drawn one), so the tab doesn't force automatic insets on them.
@@ -54,6 +56,7 @@ export default function TabsLayout() {
         </NativeTabs.Trigger>
       </NativeTabs>
       <TabsCreateMenu />
+      <TabSwitchHaptic />
     </View>
   );
 }
@@ -67,11 +70,27 @@ function TabsCreateMenu() {
   const { theme } = useUnistyles();
   const insets = useSafeAreaInsets();
   const segments = useSegments() as string[];
-  const [onMenu, setOnMenu] = useState(segments.includes('(settings)'));
-  if (segments.includes('(tabs)') && segments.includes('(settings)') !== onMenu) {
-    setOnMenu(!onMenu);
+  const hidden = (s: string[]) => s.includes('(settings)') || s.includes('(clients)');
+  const [hide, setHide] = useState(hidden(segments));
+  if (segments.includes('(tabs)') && hidden(segments) !== hide) {
+    setHide(!hide);
   }
-  return onMenu ? null : <CreateMenu bottom={insets.bottom + TAB_BAR_HEIGHT + theme.space[3]} />;
+  return hide ? null : <CreateMenu bottom={insets.bottom + TAB_BAR_HEIGHT + theme.space[3]} />;
+}
+
+const TABS = ['(home)', '(calendar)', '(clients)', '(settings)'];
+
+/** A light tap, like the "+", when the visible tab changes; pushes above the tabs don't count. */
+function TabSwitchHaptic() {
+  const segments = useSegments() as string[];
+  const tab = segments.includes('(tabs)') ? segments.find((s) => TABS.includes(s)) : undefined;
+  const last = useRef(tab);
+  useEffect(() => {
+    if (!tab || tab === last.current) return;
+    last.current = tab;
+    haptics.tap();
+  }, [tab]);
+  return null;
 }
 
 const styles = StyleSheet.create({ root: { flex: 1 } });

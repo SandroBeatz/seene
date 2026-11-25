@@ -6,7 +6,7 @@ import { usePreventRemove } from 'expo-router/react-navigation';
 import { router, Stack, useNavigation } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, View } from 'react-native';
+import { View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import {
   addressLine,
@@ -33,6 +33,7 @@ import {
   showErrorToast,
   showToast,
 } from '@/shared/ui';
+import { showAlert } from '@/shared/lib/haptics';
 
 import { ProfileCover } from './ProfileCover';
 
@@ -86,7 +87,7 @@ function ProfileForm({ profile, userId }: { profile: MasterProfile; userId: stri
   }, [saved]);
 
   usePreventRemove(dirty && !saved, ({ data }) => {
-    Alert.alert(t('menuHome.profile.discardTitle'), undefined, [
+    showAlert(t('menuHome.profile.discardTitle'), undefined, [
       { text: t('menuHome.profile.keepEditing'), style: 'cancel' },
       {
         text: t('menuHome.profile.discard'),
@@ -120,7 +121,7 @@ function ProfileForm({ profile, userId }: { profile: MasterProfile; userId: stri
     if (!dirty) {
       router.back();
     } else if (linkChanged) {
-      Alert.alert(
+      showAlert(
         t('menuHome.profile.linkChangeTitle'),
         t('menuHome.profile.linkChangeText', { link: masterPageLabel(profile.username) }),
         [
