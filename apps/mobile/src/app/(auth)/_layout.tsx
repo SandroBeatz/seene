@@ -1,21 +1,21 @@
 import { Stack } from 'expo-router';
 import { useUnistyles } from 'react-native-unistyles';
+import { useStackScreenOptions } from '@/shared/ui';
 
 /**
  * Public authentication stack: Welcome → email → code, plus the language sheet.
- * Every step draws its own back button, so no native headers here.
+ * Welcome has no header; email and code get the app's native header (transparent,
+ * system back button — Liquid Glass on iOS 26 — and the back swipe), titled in content.
  */
 export default function AuthLayout() {
   const { theme } = useUnistyles();
+  const stackOptions = useStackScreenOptions();
 
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-        statusBarStyle: theme.name === 'dark' ? 'light' : 'dark',
-        contentStyle: { backgroundColor: theme.colors.bg.canvas },
-      }}>
+    <Stack screenOptions={{ ...stackOptions, headerShown: false }}>
       <Stack.Screen name="sign-in/index" />
+      <Stack.Screen name="sign-in/email" options={{ headerShown: true, title: '' }} />
+      <Stack.Screen name="sign-in/code" options={{ headerShown: true, title: '' }} />
       <Stack.Screen
         name="language"
         options={{

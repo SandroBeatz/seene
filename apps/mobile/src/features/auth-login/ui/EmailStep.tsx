@@ -14,11 +14,10 @@ import { parseEmail } from '../model/schema';
 import { AuthHeading } from './AuthHeading';
 
 export interface EmailStepProps {
-  onBack: () => void;
   onCodeSent: (email: string) => void;
 }
 
-export function EmailStep({ onBack, onCodeSent }: EmailStepProps) {
+export function EmailStep({ onCodeSent }: EmailStepProps) {
   const { t } = useTranslation();
   const send = useSendEmailCode();
   const [value, setValue] = useState('');
@@ -38,7 +37,6 @@ export function EmailStep({ onBack, onCodeSent }: EmailStepProps) {
 
   return (
     <FormScreen
-      edges={['top', 'right', 'bottom', 'left']}
       footer={
         <Button
           label={t('auth.emailStep.submit')}
@@ -50,7 +48,6 @@ export function EmailStep({ onBack, onCodeSent }: EmailStepProps) {
       <AuthHeading
         title={t('auth.emailStep.title')}
         subtitle={t('auth.emailStep.subtitle')}
-        onBack={onBack}
       />
       <View style={styles.field}>
         <Input

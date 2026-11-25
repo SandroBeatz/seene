@@ -21,10 +21,9 @@ import { showAlert } from '@/shared/lib/haptics';
 
 export interface CodeStepProps {
   email: string;
-  onBack: () => void;
 }
 
-export function CodeStep({ email, onBack }: CodeStepProps) {
+export function CodeStep({ email }: CodeStepProps) {
   const { t } = useTranslation();
   const verify = useVerifyEmailCode();
   const resend = useSendEmailCode();
@@ -57,7 +56,6 @@ export function CodeStep({ email, onBack }: CodeStepProps) {
 
   return (
     <FormScreen
-      edges={['top', 'right', 'bottom', 'left']}
       footer={
         <Button
           label={t('auth.codeStep.submit')}
@@ -69,7 +67,6 @@ export function CodeStep({ email, onBack }: CodeStepProps) {
       <AuthHeading
         title={t('auth.codeStep.title')}
         subtitle={t('auth.codeStep.sentTo', { email })}
-        onBack={onBack}
       />
       <View style={styles.code}>
         <CodeInput
