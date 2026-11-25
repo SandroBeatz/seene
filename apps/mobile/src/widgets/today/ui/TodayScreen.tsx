@@ -1,27 +1,22 @@
 /**
- * The "Сегодня" tab (design "Таб · Сегодня", "Сегодня · первый день"): header,
- * day summary, "Требуют внимания", first steps while setup is open, and the day's
+ * The "Сегодня" tab (design "Таб · Сегодня", "Сегодня · шапка: чёрная с розовым
+ * свечением", "Сегодня · первый день"): the hero (pinned row + day summary that
+ * scrolls away), "Требуют внимания", first steps while setup is open, and the day's
  * schedule. Attention cards, schedule visits and personal time open a menu on
  * long press.
  */
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { router } from 'expo-router';
 import { DateTime } from 'luxon';
 import { useTranslation } from 'react-i18next';
-import { View } from 'react-native';
+import { RefreshControl } from 'react-native';
+import Animated from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { errorMessageKey, normalizeError } from '@/shared/api/errors';
 import { currencySymbol, formatAmount } from '@/shared/lib/formats';
 import { isSupportedLocale, pluralCategory } from '@/shared/lib/i18n';
-import {
-  ContextMenu,
-  ErrorState,
-  ScreenScrollView,
-  Skeleton,
-  Text,
-  type ContextMenuAnchor,
-  useRefreshControl,
-} from '@/shared/ui';
+import { ContextMenu, ErrorState, Skeleton, type ContextMenuAnchor } from '@/shared/ui';
 import type { TimeBlock } from '@/entities/time-block';
 import {
   BlockEventPreview,
@@ -43,10 +38,13 @@ import { useToday, type ScheduleVisit } from '../model/useToday';
 import { useTodayActions } from '../model/useTodayActions';
 import { AttentionCardView, AttentionSection, type AttentionFormat } from './AttentionSection';
 import { DayScheduleCard } from './DayScheduleCard';
-import { DaySummaryCard } from './DaySummaryCard';
 import { FirstStepsCard } from './FirstStepsCard';
 import { NoteBubble } from './NoteBubble';
 import { TodayHeader } from './TodayHeader';
+import { HeroPullIndicator, TodayHero } from './TodayHero';
+import { useHeroPull } from './useHeroPull';
+
+const isIOS = process.env.EXPO_OS === 'ios';
 
 export function TodayScreen() {
   const { t, i18n } = useTranslation();
@@ -72,30 +70,24 @@ export function TodayScreen() {
   const blockActions = useTimeBlockActions();
   const [note, setNote] = useState<{ clientName: string; text: string } | null>(null);
   const [menu, setMenu] = useState<Menu | null>(null);
-  const refreshControl = useRefreshControl(() =>
-    Promise.all([today.refetch(), attention.refetch()]),
+  const insets = useSafeAreaInsets();
+  // The hero's expanded height; a close guess until it measures itself.
+  const [heroHeight, setHeroHeight] = useState(insets.top + 190);
+  const onHeroHeight = useCallback((height: number) => setHeroHeight(height), []);
+  // Native physics; on iOS its spinner is hidden and the hero draws one (`useHeroPull`).
+  // Android: the native circle, below the hero.
+  const pull = useHeroPull(() => Promise.all([today.refetch(), attention.refetch()]));
+  const { scrollY, refreshing } = pull;
+  const refreshControl = (
+    <RefreshControl
+      refreshing={refreshing}
+      tintColor={isIOS ? 'transparent' : theme.colors.content.secondary}
+      colors={[theme.colors.content.secondary]}
+      progressBackgroundColor={theme.colors.bg.elevated}
+      progressViewOffset={heroHeight}
+      onRefresh={() => void pull.refresh()}
+    />
   );
-
-  if (today.isPending) {
-    return (
-      <ScreenScrollView contentContainerStyle={styles.content} scrollEnabled={false}>
-        <Skeleton height={44} width="60%" />
-        <Skeleton height={70} radius={theme.radius.lg} />
-        <Skeleton height={320} radius={theme.radius.lg} />
-      </ScreenScrollView>
-    );
-  }
-
-  if (today.error) {
-    return (
-      <ScreenScrollView padded={false} contentContainerStyle={styles.error}>
-        <ErrorState
-          message={t(errorMessageKey(normalizeError(today.error)))}
-          onRetry={() => void today.refetch()}
-        />
-      </ScreenScrollView>
-    );
-  }
 
   const local = DateTime.fromMillis(today.now, { zone: today.zone }).setLocale(locale);
   // Hermes' Intl has no weekday names (luxon prints "null"), so they come from i18n.
@@ -104,9 +96,82 @@ export function TodayScreen() {
   const shortDate = `${(t('weekdays.short', { returnObjects: true }) as string[])[weekday]}, ${dayMonth}`;
   const longDate = `${(t('weekdays.long', { returnObjects: true }) as string[])[weekday]}, ${dayMonth}`;
   const numberFormat = new Intl.NumberFormat(locale, { maximumFractionDigits: 2 });
+  const ready = !today.isPending && !today.error;
+
+  const hero = (
+    <TodayHero
+      dateLabel={shortDate}
+      summary={ready ? today.summary : null}
+      formatNumber={(n) => numberFormat.format(n)}
+      currency={currencySymbol(today.currency, locale)}
+      scrollY={scrollY}
+      onHeight={onHeroHeight}
+    />
+  );
+  // Over the content, under the sheet: in the gap the pull opens. iOS only — Android
+  // keeps its native circle.
+  const pullIndicator = isIOS ? (
+    <HeroPullIndicator
+      top={heroHeight}
+      gap={theme.space[5]}
+      scrollY={scrollY}
+      refreshing={refreshing}
+      spent={pull.spent}
+    />
+  ) : null;
+  const header = (
+    <TodayHeader
+      firstName={today.profile?.first_name ?? ''}
+      lastName={today.profile?.last_name ?? ''}
+      avatarUrl={today.profile?.avatar_url ?? null}
+      greeting={greetingPeriod(local.hour)}
+    />
+  );
+  const scrollProps = {
+    style: styles.scroll,
+    contentInsetAdjustmentBehavior: 'never' as const,
+    showsVerticalScrollIndicator: false,
+    keyboardShouldPersistTaps: 'handled' as const,
+    onScroll: pull.onScroll,
+    scrollEventThrottle: 16,
+    contentContainerStyle: [
+      styles.content,
+      { paddingTop: heroHeight + theme.space[5], paddingBottom: insets.bottom + theme.space[8] },
+    ],
+  };
+
+  if (today.isPending) {
+    return (
+      <>
+        {header}
+        <Animated.ScrollView {...scrollProps} scrollEnabled={false}>
+          <Skeleton height={120} radius={theme.radius.lg} />
+          <Skeleton height={320} radius={theme.radius.lg} />
+        </Animated.ScrollView>
+        {hero}
+      </>
+    );
+  }
+
+  if (today.error) {
+    return (
+      <>
+        {header}
+        <Animated.ScrollView
+          {...scrollProps}
+          contentContainerStyle={[scrollProps.contentContainerStyle, styles.error]}>
+          <ErrorState
+            message={t(errorMessageKey(normalizeError(today.error)))}
+            onRetry={() => void today.refetch()}
+          />
+        </Animated.ScrollView>
+        {hero}
+      </>
+    );
+  }
+
   const money = { currency: today.currency, locale };
   const visitCount = today.summary.count;
-  const firstName = today.profile?.first_name ?? '';
 
   const openVisit = (visit: ScheduleVisit) =>
     router.push({
@@ -132,30 +197,8 @@ export function TodayScreen() {
 
   return (
     <>
-      <TodayHeader
-        firstName={firstName}
-        lastName={today.profile?.last_name ?? ''}
-        avatarUrl={today.profile?.avatar_url ?? null}
-        greeting={greetingPeriod(local.hour)}
-      />
-      <ScreenScrollView contentContainerStyle={styles.content} refreshControl={refreshControl}>
-        <View style={styles.title}>
-          <Text variant="stat" accessibilityRole="header">
-            {t('tabs.today')}
-          </Text>
-          <Text variant="footnote" color="secondary">
-            {shortDate}
-          </Text>
-        </View>
-
-        {visitCount > 0 ? (
-          <DaySummaryCard
-            summary={today.summary}
-            formatNumber={(n) => numberFormat.format(n)}
-            currency={currencySymbol(today.currency, locale)}
-          />
-        ) : null}
-
+      {header}
+      <Animated.ScrollView {...scrollProps} refreshControl={refreshControl}>
         {attention.cards?.length ? (
           <AttentionSection
             cards={attention.cards}
@@ -192,7 +235,9 @@ export function TodayScreen() {
           }
           onBlockMenu={(block, anchor, look) => setMenu({ kind: 'block', block, anchor, look })}
         />
-      </ScreenScrollView>
+      </Animated.ScrollView>
+      {pullIndicator}
+      {hero}
 
       <NoteBubble note={note} onClose={() => setNote(null)} />
       <ContextMenu
@@ -260,12 +305,7 @@ function menuNote(menu: Menu | null, label: string) {
 }
 
 const styles = StyleSheet.create((theme) => ({
-  content: { paddingHorizontal: theme.space[5], gap: theme.space[5] },
-  title: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-    justifyContent: 'space-between',
-    marginBottom: -theme.space[2],
-  },
-  error: { flexGrow: 1 },
+  scroll: { flex: 1, backgroundColor: theme.colors.bg.canvas },
+  content: { flexGrow: 1, paddingHorizontal: theme.space[5], gap: theme.space[5] },
+  error: { paddingHorizontal: 0 },
 }));

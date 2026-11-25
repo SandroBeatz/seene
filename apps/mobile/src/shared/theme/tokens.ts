@@ -68,6 +68,29 @@ export const palette = {
   },
   // VIP badge gradient (design "Запись · превью").
   vip: ['#CF3767', '#8A6FD0', '#E0A84E'],
+  // "Сегодня" hero. Dark (design "…шапка: чёрная с розовым свечением"): an ink sheet
+  // with a rose glow top-right and a violet one bottom-left, white type. Light
+  // ("…шапка: светлый градиент и стекло"): a warm sheet with a pink and a lavender
+  // wash, ink type, the summary on a white glass card.
+  hero: {
+    glowRose: 'rgba(207, 55, 103, 0.65)',
+    glowRoseClear: 'rgba(207, 55, 103, 0)',
+    glowViolet: 'rgba(138, 111, 208, 0.35)',
+    glowVioletClear: 'rgba(138, 111, 208, 0)',
+    muted: 'rgba(255, 255, 255, 0.62)',
+    divider: 'rgba(255, 255, 255, 0.15)',
+    track: 'rgba(255, 255, 255, 0.18)',
+    ahead: 'rgba(255, 255, 255, 0.22)',
+    now: '#FF8FB1',
+    lightBase: '#FBF7F5',
+    lightPink: '#FDE3EC',
+    lightPinkClear: 'rgba(253, 227, 236, 0)',
+    lightLavender: '#E9E4FA',
+    lightLavenderClear: 'rgba(233, 228, 250, 0)',
+    lightCard: 'rgba(255, 255, 255, 0.72)',
+    inkLine: 'rgba(11, 11, 12, 0.1)',
+    inkAhead: 'rgba(11, 11, 12, 0.12)',
+  },
   translucent: {
     whiteStrong: 'rgba(255, 255, 255, 0.94)',
     whiteBar: 'rgba(255, 255, 255, 0.92)',
@@ -297,7 +320,12 @@ export const typography = {
   },
   stat: { fontFamily: fontFamily.displayBold, fontSize: 20, lineHeight: 24, letterSpacing: -0.4 },
   /** Tab screen title drawn in content ("Клиенты"). */
-  pageTitle: { fontFamily: fontFamily.displayBold, fontSize: 22, lineHeight: 27, letterSpacing: -0.44 },
+  pageTitle: {
+    fontFamily: fontFamily.displayBold,
+    fontSize: 22,
+    lineHeight: 27,
+    letterSpacing: -0.44,
+  },
   title3: {
     fontFamily: fontFamily.displayBold,
     fontSize: 19,
