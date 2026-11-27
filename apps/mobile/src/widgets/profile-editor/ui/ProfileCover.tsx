@@ -1,7 +1,7 @@
 /**
- * The top of "Профиль" (design AppMenuProfile, AppMenuProfileEmpty, AppMenuProfileCover): the
- * cover as a banner, the avatar over its lower edge, the menu of ways to change the cover and
- * the link to the page clients see.
+ * The top of "Моя страница" (design "Меню v2 · Моя страница", AppMenuProfileEmpty,
+ * AppMenuProfileCover): the cover as a banner, the menu of ways to change it and the link to
+ * the page clients see. The avatar lives on "Профиль" (`ProfileAvatar`).
  */
 import { useQueryClient } from '@tanstack/react-query';
 import { Image } from 'expo-image';
@@ -9,19 +9,17 @@ import { router } from 'expo-router';
 import { openBrowserAsync } from 'expo-web-browser';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Pressable, View } from 'react-native';
-import { StyleSheet, useUnistyles } from 'react-native-unistyles';
+import { Pressable, View } from 'react-native';
+import { StyleSheet } from 'react-native-unistyles';
 import {
   masterKeys,
   masterPageUrl,
   useRemoveMasterCover,
-  useUploadMasterImage,
   type MasterProfile,
 } from '@/entities/master';
 import { usePortfolioQuery } from '@/entities/portfolio';
 import { pickImage, takePhoto } from '@/shared/lib/image-picker';
 import {
-  Avatar,
   ContextMenu,
   Icon,
   Text,
@@ -36,19 +34,9 @@ const MENU_WIDTH = 252;
 /** The system picker can't open over a modal that is still closing. */
 const AFTER_MENU_MS = 350;
 
-export function ProfileCover({
-  profile,
-  name,
-  userId,
-}: {
-  profile: MasterProfile;
-  name: string;
-  userId: string;
-}) {
+export function ProfileCover({ profile, userId }: { profile: MasterProfile; userId: string }) {
   const { t } = useTranslation();
-  const { theme } = useUnistyles();
   const qc = useQueryClient();
-  const upload = useUploadMasterImage(userId);
   const remove = useRemoveMasterCover(userId);
   const portfolio = usePortfolioQuery(userId);
   const banner = useRef<View>(null);
@@ -56,7 +44,6 @@ export function ProfileCover({
 
   const cover = profile.cover_url;
   const hasPhotos = (portfolio.data?.length ?? 0) > 0;
-  const loadingAvatar = upload.isPending && upload.variables.kind === 'avatar';
 
   const openMenu = () =>
     banner.current?.measureInWindow((x, y, width, height) =>
@@ -64,18 +51,6 @@ export function ProfileCover({
     );
 
   const crop = (uri: string) => router.push({ pathname: '/settings/cover', params: { uri } });
-
-  const pickAvatar = async () => {
-    const image = await pickImage({ square: true });
-    if (!image) return;
-    upload.mutate(
-      { kind: 'avatar', ...image },
-      {
-        onSuccess: () => showToast({ title: t('toasts.profileSaved') }),
-        onError: () => showFailedToast(),
-      },
-    );
-  };
 
   const fromGallery = async () => {
     const image = await pickImage();
@@ -182,25 +157,6 @@ export function ProfileCover({
         )}
       </View>
 
-      <View style={styles.avatar}>
-        <View style={styles.ring}>
-          <Avatar name={name} imageUrl={profile.avatar_url} color="rose" size="profile" />
-        </View>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={t('menuHome.profile.photoA11y')}
-          disabled={loadingAvatar}
-          hitSlop={6}
-          onPress={() => void pickAvatar()}
-          style={({ pressed }) => [styles.avatarEdit, pressed && styles.pressed]}>
-          {loadingAvatar ? (
-            <ActivityIndicator size="small" color={theme.colors.accent.onAccent} />
-          ) : (
-            <Icon name="camera" size={14} color="accent.onAccent" />
-          )}
-        </Pressable>
-      </View>
-
       <Pressable
         accessibilityRole="link"
         onPress={() => void openBrowserAsync(masterPageUrl(profile.username))}
@@ -221,9 +177,6 @@ export function ProfileCover({
     </View>
   );
 }
-
-const AVATAR = 84;
-const AVATAR_RING = 4;
 
 const styles = StyleSheet.create((theme) => ({
   root: { marginBottom: theme.space[3.5] },
@@ -254,7 +207,6 @@ const styles = StyleSheet.create((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,
-    paddingBottom: 26,
   },
   emptyIcon: {
     width: 36,
@@ -263,28 +215,6 @@ const styles = StyleSheet.create((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: theme.colors.bg.elevated,
-  },
-  avatar: {
-    alignSelf: 'center',
-    marginTop: -(AVATAR / 2) - AVATAR_RING,
-  },
-  ring: {
-    padding: AVATAR_RING,
-    borderRadius: AVATAR / 2 + AVATAR_RING,
-    backgroundColor: theme.colors.bg.canvas,
-  },
-  avatarEdit: {
-    position: 'absolute',
-    right: 2,
-    bottom: 2,
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    borderWidth: 3,
-    borderColor: theme.colors.bg.canvas,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: theme.colors.accent.default,
   },
   link: {
     alignSelf: 'center',

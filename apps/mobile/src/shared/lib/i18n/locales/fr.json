@@ -1468,7 +1468,9 @@
       "autoCompleteHint": "À la fin de l’horaire réservé",
       "autoPayment": "Moyen de paiement",
       "autoPaymentNone": "Choisir",
-      "autoPaymentHint": "Le montant vient du rendez-vous. Vous pouvez le modifier, ainsi que le moyen, sur la visite terminée."
+      "autoPaymentHint": "Le montant vient du rendez-vous. Vous pouvez le modifier, ainsi que le moyen, sur la visite terminée.",
+      "region": "Langue et région",
+      "look": "Apparence"
     },
     "help": {
       "title": "Aide",
@@ -1519,7 +1521,8 @@
       "coverDelete": "Supprimer la couverture",
       "coverCropHint": "Faites glisser et pincez pour ajuster",
       "cameraDenied": "Pas d’accès à l’appareil photo",
-      "coverPickTitle": "Choisissez une photo"
+      "coverPickTitle": "Choisissez une photo",
+      "pageHint": "Les clients voient aussi votre photo, votre nom et votre spécialité sur votre page. Modifiez le lien, la couverture et les contacts dans « Ma page »."
     },
     "servicesPage": {
       "addA11y": "Nouveau service",
@@ -1722,7 +1725,8 @@
         "online_link": "Lien de réservation",
         "off_period": "Période d’absence",
         "slots": "Créneaux libres"
-      }
+      },
+      "menuTitle": "Rappels clients"
     },
     "products": {
       "title": "Produits et fournitures",
@@ -1805,7 +1809,7 @@
       "visitsNone": "pas assez pour une visite"
     },
     "booking": {
-      "title": "Réservation en ligne",
+      "title": "Prise de rendez-vous",
       "on": "Activée",
       "off": "Désactivée",
       "accept": "Accepter les réservations",
@@ -1840,7 +1844,8 @@
       "cancelHours_few": "{{count}} heures avant",
       "cancelHours_many": "{{count}} heures avant",
       "cancelHours_other": "{{count}} heures avant",
-      "servicesHint": "Les clients ne verront pas les services désactivés. Vous pouvez toujours les inscrire vous-même."
+      "servicesHint": "Les clients ne verront pas les services désactivés. Vous pouvez toujours les inscrire vous-même.",
+      "manualHint": "Les nouveaux rendez-vous attendent votre confirmation"
     },
     "tariffs": {
       "title": "Forfait",
@@ -1876,6 +1881,26 @@
         "f5": "Modèles de rappels et envois groupés",
         "f6": "Sans logo Seene sur la page"
       }
+    },
+    "bookingGroup": "Réservation en ligne",
+    "page": {
+      "title": "Ma page",
+      "value": "Couverture, contacts",
+      "contactsHint": "Les clients les voient sur votre page et vous écrivent directement."
+    },
+    "visits": {
+      "title": "Fin des visites",
+      "auto": "Auto",
+      "manual": "Manuelle",
+      "hint": "Le montant vient du rendez-vous. Vous pouvez le corriger, ainsi que le moyen de paiement, dans le rendez-vous terminé. Désactivé : vous terminez les visites vous-même."
+    },
+    "account": {
+      "title": "Compte",
+      "value": "Forfait {{plan}}",
+      "planHint": "Réservation en ligne, clients et agenda",
+      "seePro": "Voir Pro",
+      "signIn": "Connexion",
+      "deleteHint": "Votre page de réservation ferme immédiatement. Le compte peut être restauré pendant 30 jours."
     }
   },
   "toasts": {

@@ -1,6 +1,9 @@
 /**
- * "Профиль" (design AppMenuProfile). Names, link and bio are saved by "Готово"; the
- * rows open sheets with their own save, and photos upload as soon as they are ready.
+ * Two menu pages over one form (design "Меню v2"):
+ * - "Профиль": photo, first and last name, specialization — who the master is.
+ * - "Моя страница": cover, link, bio, contacts and address — what clients see.
+ * Text fields are saved by "Готово"; the rows open sheets with their own save, and
+ * photos upload as soon as they are ready.
  */
 import { usePreventRemove } from 'expo-router/react-navigation';
 import { router, Stack, useNavigation } from 'expo-router';
@@ -17,7 +20,6 @@ import {
   useUsernameStatus,
   type MasterProfile,
 } from '@/entities/master';
-import { usePortfolioQuery } from '@/entities/portfolio';
 import { useUserId } from '@/entities/session';
 import { UsernameStatusLine } from '@/features/onboarding';
 import { normalizeError } from '@/shared/api/errors';
@@ -29,18 +31,21 @@ import {
   MenuGroup,
   MenuRow,
   Skeleton,
+  Text,
   showFailedToast,
   showErrorToast,
   showToast,
 } from '@/shared/ui';
 import { showAlert } from '@/shared/lib/haptics';
-
+import { ProfileAvatar } from './ProfileAvatar';
 import { ProfileCover } from './ProfileCover';
+
+export type ProfileSection = 'profile' | 'page';
 
 /** `master_profile_bio_length` in the database. */
 const BIO_MAX_LENGTH = 600;
 
-export function ProfileScreen() {
+export function ProfileScreen({ section }: { section: ProfileSection }) {
   const userId = useUserId() ?? '';
   const profile = useMasterProfileQuery(userId);
   if (!profile.data) {
@@ -53,10 +58,18 @@ export function ProfileScreen() {
       </FormScreen>
     );
   }
-  return <ProfileForm profile={profile.data} userId={userId} />;
+  return <ProfileForm section={section} profile={profile.data} userId={userId} />;
 }
 
-function ProfileForm({ profile, userId }: { profile: MasterProfile; userId: string }) {
+function ProfileForm({
+  section,
+  profile,
+  userId,
+}: {
+  section: ProfileSection;
+  profile: MasterProfile;
+  userId: string;
+}) {
   const { t } = useTranslation();
   const { theme } = useUnistyles();
   const navigation = useNavigation();
@@ -67,7 +80,6 @@ function ProfileForm({ profile, userId }: { profile: MasterProfile; userId: stri
   const [saved, setSaved] = useState(false);
 
   const update = useUpdateMasterProfile(userId);
-  const portfolio = usePortfolioQuery(userId);
   const checked = useUsernameStatus(username);
 
   const linkChanged = username !== profile.username;
@@ -173,90 +185,105 @@ function ProfileForm({ profile, userId }: { profile: MasterProfile; userId: stri
         edges={['left', 'right', 'bottom']}
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={styles.content}>
-        <ProfileCover profile={profile} name={name} userId={userId} />
+        {section === 'profile' ? (
+          <>
+            <ProfileAvatar profile={profile} name={name} userId={userId} />
+            <View style={styles.fields}>
+              <Input
+                variant="filled"
+                label={t('onboarding.profile.firstName')}
+                value={firstName}
+                onChangeText={setFirstName}
+                autoCapitalize="words"
+                autoComplete="given-name"
+                textContentType="givenName"
+              />
+              <Input
+                variant="filled"
+                label={t('onboarding.profile.lastName')}
+                value={lastName}
+                onChangeText={setLastName}
+                autoCapitalize="words"
+                autoComplete="family-name"
+                textContentType="familyName"
+              />
+            </View>
 
-        <View style={styles.fields}>
-          <Input
-            variant="filled"
-            label={t('onboarding.profile.firstName')}
-            value={firstName}
-            onChangeText={setFirstName}
-            autoCapitalize="words"
-            autoComplete="given-name"
-            textContentType="givenName"
-          />
-          <Input
-            variant="filled"
-            label={t('onboarding.profile.lastName')}
-            value={lastName}
-            onChangeText={setLastName}
-            autoCapitalize="words"
-            autoComplete="family-name"
-            textContentType="familyName"
-          />
-          <Input
-            variant="filled"
-            label={t('menuHome.profile.link')}
-            prefix={t('onboarding.profile.usernamePrefix')}
-            value={username}
-            onChangeText={(text) => setUsername(normalizeUsernameInput(text))}
-            autoCapitalize="none"
-            autoCorrect={false}
-            autoComplete="off"
-            maxLength={30}
-            below={linkChanged ? <UsernameStatusLine status={checked} /> : undefined}
-          />
-          <Input
-            variant="filled"
-            label={t('menuHome.profile.about')}
-            value={bio}
-            onChangeText={setBio}
-            multiline
-            maxLength={BIO_MAX_LENGTH}
-          />
-        </View>
+            <MenuGroup label={t('menuHome.profile.specialization')}>
+              <MenuRow
+                title={specializations}
+                onPress={() => router.push('/settings/specializations')}
+              />
+            </MenuGroup>
+            <Text variant="caption" color="secondary" style={styles.hint}>
+              {t('menuHome.profile.pageHint')}
+            </Text>
 
-        <MenuGroup label={t('menuHome.profile.specialization')}>
-          <MenuRow
-            title={specializations}
-            onPress={() => router.push('/settings/specializations')}
-          />
-        </MenuGroup>
+            <MenuGroup>
+              <MenuRow
+                icon="home"
+                title={t('menuHome.page.title')}
+                onPress={() => router.push('/settings/page')}
+              />
+            </MenuGroup>
+          </>
+        ) : (
+          <>
+            <ProfileCover profile={profile} userId={userId} />
+            <View style={styles.fields}>
+              <Input
+                variant="filled"
+                label={t('menuHome.profile.link')}
+                prefix={t('onboarding.profile.usernamePrefix')}
+                value={username}
+                onChangeText={(text) => setUsername(normalizeUsernameInput(text))}
+                autoCapitalize="none"
+                autoCorrect={false}
+                autoComplete="off"
+                maxLength={30}
+                below={linkChanged ? <UsernameStatusLine status={checked} /> : undefined}
+              />
+              <Input
+                variant="filled"
+                label={t('menuHome.profile.about')}
+                value={bio}
+                onChangeText={setBio}
+                multiline
+                maxLength={BIO_MAX_LENGTH}
+              />
+            </View>
 
-        <MenuGroup label={t('menuHome.profile.contacts')}>
-          <MenuRow
-            icon="whatsapp"
-            title="WhatsApp"
-            value={profile.whatsapp ? formatPhone(profile.whatsapp) : add}
-            onPress={() => openContact('whatsapp')}
-          />
-          <MenuRow
-            icon="instagram"
-            title="Instagram"
-            value={profile.instagram ? `@${profile.instagram}` : add}
-            onPress={() => openContact('instagram')}
-          />
-          <MenuRow
-            icon="telegram"
-            title="Telegram"
-            value={profile.telegram ? `@${profile.telegram}` : add}
-            onPress={() => openContact('telegram')}
-          />
-          <MenuRow
-            icon="mapPin"
-            title={t('menuHome.profile.address')}
-            value={addressLine(profile) || add}
-            onPress={() => router.push('/settings/address')}
-          />
-        </MenuGroup>
-
-        <MenuGroup label={t('menuHome.profile.works')}>
-          <MenuRow
-            title={t('menuHome.profile.portfolio')}
-            value={t('menuHome.profile.portfolioCount', { count: portfolio.data?.length ?? 0 })}
-            onPress={() => router.push('/settings/portfolio')}
-          />
-        </MenuGroup>
+            <MenuGroup label={t('menuHome.profile.contacts')}>
+              <MenuRow
+                icon="whatsapp"
+                title="WhatsApp"
+                value={profile.whatsapp ? formatPhone(profile.whatsapp) : add}
+                onPress={() => openContact('whatsapp')}
+              />
+              <MenuRow
+                icon="instagram"
+                title="Instagram"
+                value={profile.instagram ? `@${profile.instagram}` : add}
+                onPress={() => openContact('instagram')}
+              />
+              <MenuRow
+                icon="telegram"
+                title="Telegram"
+                value={profile.telegram ? `@${profile.telegram}` : add}
+                onPress={() => openContact('telegram')}
+              />
+              <MenuRow
+                icon="mapPin"
+                title={t('menuHome.profile.address')}
+                value={addressLine(profile) || add}
+                onPress={() => router.push('/settings/address')}
+              />
+            </MenuGroup>
+            <Text variant="caption" color="secondary" style={styles.hint}>
+              {t('menuHome.page.contactsHint')}
+            </Text>
+          </>
+        )}
       </FormScreen>
     </>
   );
@@ -270,4 +297,5 @@ const styles = StyleSheet.create((theme) => ({
     paddingBottom: theme.space[3],
   },
   fields: { gap: theme.space[3] },
+  hint: { marginTop: theme.space[2], marginHorizontal: theme.space[1] },
 }));

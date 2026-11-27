@@ -45,6 +45,8 @@ import { HeroPullIndicator, TodayHero } from './TodayHero';
 import { useHeroPull } from './useHeroPull';
 
 const isIOS = process.env.EXPO_OS === 'ios';
+// "Пора позвать" cards are hidden from "Требуют внимания" for now; empty it to bring them back.
+const HIDDEN_ATTENTION: readonly AttentionCard['kind'][] = ['recall'];
 
 export function TodayScreen() {
   const { t, i18n } = useTranslation();
@@ -187,6 +189,9 @@ export function TodayScreen() {
       text: visit.appointment.notes?.trim() ?? '',
     });
 
+  const attentionCards =
+    attention.cards?.filter((card) => !HIDDEN_ATTENTION.includes(card.kind)) ?? [];
+
   const attentionFormat: AttentionFormat = {
     zone: today.zone,
     todayKey: today.dayKey,
@@ -199,9 +204,9 @@ export function TodayScreen() {
     <>
       {header}
       <Animated.ScrollView {...scrollProps} refreshControl={refreshControl}>
-        {attention.cards?.length ? (
+        {attentionCards.length ? (
           <AttentionSection
-            cards={attention.cards}
+            cards={attentionCards}
             format={attentionFormat}
             onAction={act.cardAction}
             onOpen={act.openCard}

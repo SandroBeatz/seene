@@ -1,5 +1,5 @@
 import { ProfileScreen } from '@/widgets/profile-editor';
 
 export default function ProfileRoute() {
-  return <ProfileScreen />;
+  return <ProfileScreen section="profile" />;
 }

@@ -229,9 +229,10 @@ export const radius = {
 // Control heights & icon/avatar sizing. 44 is the min touch target.
 export const sizing = {
   icon: { xs: 12, mark: 13, sm: 16, base: 18, md: 20, lg: 24, xl: 34 },
-  avatar: { sm: 28, md: 44, lg: 56, xl: 64, xxl: 68, profile: 84, xxxl: 88 },
+  /** `menu`: the menu tab's avatar with the fire around it. */
+  avatar: { sm: 28, md: 44, lg: 56, xl: 64, xxl: 68, profile: 84, xxxl: 88, menu: 100 },
   /** Initials font size per avatar size. */
-  avatarText: { sm: 11, md: 15, lg: 18, xl: 19, xxl: 22, profile: 27, xxxl: 30 },
+  avatarText: { sm: 11, md: 15, lg: 18, xl: 19, xxl: 22, profile: 27, xxxl: 30, menu: 32 },
   control: { xs: 30, sm: 36, md: 44, lg: 48, xl: 54 },
   /** Round icon button (back / close). */
   iconButton: 40,
