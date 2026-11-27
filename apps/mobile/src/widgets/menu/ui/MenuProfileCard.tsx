@@ -1,20 +1,25 @@
-/** Top of the menu (design "Таб · Меню"): avatar, name, professions and city, edit button. */
+/**
+ * Top of the menu (design "Таб · Меню"): avatar with a faint living fire around it
+ * (`AvatarFlame`), name, professions and city, the "Профиль" button.
+ */
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
-import { StyleSheet } from 'react-native-unistyles';
+import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import type { MasterProfile } from '@/entities/master';
 import { Avatar, Icon, Skeleton, Text } from '@/shared/ui';
 import { joinProfessions, profileLine } from '../lib/profile-line';
+import { AvatarFlame } from './AvatarFlame';
 
 export function MenuProfileCard({ profile }: { profile: MasterProfile | null | undefined }) {
   const { t } = useTranslation();
+  const { theme } = useUnistyles();
 
   if (!profile) {
     return (
       <View style={styles.root}>
         <View style={styles.avatar}>
-          <Skeleton width={84} height={84} radius={42} />
+          <Skeleton width={100} height={100} radius={50} />
         </View>
         <View style={styles.name}>
           <Skeleton width={180} height={24} />
@@ -32,8 +37,11 @@ export function MenuProfileCard({ profile }: { profile: MasterProfile | null | u
 
   return (
     <View style={styles.root}>
-      <View style={styles.avatar}>
-        <Avatar name={name} imageUrl={profile.avatar_url} color="rose" size="profile" />
+      <View>
+        <AvatarFlame size={theme.sizing.avatar.menu} />
+        <View style={styles.avatar}>
+          <Avatar name={name} imageUrl={profile.avatar_url} color="rose" size="menu" />
+        </View>
       </View>
       <Text variant="stat" align="center" style={styles.name}>
         {name}
@@ -46,19 +54,20 @@ export function MenuProfileCard({ profile }: { profile: MasterProfile | null | u
         onPress={() => router.push('/settings/profile')}
         style={({ pressed }) => [styles.edit, pressed && styles.pressed]}>
         <Icon name="pencil" size={15} weight="medium" />
-        <Text variant="subheadStrong">{t('menuHome.editProfile')}</Text>
+        <Text variant="subheadStrong">{t('navigation.profileSettings')}</Text>
       </Pressable>
     </View>
   );
 }
 
 const styles = StyleSheet.create((theme) => ({
-  root: { alignItems: 'center', paddingTop: theme.space[1] },
+  // Room above for the fire around the avatar.
+  root: { alignItems: 'center', paddingTop: theme.space[7] },
   avatar: {
-    borderRadius: theme.sizing.avatar.profile / 2,
-    boxShadow: `0px 0px 0px 4px ${theme.colors.bg.canvas}, 0px 0px 0px 5px ${theme.colors.brand.ring}, ${theme.shadow.avatarGlow}`,
+    borderRadius: theme.sizing.avatar.menu / 2,
+    boxShadow: `0px 0px 0px 4px ${theme.colors.bg.canvas}, 0px 0px 0px 5px ${theme.colors.brand.ring}`,
   },
-  name: { marginTop: theme.space[3.5] },
+  name: { marginTop: theme.space[5] },
   line: { marginTop: 3 },
   edit: {
     marginTop: theme.space[3.5],

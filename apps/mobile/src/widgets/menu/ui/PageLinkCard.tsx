@@ -1,4 +1,7 @@
-/** The booking page's link in the menu, with its QR code and the share sheet. */
+/**
+ * The booking page's link, with its QR code and the share sheet: the first row of the
+ * menu's "Онлайн-запись" group (the group's card owns the background and side padding).
+ */
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
@@ -43,12 +46,7 @@ export function PageLinkCard({ username }: { username: string }) {
 
 const styles = StyleSheet.create((theme) => ({
   root: {
-    marginTop: theme.space[4.5],
-    borderRadius: theme.radius.xl,
-    backgroundColor: theme.colors.bg.surface,
     paddingVertical: theme.space[3],
-    paddingRight: theme.space[3],
-    paddingLeft: theme.space[3.5],
     flexDirection: 'row',
     alignItems: 'center',
     gap: theme.space[2.5],

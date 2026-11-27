@@ -1462,7 +1462,9 @@
       "autoCompleteHint": "When the booked time is over",
       "autoPayment": "Payment method",
       "autoPaymentNone": "Choose",
-      "autoPaymentHint": "The amount comes from the booking. You can change it and the method on the finished visit."
+      "autoPaymentHint": "The amount comes from the booking. You can change it and the method on the finished visit.",
+      "region": "Language and region",
+      "look": "Appearance"
     },
     "help": {
       "title": "Help",
@@ -1512,7 +1514,8 @@
       "coverDelete": "Delete cover",
       "coverCropHint": "Drag and pinch to fit the photo",
       "cameraDenied": "No access to the camera",
-      "coverPickTitle": "Choose a photo"
+      "coverPickTitle": "Choose a photo",
+      "pageHint": "Clients also see your photo, name and specialty on your page. Change the link, cover and contacts in “My page”."
     },
     "servicesPage": {
       "addA11y": "New service",
@@ -1715,7 +1718,8 @@
         "online_link": "Online booking link",
         "off_period": "Time away",
         "slots": "Open slots"
-      }
+      },
+      "menuTitle": "Client reminders"
     },
     "products": {
       "title": "Products and supplies",
@@ -1798,7 +1802,7 @@
       "visitsNone": "not enough for a visit"
     },
     "booking": {
-      "title": "Online booking",
+      "title": "Accepting bookings",
       "on": "On",
       "off": "Off",
       "accept": "Accept bookings",
@@ -1833,7 +1837,8 @@
       "cancelHours_few": "{{count}} hours before",
       "cancelHours_many": "{{count}} hours before",
       "cancelHours_other": "{{count}} hours before",
-      "servicesHint": "Clients won't see services that are off. You can still book them by hand."
+      "servicesHint": "Clients won't see services that are off. You can still book them by hand.",
+      "manualHint": "New bookings wait for your confirmation"
     },
     "tariffs": {
       "title": "Plan",
@@ -1869,6 +1874,26 @@
         "f5": "Reminder templates and broadcasts",
         "f6": "No Seene logo on the page"
       }
+    },
+    "bookingGroup": "Online booking",
+    "page": {
+      "title": "My page",
+      "value": "Cover, contacts",
+      "contactsHint": "Clients see them on your page and message you directly."
+    },
+    "visits": {
+      "title": "Completing visits",
+      "auto": "Auto",
+      "manual": "By hand",
+      "hint": "The amount comes from the booking. You can fix it and the payment method in the completed booking. When off, you complete visits yourself."
+    },
+    "account": {
+      "title": "Account",
+      "value": "{{plan}} plan",
+      "planHint": "Online booking, clients and calendar",
+      "seePro": "See Pro",
+      "signIn": "Sign-in",
+      "deleteHint": "Your booking page closes right away. You can restore the account within 30 days."
     }
   },
   "toasts": {

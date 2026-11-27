@@ -1,5 +1,6 @@
 /**
- * "Онлайн-запись" (design AppMenuBooking). Left out for now: prepayment (no payment flow),
+ * "Приём записей" (design AppMenuBooking, manual confirmation moved up next to the main
+ * switch as the owner asked). Left out for now: prepayment (no payment flow),
  * "Спрашивать имя" (a new client's name is required, a returning client isn't asked),
  * notifications (push, phase 10) and the message after booking (templates, phase 8).
  */
@@ -94,18 +95,11 @@ export function BookingSettingsScreen() {
           t('menuHome.booking.accept'),
           t('menuHome.booking.acceptHint'),
         )}
-      </GroupedCard>
-      {profile.data ? (
-        <Text variant="caption" color="tertiary" style={styles.hint}>
-          {t('menuHome.booking.link', { link: masterPageLabel(profile.data.username) })}
-        </Text>
-      ) : null}
-
-      <Section label={t('menuHome.booking.rules')}>
         <ListItem
           size="menu"
           inset={false}
           title={t('menuHome.booking.manual')}
+          subtitle={t('menuHome.booking.manualHint')}
           right={
             <Switch
               value={data.booking_default_status === 'pending'}
@@ -116,6 +110,14 @@ export function BookingSettingsScreen() {
             />
           }
         />
+      </GroupedCard>
+      {profile.data ? (
+        <Text variant="caption" color="tertiary" style={styles.hint}>
+          {t('menuHome.booking.link', { link: masterPageLabel(profile.data.username) })}
+        </Text>
+      ) : null}
+
+      <Section label={t('menuHome.booking.rules')}>
         {choice('notice', t('menuHome.booking.notice'))}
         {choice('horizon', t('menuHome.booking.horizon'))}
         {choice('step', t('menuHome.booking.step'))}

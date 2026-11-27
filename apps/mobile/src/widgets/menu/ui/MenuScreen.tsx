@@ -1,7 +1,7 @@
 /**
- * The "Меню" tab (design "Таб · Меню: финальная версия"). Sections join as their
- * screens get built, see docs/mobile-menu-plan.md. The screen has no bar, so content
- * dissolves under the status bar while scrolling.
+ * The "Меню" tab (design "Меню v2 · разделы по темам"): online booking (page, portfolio,
+ * accepting bookings), work, clients, money, then account, settings and help. The screen has
+ * no bar, so content dissolves under the status bar while scrolling.
  */
 import { router } from 'expo-router';
 import type { ReactNode } from 'react';
@@ -56,7 +56,36 @@ export function MenuScreen({ moneySection }: MenuScreenProps) {
           },
         ]}>
         <MenuProfileCard profile={profile.data} />
-        {profile.data ? <PageLinkCard username={profile.data.username} /> : null}
+
+        <MenuGroup label={t('menuHome.bookingGroup')}>
+          {profile.data ? <PageLinkCard username={profile.data.username} /> : null}
+          <MenuRow
+            icon="home"
+            title={t('menuHome.page.title')}
+            value={t('menuHome.page.value')}
+            onPress={() => router.push('/settings/page')}
+          />
+          <MenuRow
+            icon="gallery"
+            title={t('menuHome.portfolio.title')}
+            value={portfolio.data ? String(portfolio.data.length) : undefined}
+            onPress={() => router.push('/settings/portfolio')}
+          />
+          <MenuRow
+            icon="link"
+            title={t('menuHome.booking.title')}
+            value={
+              settings.data
+                ? t(
+                    settings.data.online_booking_enabled
+                      ? 'menuHome.booking.on'
+                      : 'menuHome.booking.off',
+                  )
+                : undefined
+            }
+            onPress={() => router.push('/settings/booking')}
+          />
+        </MenuGroup>
 
         <MenuGroup label={t('menuHome.work')}>
           <MenuRow
@@ -66,50 +95,48 @@ export function MenuScreen({ moneySection }: MenuScreenProps) {
             onPress={() => router.push('/settings/services')}
           />
           <MenuRow
+            icon="clock"
+            title={t('menuHome.hours.title')}
+            onPress={() => router.push('/settings/hours')}
+          />
+          <MenuRow
             icon="tube"
             title={t('menuHome.products.title')}
             value={products.data ? String(products.data.length) : undefined}
             onPress={() => router.push('/settings/products')}
           />
           <MenuRow
-            icon="gallery"
-            title={t('menuHome.portfolio.title')}
-            value={portfolio.data ? String(portfolio.data.length) : undefined}
-            onPress={() => router.push('/settings/portfolio')}
-          />
-          <MenuRow
-            icon="clock"
-            title={t('menuHome.hours.title')}
-            onPress={() => router.push('/settings/hours')}
-          />
-          <MenuRow
-            icon="calendar"
-            title={t('menuHome.booking.title')}
+            icon="autoComplete"
+            title={t('menuHome.visits.title')}
             value={
               settings.data
-                ? t(settings.data.online_booking_enabled ? 'menuHome.booking.on' : 'menuHome.booking.off')
+                ? t(
+                    settings.data.auto_complete_since
+                      ? 'menuHome.visits.auto'
+                      : 'menuHome.visits.manual',
+                  )
                 : undefined
             }
-            onPress={() => router.push('/settings/booking')}
+            onPress={() => router.push('/settings/visits')}
+          />
+        </MenuGroup>
+
+        <MenuGroup label={t('menuHome.clientsGroup')}>
+          <MenuRow
+            icon="bell"
+            title={t('menuHome.messages.menuTitle')}
+            onPress={() => router.push('/settings/messages')}
           />
         </MenuGroup>
 
         {moneySection}
 
-        <MenuGroup label={t('menuHome.clientsGroup')}>
-          <MenuRow
-            icon="bell"
-            title={t('menuHome.messages.title')}
-            onPress={() => router.push('/settings/messages')}
-          />
-        </MenuGroup>
-
         <MenuGroup>
           <MenuRow
-            icon="verified"
-            title={t('menuHome.tariffs.title')}
-            value={t('menuHome.tariffs.currentPlan')}
-            onPress={() => router.push('/settings/tariffs')}
+            icon="userCircle"
+            title={t('menuHome.account.title')}
+            value={t('menuHome.account.value', { plan: t('menuHome.tariffs.currentPlan') })}
+            onPress={() => router.push('/settings/account')}
           />
           <MenuRow
             icon="settings"
